@@ -345,7 +345,7 @@ When a user requests niche research:
    - [Sensitivity 1]: [how to navigate]
    - [Sensitivity 2]: [how to navigate]
    
-   ### Competitive Landscape
+   ### Competitive Map
    
    | Competitor | Niche Presence | Strategy | Performance |
    |------------|----------------|----------|-------------|

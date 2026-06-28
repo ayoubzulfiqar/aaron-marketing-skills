@@ -78,7 +78,7 @@ When a user requests trend analysis:
 2. **Identify Current Trends**
 
    ```markdown
-   ## Current Trend Landscape
+   ## Current Trends
 
    ### Trending Topics
 
