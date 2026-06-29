@@ -41,7 +41,7 @@ import robots  # correct robots.txt checker (Allow + Disallow, wildcards, longes
 
 CRAWL_DELAY_SECONDS = 1.0  # polite default: <= 1 req/s
 # UA token we match robots.txt groups against (substring of _http.USER_AGENT).
-UA_TOKEN = "seo-geo-skills-connector"
+UA_TOKEN = "aaron-marketing-skills-connector"
 
 
 class _LinkAndTitleParser(HTMLParser):

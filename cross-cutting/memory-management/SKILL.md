@@ -1,6 +1,6 @@
 ---
 name: memory-management
-description: 'Use when the user asks to "remember project context"; manages the SEO/GEO memory lifecycle — hot-cache, active work, archive tiers, and privacy cleanup. Not for content or domain scoring — use the auditors. 项目记忆/跨会话'
+description: 'Use when the user asks to "remember project context"; manages the cross-discipline marketing memory lifecycle (SEO/GEO + influencer) — hot-cache, active work, archive tiers, and privacy cleanup. Not for content or domain scoring — use the auditors. 项目记忆/跨会话'
 version: "10.0.1"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
@@ -14,7 +14,7 @@ metadata:
 ---
 
 # Memory Management
-This skill implements a three-tier memory system (HOT/WARM/COLD) for SEO and GEO projects. HOT memory (80 lines max) loads automatically every session via the SessionStart hook. WARM memory loads on demand per skill. COLD memory is archived data queried only when explicitly requested. The skill manages the full lifecycle: capture, promote, demote, and archive.
+This skill implements a three-tier memory system (HOT/WARM/COLD) for all marketing disciplines (SEO/GEO and influencer). HOT memory (80 lines max) loads automatically every session via the SessionStart hook. WARM memory loads on demand per skill. COLD memory is archived data queried only when explicitly requested. The skill manages the full lifecycle: capture, promote, demote, and archive.
 
 ## What This Skill Does
 
@@ -27,7 +27,7 @@ Start with one of these prompts. Finish with a hot-cache update plan and a hando
 ### Initialize Memory Structure
 
 ```
-Set up SEO memory for [project name]
+Set up marketing memory for [project name]
 ```
 
 ```
@@ -121,7 +121,7 @@ With tools: auto-populate from ~~SEO tool, ~~analytics, ~~search console. Withou
 
 ## Instructions
 
-When a user requests SEO memory management:
+When a user requests memory management (any discipline — SEO/GEO or influencer):
 
 ### 1. Initialize Memory Structure
 
@@ -134,8 +134,8 @@ For new projects, create the directory structure defined in the [State Model](..
 When a user references something unclear, follow this lookup sequence:
 
 **Step 1: Check `memory/hot-cache.md` (hot cache)**
-- Is it in active keywords?
-- Is it in primary competitors?
+- Is it in active keywords (SEO/GEO) or tracked creators/niches (influencer)?
+- Is it in primary competitors or tracked influencers?
 - Is it in current priorities or campaigns?
 
 **Step 2: Check memory/glossary.md**
@@ -161,7 +161,7 @@ Example lookup: User asks "Update rankings for our hero KWs" → Step 1 finds "H
 
 ### 4. Update Triggers, Archive Management & Cross-Skill Integration
 
-> **Reference**: See [Update Triggers & Integration](references/update-triggers-integration.md) for the complete update procedures after ranking checks, competitor analyses, audits, and reports; monthly/quarterly archive routines; and integration points with all 8 connected skills (keyword-research, rank-tracker, competitor-analysis, content-gap-analysis, seo-content-writer, content-quality-auditor, domain-authority-auditor).
+> **Reference**: See [Update Triggers & Integration](references/update-triggers-integration.md) for the complete update procedures after ranking checks, competitor analyses, audits, and reports; monthly/quarterly archive routines; and integration points with connected skills across both disciplines — SEO/GEO (keyword-research, rank-tracker, competitor-analysis, content-gap-analysis, seo-content-writer, content-quality-auditor, domain-authority-auditor) and influencer (skills writing under `memory/influencer/<skill>/`).
 
 ### 5. Memory Hygiene Checks
 

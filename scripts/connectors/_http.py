@@ -23,7 +23,7 @@ import urllib.request
 from urllib.parse import urlsplit
 
 USER_AGENT = (
-    "seo-geo-skills-connector/1.0 "
+    "aaron-marketing-skills-connector/1.0 "
     "(+https://github.com/aaron-he-zhu/aaron-marketing-skills)"
 )
 DEFAULT_TIMEOUT = 20

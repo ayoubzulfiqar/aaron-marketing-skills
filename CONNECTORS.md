@@ -75,47 +75,49 @@ The fastest way to keep a skill zero-dependency is to feed it data from a free, 
 
 ## Tool Categories (placeholder → tools)
 
-| Category | Placeholder | Example paid tools | Free alternative (above) |
-|----------|-------------|--------------------|--------------------------|
-| SEO Platform | `~~SEO tool` | Ahrefs, Semrush, Moz, SISTRIX, SE Ranking | GSC + Google Suggest |
-| Analytics | `~~analytics` | GA, Adobe Analytics, Plausible, Matomo | GA4 Data API / self-host Plausible |
-| Search Console | `~~search console` | Google Search Console, Bing Webmaster | GSC + Bing WMT APIs |
-| AI Visibility | `~~AI monitor` | Otterly, Profound, Scrunch AI | manual prompt-testing |
-| Web Crawler | `~~web crawler` | Screaming Frog, Sitebulb, Lumar | advertools / Screaming Frog free / DIY fetch |
-| Link Database | `~~link database` | Ahrefs, Majestic, Moz | Open PageRank + Common Crawl + GSC Links |
-| Competitive Intel | `~~competitive intel` | SimilarWeb, SpyFu, Semrush | Wayback CDX + Common Crawl |
-| Page Speed | `~~page speed tool` | GTmetrix, WebPageTest | PSI / CrUX / Lighthouse |
-| Schema Validator | `~~schema validator` | — | validator.schema.org / Rich Results Test |
-| Knowledge Graph | `~~knowledge graph` | Google KG API, CrunchBase | Wikidata SPARQL |
-| Brand Monitor | `~~brand monitor` | Brand24, Mention, Brandwatch | Google Alerts / F5Bot |
-| CRM / Marketing | `~~CRM` | HubSpot, Salesforce, Marketo | — |
-| Content / CMS | `~~content platform` / `~~CMS` | WordPress, Webflow, Contentful, Sanity, Notion | — |
-| Communication | `~~team chat` | Slack, Teams, Discord | — |
-| Reporting | `~~reporting` | Looker Studio, Tableau, Power BI | — |
+`Discipline` = which discipline(s) use the category (search / influencer / paid / both / all). `Agent default` = what an agent should reach for first at Tier 1 (use the free/own-data path unless the team already pays for a listed tool).
+
+| Category | Placeholder | Discipline | Example paid tools | Free alternative (above) | Agent default |
+|----------|-------------|------------|--------------------|--------------------------|---------------|
+| SEO Platform | `~~SEO tool` | search | Ahrefs, Semrush, Moz, SISTRIX, SE Ranking | GSC + Google Suggest | GSC + Suggest (keyless) |
+| Analytics | `~~analytics` | all | GA, Adobe Analytics, Plausible, Matomo | GA4 Data API / self-host Plausible | GA4 own-data |
+| Search Console | `~~search console` | search | Google Search Console, Bing Webmaster | GSC + Bing WMT APIs | GSC (own) |
+| AI Visibility | `~~AI monitor` | search | Otterly, Profound, Scrunch AI | manual prompt-testing | manual prompt set |
+| Web Crawler | `~~web crawler` | search | Screaming Frog, Sitebulb, Lumar | advertools / Screaming Frog free / DIY fetch | DIY fetch (`crawl.py`) |
+| Link Database | `~~link database` | search | Ahrefs, Majestic, Moz | Open PageRank + Common Crawl + GSC Links | Open PageRank + GSC |
+| Competitive Intel | `~~competitive intel` | search | SimilarWeb, SpyFu, Semrush | Wayback CDX + Common Crawl | Wayback CDX |
+| Page Speed | `~~page speed tool` | search | GTmetrix, WebPageTest | PSI / CrUX / Lighthouse | PSI (keyless) |
+| Schema Validator | `~~schema validator` | search | — | validator.schema.org / Rich Results Test | Rich Results Test |
+| Knowledge Graph | `~~knowledge graph` | both | Google KG API, CrunchBase | Wikidata SPARQL | Wikidata SPARQL |
+| Brand Monitor | `~~brand monitor` | both | Brand24, Mention, Brandwatch | Google Alerts / F5Bot | Google Alerts |
+| CRM / Marketing | `~~CRM` | all | HubSpot, Salesforce, Marketo | — | manual CSV |
+| Content / CMS | `~~content platform` / `~~CMS` | all | WordPress, Webflow, Contentful, Sanity, Notion | — | existing CMS |
+| Communication | `~~team chat` | all | Slack, Teams, Discord | — | manual paste |
+| Reporting | `~~reporting` | all | Looker Studio, Tableau, Power BI | — | Markdown report |
 
 ### Influencer / IMPACT categories
 
-The 18 influencer-marketing skills use these additional placeholders (plus `~~CRM`, `~~content platform`/`~~CMS`, `~~team chat`, and `~~reporting` shared with the table above). Every one works at Tier 1 — paste the data manually; the right-hand column is the keyless / own-data path.
+The influencer-marketing skills use these additional placeholders (plus `~~CRM`, `~~content platform`/`~~CMS`, `~~team chat`, and `~~reporting` shared with the table above). Every one works at Tier 1 — paste the data manually; the right-hand column is the keyless / own-data path. Categories marked Discipline=**both** are also used by the **paid** (Paid Ads) discipline — notably `~~ad platform`, `~~web analytics`, `~~ecommerce`, which paid scores from **own-account manual export** (keyed ad-platform APIs are opt-in Tier-2/3 MCP, never required).
 
-| Category | Placeholder | Example paid tools | Free / own-data path |
-|----------|-------------|--------------------|----------------------|
-| Influencer Database | `~~influencer database` | Modash, HypeAuditor, Upfluence, GRIN | manual creator CSV (handles + public metrics) |
-| Social Platform Analytics | `~~social platform analytics` | IG/TikTok/YouTube creator APIs, Dash Hudson | native creator dashboards (manual export of own/partner data) |
-| Social Listening | `~~social listening` | Brandwatch, Sprout Social, Talkwalker | Google Alerts / F5Bot / platform search |
-| Audience Intelligence | `~~audience intelligence` | HypeAuditor, Audiense, SparkToro | platform audience demographics (own/manual) |
-| Audience Overlap | `~~audience overlap` | Audiense, SparkToro | manual follower-sample comparison |
-| Trend Database | `~~trend database` | Exploding Topics, TrendTok | Google Trends / platform trending pages |
-| Ad Platform | `~~ad platform` | Meta Ads, TikTok Ads, Google Ads | native ad manager (own data, manual export) |
-| Web Analytics | `~~web analytics` | GA4, Adobe Analytics, Plausible | GA4 Data API (own data) |
-| E-commerce / Sales | `~~ecommerce / sales platform` / `~~ecommerce / analytics` | Shopify, WooCommerce, Stripe | platform order export (own data) |
-| A/B Testing | `~~A/B testing platform` | Optimizely, VWO | server-side split / manual variant test |
-| Landing / Page Builder | `~~CMS / landing page builder` | Webflow, Unbounce, Instapage | static HTML / existing CMS |
-| DAM / Asset Library | `~~DAM / asset library` | Bynder, Brandfolder | shared Drive / Dropbox folder |
-| Email / DM | `~~email/DM tool` | Klaviyo, Mailchimp, native DMs | native DM + manual email |
-| Compliance Reference | `~~compliance reference` | platform policy portals | FTC 16 CFR §255 / Part 465 (public) |
-| Competitor Tracking | `~~competitor tracking` | Social Blade, BuzzSumo | manual competitor profile review |
-| Customer Survey | `~~customer survey data` | Typeform, SurveyMonkey, Qualtrics | Google Forms |
-| E-signature | `~~e-signature` | DocuSign, Dropbox Sign, PandaDoc | PDF + manual signature |
+| Category | Placeholder | Discipline | Example paid tools | Free / own-data path | Agent default |
+|----------|-------------|------------|--------------------|----------------------|---------------|
+| Influencer Database | `~~influencer database` | influencer | Modash, HypeAuditor, Upfluence, GRIN | manual creator CSV (handles + public metrics) | manual CSV (no public API) |
+| Social Platform Analytics | `~~social platform analytics` | influencer | IG/TikTok/YouTube creator APIs, Dash Hudson | native creator dashboards (manual export of own/partner data) | manual export (no public API) |
+| Social Listening | `~~social listening` | both | Brandwatch, Sprout Social, Talkwalker | Google Alerts / F5Bot / platform search | Google Alerts |
+| Audience Intelligence | `~~audience intelligence` | influencer | HypeAuditor, Audiense, SparkToro | platform audience demographics (own/manual) | platform native (own) |
+| Audience Overlap | `~~audience overlap` | influencer | Audiense, SparkToro | manual follower-sample comparison | manual sample |
+| Trend Database | `~~trend database` | both | Exploding Topics, TrendTok | Google Trends / platform trending pages | Google Trends RSS (`rss_monitor.py`) |
+| Ad Platform | `~~ad platform` | both (influencer + paid) | Meta Ads, TikTok Ads, Google Ads | native ad manager (own data, manual export) | manual export (own); keyed API = opt-in MCP |
+| Web Analytics | `~~web analytics` | both | GA4, Adobe Analytics, Plausible | GA4 Data API (own data) | GA4 own-data |
+| E-commerce / Sales | `~~ecommerce / sales platform` / `~~ecommerce / analytics` | both | Shopify, WooCommerce, Stripe | platform order export (own data) | order CSV (own) |
+| A/B Testing | `~~A/B testing platform` | both | Optimizely, VWO | server-side split / manual variant test | manual variant |
+| Landing / Page Builder | `~~CMS / landing page builder` | both | Webflow, Unbounce, Instapage | static HTML / existing CMS | existing CMS |
+| DAM / Asset Library | `~~DAM / asset library` | influencer | Bynder, Brandfolder | shared Drive / Dropbox folder | shared folder |
+| Email / DM | `~~email/DM tool` | influencer | Klaviyo, Mailchimp, native DMs | native DM + manual email | manual DM |
+| Compliance Reference | `~~compliance reference` | both | platform policy portals | FTC 16 CFR §255 / Part 465 (public) | FTC public rule |
+| Competitor Tracking | `~~competitor tracking` | influencer | Social Blade, BuzzSumo | manual competitor profile review | manual review |
+| Customer Survey | `~~customer survey data` | influencer | Typeform, SurveyMonkey, Qualtrics | Google Forms | Google Forms |
+| E-signature | `~~e-signature` | influencer | DocuSign, Dropbox Sign, PandaDoc | PDF + manual signature | manual PDF sign |
 
 ## How placeholders work
 

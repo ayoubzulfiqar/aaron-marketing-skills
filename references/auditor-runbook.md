@@ -91,6 +91,8 @@ score at **60/100**. Show raw and capped side by side in the internal report. Se
 **Veto items** (defined per framework — use the set your skill names):
 - CORE-EEAT: T04, C01, R10 — see [core-eeat-benchmark.md](core-eeat-benchmark.md)
 - CITE: T03, T05, T09 — see [cite-domain-rating.md](cite-domain-rating.md)
+- C³ (influencer): ACE A2/C1/E2, ART T1/T2 — see [c3-benchmark.md](c3-benchmark.md) (the ROI/Campaign scope has no veto). `content-reviewer` is the ART-gate consumer.
+- A 4th framework (ROAS, paid ads) is added under its own veto set when the Paid Ads discipline lands (see `references/roas-benchmark.md`).
 
 ### Decision table
 
@@ -249,6 +251,7 @@ Auditor-emitted audit files MUST satisfy these invariants for the PostToolUse Ar
 
 ## Changelog
 
+- **2.1** (2026-06-29): admitted **C³ (influencer)** as a third framework veto-set (§2 list: ACE A2/C1/E2, ART T1/T2), making the runbook tri-framework. **Cap reconciliation**: C³ caps a vetoed scope at its Low-band ceiling **≤59**, while this runbook caps the weighted overall at **`min(raw, 60)` = 60**. These are **band-aligned**: they differ by at most 1 point only at the exact `raw == 60 + single-veto` boundary (C³'s Low band tops at 59 by definition). The runbook's `min(raw, 60)` is authoritative for the gate; C³-scoring skills (fit-scorer / content-reviewer / roi-calculator) use the same cap value, and the golden-math C³ assertion locks the `raw == 60 + 1-veto` boundary. **No rubric numbers change.** (`content-reviewer` admission as a gated Artifact-Gate consumer is a separate hook change — it is NOT additive; see the unified roadmap Wave 5.)
 - **2.0** (2026-06-10): runbook restored as the real SSOT. Framework-agnostic procedure (§1, §2
   method, §4, §5 format + shared rows, security boundary) lives here and is `Read` at activation via
   relative path; framework-specific worked examples, guardrails, and veto-ID translation rows moved
