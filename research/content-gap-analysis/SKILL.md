@@ -45,6 +45,8 @@ What content am I missing compared to my top 3 competitors?
 
 Optional integrations: ~~SEO tool, ~~search console, ~~analytics, ~~AI monitor. Without tools, ask for site URL, content inventory, competitor URLs, and business goals. See [CONNECTORS.md](../../CONNECTORS.md).
 
+**Trend-scout as a gap-discovery input (keyless)**: feed the multi-source trend scout — Google Trends RSS plus Hacker News and Reddit, via [`scripts/connectors/rss_monitor.py`](../../scripts/connectors/rss_monitor.py) — to surface rising topics your competitors and you may both miss. Treat each hit as a candidate gap, then check it against your and competitor coverage in steps 5-7. Mark these signals **Estimated**. See [CONNECTORS.md](../../CONNECTORS.md) `~~trend database`.
+
 ## Decision Gates
 
 **Stop and ask** — gap analysis is competitor-relative and cannot run on demand alone:

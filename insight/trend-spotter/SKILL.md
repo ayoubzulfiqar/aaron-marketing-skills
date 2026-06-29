@@ -58,6 +58,8 @@ This skill works with no live integrations (Tier 1): ask the user for the brand,
 
 No connector is required to produce a useful report. See [CONNECTORS.md](../../CONNECTORS.md) for the free/keyless recipe per category.
 
+For a keyless way to fill the trending tables with real signal, run the multi-source trend scout — Google Trends RSS + Hacker News + Reddit + YouTube-outlier, scored against the brand's verticals via the bundled stdlib `rss_monitor.py` (no new dependency): [references/trend-scout-recipe.md](references/trend-scout-recipe.md). This is the Tier-1 recipe behind `~~trend database` (Google Trends RSS).
+
 ## Instructions
 
 When a user requests trend analysis:

@@ -470,6 +470,7 @@ See [references/item-reference.md](references/item-reference.md) for a complete 
 
 - [CORE-EEAT Content Benchmark](../../references/core-eeat-benchmark.md) — Full 80-item benchmark with dimension definitions, scoring criteria, and GEO-First item markers
 - [Item Reference](references/item-reference.md) — All 80 item IDs in a compact lookup table + site-level item handling notes + scored example report
+- [Recursive Refinement Loop](references/recursive-refinement.md) — Capped score → revise → rescore loop (MAX 3 rounds) toward the CORE-EEAT target band; a veto stays terminal and is never overridden by the loop
 - [Humanizer Slop List](../../references/humanizer-slop.md) — **SOFT penalty (NON-veto)** mapped to the Experience/authenticity axis (E and Exp dimensions). Slop phrasing lowers those item scores; it never triggers a veto and never forces the overall cap.
 - [Visual Quality Rubric](../../references/scoring-rubrics/visual-quality.md) — Advisory rubric for charts and graphics. Use to inform O-dimension structure notes when the content carries visuals; advisory only, not part of the 80-item score.
 - [AI Citation Patterns](../../build/geo-content-optimizer/references/ai-citation-patterns.md) — Reference for AI-citation factors. Use to inform GEO-First item scoring (C/O/R/E) when AI visibility is the goal.

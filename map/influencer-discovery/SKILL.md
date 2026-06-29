@@ -436,6 +436,7 @@ Found 43 candidates, 15 meet all criteria with fit scores above 18/25.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipes and opt-in MCP layer.
 - C3 benchmark at [references/c3/scoring-architecture.md](../../references/c3/scoring-architecture.md) — scoring framework that fit-scorer applies downstream.
 - Platform creator playbooks (X/LinkedIn/TikTok/YouTube/Reddit) feed platform-specific vetting in steps 3-4 — see [references/platform-vetting.md](references/platform-vetting.md).
+- Build a structured per-creator dossier from public data, with a contact-discovery waterfall — see [references/creator-dossier.md](references/creator-dossier.md).
 - Siblings in the Map phase: [fit-scorer](../../map/fit-scorer/SKILL.md), [competitor-tracker](../../map/competitor-tracker/SKILL.md).
 
 ## Next Best Skill

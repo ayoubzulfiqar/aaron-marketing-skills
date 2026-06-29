@@ -455,6 +455,7 @@ Renew partnerships with top 5 performers. Replace bottom 2 with TikTok-native cr
 - [skill-contract.md](../../references/skill-contract.md) — shared contract and handoff format.
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — verified free/keyless data recipes per connector category.
+- [measurement-protocol.md](../../references/measurement-protocol.md) — readback windows and promote/keep-testing/rollback rule. Call a creator/format/platform a real winner only when it clears the documented significance bar: Mann-Whitney U at p < 0.05 **and** ≥ 15% relative lift over control, with a bootstrap confidence interval on the lift that excludes zero. Below the sample floor, stay Keep-testing. Method only — compute by hand or in a notebook, no scipy or stats dependency.
 - The C3 benchmark at [references/c3/scoring-architecture.md](../../references/c3/scoring-architecture.md) — scoring architecture when a structured score is needed.
 - Sibling skills: [roi-calculator](../../track/roi-calculator/SKILL.md), [report-generator](../../track/report-generator/SKILL.md), [fit-scorer](../../map/fit-scorer/SKILL.md), [campaign-planner](../../plan/campaign-planner/SKILL.md).
 

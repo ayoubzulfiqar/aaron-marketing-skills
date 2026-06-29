@@ -85,6 +85,10 @@ Sample outcome: a keyword alert matrix with Critical vs High thresholds, a respo
 | AI citation loss | Any key query | >20% queries | Weekly |
 | Security issues | Any detected | Any detected | Daily |
 
+**Steep-decline trigger (always on):** if organic traffic OR aggregate keyword rank falls **>30%** below its trailing baseline (default: prior 28-day median for the same weekday band), fire a Critical alert regardless of category. Use a trailing median, not a single prior day, so one noisy data point does not trip it. Label the baseline Measured / User-provided / Estimated.
+
+An alert opens a **readback window**, not an instant verdict. Treat a fired alert as a hypothesis: confirm the drop holds across the readback window before declaring an incident, then promote (incident + rollback/fix) or roll back the alert (transient noise — close it). See [measurement-protocol.md](../../references/measurement-protocol.md) for the window length and promote/rollback rule.
+
 > **Reference**: See [Alert Threshold Guide](references/alert-threshold-guide.md) for threshold setting, fatigue prevention, escalation paths, and response playbooks.
 
 ### Save Results

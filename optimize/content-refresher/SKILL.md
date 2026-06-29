@@ -52,13 +52,13 @@ Label every metric **Measured** (tool/export), **User-provided**, or **Estimated
 When a user requests content refresh help:
 
 1. **CORE-EEAT Quick Score** — Estimate all 8 dimensions, prioritize red/yellow areas, and hand off to [content-quality-auditor](../../cross-cutting/content-quality-auditor/SKILL.md) for full scoring when needed.
-2. **Identify Refresh Candidates** — Use age, dated claims, declining traffic, lost rankings, broken links, SERP shifts, and missing topics.
+2. **Identify Refresh Candidates** — Use age, dated claims, declining traffic, lost rankings, broken links, SERP shifts, and missing topics. **Numeric decline trigger**: flag a page for refresh when organic traffic drops more than 30% against its trailing baseline (the page's own median over the prior comparable window — e.g., last 28 days vs the 28 days before, or year-over-year for seasonal pages). Mark the drop Measured when from analytics, Estimated otherwise.
 3. **Analyze Page-Level Decay** — Compare 6-month-old vs current performance, keyword deltas, SERP intent, competitor updates, and the why-refresh rationale.
 4. **Define Updates Needed** — Capture outdated elements, competitor/PAA gaps, SEO updates, GEO updates, links, images, sources, and dates.
 5. **Create Refresh Plan** — Specify title, structure, new sections, refreshed statistics, internal/external links, images, and validation requirements.
 6. **Write Refresh Content** — Draft updated intro, replacement sections, refreshed facts, FAQ answers, and Changes Made notes.
 7. **Optimize for GEO** — Add 40-60 word definitions, quotable statements, Q&A, dated citations, and standalone factual statements.
-8. **Set Republishing Strategy** — Use published-date update for 50%+ new content, last-updated date for 20-50%, original date for <20%; update schema, sitemap `lastmod`, cache, Search Console, and 4-6 week monitoring.
+8. **Set Republishing Strategy** — Use published-date update for 50%+ new content, last-updated date for 20-50%, original date for <20%; update schema, sitemap `lastmod`, cache, Search Console, and 4-6 week monitoring. Read back traffic and rankings at 7/14/28/56 days post-republish, and judge refresh impact against a control set of un-refreshed pages — see [measurement-protocol.md](../../references/measurement-protocol.md).
 9. **Create Refresh Report** — Summarize completed changes, expected outcomes, owners, next review date, and open loops.
 
 > **Reference**: [references/refresh-templates.md](references/refresh-templates.md) has compact templates for steps 2-9.
@@ -96,6 +96,7 @@ Ask to save results; if yes, write a dated summary to `memory/audits/content-ref
 - [Content Decay Signals](references/content-decay-signals.md) — Decay indicators, lifecycle stages, and refresh triggers by content type
 - [Refresh Templates](references/refresh-templates.md) — Compact templates for steps 2-9
 - [Refresh Example & Checklist](references/refresh-example.md) — Full worked example and pre/post-refresh checklist
+- [Measurement Protocol](../../references/measurement-protocol.md) — Refresh readback windows (7/14/28/56 days) and judging impact against a control
 
 ## Next Best Skill
 

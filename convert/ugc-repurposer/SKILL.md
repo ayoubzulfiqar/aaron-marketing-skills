@@ -453,6 +453,7 @@ When a user requests repurposing help:
 ## Reference Materials
 
 - [references/platforms/](../../references/platforms/) — per-platform format specs ([tiktok](../../references/platforms/tiktok.md), [youtube](../../references/platforms/youtube.md), [x](../../references/platforms/x.md), [linkedin](../../references/platforms/linkedin.md), [reddit](../../references/platforms/reddit.md), [grokipedia](../../references/platforms/grokipedia.md)) for adapting one asset to each channel.
+- [references/atom-extraction.md](references/atom-extraction.md) — 7-tier content-atom extraction, the virality heuristic, and the Jaccard near-duplicate flag for slicing one source into many.
 - [skill-contract.md](../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipe per connector category.

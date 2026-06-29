@@ -498,6 +498,7 @@ This campaign outperformed the typical 2:1 ROAS benchmark for influencer marketi
 
 ## Reference Materials
 
+- [measurement-protocol.md](../../references/measurement-protocol.md) — read ROI/CVI deltas against a control over the readback window; do not over-claim attribution.
 - [skill-contract.md](../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipe per connector category.
