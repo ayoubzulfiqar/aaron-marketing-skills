@@ -36,7 +36,7 @@ Audit paid↔organic cannibalization: here is my GA4 traffic-acquisition export 
 **Expected output**: a paid account structure (campaign-type choice, ad-group/asset-group map, targeting + match-type plan, negative/exclusion lists), a paid↔organic cannibalization read, a ROAS **A** dimension score with structure notes, and the standard handoff summary.
 
 - **Reads**: account/campaign goal, exported campaign + search-terms report, audience/placement reports, GA4 traffic-acquisition export (own data); the budget split from [budget-optimizer](../../plan/budget-optimizer/SKILL.md) when present.
-- **Writes**: a user-facing structure plan and reusable summary to `memory/paid/`.
+- **Writes**: a user-facing structure plan and reusable summary to `memory/paid-ads/campaign-architect/`.
 - **Promotes**: chosen campaign type, structure decisions, A-dimension score, cannibalization findings, and missing exports to `memory/hot-cache.md` and `memory/open-loops.md`; propose durable structure choices as pending-decision items.
 - **Done when**: campaign type is justified against the goal; every ad group / asset group has a single intent theme; match types and a negative/exclusion list are specified; the paid↔organic overlap is reported (or flagged NEEDS_INPUT); and the ROAS **A** score is emitted with the goal-weight column named.
 - **Primary next skill**: [ad-account-auditor](../../paid/ad-account-auditor/SKILL.md) to score the full RQS and enforce the veto items.
@@ -70,7 +70,7 @@ Beyond the one-time launch negatives in step 5, run this mode on a cadence (e.g.
 
 ## Save Results
 
-On user confirmation, save to `memory/paid/YYYY-MM-DD-<account-or-goal>-structure.md` — see [Skill Contract](../../references/skill-contract.md) §Save Results Template.
+On user confirmation, save to `memory/paid-ads/campaign-architect/YYYY-MM-DD-<account-or-goal>-structure.md` — see [Skill Contract](../../references/skill-contract.md) §Save Results Template.
 
 ## Reference Materials
 

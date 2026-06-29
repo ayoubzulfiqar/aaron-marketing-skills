@@ -27,10 +27,10 @@ Compare ROAS on my Meta vs Google search campaigns (I have both CSV exports)
 
 ## Skill Contract
 
-**Expected output**: a per-change readback verdict (Promote / Keep-testing / Rollback / Unproven) with delta-vs-control on a primary metric (ROAS or CPA), the readback window used, normalization notes (attribution window + currency), and a handoff summary ready for `memory/monitoring/`.
+**Expected output**: a per-change readback verdict (Promote / Keep-testing / Rollback / Unproven) with delta-vs-control on a primary metric (ROAS or CPA), the readback window used, normalization notes (attribution window + currency), and a handoff summary ready for `memory/paid-ads/paid-measurement-loop/`.
 
 - **Reads**: the change under test (what/when/owner), baseline vs candidate window exports (campaign report, GA4/ecommerce conversions), the control (unchanged campaign, sibling ad set, or holdout), target ROAS/CPA, attribution window per platform, and currency.
-- **Writes**: a user-facing readback table plus a reusable readback summary storable under `memory/monitoring/`.
+- **Writes**: a user-facing readback table plus a reusable readback summary storable under `memory/paid-ads/paid-measurement-loop/`.
 - **Promotes**: confirmed Promote/Rollback decisions, the next-readback date, and any measurement-signal blocker (broken tracking, double-counting) to `memory/open-loops.md`.
 - **Done when**: the change exited learning phase before the window opened; primary metric is read delta-vs-control over a window fixed before the change (not a raw before/after); attribution window + currency are normalized before any cross-platform comparison; and the verdict is one of the four with its required readback fields recorded.
 - **Primary next skill**: use the `Next Best Skill` below.
@@ -66,7 +66,7 @@ Label every figure **Measured** (export), **User-provided**, or **Estimated** (m
 
 ## Save Results
 
-Ask "Save these results?" If yes, write to `memory/monitoring/` using `YYYY-MM-DD-<campaign>-readback.md` — see [Skill Contract](../../references/skill-contract.md) §Save Results Template.
+Ask "Save these results?" If yes, write to `memory/paid-ads/paid-measurement-loop/` using `YYYY-MM-DD-<campaign>-readback.md` — see [Skill Contract](../../references/skill-contract.md) §Save Results Template.
 
 ## Reference Materials
 

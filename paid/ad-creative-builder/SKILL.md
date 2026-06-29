@@ -33,7 +33,7 @@ Iterate on these losing headlines: [paste]. Keep the winners, replace the rest, 
 
 ## Skill Contract
 
-**Expected output**: a ready-to-import creative set (RSA headlines/descriptions, hooks, angle matrix) with a per-unit message-match note to the destination URL, plus the standard handoff summary for `memory/creative/`.
+**Expected output**: a ready-to-import creative set (RSA headlines/descriptions, hooks, angle matrix) with a per-unit message-match note to the destination URL, plus the standard handoff summary for `memory/paid-ads/ad-creative-builder/`.
 
 - **Reads**: the offer, destination URL (or its key copy/claims), platform + ad format, target audience/intent, brand voice, and any existing variants to iterate on.
 - **Writes**: a user-facing creative deliverable (the **O** units) and a reusable handoff summary.
@@ -68,7 +68,7 @@ Never invent a statistic, price, guarantee, or testimonial to fill a hook; if th
 
 ## Save Results
 
-On user confirmation, save to `memory/creative/YYYY-MM-DD-<offer>.md` — see [Skill Contract](../../references/skill-contract.md) §Save Results Template.
+On user confirmation, save to `memory/paid-ads/ad-creative-builder/YYYY-MM-DD-<offer>.md` — see [Skill Contract](../../references/skill-contract.md) §Save Results Template.
 
 ## Reference Materials
 

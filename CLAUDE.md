@@ -6,6 +6,18 @@ This plugin provides **52 skills and 5 commands** across three marketing discipl
 
 ## Skills by Phase
 
+The three disciplines share one **meta-lifecycle** spine (an approximate bridge — each adapts the granularity to its own workflow, so phase *counts* and exact semantics differ by design):
+
+| Meta-stage | SEO/GEO | Influencer (IMPACT) | Paid (ROAS) |
+|------------|---------|---------------------|-------------|
+| **Understand** | research | insight, map | Research |
+| **Plan / create** | build | plan | Orchestrate |
+| **Activate / optimize** | optimize | activate, convert | Activate |
+| **Measure** | monitor | track | Scale |
+| **Cross-cutting** | the **protocol layer** (quality/authority gates · entity · memory) serves all three | | |
+
+Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. SEO/GEO and influencer use phase *directories*; paid's ROAS-loop phases are conceptual (skills are flat under `paid/`).
+
 **SEO/GEO (22):**
 
 | Phase | Skills |
