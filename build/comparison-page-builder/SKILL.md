@@ -1,7 +1,7 @@
 ---
 name: comparison-page-builder
 description: 'Use when the user asks to "build a vs page", "competitor comparison page", or "[Competitor] alternative page"; produces ready-to-publish comparison/alternative pages in four formats with an honesty rule and one source of truth per competitor. Not for researching competitors or scoring a SERP — use competitor-analysis; not for general article drafting — use seo-content-writer. 对比页/vs页/替代页'
-version: "10.0.1"
+version: "11.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when the user wants to create a vs page, competitor comparison
 argument-hint: "<format> <your product> <competitor(s)>"
 metadata:
   author: aaron-he-zhu
-  version: "10.0.1"
+  version: "11.0.0"
   geo-relevance: "medium"
 ---
 

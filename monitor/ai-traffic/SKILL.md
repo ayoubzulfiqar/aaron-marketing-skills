@@ -1,7 +1,7 @@
 ---
 name: ai-traffic
 description: 'Use when the user asks to "track AI traffic" or "track ChatGPT/Perplexity referrals"; isolates AI-assistant referral sessions in GA4/GSC/server logs and reports their trend, landing pages, and conversion vs organic. Not for keyword positions — use rank-tracker; not for multi-metric stakeholder reports — use performance-reporter. AI流量/AI引荐/ChatGPT流量/AI转化'
-version: "10.0.1"
+version: "11.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when the user wants to measure referral traffic from AI assist
 argument-hint: "<domain> [date range]"
 metadata:
   author: aaron-he-zhu
-  version: "10.0.1"
+  version: "11.0.0"
   geo-relevance: "high"
 ---
 

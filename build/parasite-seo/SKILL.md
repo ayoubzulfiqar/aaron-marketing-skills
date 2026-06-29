@@ -1,7 +1,7 @@
 ---
 name: parasite-seo
 description: 'Use when the user asks to "rank on a high-authority third-party site" or "borrow domain authority"; plans distributed-authority (barnacle) publishing on Medium/Reddit/LinkedIn/Quora/GitHub that points back to the canonical site. Not for on-site page SEO — use on-page-seo-auditor; not for answer-engine citation tuning of your own page — use geo-content-optimizer. 寄生SEO/借势权重/第三方平台发布/分布式权威'
-version: "10.0.1"
+version: "11.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when choosing or executing third-party-platform publishing for
 argument-hint: "<target keyword + canonical URL> [candidate platforms]"
 metadata:
   author: aaron-he-zhu
-  version: "10.0.1"
+  version: "11.0.0"
   geo-relevance: "high"
 ---
 

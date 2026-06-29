@@ -1,19 +1,19 @@
 # Aaron Marketing Skills — Claude Code Context
 
-This plugin provides **38 skills and 5 commands** across two marketing disciplines: Search (SEO/GEO) and influencer marketing (IMPACT). All 38 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `10.0.1` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
+This plugin provides **48 skills and 5 commands** across three marketing disciplines: Search (SEO/GEO), influencer marketing (IMPACT), and Paid Ads (ROAS). All 48 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `11.0.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
 
 > Umbrella repo, renamed from `seo-geo-claude-skills` (stars/forks/issues/history carried over by the GitHub rename). The SEO/GEO-only product still lives, unchanged, at the original [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) URL as a standalone repo.
 
 ## Skills by Phase
 
-**Search — SEO/GEO (20):**
+**Search — SEO/GEO (26):**
 
 | Phase | Skills |
 |-------|--------|
 | **Research** | `keyword-research`, `competitor-analysis`, `serp-analysis`, `content-gap-analysis` |
-| **Build** | `seo-content-writer`, `geo-content-optimizer`, `meta-tags-optimizer`, `schema-markup-generator` |
-| **Optimize** | `on-page-seo-auditor`, `technical-seo-checker`, `internal-linking-optimizer`, `content-refresher` |
-| **Monitor** | `rank-tracker`, `backlink-analyzer`, `performance-reporter`, `alert-manager` |
+| **Build** | `seo-content-writer`, `geo-content-optimizer`, `meta-tags-optimizer`, `schema-markup-generator`, `programmatic-seo`, `parasite-seo`, `comparison-page-builder`, `local-seo` |
+| **Optimize** | `on-page-seo-auditor`, `technical-seo-checker`, `internal-linking-optimizer`, `content-refresher`, `site-architecture` |
+| **Monitor** | `rank-tracker`, `backlink-analyzer`, `performance-reporter`, `alert-manager`, `ai-traffic` |
 | **Cross-cutting / Protocol** | `content-quality-auditor`, `domain-authority-auditor`, `entity-optimizer`, `memory-management` |
 
 **Influencer — IMPACT (18):**
@@ -26,6 +26,14 @@ This plugin provides **38 skills and 5 commands** across two marketing disciplin
 | **Activate** | `outreach-manager`, `content-reviewer`, `contract-helper` |
 | **Convert** | `content-amplifier`, `ugc-repurposer`, `landing-optimizer` |
 | **Track** | `performance-analyzer`, `roi-calculator`, `report-generator` |
+
+**Paid Ads — ROAS (4):**
+
+| Phase | Skills |
+|-------|--------|
+| **Build** | `campaign-architect` (structure), `ad-creative-builder` (creative) |
+| **Launch** | `ad-account-auditor` |
+| **Scale** | `paid-measurement-loop` |
 
 ## One-Shot Commands
 
@@ -44,6 +52,7 @@ This plugin provides **38 skills and 5 commands** across two marketing disciplin
 - **CORE-EEAT** ([references/core-eeat-benchmark.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/core-eeat-benchmark.md)): 80-item content quality framework (8 dimensions). GEO Score = CORE avg; SEO Score = EEAT avg. Three veto items: T04, C01, R10.
 - **CITE** ([references/cite-domain-rating.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/cite-domain-rating.md)): 40-item domain authority framework (4 dimensions). Three veto items: T03, T05, T09.
 - **C³** ([references/c3-benchmark.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/c3-benchmark.md)): influencer marketing framework — Creator/Content/Campaign scored on ACE/ART/ROI (9 dimensions). Veto items: ACE A2/C1/E2, ART T1/T2. CVI = (ACE×ART×ROI)^(1/3).
+- **ROAS** ([references/roas-benchmark.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/roas-benchmark.md)): paid ads framework — R (Return), O (Offer), A (Audience), S (Spend-efficiency). RQS = arithmetic weighted-mean rollup (like CITE). Veto items: R1/R2/O1/O2/A1.
 
 ## Operating Contract
 
@@ -52,6 +61,8 @@ This plugin provides **38 skills and 5 commands** across two marketing disciplin
 - Protocol roles:
   - `content-quality-auditor` = publish readiness gate
   - `domain-authority-auditor` = citation trust gate
+  - `content-reviewer` = C³ ART gate
+  - `ad-account-auditor` = ROAS gate
   - `entity-optimizer` = canonical entity profile
   - `memory-management` = campaign memory loop
 - Hook automation: `hooks/hooks.json` — command-backed hooks for SessionStart (startup/resume/clear/compact: injects sanitized hot-cache + an open-loops pointer), UserPromptSubmit, PostToolUse (hot-cache size warning + auditor Artifact Gate), and a Stop hook that is a no-op (exits silently)

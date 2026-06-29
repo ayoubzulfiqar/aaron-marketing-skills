@@ -1,6 +1,6 @@
 # Skill Contract
 
-This repository uses one contract across all 38 skills — 20 Search (SEO/GEO) skills and 18 influencer-marketing (IMPACT) skills. The contract keeps each skill specialized while making the full library feel like one operating system. The Search skills score on [CORE-EEAT](core-eeat-benchmark.md) and [CITE](cite-domain-rating.md); the influencer skills score on [C³](c3-benchmark.md).
+This repository uses one contract across all 48 skills — 26 Search (SEO/GEO), 18 influencer-marketing (IMPACT), and 4 paid-ads skills. The contract keeps each skill specialized while making the full library feel like one operating system. The Search skills score on [CORE-EEAT](core-eeat-benchmark.md) and [CITE](cite-domain-rating.md); the influencer skills on [C³](c3-benchmark.md); the paid-ads skills on [ROAS](roas-benchmark.md).
 
 ## Skill Authoring Discipline
 

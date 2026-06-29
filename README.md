@@ -1,21 +1,22 @@
 # Aaron Marketing Skills
 
-**38 skills. 5 commands. SEO/GEO and influencer marketing on one shared contract.**
+**48 skills. 5 commands. SEO/GEO, influencer, and paid ads marketing on one shared contract.**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
-[![Version](https://img.shields.io/badge/version-10.0.1-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
+[![Version](https://img.shields.io/badge/version-11.0.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills)](https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai/download)
 
 [English](README.md) | [中文](docs/README.zh.md)
 
-Claude Skills and Commands for two marketing disciplines on one operating contract:
+Claude Skills and Commands for three marketing disciplines on one operating contract:
 
-- **Search (SEO/GEO)** — 20 skills for keyword research, content creation, technical audits, schema, monitoring, quality gates, entity truth, and campaign memory.
+- **Search (SEO/GEO)** — 26 skills for keyword research, content creation, programmatic/local/comparison builds, technical audits, schema, site architecture, monitoring, AI traffic, quality gates, entity truth, and campaign memory.
 - **Influencer marketing (IMPACT)** — 18 skills for audience insight, influencer discovery, campaign planning, outreach, content amplification, and ROI tracking.
+- **Paid ads** — 4 skills for campaign structure, ad creative, account audits, and the measurement loop.
 
-Skill content is zero-dependency Markdown; Claude Code hooks use a small Bash runner. Three evaluation frameworks ship inside: [CORE-EEAT](references/core-eeat-benchmark.md) (80-item content quality), [CITE](references/cite-domain-rating.md) (40-item domain authority), and [C³](references/c3-benchmark.md) (influencer Creator/Content/Campaign).
+Skill content is zero-dependency Markdown; Claude Code hooks use a small Bash runner. Four evaluation frameworks ship inside: [CORE-EEAT](references/core-eeat-benchmark.md) (80-item content quality), [CITE](references/cite-domain-rating.md) (40-item domain authority), [C³](references/c3-benchmark.md) (influencer Creator/Content/Campaign), and [ROAS](references/roas-benchmark.md) (paid ads Return/Offer/Audience/Spend-efficiency).
 
 > The SEO/GEO half also ships on its own, unchanged, at [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) for users who only want search work.
 
@@ -60,18 +61,20 @@ Every skill follows the same activation contract: Quick Start, Skill Contract, H
 | `entity-optimizer` | Canonical entity profile |
 | `memory-management` | HOT/WARM/COLD project memory (capture · promote · demote · archive · query) |
 
+Two more auditor-class gates emit to memory alongside the two above: `content-reviewer` (C³ ART gate → `memory/audits/influencer/`) and `ad-account-auditor` (ROAS RQS gate → `memory/audits/paid/`).
+
 Shared refs: [skill-contract.md](references/skill-contract.md), [state-model.md](references/state-model.md), [auditor-runbook.md](references/auditor-runbook.md).
 
 ## Skills
 
-### Search — SEO/GEO (20)
+### Search — SEO/GEO (26)
 
 | Phase | Skills |
 |-------|--------|
 | Research | [keyword-research](research/keyword-research/SKILL.md), [competitor-analysis](research/competitor-analysis/SKILL.md), [serp-analysis](research/serp-analysis/SKILL.md), [content-gap-analysis](research/content-gap-analysis/SKILL.md) |
-| Build | [seo-content-writer](build/seo-content-writer/SKILL.md), [geo-content-optimizer](build/geo-content-optimizer/SKILL.md), [meta-tags-optimizer](build/meta-tags-optimizer/SKILL.md), [schema-markup-generator](build/schema-markup-generator/SKILL.md) |
-| Optimize | [on-page-seo-auditor](optimize/on-page-seo-auditor/SKILL.md), [technical-seo-checker](optimize/technical-seo-checker/SKILL.md), [internal-linking-optimizer](optimize/internal-linking-optimizer/SKILL.md), [content-refresher](optimize/content-refresher/SKILL.md) |
-| Monitor | [rank-tracker](monitor/rank-tracker/SKILL.md), [backlink-analyzer](monitor/backlink-analyzer/SKILL.md), [performance-reporter](monitor/performance-reporter/SKILL.md), [alert-manager](monitor/alert-manager/SKILL.md) |
+| Build | [seo-content-writer](build/seo-content-writer/SKILL.md), [geo-content-optimizer](build/geo-content-optimizer/SKILL.md), [meta-tags-optimizer](build/meta-tags-optimizer/SKILL.md), [schema-markup-generator](build/schema-markup-generator/SKILL.md), [programmatic-seo](build/programmatic-seo/SKILL.md), [parasite-seo](build/parasite-seo/SKILL.md), [comparison-page-builder](build/comparison-page-builder/SKILL.md), [local-seo](build/local-seo/SKILL.md) |
+| Optimize | [on-page-seo-auditor](optimize/on-page-seo-auditor/SKILL.md), [technical-seo-checker](optimize/technical-seo-checker/SKILL.md), [internal-linking-optimizer](optimize/internal-linking-optimizer/SKILL.md), [content-refresher](optimize/content-refresher/SKILL.md), [site-architecture](optimize/site-architecture/SKILL.md) |
+| Monitor | [rank-tracker](monitor/rank-tracker/SKILL.md), [backlink-analyzer](monitor/backlink-analyzer/SKILL.md), [performance-reporter](monitor/performance-reporter/SKILL.md), [alert-manager](monitor/alert-manager/SKILL.md), [ai-traffic](monitor/ai-traffic/SKILL.md) |
 | Cross-cutting | [content-quality-auditor](cross-cutting/content-quality-auditor/SKILL.md), [domain-authority-auditor](cross-cutting/domain-authority-auditor/SKILL.md), [entity-optimizer](cross-cutting/entity-optimizer/SKILL.md), [memory-management](cross-cutting/memory-management/SKILL.md) |
 
 ### Influencer — IMPACT (18)
@@ -84,6 +87,14 @@ Shared refs: [skill-contract.md](references/skill-contract.md), [state-model.md]
 | Activate | [outreach-manager](activate/outreach-manager/SKILL.md), [content-reviewer](activate/content-reviewer/SKILL.md), [contract-helper](activate/contract-helper/SKILL.md) |
 | Convert | [content-amplifier](convert/content-amplifier/SKILL.md), [ugc-repurposer](convert/ugc-repurposer/SKILL.md), [landing-optimizer](convert/landing-optimizer/SKILL.md) |
 | Track | [performance-analyzer](track/performance-analyzer/SKILL.md), [roi-calculator](track/roi-calculator/SKILL.md), [report-generator](track/report-generator/SKILL.md) |
+
+### Paid Ads (4)
+
+| Phase | Skills |
+|-------|--------|
+| Build | [campaign-architect](paid/campaign-architect/SKILL.md), [ad-creative-builder](paid/ad-creative-builder/SKILL.md) |
+| Launch | [ad-account-auditor](paid/ad-account-auditor/SKILL.md) |
+| Scale | [paid-measurement-loop](paid/paid-measurement-loop/SKILL.md) |
 
 ## Commands
 
@@ -128,6 +139,7 @@ For a full trust review, pair `content-quality-auditor` with `domain-authority-a
 | [core-eeat-benchmark.md](references/core-eeat-benchmark.md) | 80-item content quality benchmark (CORE-EEAT) |
 | [cite-domain-rating.md](references/cite-domain-rating.md) | 40-item domain authority benchmark (CITE) |
 | [c3-benchmark.md](references/c3-benchmark.md) | Influencer Creator/Content/Campaign benchmark (C³ · ACE/ART/ROI) |
+| [roas-benchmark.md](references/roas-benchmark.md) | Paid ads Return/Offer/Audience/Spend-efficiency benchmark (ROAS · RQS rollup) |
 | [auditor-runbook.md](references/auditor-runbook.md) | Auditor handoff schema, cap arithmetic, artifact gate |
 | [CONNECTORS.md](CONNECTORS.md) | Optional MCP/tool connector tiers |
 

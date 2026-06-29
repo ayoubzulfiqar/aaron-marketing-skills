@@ -1,7 +1,7 @@
 ---
 name: site-architecture
 description: 'Use when the user asks to "plan my site structure" or "design the page hierarchy / navigation / URL taxonomy"; designs whole-site information architecture — hierarchy, nav, URL patterns, hub/spoke clusters, link topology — and outputs Mermaid site maps that expose orphans and islands. Not for optimizing links on existing pages — use internal-linking-optimizer; not for XML sitemap or indexation issues — use technical-seo-checker. 网站架构/信息架构/站点地图'
-version: "10.0.1"
+version: "11.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when planning a new site or restructuring an existing one: pag
 argument-hint: "<domain, sitemap, or page list + site type>"
 metadata:
   author: aaron-he-zhu
-  version: "10.0.1"
+  version: "11.0.0"
   geo-relevance: "medium"
 ---
 

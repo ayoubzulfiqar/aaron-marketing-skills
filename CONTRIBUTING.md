@@ -23,6 +23,7 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 | Activate | `activate/` | Runs outreach, content review, contracts (influencer/IMPACT) |
 | Convert | `convert/` | Amplifies and repurposes content (influencer/IMPACT) |
 | Track | `track/` | Measures performance and ROI (influencer/IMPACT) |
+| Paid Ads | `paid/` | Builds, audits, and scales paid-ad campaigns (paid ads/ROAS) |
 
 ### 2. Create the skill directory
 
@@ -56,13 +57,28 @@ The `name` field must match the directory name exactly.
 
 Use the compact shared skeleton from `references/skill-contract.md`: `Quick Start`, `Skill Contract`, `Handoff Summary`, `Data Sources`, `Instructions`, `Reference Materials`, and `Next Best Skill`. Optional sections such as `What This Skill Does`, `Example`, `Tips for Success`, `Save Results`, and `Validation Checkpoints` are welcome when they improve execution quality. Put detailed references in the skill's `references/` subdirectory.
 
-Auditor-class skills are the exception: they inline the authoritative auditor runbook directly in their `SKILL.md` body.
+Auditor-class skills are the exception: they inline the authoritative auditor runbook directly in their `SKILL.md` body. Four skills are auditor-class gate consumers, each scored against one framework and writing to its own audit sink:
+
+| Auditor-class skill | Framework | Audit sink |
+|---------------------|-----------|------------|
+| `content-quality-auditor` | CORE-EEAT (publish readiness) | `memory/audits/` |
+| `domain-authority-auditor` | CITE (citation trust) | `memory/audits/` |
+| `content-reviewer` | C³ ART (influencer content gate) | `memory/audits/influencer/` |
+| `ad-account-auditor` | ROAS RQS (paid-ads gate) | `memory/audits/paid/` |
+
+Cross-cutting reference protocols apply across disciplines: the humanizer-slop protocol, the measurement-protocol decision protocol, and the per-channel `platforms/` reference packs.
 
 ### 5. Validate
 
 ```bash
 ./scripts/validate-skill.sh <category>/<skill-name>
 ```
+
+CI runs additional guards beyond the per-skill validator:
+- **golden-math** — validates the rollup math for all **four** quality frameworks: CORE-EEAT (80-item content quality, SEO/GEO), CITE (40-item domain authority, SEO/GEO), C³ (influencer — ACE/ART/ROI with CVI geometric-mean rollup, veto ACE A2/C1/E2 + ART T1/T2), and ROAS (paid ads — R Return / O Offer / A Audience / S Spend-efficiency, RQS arithmetic weighted-mean rollup like CITE, veto R1/R2/O1/O2/A1; see [references/roas-benchmark.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/roas-benchmark.md)).
+- **check-evals** — structural lint over the eval fixtures.
+- **check-pii** — scans for committed PII.
+- **check-stdlib-only** — enforces the zero-dependency Python-stdlib rule for connector helpers, including the Paid-Ads keyed-API red line (no keyed paid-ad API calls baked into skills).
 
 ### 6. Update tracking files
 
@@ -73,8 +89,8 @@ After adding or updating a skill, keep these **8 tracking files** in sync. **Thi
 - `.claude-plugin/marketplace.json` — **byte-identical mirror** of the root `marketplace.json` (copy it after editing the root)
 - `README.md` — skills table + version badge
 - `CLAUDE.md` — category table + version
-- `AGENTS.md` — name/count line + framework item/dimension counts
-- `docs/README.zh.md` — Chinese README: the 38 / 20 / 18 / 5 counts + version badge
+- `AGENTS.md` — name/count line + framework item/dimension counts (CORE-EEAT / CITE / C³ / ROAS)
+- `docs/README.zh.md` — Chinese README: the 48 / 26 / 18 / 4 / 5 counts (skills / SEO-GEO / influencer / paid ads / commands) + version badge
 
 For release bumps, also sync README badges and localized README badges.
 

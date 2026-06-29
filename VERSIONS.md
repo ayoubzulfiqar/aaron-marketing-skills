@@ -1,55 +1,65 @@
 # Aaron Marketing Skills — Versions
 
-Current versions for the plugin and all 38 skills. Agents can fetch this file from `https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/VERSIONS.md` once per session.
+Current versions for the plugin and all 48 skills. Agents can fetch this file from `https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/VERSIONS.md` once per session.
 
-**Current release**: `10.0.1` (2026-06-28). Skill `version`, `metadata.version`, plugin manifests, marketplace files, and badges are aligned to the same public version.
+**Current release**: `11.0.0` (2026-06-29). Skill `version`, `metadata.version`, plugin manifests, marketplace files, and badges are aligned to the same public version.
 
 ## Skills
 
 | Skill | Category | Version | Last Updated |
 |-------|----------|---------|--------------|
-| keyword-research | research | 10.0.1 | 2026-06-28 |
-| competitor-analysis | research | 10.0.1 | 2026-06-28 |
-| serp-analysis | research | 10.0.1 | 2026-06-28 |
-| content-gap-analysis | research | 10.0.1 | 2026-06-28 |
-| seo-content-writer | build | 10.0.1 | 2026-06-28 |
-| geo-content-optimizer | build | 10.0.1 | 2026-06-28 |
-| meta-tags-optimizer | build | 10.0.1 | 2026-06-28 |
-| schema-markup-generator | build | 10.0.1 | 2026-06-28 |
-| on-page-seo-auditor | optimize | 10.0.1 | 2026-06-28 |
-| technical-seo-checker | optimize | 10.0.1 | 2026-06-28 |
-| internal-linking-optimizer | optimize | 10.0.1 | 2026-06-28 |
-| content-refresher | optimize | 10.0.1 | 2026-06-28 |
-| rank-tracker | monitor | 10.0.1 | 2026-06-28 |
-| backlink-analyzer | monitor | 10.0.1 | 2026-06-28 |
-| performance-reporter | monitor | 10.0.1 | 2026-06-28 |
-| alert-manager | monitor | 10.0.1 | 2026-06-28 |
-| content-quality-auditor | cross-cutting | 10.0.1 | 2026-06-28 |
-| domain-authority-auditor | cross-cutting | 10.0.1 | 2026-06-28 |
-| entity-optimizer | cross-cutting | 10.0.1 | 2026-06-28 |
-| memory-management | cross-cutting | 10.0.1 | 2026-06-28 |
-| audience-analyzer | insight | 10.0.1 | 2026-06-28 |
-| niche-researcher | insight | 10.0.1 | 2026-06-28 |
-| trend-spotter | insight | 10.0.1 | 2026-06-28 |
-| influencer-discovery | map | 10.0.1 | 2026-06-28 |
-| fit-scorer | map | 10.0.1 | 2026-06-28 |
-| competitor-tracker | map | 10.0.1 | 2026-06-28 |
-| campaign-planner | plan | 10.0.1 | 2026-06-28 |
-| brief-generator | plan | 10.0.1 | 2026-06-28 |
-| budget-optimizer | plan | 10.0.1 | 2026-06-28 |
-| outreach-manager | activate | 10.0.1 | 2026-06-28 |
-| content-reviewer | activate | 10.0.1 | 2026-06-28 |
-| contract-helper | activate | 10.0.1 | 2026-06-28 |
-| content-amplifier | convert | 10.0.1 | 2026-06-28 |
-| ugc-repurposer | convert | 10.0.1 | 2026-06-28 |
-| landing-optimizer | convert | 10.0.1 | 2026-06-28 |
-| performance-analyzer | track | 10.0.1 | 2026-06-28 |
-| roi-calculator | track | 10.0.1 | 2026-06-28 |
-| report-generator | track | 10.0.1 | 2026-06-28 |
+| keyword-research | research | 11.0.0 | 2026-06-28 |
+| competitor-analysis | research | 11.0.0 | 2026-06-28 |
+| serp-analysis | research | 11.0.0 | 2026-06-28 |
+| content-gap-analysis | research | 11.0.0 | 2026-06-28 |
+| seo-content-writer | build | 11.0.0 | 2026-06-28 |
+| geo-content-optimizer | build | 11.0.0 | 2026-06-28 |
+| meta-tags-optimizer | build | 11.0.0 | 2026-06-28 |
+| schema-markup-generator | build | 11.0.0 | 2026-06-28 |
+| on-page-seo-auditor | optimize | 11.0.0 | 2026-06-28 |
+| technical-seo-checker | optimize | 11.0.0 | 2026-06-28 |
+| internal-linking-optimizer | optimize | 11.0.0 | 2026-06-28 |
+| content-refresher | optimize | 11.0.0 | 2026-06-28 |
+| rank-tracker | monitor | 11.0.0 | 2026-06-28 |
+| backlink-analyzer | monitor | 11.0.0 | 2026-06-28 |
+| performance-reporter | monitor | 11.0.0 | 2026-06-28 |
+| alert-manager | monitor | 11.0.0 | 2026-06-28 |
+| content-quality-auditor | cross-cutting | 11.0.0 | 2026-06-28 |
+| domain-authority-auditor | cross-cutting | 11.0.0 | 2026-06-28 |
+| entity-optimizer | cross-cutting | 11.0.0 | 2026-06-28 |
+| memory-management | cross-cutting | 11.0.0 | 2026-06-28 |
+| audience-analyzer | insight | 11.0.0 | 2026-06-28 |
+| niche-researcher | insight | 11.0.0 | 2026-06-28 |
+| trend-spotter | insight | 11.0.0 | 2026-06-28 |
+| influencer-discovery | map | 11.0.0 | 2026-06-28 |
+| fit-scorer | map | 11.0.0 | 2026-06-28 |
+| competitor-tracker | map | 11.0.0 | 2026-06-28 |
+| campaign-planner | plan | 11.0.0 | 2026-06-28 |
+| brief-generator | plan | 11.0.0 | 2026-06-28 |
+| budget-optimizer | plan | 11.0.0 | 2026-06-28 |
+| outreach-manager | activate | 11.0.0 | 2026-06-28 |
+| content-reviewer | activate | 11.0.0 | 2026-06-28 |
+| contract-helper | activate | 11.0.0 | 2026-06-28 |
+| content-amplifier | convert | 11.0.0 | 2026-06-28 |
+| ugc-repurposer | convert | 11.0.0 | 2026-06-28 |
+| landing-optimizer | convert | 11.0.0 | 2026-06-28 |
+| performance-analyzer | track | 11.0.0 | 2026-06-28 |
+| roi-calculator | track | 11.0.0 | 2026-06-28 |
+| report-generator | track | 11.0.0 | 2026-06-28 |
+| programmatic-seo | build | 11.0.0 | 2026-06-29 |
+| parasite-seo | build | 11.0.0 | 2026-06-29 |
+| comparison-page-builder | build | 11.0.0 | 2026-06-29 |
+| local-seo | build | 11.0.0 | 2026-06-29 |
+| site-architecture | optimize | 11.0.0 | 2026-06-29 |
+| ai-traffic | monitor | 11.0.0 | 2026-06-29 |
+| campaign-architect | paid | 11.0.0 | 2026-06-29 |
+| ad-creative-builder | paid | 11.0.0 | 2026-06-29 |
+| ad-account-auditor | paid | 11.0.0 | 2026-06-29 |
+| paid-measurement-loop | paid | 11.0.0 | 2026-06-29 |
 
 ## Changelog
 
-### v10.0.1 — Quality & correctness patch: Artifact Gate fix, C³ wiring, full-coverage CI (2026-06-28)
+### v11.0.0 — Correctness patch + OSS-borrow expansion + Paid Ads discipline (2026-06-29)
 
 **Fixed**
 - Artifact Gate: the PostToolUse hook's `hb()` body parser truncated auditor artifacts at the first blank line, false-blocking every compliant `memory/audits/` output; it now reads the full post-frontmatter body. Reconciled the `auditor-runbook.md` cap-field prose with the authoritative §2/§4 (only `final_overall_score` is BLOCKED-exempt).
@@ -63,7 +73,15 @@ Current versions for the plugin and all 38 skills. Agents can fetch this file fr
 - CI validates all 38 skills (was 20) and runs new hook-gate + connector unit tests (connector tests 3 → 11).
 - `CONNECTORS.md` recipes for the 18 influencer `~~` categories; unified 8-file tracking list (authoritative in `CONTRIBUTING.md`); eval seed cases for all 18 influencer skills (evals now cover 38/38); `bug-report.yml` issue template; `memory/{research,content,monitoring,archive}/` scaffolding; validator eval-presence advisory.
 
-**Versions**: all 38 skills, plugin manifests, and marketplace mirrors unified at `10.0.1`.
+**Added — OSS-borrow expansion + Paid Ads (3rd discipline), the 7-wave roadmap from `docs/planning/UNIFIED_OPTIMIZATION_PLAN.md`**
+- **Platform de-SEO**: `auditor-runbook` admits C³ (and now ROAS) as framework veto-sets with a documented cap reconciliation; `memory-management`/`state-model`/`measurement-protocol` de-SEO'd to cross-discipline; `CONNECTORS.md` gains a Discipline column + Agent-default; connector UA renamed.
+- **New guards**: `golden-auditor-math.py` now guards all **4 frameworks** (CORE-EEAT/CITE/C³/ROAS); `check-evals.py` (eval structural-lint, not a runner) + `evals/structure-manifest.json`; `check-pii.py`; `check-stdlib-only.sh` (dependency-creep + Paid-Ads keyed-API red-line). All wired into CI.
+- **Capability borrows (Markdown/keyless)**: `humanizer-slop.md`, `llms-txt-okf.md`, 6 platform playbooks (`references/platforms/`), conversion/visual scoring rubrics, `expert-panel.md`, AI-citation factors (4→9 engines), JS-injected-JSON-LD caveat, Impact×Confidence keyword scoring, trend-scout, atom-extraction, cold-copy rules, creator-dossier, recursive auditor loop.
+- **6 new SEO/GEO skills**: programmatic-seo, parasite-seo, comparison-page-builder, local-seo, site-architecture, ai-traffic.
+- **Paid Ads discipline (4 skills + ROAS framework)**: campaign-architect, ad-creative-builder, ad-account-auditor (auditor-class gate → `memory/audits/paid/`), paid-measurement-loop; `roas-benchmark.md` (R/O/A/S, RQS arithmetic rollup, vetoes R1/R2/O1/O2/A1). content-reviewer promoted to the C³ ART gate consumer (`memory/audits/influencer/`).
+- **Deferred by design**: `disciplines.md` registry, `/aaron-marketing:paid` + `/impact` commands (routing seeds added), creator-entity, eval runner — per the roadmap's over-engineering guard.
+
+**Versions**: all **48** skills (26 SEO/GEO + 18 influencer + 4 paid), plugin manifests, and marketplace mirrors unified at `11.0.0`.
 
 ### v10.0.0 — Marketing umbrella: SEO/GEO + influencer-marketing merge + rename (2026-06-28)
 

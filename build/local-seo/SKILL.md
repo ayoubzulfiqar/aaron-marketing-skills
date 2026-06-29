@@ -1,7 +1,7 @@
 ---
 name: local-seo
 description: 'Use when the user asks to "do local SEO", optimize a Google Business Profile, fix NAP, or build local citations; produces a GBP optimization checklist, a consistent NAP record, a priority-ordered citation list, and location/service-area page plans. Not for general on-page issues — use on-page-seo-auditor; not for keyword demand — use keyword-research. 本地SEO/谷歌商家档案/引用建设/NAP一致性'
-version: "10.0.1"
+version: "11.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when optimizing for local search, setting up or improving a Go
 argument-hint: "<business name> <location(s)> <storefront|service-area>"
 metadata:
   author: aaron-he-zhu
-  version: "10.0.1"
+  version: "11.0.0"
   geo-relevance: "low"
 ---
 

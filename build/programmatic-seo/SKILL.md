@@ -1,7 +1,7 @@
 ---
 name: programmatic-seo
 description: 'Use when the user asks to "build programmatic SEO pages" or "generate pages at scale"; designs a template × dataset page system with playbook selection, a data-defensibility tier check, and thin/duplicate guardrails. Not for finding what to target — use keyword-research or content-gap-analysis; not for writing one page — use seo-content-writer. 批量页面/程序化SEO/模板数据'
-version: "10.0.1"
+version: "11.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when the user wants to generate hundreds or thousands of SEO p
 argument-hint: "<playbook or page pattern> <dataset source>"
 metadata:
   author: aaron-he-zhu
-  version: "10.0.1"
+  version: "11.0.0"
   geo-relevance: "medium"
 ---
 

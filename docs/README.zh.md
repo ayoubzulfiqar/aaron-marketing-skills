@@ -1,19 +1,20 @@
 # Aaron 营销技能库
 
-**38 个技能。5 个命令。SEO/GEO 与红人营销，共享同一套契约。**
+**48 个技能。5 个命令。SEO/GEO、红人营销与付费广告，共享同一套契约。**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
-[![Version](https://img.shields.io/badge/version-10.0.1-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
+[![Version](https://img.shields.io/badge/version-11.0.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE)
 
 [English](../README.md) | **中文**
 
-面向两类营销工作、共用一套运行契约的 Claude 技能与命令集：
+面向三类营销工作、共用一套运行契约的 Claude 技能与命令集：
 
-- **搜索（SEO/GEO）** — 20 个技能：关键词研究、内容创作、技术审计、结构化数据、监控、质量门、实体事实、项目记忆。
+- **搜索（SEO/GEO）** — 26 个技能：关键词研究、内容创作、程序化与本地 SEO、技术审计、结构化数据、监控、质量门、实体事实、项目记忆。
 - **红人营销（IMPACT）** — 18 个技能：受众洞察、红人发现、活动规划、外联、内容放大、ROI 追踪。
+- **付费广告（Paid Ads）** — 4 个技能：账户结构、广告创意、投放审计门、衡量回读循环。
 
-技能内容为零依赖 Markdown；Claude Code hooks 使用轻量 Bash runner。内置三套评估框架：[CORE-EEAT](../references/core-eeat-benchmark.md)（80 项内容质量）、[CITE](../references/cite-domain-rating.md)（40 项域名权威）、[C³](../references/c3-benchmark.md)（红人 创作者/内容/活动）。
+技能内容为零依赖 Markdown；Claude Code hooks 使用轻量 Bash runner。内置四套评估框架：[CORE-EEAT](../references/core-eeat-benchmark.md)（80 项内容质量）、[CITE](../references/cite-domain-rating.md)（40 项域名权威）、[C³](../references/c3-benchmark.md)（红人 创作者/内容/活动）、[ROAS](../references/roas-benchmark.md)（付费广告 回报/广告创意/受众/花费效率）。
 
 > 本仓库为合集（由 `seo-geo-claude-skills` 改名而来，stars/fork/issue/历史一并继承）。只做搜索的用户可继续使用原 [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) URL 上的独立仓库（内容不变）。
 
@@ -47,14 +48,14 @@ Slash 命令宿主的稳定入口：
 
 ## 技能
 
-### 搜索 — SEO/GEO（20）
+### 搜索 — SEO/GEO（26）
 
 | 阶段 | 技能与用途 |
 |------|------------|
 | 研究 | `keyword-research` 关键词机会与选题；`competitor-analysis` 竞品差距；`serp-analysis` 搜索结果与意图；`content-gap-analysis` 内容缺口与编辑日历 |
-| 构建 | `seo-content-writer` SEO/GEO 内容草稿；`geo-content-optimizer` AI 引用优化；`meta-tags-optimizer` 标题与元描述；`schema-markup-generator` JSON-LD 结构化数据 |
-| 优化 | `on-page-seo-auditor` 页面 SEO 与 CORE-EEAT；`technical-seo-checker` 抓取、索引、速度、安全；`internal-linking-optimizer` 内链与站点架构；`content-refresher` 旧内容刷新 |
-| 监控 | `rank-tracker` 排名与 SERP 变化；`backlink-analyzer` 外链质量与机会；`performance-reporter` SEO/GEO 报告；`alert-manager` 预警与监控规则 |
+| 构建 | `seo-content-writer` SEO/GEO 内容草稿；`geo-content-optimizer` AI 引用优化；`meta-tags-optimizer` 标题与元描述；`schema-markup-generator` JSON-LD 结构化数据；`programmatic-seo` 程序化批量页面；`parasite-seo` 高权重平台寄生发布；`comparison-page-builder` 对比页搭建；`local-seo` 本地 SEO 与 GBP |
+| 优化 | `on-page-seo-auditor` 页面 SEO 与 CORE-EEAT；`technical-seo-checker` 抓取、索引、速度、安全；`internal-linking-optimizer` 内链与站点架构；`content-refresher` 旧内容刷新；`site-architecture` 站点架构与信息结构 |
+| 监控 | `rank-tracker` 排名与 SERP 变化；`backlink-analyzer` 外链质量与机会；`performance-reporter` SEO/GEO 报告；`alert-manager` 预警与监控规则；`ai-traffic` AI 引用流量监控 |
 | 协议层 | `content-quality-auditor` 发布质量门；`domain-authority-auditor` CITE 域名可信度；`entity-optimizer` 实体与知识图谱；`memory-management` 项目记忆 |
 
 ### 红人 — IMPACT（18）
@@ -67,6 +68,14 @@ Slash 命令宿主的稳定入口：
 | Activate 启动 | `outreach-manager` 外联与谈判；`content-reviewer` 内容审核（ART 门，含 FTC 披露）；`contract-helper` 合作协议 |
 | Convert 转化 | `content-amplifier` 内容放大；`ugc-repurposer` UGC 二次利用；`landing-optimizer` 落地页优化 |
 | Track 追踪 | `performance-analyzer` 表现分析；`roi-calculator` ROI 与 CVI；`report-generator` 活动报告 |
+
+### 付费广告 — Paid Ads（4）
+
+| 阶段 | 技能与用途 |
+|------|------------|
+| Build 构建 | `campaign-architect` 账户与活动结构；`ad-creative-builder` 广告创意搭建 |
+| Launch 投放 | `ad-account-auditor` 投放审计门（ROAS RQS，结果写入 `memory/audits/paid/`） |
+| Scale 放大 | `paid-measurement-loop` 衡量回读循环 |
 
 ## 命令
 5 个命令覆盖搜索工作流端到端；红人技能按名称调用或经 `/aaron-marketing:auto` 路由。日常工作从 `/aaron-marketing:auto` 开始；其余四个是显式的模式入口：
@@ -81,7 +90,7 @@ Slash 命令宿主的稳定入口：
 
 ## 运行模型
 
-每个技能都遵循统一结构：Quick Start、Skill Contract、Handoff Summary、Data Sources、Instructions、Reference Materials、Next Best Skill。四个跨阶段技能负责协议层：`content-quality-auditor` 做发布质量门，`domain-authority-auditor` 做信任门，`entity-optimizer` 维护实体事实，`memory-management` 管理 HOT/WARM/COLD 项目记忆。
+每个技能都遵循统一结构：Quick Start、Skill Contract、Handoff Summary、Data Sources、Instructions、Reference Materials、Next Best Skill。协议层包含一组审计门：`content-quality-auditor` 做发布质量门，`domain-authority-auditor` 做信任门，`content-reviewer` 做红人内容门（C³ ART，结果写入 `memory/audits/influencer/`），`ad-account-auditor` 做付费投放门（ROAS，结果写入 `memory/audits/paid/`）；`entity-optimizer` 维护实体事实，`memory-management` 管理 HOT/WARM/COLD 项目记忆。仓库另含跨领域参考协议（humanizer-slop、measurement-protocol 决策协议、platforms/），以及 CI 守卫：golden-math（4 套框架）、check-evals、check-pii、check-stdlib-only（含付费广告带密钥 API 红线）。
 
 可选工具连接器见 [CONNECTORS.md](../CONNECTORS.md)；没有工具时，每个技能仍可用用户提供的数据运行。
 
@@ -91,7 +100,8 @@ Slash 命令宿主的稳定入口：
 |------|------|
 | [CORE-EEAT](../references/core-eeat-benchmark.md) | 80 项内容质量评分 |
 | [CITE](../references/cite-domain-rating.md) | 40 项域名权威评分 |
-| [C³](../references/c3-benchmark.md) | 红人 创作者/内容/活动 评分（ACE/ART/ROI，9 维） |
+| [C³](../references/c3-benchmark.md) | 红人 创作者/内容/活动 评分（ACE/ART/ROI，9 维，CVI 几何平均，否决项 ACE A2/C1/E2 + ART T1/T2） |
+| [ROAS](../references/roas-benchmark.md) | 付费广告评分（R 回报 / O 广告创意 / A 受众 / S 花费效率，RQS 算术加权平均，否决项 R1/R2/O1/O2/A1） |
 | [Auditor Runbook](../references/auditor-runbook.md) | 审计 handoff、分数封顶、Artifact Gate |
 
 ## 免责声明
@@ -102,7 +112,7 @@ Slash 命令宿主的稳定入口：
 
 贡献规则见 [CONTRIBUTING.md](../CONTRIBUTING.md)。版本见 [VERSIONS.md](../VERSIONS.md)。许可证：Apache License 2.0。
 
-*最后同步英文 README：v10.0.0*
+*最后同步英文 README：v11.0.0*
 
 ## Star History
 

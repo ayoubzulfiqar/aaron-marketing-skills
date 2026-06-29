@@ -4,13 +4,30 @@ Guidelines for AI agents working in this repository. For full runtime context, s
 
 ## Repository Overview
 
-- **Name**: aaron-marketing-skills — 38 skills (20 SEO/GEO + 18 influencer/IMPACT), 5 commands, shared references
+- **Name**: aaron-marketing-skills — 48 skills (26 SEO/GEO + 18 influencer + 4 paid ads), 3 disciplines, 5 commands, shared references
 - **Repository**: https://github.com/aaron-he-zhu/aaron-marketing-skills
 - **Author**: Aaron He Zhu | **License**: Apache 2.0
 - **Specs**: [Agent Skills](https://agentskills.io/specification.md)
-Content-first repository: skills and commands are Markdown; Claude Code hooks use a small Bash runner; `scripts/connectors/` holds zero-dependency Python-stdlib data helpers (no pip deps). Primary directories: SEO/GEO `research/`, `build/`, `optimize/`, `monitor/`, `cross-cutting/`; influencer/IMPACT `insight/`, `map/`, `plan/`, `activate/`, `convert/`, `track/`; plus `commands/`, `references/`, `scripts/connectors/`.
+Content-first repository: skills and commands are Markdown; Claude Code hooks use a small Bash runner; `scripts/connectors/` holds zero-dependency Python-stdlib data helpers (no pip deps). Primary directories: SEO/GEO `research/`, `build/`, `optimize/`, `monitor/`, `cross-cutting/`; influencer/IMPACT `insight/`, `map/`, `plan/`, `activate/`, `convert/`, `track/`; paid ads `paid/`; plus `commands/`, `references/`, `scripts/connectors/`.
 
 Install instructions live in [README.md](README.md). Keep this file focused on authoring and maintenance rules.
+
+### New skills (v11.0.0)
+
+Ten skills added in the 38 → 48 expansion. Full per-phase listings are in [CLAUDE.md § Skills by Phase](CLAUDE.md).
+
+| Discipline | Phase | Skill |
+|------------|-------|-------|
+| SEO/GEO | Build | `programmatic-seo` |
+| SEO/GEO | Build | `parasite-seo` |
+| SEO/GEO | Build | `comparison-page-builder` |
+| SEO/GEO | Build | `local-seo` |
+| SEO/GEO | Optimize | `site-architecture` |
+| SEO/GEO | Monitor | `ai-traffic` |
+| Paid Ads | Build (structure) | `campaign-architect` |
+| Paid Ads | Build (creative) | `ad-creative-builder` |
+| Paid Ads | Launch (auditor-class gate; ROAS RQS) | `ad-account-auditor` |
+| Paid Ads | Scale (readback) | `paid-measurement-loop` |
 
 ## Skill Format Specifications
 
@@ -42,8 +59,9 @@ Start with `Use when the user asks to "..."`, then one sentence on function, the
 See [CLAUDE.md § Quality Frameworks](CLAUDE.md) for details. Summary:
 - **CORE-EEAT** (80 items, 8 dimensions): content quality. [Full reference](references/core-eeat-benchmark.md)
 - **CITE** (40 items, 4 dimensions): domain authority. [Full reference](references/cite-domain-rating.md)
-- **C³** (9 dimensions, Creator/Content/Campaign on ACE/ART/ROI): influencer marketing. [Full reference](references/c3-benchmark.md)
-- Veto items: CORE-EEAT (T04, C01, R10) · CITE (T03, T05, T09) · C³ (ACE A2/C1/E2, ART T1/T2)
+- **C³** (9 dimensions, Creator/Content/Campaign on ACE/ART/ROI, CVI geometric rollup): influencer marketing. [Full reference](references/c3-benchmark.md)
+- **ROAS** (R Return / O Offer / A Audience / S Spend-efficiency, RQS arithmetic weighted-mean rollup like CITE): paid ads. [Full reference](references/roas-benchmark.md)
+- Veto items: CORE-EEAT (T04, C01, R10) · CITE (T03, T05, T09) · C³ (ACE A2/C1/E2, ART T1/T2) · ROAS (R1/R2/O1/O2/A1)
 
 ## Tool Connector Pattern
 
@@ -51,7 +69,9 @@ Skills use `~~category` placeholders. See [CONNECTORS.md](CONNECTORS.md). Every 
 
 ## Inter-Skill Handoff
 
-See [CLAUDE.md § Inter-Skill Handoff](CLAUDE.md). Key fields: objective, findings, evidence, open loops, keyword, content type, scores (CORE-EEAT/CITE), priority items, URL.
+See [CLAUDE.md § Inter-Skill Handoff](CLAUDE.md). Key fields: objective, findings, evidence, open loops, keyword, content type, scores (CORE-EEAT/CITE/C³/ROAS), priority items, URL.
+
+Auditor-class gates: `content-quality-auditor` (CORE-EEAT publish gate), `domain-authority-auditor` (CITE citation-trust gate), `content-reviewer` (C³ ART gate → `memory/audits/influencer/`), and `ad-account-auditor` (ROAS gate → `memory/audits/paid/`). New cross-cutting reference protocols: `humanizer-slop`, the `measurement-protocol` decision protocol, and `platforms/`.
 
 ## Git Workflow
 
@@ -59,7 +79,7 @@ See [CLAUDE.md § Inter-Skill Handoff](CLAUDE.md). Key fields: objective, findin
 - **Conventional Commits**: `feat:`, `fix:`, `docs:`
 - **After skill changes**: update the tracking files — the authoritative 8-file list is in [CONTRIBUTING.md §6](CONTRIBUTING.md) (VERSIONS.md, `.claude-plugin/plugin.json`, root `marketplace.json` + its `.claude-plugin/marketplace.json` mirror, README.md, CLAUDE.md, AGENTS.md, docs/README.zh.md). For release bumps, also sync localized README badges.
 - **Use `references/` for detail** — keep `SKILL.md` focused. Auditor-class skills inline the protocol runbook directly in their `SKILL.md` body.
-- **Validate**: `./scripts/validate-skill.sh <category>/<skill-name>` before release PRs.
+- **Validate**: `./scripts/validate-skill.sh <category>/<skill-name>` before release PRs. CI guards: `golden-math` (4 frameworks), `check-evals`, `check-pii`, `check-stdlib-only` (incl. the Paid-Ads keyed-API red line).
 
 ## Writing Style
 
