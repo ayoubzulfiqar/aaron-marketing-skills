@@ -159,17 +159,19 @@ Store:
 
 Common subfolders:
 
-- `content/`
-- `domain/`
+- `content/` (content-quality-auditor — CORE-EEAT)
+- `domain/` (domain-authority-auditor — CITE)
 - `technical/`
 - `internal-linking/`
+- `influencer/` (content-reviewer — C³ ART gate artifacts)
+- `paid/` (ad-account-auditor — ROAS gate artifacts)
 
 Store:
 
 - audit summaries
 - veto items
 - prioritized fixes
-- pass/fail gate decisions
+- pass/fail gate decisions (all gated artifacts carry `class: auditor-output` + the cap schema per [auditor-runbook.md](auditor-runbook.md))
 
 ### `memory/monitoring/`
 
@@ -201,7 +203,19 @@ Store:
 - amplification plans, repurposed UGC, landing-page optimizations (Convert)
 - performance analyses, ROI/CVI calculations, reports (Track)
 
-Same WARM lifecycle as the other categories: dated files `YYYY-MM-DD-<topic>.md`, demoted to `memory/archive/` after 90 days by `last_updated`.
+Same WARM lifecycle as the other categories: dated files `YYYY-MM-DD-<topic>.md`, demoted to `memory/archive/` after 90 days by `last_updated`. (content-reviewer's **gated** ART verdict is an auditor artifact and lives in `memory/audits/influencer/`, not here.)
+
+### `memory/paid-ads/`
+
+Per-skill subfolders, one per Paid Ads skill: `memory/paid-ads/<skill>/` (e.g. `campaign-architect/`, `ad-creative-builder/`, `paid-measurement-loop/`). Scored on the [ROAS framework](roas-benchmark.md).
+
+Store:
+
+- account/campaign structure plans, targeting + negative lists, cannibalization audits (build)
+- ad-creative sets and angle matrices (build)
+- ROAS/CPA readback snapshots vs control (scale)
+
+Same WARM lifecycle (dated files, demoted to `memory/archive/` after 90 days). ad-account-auditor's **gated** RQS verdict is an auditor artifact and lives in `memory/audits/paid/`.
 
 ## Writing Guidance
 
@@ -220,5 +234,7 @@ When a skill describes state updates, it should:
 - Other skills write entity candidates to `memory/entities/candidates.md` only
 - `content-quality-auditor` owns publish-readiness state in `memory/audits/content/`
 - `domain-authority-auditor` owns citation-trust state in `memory/audits/domain/`
+- `content-reviewer` owns the C³ ART gate state in `memory/audits/influencer/`
+- `ad-account-auditor` owns the ROAS gate state in `memory/audits/paid/`
 
 See [skill-contract.md](skill-contract.md) for the full protocol-layer vs execution-layer behavior matrix.

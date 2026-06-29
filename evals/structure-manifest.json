@@ -1,11 +1,14 @@
 {
   "skills": [
+    "ad-account-auditor",
+    "ad-creative-builder",
     "ai-traffic",
     "alert-manager",
     "audience-analyzer",
     "backlink-analyzer",
     "brief-generator",
     "budget-optimizer",
+    "campaign-architect",
     "campaign-planner",
     "comparison-page-builder",
     "competitor-analysis",
@@ -30,6 +33,7 @@
     "niche-researcher",
     "on-page-seo-auditor",
     "outreach-manager",
+    "paid-measurement-loop",
     "parasite-seo",
     "performance-analyzer",
     "performance-reporter",
@@ -45,7 +49,7 @@
     "trend-spotter",
     "ugc-repurposer"
   ],
-  "count": 44,
+  "count": 48,
   "required_case_keys": [
     "id",
     "type",

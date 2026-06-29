@@ -1,0 +1,17 @@
+Simulated seed cases for ROAS RQS scoring, veto behavior, single-veto cap arithmetic, multi-veto `BLOCKED`, the NEEDS_INPUT placements-report path, and the auditor handoff/artifact gate.
+
+```yaml
+{id: ad-account-auditor-sim-001, type: eval-case, status: simulated, target_skill: ad-account-auditor, scenario: "Healthy DR account, no vetoes, ready to scale.", input_summary: "Google Ads campaign export + GA4 conversions + placements report; DR goal; ROAS above target.", expected_behavior: ["Score all four R/O/A/S dimensions.", "Compute RQS = floor(weighted, DR column) and state the goal column.", "Emit SHIP verdict with cap_applied: false and recommend paid-measurement-loop."], failure_modes: ["Uses prospecting weights silently.", "Reports the literal roas ratio as RQS.", "Omits cap_applied or raw_overall_score."]}
+```
+```yaml
+{id: ad-account-auditor-sim-002, type: eval-case, status: simulated, target_skill: ad-account-auditor, scenario: "Conversion tracking is broken (no data), single veto.", input_summary: "Campaign export shows spend but GA4 records zero conversions and the tag is firing on no pages.", expected_behavior: ["Flag R1 as a veto (no data, not iOS-ATT modeled).", "Cap weighted overall at min(raw, 60) with cap_applied: true and math.floor rounding.", "Emit FIX/BLOCK verdict and keep raw_overall_score separate from final_overall_score."], failure_modes: ["Treats broken tracking as iOS-ATT modeled and only flags.", "Averages the veto away.", "Caps a dimension but not the overall."]}
+```
+```yaml
+{id: ad-account-auditor-sim-003, type: eval-case, status: simulated, target_skill: ad-account-auditor, scenario: "Placements report is missing — A1 cannot be verified.", input_summary: "User provides campaign export and GA4 conversions but no placements report; prospecting goal.", expected_behavior: ["Set A1 = NEEDS_INPUT (not pass-by-default).", "Return status NEEDS_INPUT and name the missing placements report.", "Do not fabricate a brand-safety pass or a final SHIP verdict."], failure_modes: ["Marks A1 as Pass with no placement data.", "Emits DONE despite missing export.", "Invents placement findings."]}
+```
+```yaml
+{id: ad-account-auditor-sim-004, type: eval-case, status: simulated, target_skill: ad-account-auditor, scenario: "Two or more vetoes fail — must BLOCK.", input_summary: "Attribution double-counts the same orders on Meta and Google (R2) and an ad makes an unsubstantiated claim with no disclosure (O1).", expected_behavior: ["Flag both R2 and O1 as vetoes.", "Set status: BLOCKED, cap_applied: false, retain raw_overall_score, omit final_overall_score.", "List both vetoes and unblock actions; do not output a SHIP verdict."], failure_modes: ["Applies single-veto cap only.", "Emits a final_overall_score while BLOCKED.", "Hides one veto in generic recommendations."]}
+```
+```yaml
+{id: ad-account-auditor-sim-005, type: eval-case, status: simulated, target_skill: ad-account-auditor, scenario: "iOS-ATT modeled conversions plus premature scaling.", input_summary: "GA4 shows partial/modeled conversions from iOS-ATT and budgets were doubled mid-learning-phase; DR goal.", expected_behavior: ["Treat iOS-ATT modeled data as Partial/flag on R1, not an auto-veto.", "Treat premature scaling as a high-severity S guardrail, not a veto.", "Emit DONE_WITH_CONCERNS, preserve open loops, recommend paid-measurement-loop."], failure_modes: ["Fires R1 veto on modeled data.", "Treats learning-phase violation as a veto.", "Drops the actionable handoff or uses internal jargon."]}
+```

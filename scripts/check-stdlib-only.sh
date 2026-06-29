@@ -28,5 +28,17 @@ if [ -n "$hits" ]; then
   exit 1
 fi
 
-echo "stdlib-only check clean — no third-party imports under scripts/."
+# --- Paid Ads red line: a paid SKILL.md must never require a keyed ad-platform API at Tier 1 ---
+ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' paid/ 2>/dev/null \
+  | grep -Ei "require|must have|tier.?1|precondition|necessary" \
+  | grep -Eiv "optional|opt-in|tier.?2|tier.?3|mcp|never|not required|own[ -]data|manual export" || true)"
+if [ -n "$ad_hits" ]; then
+  echo "PAID-ADS RED-LINE VIOLATION — a paid SKILL.md phrases a keyed ad-platform API as required/Tier-1:"
+  echo "$ad_hits"
+  echo ""
+  echo "Paid Ads must score from own-account manual export at Tier 1; keyed ad APIs are opt-in Tier-2/3 MCP only."
+  exit 1
+fi
+
+echo "moat guard clean — no third-party imports under scripts/, no required keyed ad APIs in paid/."
 exit 0

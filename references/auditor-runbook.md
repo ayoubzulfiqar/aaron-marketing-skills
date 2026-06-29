@@ -99,7 +99,7 @@ score at **60/100**. Show raw and capped side by side in the internal report. Se
 - CORE-EEAT: T04, C01, R10 — see [core-eeat-benchmark.md](core-eeat-benchmark.md)
 - CITE: T03, T05, T09 — see [cite-domain-rating.md](cite-domain-rating.md)
 - C³ (influencer): ACE A2/C1/E2, ART T1/T2 — see [c3-benchmark.md](c3-benchmark.md) (the ROI/Campaign scope has no veto). `content-reviewer` is the ART-gate consumer.
-- A 4th framework (ROAS, paid ads) is added under its own veto set when the Paid Ads discipline lands (see `references/roas-benchmark.md`).
+- ROAS (paid ads): R1/R2 (Return — tracking-broken / attribution-double-count), O1/O2 (Offer — claim integrity / platform-policy), A1 (Audience — brand/placement safety) — see [roas-benchmark.md](roas-benchmark.md). `ad-account-auditor` is the consumer; artifacts at `memory/audits/paid/`. (Premature scaling is a guardrail under S, not a veto.)
 
 ### Decision table
 

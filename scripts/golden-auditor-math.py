@@ -25,6 +25,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORE = os.path.join(ROOT, "references", "core-eeat-benchmark.md")
 CITE = os.path.join(ROOT, "references", "cite-domain-rating.md")
 C3 = os.path.join(ROOT, "references", "c3-benchmark.md")
+ROAS = os.path.join(ROOT, "references", "roas-benchmark.md")
 CQA = os.path.join(ROOT, "cross-cutting", "content-quality-auditor", "SKILL.md")
 DAA = os.path.join(ROOT, "cross-cutting", "domain-authority-auditor", "SKILL.md")
 
@@ -126,6 +127,23 @@ check("floor(330400^(1/3)) = 69" in c3_text, "C3 veto-capped stated CVI 69 prese
 # cap boundary: C3 Low ceiling 59 vs runbook 60 must stay documented as band-aligned
 check("≤ 59" in c3_text and "min(raw, 60) = 60" in c3_text,
       "C3 cap-reconciliation boundary (Low ≤59 vs runbook min(raw,60)=60) documented")
+
+print("== ROAS RQS arithmetic weighted-mean: both goal-weight rows sum to 1.0; worked examples recompute ==")
+roas_text = open(ROAS, encoding="utf-8").read()
+wre = re.compile(r"R\s*[×xX*]\s*([\d.]+)\s*\+\s*O\s*[×xX*]\s*([\d.]+)\s*\+\s*A\s*[×xX*]\s*([\d.]+)\s*\+\s*S\s*[×xX*]\s*([\d.]+)")
+rows = wre.findall(roas_text)
+check(len(rows) >= 2, "found both ROAS goal-weight formulas (got %d)" % len(rows))
+ex_vec = {"R": 75, "O": 80, "A": 85, "S": 78}
+if len(rows) >= 2:
+    dr = {k: float(v) for k, v in zip("ROAS", rows[0])}
+    pr = {k: float(v) for k, v in zip("ROAS", rows[1])}
+    check(abs(sum(dr.values()) - 1.0) < 1e-9, "ROAS DR weights sum to 1.0 (got %.2f)" % sum(dr.values()))
+    check(abs(sum(pr.values()) - 1.0) < 1e-9, "ROAS Prospecting weights sum to 1.0 (got %.2f)" % sum(pr.values()))
+    check(weighted(ex_vec, dr) == 78, "ROAS DR example (R75 O80 A85 S78) == 78 (got %d)" % weighted(ex_vec, dr))
+    check(weighted(ex_vec, pr) == 80, "ROAS Prospecting example (same vector) == 80 (got %d)" % weighted(ex_vec, pr))
+check("R=75 O=80 A=85 S=78" in roas_text, "ROAS input vector present in roas-benchmark")
+check("floor(78.25) = 78" in roas_text, "ROAS DR result 78 present in roas-benchmark")
+check("floor(80.25) = 80" in roas_text, "ROAS Prospecting result 80 present in roas-benchmark")
 
 print()
 if fails:
