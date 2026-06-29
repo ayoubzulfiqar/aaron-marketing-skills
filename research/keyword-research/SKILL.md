@@ -78,7 +78,7 @@ Tag each keyword by funnel stage from its pattern:
 - **MOFU** — informational with buying signals: "how to", "guide", "roi", "case study", "review".
 - **TOFU** — pure informational (definitions, broad questions).
 
-Work BOFU first when revenue is the goal; use TOFU/MOFU for reach and GEO answer coverage. Grounded in [reference-oss/ericosiu-ai-marketing-skills/seo-ops/SKILL.md](../../reference-oss/ericosiu-ai-marketing-skills/seo-ops/SKILL.md).
+Work BOFU first when revenue is the goal; use TOFU/MOFU for reach and GEO answer coverage. (Impact×Confidence + funnel-stage scoring adapted from an external SEO-ops competitive analysis.)
 
 **Quality bar**: every recommendation includes at least one specific number. Rewrite generic advice into a concrete keyword + volume + difficulty + reason.
 

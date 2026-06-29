@@ -317,11 +317,12 @@ These norms apply to all skills when their output incorporates data from multipl
 | Category | Write Path | Content |
 |----------|-----------|---------|
 | Research (4 skills) | `memory/research/<skill>/` | keyword opportunities, competitor findings, SERP notes, content gaps |
-| Build (4 skills) | `memory/content/` | content briefs, meta tag decisions, schema annotations, publish status |
-| Optimize (4 skills) | `memory/audits/<skill>/` | per-skill audit summaries, veto items, fix priorities |
-| Monitor (4 skills) | `memory/monitoring/` | rank deltas, alert history, backlink changes |
+| Build (8 skills) | `memory/content/` | content briefs, meta tag decisions, schema annotations, publish status |
+| Optimize (5 skills) | `memory/audits/<skill>/` | per-skill audit summaries, veto items, fix priorities |
+| Monitor (5 skills) | `memory/monitoring/` | rank deltas, alert history, backlink changes |
 | Cross-cutting (4 skills) | per-role paths | see protocol-layer definitions |
-| Influencer / IMPACT (18 skills) | `memory/influencer/<skill>/` | audience profiles, creator fit scores, campaign plans, briefs, outreach, content reviews, ROI/CVI calculations, reports |
+| Influencer / IMPACT (18 skills) | `memory/influencer/<skill>/` (working state) + `memory/audits/influencer/` (content-reviewer's gated C³ ART verdicts) | audience profiles, creator fit scores, campaign plans, briefs, outreach, content reviews, ROI/CVI calculations, reports |
+| Paid Ads / ROAS (4 skills) | `memory/paid-ads/<skill>/` (working state) + `memory/audits/paid/` (ad-account-auditor's gated RQS verdicts) | account/campaign structures, ad-creative scores, account-audit gates, measurement-loop results |
 | **Protocol gate aggregate (v7.1.0+)** | `memory/audits/YYYY-MM.md` | **owned by `memory-management`**; monthly archive of `content-quality-auditor` and `domain-authority-auditor` handoffs in the structured format defined in [memory-management SKILL.md §Writes](../cross-cutting/memory-management/SKILL.md); consumed by the Runbook §5 cross-version rule |
 
 **Note on `memory/audits/`**: two conventions coexist. The `<skill>/` subdirectory pattern (Optimize category, per-skill files) is for skill-specific audit artifacts (e.g., `memory/audits/technical-seo-checker/2026-04-11-example.md`). The flat `YYYY-MM.md` pattern (Protocol gate aggregate, monthly) is for the CORE-EEAT / CITE protocol-layer handoff archive. They are siblings, not a conflict.

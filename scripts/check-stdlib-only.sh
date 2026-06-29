@@ -17,7 +17,10 @@ cd "$ROOT"
 DENY='numpy|pandas|scipy|sklearn|scikit|requests|httpx|aiohttp|whisper|mediapipe|cv2|opencv|psycopg2|feedparser|bs4|beautifulsoup|lxml|yaml|pyyaml|anthropic|openai|google|googleapiclient|tqdm|slugify|dateutil|matplotlib|seaborn|pydantic'
 
 # Match `import X`, `import X as`, `from X import`, `from X.sub import` at line start.
-hits="$(grep -rnE "^[[:space:]]*(import|from)[[:space:]]+(${DENY})([[:space:].]|[[:space:]]+import|$)" \
+# Two clauses (POSIX-safe, no \b): (1) denylisted module right after import/from — the trailing
+# [^A-Za-z0-9_] also catches the `import yaml;import os` semicolon case; (2) a denylisted module
+# later in a comma list (`import os, numpy`).
+hits="$(grep -rnE "^[[:space:]]*(import|from)[[:space:]]+(${DENY})([^A-Za-z0-9_]|$)|^[[:space:]]*import[[:space:]].*[ ,](${DENY})([^A-Za-z0-9_]|$)" \
           --include='*.py' scripts/ 2>/dev/null || true)"
 
 if [ -n "$hits" ]; then
@@ -29,6 +32,8 @@ if [ -n "$hits" ]; then
 fi
 
 # --- Paid Ads red line: a paid SKILL.md must never require a keyed ad-platform API at Tier 1 ---
+# Best-effort prose tripwire (heuristic; a sentence mixing "required" with an exonerating word on the
+# same line can evade it). The real guarantee is the keyless/own-export framing authored into each skill.
 ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' paid/ 2>/dev/null \
   | grep -Ei "require|must have|tier.?1|precondition|necessary" \
   | grep -Eiv "optional|opt-in|tier.?2|tier.?3|mcp|never|not required|own[ -]data|manual export" || true)"

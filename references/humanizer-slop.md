@@ -15,8 +15,8 @@ This file **extends** that list. The additions below are slop words/phrases not 
 | utilize, whilst, endeavour | inflated forms of "use", "while", "try" |
 | underscore (verb), garner, bolster | thesaurus verbs for "show", "get", "strengthen" |
 | transformative, groundbreaking, innovative, commendable, meticulous | empty praise adjectives |
-| testament, profound, vibrant, nestled, renowned | promotional puffery |
-| "shed light on", "pave the way for", "a myriad of", "a plethora of" | academic AI tells |
+| testament, profound, nestled, renowned | promotional puffery |
+| "shed light on", "pave the way for", "a plethora of" | academic AI tells |
 | "prior to / subsequent to", "in light of", "in terms of", "the fact that" | wordy connectors → "before/after", "because", "for", "that" |
 | "that being said", "with that in mind", "at its core", "this begs the question" | filler transitions |
 

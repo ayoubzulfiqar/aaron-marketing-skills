@@ -67,11 +67,11 @@ Current versions for the plugin and all 48 skills. Agents can fetch this file fr
 
 **Changed**
 - C³ now enforced (route C): `fit-scorer` emits ACE with the A2/C1/E2 veto and caps the score on veto; `content-reviewer` enforces ART T1 (FTC disclosure) / T2 (claim integrity) as Reject vetoes; `roi-calculator` emits the CVI rollup. `c3-benchmark.md` "Where it is used" corrected so `influencer-discovery`/`performance-analyzer` inform/contribute rather than compute.
-- Shared contract + state model extended to all 38 skills: Influencer category defaults, the `memory/influencer/<skill>/` write path, and C³ cross-links.
+- Shared contract + state model extended to all skills: Influencer category defaults, the `memory/influencer/<skill>/` write path, and C³ cross-links.
 
 **Added**
-- CI validates all 38 skills (was 20) and runs new hook-gate + connector unit tests (connector tests 3 → 11).
-- `CONNECTORS.md` recipes for the 18 influencer `~~` categories; unified 8-file tracking list (authoritative in `CONTRIBUTING.md`); eval seed cases for all 18 influencer skills (evals now cover 38/38); `bug-report.yml` issue template; `memory/{research,content,monitoring,archive}/` scaffolding; validator eval-presence advisory.
+- CI validates all skills (was 20) and runs new hook-gate + connector unit tests (connector tests 3 → 11).
+- `CONNECTORS.md` recipes for the 18 influencer `~~` categories; unified 8-file tracking list (authoritative in `CONTRIBUTING.md`); eval seed cases for all 18 influencer skills (evals now cover every skill — 48/48 after the expansion below); `bug-report.yml` issue template; `memory/{research,content,monitoring,archive}/` scaffolding; validator eval-presence advisory.
 
 **Added — OSS-borrow expansion + Paid Ads (3rd discipline), the 7-wave roadmap from `docs/planning/UNIFIED_OPTIMIZATION_PLAN.md`**
 - **Platform de-SEO**: `auditor-runbook` admits C³ (and now ROAS) as framework veto-sets with a documented cap reconciliation; `memory-management`/`state-model`/`measurement-protocol` de-SEO'd to cross-discipline; `CONNECTORS.md` gains a Discipline column + Agent-default; connector UA renamed.

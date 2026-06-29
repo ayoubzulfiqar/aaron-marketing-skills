@@ -2,7 +2,7 @@
 
 Capture how the creator (or the brand's founder spokesperson) actually talks before you write the brief. A brief that respects the real voice gets content that needs fewer revisions. Drop the filled-out block into the brief's "Why You" and "Creative Direction" sections, and hand it to `content-reviewer` so reviewers check submitted content against the captured voice, not their own taste.
 
-Adapted from the founder-voice template in `reference-oss/ericosiu-ai-marketing-skills/x-longform-post/references/founder-voice.md`.
+Adapted from an external founder-voice intake template (competitive analysis).
 
 ## Intake Block
 

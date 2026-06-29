@@ -91,4 +91,4 @@ Check in two places:
   decision: drop (lower virality)
 ```
 
-Worked example: `"this is the only one that actually worked"` vs `"the only one that actually worked for me"` — after stop-word removal the shared words are {only, worked} over a union of about {only, worked, actually, me} → J ≈ 0.5–0.78 depending on what you keep; read carefully and use 0.70 as the line.
+Worked example: `"this is the only one that actually worked"` vs `"the only one that actually worked for me"` — after stop-word removal the sets are {only, one, that, actually, worked} (5) and {only, one, that, actually, worked, for, me} (7); shared = 5, union = 7, so **J = 5/7 ≈ 0.71** — just over the 0.70 line, so flag it.

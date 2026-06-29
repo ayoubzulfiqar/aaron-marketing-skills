@@ -6,8 +6,10 @@ vendor-attribution / CTA-block half is deliberately NOT included. Fails closed
 on high-confidence secrets and non-allowlisted emails so credentials can't be
 committed into this public skill library.
 
-Scans tracked text files. Phone/IPv4 detection is intentionally omitted — a
-content/SEO repo is full of numbers and they produce false positives.
+Scans repo text files (a filesystem walk minus SKIP_DIRS, by extension). Phone/IPv4
+detection is intentionally omitted — a content/SEO repo is full of numbers and they
+produce false positives. Allowlists are token/anchored, never whole-line, so a real
+secret on a line that also contains a placeholder word is still caught.
 
 Usage:
   python3 scripts/check-pii.py                 # scan the repo (CI gate; exit 1 on finding)
@@ -39,12 +41,24 @@ PATTERNS = [
 ]
 
 EMAIL = re.compile(r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b")
-# Allowlisted email domains / fragments (placeholders, project-public, doc examples).
-EMAIL_ALLOW = ("example.com", "example.org", "example.net", "anthropic.com",
-               "noreply", "your-domain", "yourdomain", "user@", "test@", "name@", "you@",
-               "zhuhe.io")  # project's intentional public contact address
-# Generic allowlist fragments that neutralize an otherwise-matching line.
-LINE_ALLOW = ("555-", "xxxx", "redacted", "placeholder", "AKIAIOSFODNN7EXAMPLE")
+# Email allowlist is ANCHORED, not substring: a full placeholder local-part OR an allowlisted domain.
+# (A substring test would leak a real address whose local-part merely ENDS in user/name/test/you.)
+EMAIL_LOCAL_ALLOW = {"user", "name", "test", "you", "noreply", "example", "email"}
+EMAIL_DOMAIN_ALLOW = ("example.com", "example.org", "example.net", "anthropic.com",
+                      "your-domain.com", "yourdomain.com", "zhuhe.io")  # zhuhe.io = project public contact
+# Placeholder fragments that exonerate a matched SECRET-LIKE TOKEN — applied to the matched token ONLY,
+# never the whole line (whole-line skipping would let a real key on a "placeholder"/"example" line slip).
+TOKEN_PLACEHOLDER = ("xxxx", "redacted", "placeholder", "example", "akiaiosfodnn7example", "your-token")
+
+
+def _email_allowed(email):
+    local, _, domain = email.lower().partition("@")
+    return local in EMAIL_LOCAL_ALLOW or domain in EMAIL_DOMAIN_ALLOW
+
+
+def _token_allowed(tok):
+    t = tok.lower()
+    return any(frag in t for frag in TOKEN_PLACEHOLDER)
 
 
 def scan_file(path):
@@ -54,16 +68,14 @@ def scan_file(path):
     except OSError:
         return findings
     for n, line in enumerate(text.splitlines(), 1):
-        low = line.lower()
-        if any(a in low for a in LINE_ALLOW):
-            continue
         for name, pat in PATTERNS:
-            if pat.search(line):
+            for m in pat.finditer(line):
+                if _token_allowed(m.group(0)):
+                    continue
                 findings.append((n, name, line.strip()[:120]))
         for m in EMAIL.finditer(line):
-            email = m.group(0)
-            if not any(a in email.lower() for a in EMAIL_ALLOW):
-                findings.append((n, "email address", email))
+            if not _email_allowed(m.group(0)):
+                findings.append((n, "email address", m.group(0)))
     return findings
 
 
