@@ -24,6 +24,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORE = os.path.join(ROOT, "references", "core-eeat-benchmark.md")
 CITE = os.path.join(ROOT, "references", "cite-domain-rating.md")
+C3 = os.path.join(ROOT, "references", "c3-benchmark.md")
 CQA = os.path.join(ROOT, "cross-cutting", "content-quality-auditor", "SKILL.md")
 DAA = os.path.join(ROOT, "cross-cutting", "domain-authority-auditor", "SKILL.md")
 
@@ -105,6 +106,26 @@ check("raw_overall = 78" in cqa and "raw_overall = 73" in cqa, "CORE stated resu
 check("raw_overall = 78" in daa and "raw_overall = 62" in daa, "CITE stated results 78 & 62 present in domain-authority-auditor")
 # guard against the old framework-crossed defect re-appearing
 check("624 / 8" not in daa and "O=77" not in daa, "no CORE-EEAT 8-dim arithmetic leaked into the CITE auditor")
+
+print("== C3 CVI geometric-mean rollup recomputes; veto/cap boundary locked ==")
+c3_text = open(C3, encoding="utf-8").read()
+check(re.search(r"CVI\s*=\s*\(\s*ACE_avg.*ROI\s*\)\s*\^\s*\(1/3\)", c3_text) is not None,
+      "found C3 CVI geometric-mean formula")
+
+def cvi(a, r, o):
+    # geometric mean of the three scope averages, floor-rounded (repo floor convention)
+    return math.floor((a * r * o) ** (1.0 / 3.0))
+
+check(cvi(90, 80, 70) == 79, "C3 no-veto CVI (ACE90 ART80 ROI70) == 79 (got %d)" % cvi(90, 80, 70))
+check(cvi(59, 80, 70) == 69, "C3 veto-capped CVI (ACE59 ART80 ROI70) == 69 (got %d)" % cvi(59, 80, 70))
+# input-vector + result presence (false-pass guard, mirrors CORE/CITE)
+check("ACE_avg=90 ART_avg=80 ROI=70" in c3_text, "C3 no-veto input vector present in c3-benchmark")
+check("floor(504000^(1/3)) = 79" in c3_text, "C3 no-veto stated CVI 79 present in c3-benchmark")
+check("ACE_avg=59 (capped)" in c3_text, "C3 veto-capped input vector present in c3-benchmark")
+check("floor(330400^(1/3)) = 69" in c3_text, "C3 veto-capped stated CVI 69 present in c3-benchmark")
+# cap boundary: C3 Low ceiling 59 vs runbook 60 must stay documented as band-aligned
+check("≤ 59" in c3_text and "min(raw, 60) = 60" in c3_text,
+      "C3 cap-reconciliation boundary (Low ≤59 vs runbook min(raw,60)=60) documented")
 
 print()
 if fails:

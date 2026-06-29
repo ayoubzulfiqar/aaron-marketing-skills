@@ -72,7 +72,7 @@ jobs:
       - name: Lint connector code (py_compile)
         run: |
           set -euo pipefail
-          python3 -m py_compile scripts/connectors/*.py scripts/golden-auditor-math.py
+          python3 -m py_compile scripts/connectors/*.py scripts/golden-auditor-math.py scripts/check-evals.py scripts/check-pii.py
           echo "connectors compile clean"
 
       - name: Connector unit tests
@@ -80,6 +80,15 @@ jobs:
 
       - name: Golden auditor-math check
         run: python3 scripts/golden-auditor-math.py
+
+      - name: Eval structural lint (no runner — structure only)
+        run: python3 scripts/check-evals.py
+
+      - name: PII / secret scan
+        run: python3 scripts/check-pii.py
+
+      - name: Dependency-creep guard (stdlib-only)
+        run: bash scripts/check-stdlib-only.sh
 
       - name: Validate JSON / shell manifests
         run: |
