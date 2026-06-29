@@ -529,6 +529,7 @@ Week 3: Test CTA button copy
 - [skill-contract.md](../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipes per connector category.
+- [conversion-quality.md](../../references/scoring-rubrics/conversion-quality.md) — advisory conversion rubric (non-veto) to sanity-check the optimization plan.
 - Sibling skills in the influencer-marketing family:
   - [ugc-repurposer](../ugc-repurposer/SKILL.md) — source creator content for landing pages.
   - [content-amplifier](../content-amplifier/SKILL.md) — drive traffic to landing pages.

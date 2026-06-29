@@ -97,6 +97,16 @@ Compare SERP for [keyword] in [location 1] vs [location 2]
 Analyze mobile vs desktop SERP differences for [keyword]
 ```
 
+### Video SERP / YouTube Outliers
+
+When the SERP carries a video pack or the query is video-led, profile the videos, not just the pages.
+
+1. **Flag outliers** — for each channel in the pack, compute its average views; flag any video with **>=2x** the channel average as an outlier worth studying.
+2. **Extract packaging patterns** — read the outlier titles for the format that earned the views (e.g. "X, Clearly Explained", "Stop doing X, do Y instead", number/year-comparison hooks). These are proven title-packaging templates to mirror.
+3. **Treat YouTube as a GEO surface** — YouTube videos and their transcripts/descriptions are an AI-citation source; a strong video can win the answer even when the page does not. Note video opportunities in the SERP Feature Strategy, not only organic pages.
+
+See [references/platforms/youtube.md](../../references/platforms/youtube.md) for YouTube-as-citation detail.
+
 ## Save Results
 
 Write path: `memory/research/serp-analysis/YYYY-MM-DD-<topic>.md`; promote durable difficulty/intent verdicts to `memory/hot-cache.md`. See [Skill Contract](../../references/skill-contract.md) §Save Results Template.
@@ -106,6 +116,7 @@ Write path: `memory/research/serp-analysis/YYYY-MM-DD-<topic>.md`; promote durab
 - [Analysis Templates](references/analysis-templates.md) — Step-by-step analysis templates
 - [SERP Feature Taxonomy](references/serp-feature-taxonomy.md) — Feature taxonomy and intent signals
 - [Example Report](references/example-report.md) — Worked sample
+- [YouTube as citation surface](../../references/platforms/youtube.md) — Video SERP / outlier packaging and GEO/AI-citation notes
 
 ## Next Best Skill
 

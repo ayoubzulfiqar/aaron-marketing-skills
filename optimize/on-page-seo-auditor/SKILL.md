@@ -105,7 +105,7 @@ When a user requests an on-page SEO audit, use the compact step templates in [re
 6. **Audit Keyword Usage** — primary/secondary keyword placement across page elements, related terms, and density analysis.
 7. **Audit Internal Links** — link count, anchor relevance, broken links, and recommended additions.
 8. **Audit Images** — alt text, file names, sizes, formats, and lazy loading.
-9. **Audit Page-Level Tags** — URL slug, canonical tag, and on-page schema presence. For deep crawl/indexing, Core Web Vitals, mobile rendering, and HTTPS/security, route to [technical-seo-checker](../technical-seo-checker/SKILL.md).
+9. **Audit Page-Level Tags** — URL slug, canonical tag, and on-page schema presence. For deep crawl/indexing, Core Web Vitals, mobile rendering, and HTTPS/security, route to [technical-seo-checker](../technical-seo-checker/SKILL.md). ⚠ **JS-injected JSON-LD caveat**: a raw fetch (`WebFetch`/`curl`/`onpage.py`) reads the server HTML and misses JSON-LD injected client-side by plugins (Yoast/RankMath/AIOSEO), so "no schema" from a raw fetch is a **false negative** — confirm in the rendered DOM (`document.querySelectorAll('script[type="application/ld+json"]')`) or Google's Rich Results Test before reporting schema as missing.
 10. **CORE-EEAT Quick Scan** — 17 on-page-relevant items from the 80-item CORE-EEAT benchmark, used to flag where a full quality audit is warranted (not a publish verdict). Full benchmark: [CORE-EEAT Benchmark](../../references/core-eeat-benchmark.md).
 11. **Generate Audit Summary** — overall score, priority issues, quick wins, detailed recommendations, competitor comparison, and action checklist.
 

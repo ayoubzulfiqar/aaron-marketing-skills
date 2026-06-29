@@ -429,6 +429,7 @@ Best,
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipe per connector category.
 - C3 benchmark scoring at [references/c3/scoring-architecture.md](../../references/c3/scoring-architecture.md) — quality scoring reference for downstream review.
+- [expert-panel.md](../../references/expert-panel.md) — multi-persona review method for pressure-testing outreach copy before sending.
 - Sibling skills: [influencer-discovery](../../map/influencer-discovery/SKILL.md), [fit-scorer](../../map/fit-scorer/SKILL.md), [brief-generator](../../plan/brief-generator/SKILL.md), [contract-helper](../contract-helper/SKILL.md), [content-reviewer](../../activate/content-reviewer/SKILL.md).
 
 ## Next Best Skill

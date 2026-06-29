@@ -67,6 +67,8 @@ Populate properties only from visible page content or user-provided facts; for a
 > - **HowTo**: Google **deprecated HowTo rich results on desktop (2023)**. Generate HowTo for semantic/AEO value and content structure, **not** for a rich-result promise.
 >
 > Run the bundled local pre-flight before the manual UI step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/connectors/schema_lint.py" <url>` (extracts JSON-LD, checks required/recommended properties, and flags these deprecations). It is a pre-check, not a replacement for Google's Rich Results Test.
+>
+> ⚠ **JS-injected JSON-LD caveat**: `schema_lint.py` and any raw fetch (`WebFetch`/`curl`) read the server HTML and will **not** see JSON-LD injected client-side by SEO plugins (Yoast/RankMath/AIOSEO render it via JS). When the pre-check reports no/partial schema on such a site, confirm in the rendered DOM (`document.querySelectorAll('script[type="application/ld+json"]')`) or the Rich Results Test before concluding schema is missing — reporting "no schema" from a raw fetch is a false negative.
 
 > **Reference**: See [Instructions Detail](references/instructions-detail.md) for the mapping table, eligibility matrix, implementation guide, validation checklist, FAQ example, and tips. See [Schema Templates](references/schema-templates.md) for compact starter JSON-LD blocks.
 
@@ -100,6 +102,7 @@ On user confirmation, save to `memory/content/YYYY-MM-DD-<topic>.md` — see [Sk
 - [Schema Templates](references/schema-templates.md) - Compact starter JSON-LD blocks for common schema types
 - [Schema Decision Tree](references/schema-decision-tree.md) - Content-to-schema mapping, industry recommendations, and priority tiers
 - [Validation Guide](references/validation-guide.md) - Common errors, required properties, and testing workflow
+- [llms.txt / OKF](../../references/llms-txt-okf.md) - llms.txt and OKF layer that sits alongside JSON-LD in the agent-readable stack
 
 ## Next Best Skill
 

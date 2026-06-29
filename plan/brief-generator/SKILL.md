@@ -542,6 +542,7 @@ Generate an Instagram Stories brief for a brand takeover
 - Shared state model: [state-model.md](../../references/state-model.md)
 - Connector recipes: [CONNECTORS.md](../../CONNECTORS.md)
 - C3 scoring architecture (when scoring brief quality): [references/c3/scoring-architecture.md](../../references/c3/scoring-architecture.md)
+- Creator voice intake (capture real voice before briefing; content-reviewer reads the captured voice): [creator-voice-intake.md](references/creator-voice-intake.md)
 - Sibling skills:
   - [campaign-planner](../campaign-planner/SKILL.md) - Create the campaign this brief supports
   - [budget-optimizer](../budget-optimizer/SKILL.md) - Allocate spend across the briefed creators

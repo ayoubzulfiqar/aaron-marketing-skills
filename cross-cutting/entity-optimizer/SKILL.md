@@ -187,6 +187,7 @@ Before writing any canonical profile, check `memory/audits/gdpr-purges.md` for a
 Detailed guides for entity optimization:
 - [Entity Signal Checklist](references/entity-signal-checklist.md) — Complete signal checklist with verification methods, Step 3 report template, and Tips for Success
 - [Knowledge Graph Guide](references/knowledge-graph-guide.md) — Wikidata, Wikipedia, and Knowledge Graph optimization playbook
+- [Agent-Readable File Stack (llms.txt / OKF)](../../references/llms-txt-okf.md) — agent-readable entity files (llms.txt, OKF); honestly flagged: no current ranking signal
 
 ## Next Best Skill
 

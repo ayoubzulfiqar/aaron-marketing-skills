@@ -64,6 +64,22 @@ When a user requests keyword research, run eight phases and announce each as `[P
 
 Label every metric **Measured** (tool/export), **User-provided**, or **Estimated** (model inference); never present an estimate as measured; if a required metric is unavailable, mark it N/A — do not invent it.
 
+### Impact × Confidence lens (optional, layers onto Phase 5)
+
+When you have richer signals than volume/difficulty alone, add a second pass on top of the `Opportunity` score:
+
+- **Impact** = volume + CPC + funnel stage + trend direction (how much winning the term is worth).
+- **Confidence** = difficulty + current ranking position + topic authority (how likely you are to win it).
+- **Priority = Impact × Confidence** — surfaces terms that are both valuable *and* winnable, not just high-volume.
+
+Tag each keyword by funnel stage from its pattern:
+
+- **BOFU** — commercial/transactional, or contains "pricing", "best", "vs", "services", "agency", "hire", "buy".
+- **MOFU** — informational with buying signals: "how to", "guide", "roi", "case study", "review".
+- **TOFU** — pure informational (definitions, broad questions).
+
+Work BOFU first when revenue is the goal; use TOFU/MOFU for reach and GEO answer coverage. Grounded in [reference-oss/ericosiu-ai-marketing-skills/seo-ops/SKILL.md](../../reference-oss/ericosiu-ai-marketing-skills/seo-ops/SKILL.md).
+
 **Quality bar**: every recommendation includes at least one specific number. Rewrite generic advice into a concrete keyword + volume + difficulty + reason.
 
 > **Reference**: See [references/instructions-detail.md](references/instructions-detail.md) for the full 8-phase templates, expansion patterns, intent table, difficulty tiers, opportunity matrix, GEO indicators, cluster template, actionable-vs-generic examples, and advanced usage.

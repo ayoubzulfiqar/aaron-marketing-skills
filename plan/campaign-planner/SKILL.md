@@ -530,6 +530,7 @@ When a user requests campaign planning:
 - [skill-contract.md](../../references/skill-contract.md) — shared contract and handoff schema.
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipes per connector category.
+- [references/influencer-tiers.md](references/influencer-tiers.md) — influencer-vs-affiliate-vs-creator decision table and nano/micro/mid/macro tier definitions; `fit-scorer` and `budget-optimizer` can consult it.
 - [audience-analyzer](../../insight/audience-analyzer/SKILL.md) — define the target audience this plan serves.
 - [brief-generator](../../plan/brief-generator/SKILL.md) — turn the plan into per-influencer briefs.
 - [budget-optimizer](../../plan/budget-optimizer/SKILL.md) — refine the budget allocation.

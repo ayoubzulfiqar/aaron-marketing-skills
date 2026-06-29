@@ -83,6 +83,7 @@ On user confirmation, save to `memory/content/YYYY-MM-DD-<topic>.md` — see [Sk
 - [SEO Writing Checklist](references/seo-writing-checklist.md) — On-page checklist, snippet patterns, and copy-start template
 - [Title Formulas](references/title-formulas.md) — Headline formulas and CTR patterns
 - [Content Structure Templates](references/content-structure-templates.md) — Compact content blueprints
+- [Humanizer Slop Check](../../references/humanizer-slop.md) — Pre-publish self-check that strips AI-slop phrasing and tells before handoff
 
 ## Next Best Skill
 

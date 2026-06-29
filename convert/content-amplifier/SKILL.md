@@ -457,6 +457,7 @@ When a user requests amplification help:
 - [skill-contract.md](../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../references/state-model.md) — HOT/WARM/COLD memory tiers and save conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — free/keyless data recipes per connector category.
+- Platform format & algorithm specs (for picking placements and tuning paid amplification per channel): [tiktok](../../references/platforms/tiktok.md) · [youtube](../../references/platforms/youtube.md) · [linkedin](../../references/platforms/linkedin.md) · [x](../../references/platforms/x.md) · [reddit](../../references/platforms/reddit.md) · [grokipedia](../../references/platforms/grokipedia.md).
 - Sibling skills: [content-reviewer](../../activate/content-reviewer/SKILL.md), [ugc-repurposer](../../convert/ugc-repurposer/SKILL.md), [budget-optimizer](../../plan/budget-optimizer/SKILL.md), [performance-analyzer](../../track/performance-analyzer/SKILL.md).
 
 ## Next Best Skill

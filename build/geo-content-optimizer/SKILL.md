@@ -61,7 +61,7 @@ When a user requests GEO optimization, run these five steps:
 2. **Analyze Current Content** — score clear definitions, quotable statements, factual density, source citations, Q&A format, authority signals, freshness, and structure clarity.
 3. **Apply GEO Techniques** — add standalone 25-50 word definitions, sourced quotable statements, expert/source signals, Q&A/tables/lists, specific data, and visible-content-matching FAQ schema.
 4. **Generate GEO Output** — report Changes Made, before/after GEO score, and AI Query Coverage.
-5. **CORE-EEAT GEO Self-Check** — verify C02, C04, C09, O02, O03, O05, O06, R01, R02, R04, R07, E01, Exp10, Ept08 with Pass/Warn/Fail.
+5. **CORE-EEAT GEO Self-Check** — verify C02, C04, C09, O02, O03, O05, O06, R01, R02, R04, R07, E01, Exp10, Ept08 with Pass/Warn/Fail. Then run the [slop self-check](../../references/humanizer-slop.md) to strip AI-tell phrasing before the asset ships.
 
 Label every metric **Measured** (tool/export), **User-provided**, or **Estimated** (model inference); never present an estimate as measured; if a required metric is unavailable, mark it N/A — do not invent it.
 
@@ -85,8 +85,13 @@ On user confirmation, save to `memory/content/YYYY-MM-DD-<topic>.md` — see [Sk
 
 - [Instructions Detail](references/instructions-detail.md) - Full 5-step workflow, CORE-EEAT GEO targets, self-check matrix, worked example, tips
 - [GEO Optimization Techniques](references/geo-optimization-techniques.md) - Detailed before/after examples, templates, and checklists for each technique
-- [AI Citation Patterns](references/ai-citation-patterns.md) - How Google AI Overviews, ChatGPT, Perplexity, and Claude select and cite sources
+- [AI Citation Patterns](references/ai-citation-patterns.md) - Per-engine source selection across 9 engines: Google AI Overviews, ChatGPT, Perplexity, Claude, Copilot, Gemini, Grok, Brave, Bing
 - [Quotable Content Examples](references/quotable-content-examples.md) - Before/after examples of content optimized for AI citation
+- [Medium / GitHub AI-Citation Surfaces](references/medium-github-surfaces.md) - Off-site surfaces engines cite (Medium articles, GitHub repos/READMEs)
+- [Slop Self-Check](../../references/humanizer-slop.md) - Pre-publish pass to strip AI-tell phrasing before content ships
+- [Agent-Readable File Stack (llms.txt / OKF)](../../references/llms-txt-okf.md) - Machine-readable files so agents and engines can parse your site
+- [Grokipedia Tactics](../../references/platforms/grokipedia.md) - AI-citation tactics for Grok / Grokipedia
+- **GEO distribution surfaces** — platform refs engines pull from: [X](../../references/platforms/x.md), [LinkedIn](../../references/platforms/linkedin.md), [YouTube](../../references/platforms/youtube.md), [Reddit](../../references/platforms/reddit.md)
 
 ## Next Best Skill
 

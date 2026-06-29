@@ -69,6 +69,24 @@ When a user requests internal linking optimization:
 7. **Generate Implementation Plan** — Include executive summary, current-state metrics, phased priority actions, implementation guide, and tracking plan.
    > **Reference**: [references/linking-templates.md](references/linking-templates.md) contains the Step 7 template.
 
+### Site-Map Diagram (optional)
+
+To make orphan pages and link islands visible, draw a Mermaid `graph TD` with one subgraph per nav zone. Orphans sit in their own subgraph with no inbound edges; islands are clusters that link among themselves but never back to a pillar. Paste into any Mermaid renderer.
+
+```mermaid
+graph TD
+  subgraph Pillars
+    H[Home] --> P[Pillar: Email]
+  end
+  subgraph Cluster
+    P --> A[List building]
+    P --> B[Subject lines]
+  end
+  subgraph Orphans
+    O[Old promo page]
+  end
+```
+
 ## Decision Gates
 
 **Stop and ask the user when:**

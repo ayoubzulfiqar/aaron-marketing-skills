@@ -82,6 +82,10 @@ See [references/example-report.md](references/example-report.md) for a full samp
 
 For a pairwise topic-coverage gap map ("content [competitor] has that I don't, sorted by traffic potential"), hand off to [content-gap-analysis](../content-gap-analysis/SKILL.md) — that is its dedicated job.
 
+### Video Benchmarking
+
+When a competitor invests in video, benchmark their YouTube outliers (views >=2x their channel average) and the title/thumbnail packaging that drives those wins — those patterns show what topics and framing earn reach. See [platforms/youtube.md](../../references/platforms/youtube.md).
+
 ### Link Intersection
 
 ```
@@ -110,6 +114,7 @@ Write path: `memory/research/competitor-analysis/YYYY-MM-DD-<topic>.md`; promote
 - [Battlecard Template](references/battlecard-template.md) — Quick-reference battlecard format
 - [Positioning Frameworks](references/positioning-frameworks.md) — Positioning and differentiation frameworks
 - [Example Report](references/example-report.md) — Worked sample
+- [platforms/youtube.md](../../references/platforms/youtube.md) — YouTube outlier and title-packaging benchmarks for video-heavy competitors
 
 ## Next Best Skill
 

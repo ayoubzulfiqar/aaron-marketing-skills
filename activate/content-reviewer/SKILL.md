@@ -512,6 +512,7 @@ When a user requests content review:
 - [state-model.md](../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../CONNECTORS.md) — keyless data recipes for the `~~` connector placeholders.
 - C³ scoring: [c3-benchmark.md](../../references/c3-benchmark.md) and [c3/art-content-benchmark.md](../../references/c3/art-content-benchmark.md) — the ART Content rubric this review gates on, incl. the T1 (FTC disclosure) and T2 (claim integrity) veto items.
+- [references/quality-review-aids.md](references/quality-review-aids.md) — wires the AI-slop checklist ([humanizer-slop.md](../../references/humanizer-slop.md)) as a SOFT, non-veto ART quality penalty (ART vetoes stay T1/T2 only), the multi-persona method ([expert-panel.md](../../references/expert-panel.md)), and per-platform format/disclosure norms ([platforms/](../../references/platforms/)).
 - [brief-generator](../../plan/brief-generator/SKILL.md) — the brief whose criteria this review checks against.
 - [contract-helper](../../activate/contract-helper/SKILL.md) — bake content guidelines and approval terms into the agreement.
 - [content-amplifier](../../convert/content-amplifier/SKILL.md) — amplify content once approved.
