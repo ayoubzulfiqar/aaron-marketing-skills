@@ -17,6 +17,8 @@
 
 **北极星**:把本仓从"两个半融合学科 bolt 在 SEO 地基上"变成**真正学科中立的平台**——一层薄的 Markdown/SSOT 平台层(门协议 / 记忆-状态模型 / 连接器注册表 / 构建-CI 脊柱)托住薄的学科层,并配上**回归保护的质量层**(eval 结构 lint + slop 屏 + C³ 数学守护),让**廉价的纯 Markdown 能力补丁**与(决策门控的)**新学科**都能安全落地。**护城河不动**:Markdown-first、零依赖、keyless Tier-1、外科手术文化。
 
+**北极星达成判据(DoD,对抗补——不是"波次存在"即达成)**:① 共享 SSOT(runbook / discipline-contract / state-model / CONNECTORS)**零 SEO-only 字符串**;② 四框架(CORE-EEAT/CITE/C³/ROAS)各有 golden-math 守护 + runbook veto 行;③ 每个 `~~category` 有 Discipline 标签 + Tier-1 keyless 回退;④ 全部 CI 守卫(结构 lint / 依赖防 creep / PII / marketplace 字节)绿。
+
 **七波路线图(按依赖,不按文档):**
 
 | 波 | 主题 | 重点 | 量级 |
@@ -29,13 +31,13 @@
 | **5** | 新 SEO/GEO 子技能 + 影响者门接入 + 路由 | 6 个新技能(各带 eval fixture)、content-reviewer 入 Artifact Gate(决策门控)、影响者路由场景 | L |
 | **6** | **第三学科:付费广告 Paid Ads(已定)** + discipline-contract | 写 discipline-contract → 建 **ROAS** 框架 + 4 技能 + own-data keyless 连接器;**CRO/留存降为 DEFER** | L |
 
-**10 个 Quick Win(最便宜、零冲突、可立刻起步——多为纯 Markdown):**
-1. `_http.py:26` UA 改 `aaron-marketing-skills-connector/1.0`(中性核最后一个 SEO 残留字符串)
-2. auditor-runbook 加 C³/ART veto 行 + Changelog 记 cap 对账(**先做 cap 对账**)——解锁整个门协议
+**10 个 Quick Win(纯 Markdown 为主;真正零风险者可立刻起步,带前置/含内容工作者已标注):**
+1. `_http.py:26` UA 改 `aaron-marketing-skills-connector/1.0`(**注:不是唯一残留——`crawl.py:44` 还有 `UA_TOKEN='seo-geo-skills-connector'`;先 grep 全部 seo-geo 残留一并改**)
+2.(**非 10 秒级·带前置**)Changelog **先**记 cap 对账(锁 ≤59/60 约定)→ **再**加 C³/ART veto 行——解锁整个门协议
 3. memory-management 去 SEO 化措辞(name/version 字节稳定)
 4. CONNECTORS.md 加 Discipline 标签列 + 每类目"Agent 推荐"行(**注:表已统一,见 §4-A,非重建**)
 5. 给 schema/technical 审计器加"JS 注入 JSON-LD 假阳性"警告(很可能是我们自己审计器的真 bug)
-6. `ai-citation-patterns.md` 从 4 引擎扩到 9 引擎(扩现有文件,补强我们最强 GEO 资产)
+6.(**实质内容工作·非微改**)`ai-citation-patterns.md` 从 4 引擎扩到 9(每个新引擎要写来源选择逻辑)
 7. content-refresher + alert-manager 加"流量跌 >30% 触发刷新"数值阈值
 8. 写**一份**共享 `references/humanizer-slop.md`,被 4 个内容技能引用(最高杠杆纯 Markdown 借鉴,双学科共用)
 9. c3-benchmark.md 加数值 CVI 算例(对每个 C³ 技能都有用,且是 golden-math 守护的前置 fixture)
@@ -49,7 +51,7 @@
 
 > 对抗复核明确点名:以下已由 OPTIMIZATION_PLAN(已执行)或本轮完成,**不得当新缺口再提**:
 
-- hook `hb()` 解析修复;CI 已覆盖**全部 12 个相位目录**(P0-2,所以"auto-discovery"只是维护气味清理、**非覆盖缺口**,低优先);
+- hook `hb()` 解析修复;CI 已覆盖**全部 11 个相位目录(5 SEO + 6 影响者,38 技能)**(P0-2,所以"auto-discovery"只是维护气味清理、**非覆盖缺口**,低优先);
 - `skill-contract.md` 已写"38 skills";C³ 已按 route-C 接线 fit-scorer/content-reviewer/roi-calculator;
 - 18 个影响者 `evals/<skill>/cases.md` **已存在**(P2-3);P3-9 已提出非致命 eval-presence warn;P3-7 bug-report.yml(仅需 verify);
 - **CONNECTORS.md 已统一**:已有"Tool Categories"段 + "Influencer / IMPACT categories"子段 + keyless/own-data 右列,`~~influencer database`/`~~social platform analytics`/`~~ad platform` 已标 manual-export(P2-1);
@@ -62,18 +64,19 @@
 
 ### 波 0 — 产品/治理决策(无码,XS)
 **目标**:把"做错了贵、写下来便宜"的不可逆/治理问题先拍板并记录,避免下游反复。
-- **cap 阈值**:把 C³ ≤59 记为 runbook ≤60 cap 的"band 对齐形式",**显式写进 auditor-runbook §Changelog**(已核验 c3 Low 段 40-59、veto-cap ≤59 与 runbook cap-to-60 表本就对齐 → **零裁决漂移**;仅需记录,不改任何数字)。**此项必须先于波 1 的 C³ runbook 措辞。**
+- **cap 阈值**:把 C³ ≤59 记为 runbook ≤60 cap 的"band 对齐形式",**显式写进 auditor-runbook §Changelog**(c3 Low 段 40-59、veto-cap ≤59 vs runbook `min(raw,60)`=60 → **band 对齐,Low/Medium 接缝处差 ≤1 分**,登记为等价、**不改任何 rubric 数字**;**勿写成"零漂移"**)。波 2 的 C³ golden-math 断言须**显式钉死 raw==60 + 单 veto 边界**,把约定(≤59 vs 60)锁死而非留隐含;并确认 fit-scorer/content-reviewer/roi-calculator 三者用同一 cap 值。**此项必须先于波 1 的 C³ runbook 措辞。**
 - **eval 冲突**:书面拒绝自动 runner;只采纳 stdlib 结构 lint + 存在性滚动;输出打分手动/opt-in。写进 CONTRIBUTING + evals/README 作定论。
 - **路线图之记录**:定本文件为单一活路线图;OPTIMIZATION_PLAN 标 DONE/基线;OSS_BENCHMARK_PLAN + ARCHITECTURE_PLAN 计划归档到 `docs/planning/`(加"superseded by UNIFIED_OPTIMIZATION_PLAN"头);定 commit-vs-gitignore。
 - **第三学科已定 = 付费广告 Paid Ads**(用户拍板;**CRO 与留存降为 DEFER**)。作为**独立顶层学科**:自带 ROAS 质量框架、own-data 手动导出 keyless 连接器、命令入口、`memory/paid-ads/` 分区。波 0 只记录决策 + "keyless 兼容"定调(广告数据按自有账户手动导出作 Tier-1,keyed API 仅可选 Tier-2/3 MCP),先不建。
 - **预记录**三个产品决策的取向(content-reviewer 是否产 gated 产物 / 写路径 / `/impact` 命令),让后续波知道范围。
+- **版本策略(对抗补)**:能力补丁波(1–4)= patch/minor bump;**付费广告学科(波 6)= MAJOR → 11.0.0**;每个新技能落地时带自己的初始 `metadata.version`(= 当时 bundle 版本,且强制 `version==metadata.version`);凡改计数/加技能的波**按 CONTRIBUTING §6 跑 8 文件同步**(VERSIONS.md / plugin.json 版本 / README+zh-README 徽章 / CLAUDE / AGENTS / 两份 marketplace)。
 
 ### 波 1 — 平台缝(纯文档 + 一个字符串,S–M)
 **目标**:让共享 SSOT 停止假装 SEO 专属。
 **理由**:门协议与记忆模型~80% 已共享、只是措辞 SEO;这是最便宜、最低风险的提升,且是后续一切能力/学科的前置。C³ 是验证"veto→cap 插件模式可泛化"的彩排。
 - auditor-runbook §5 加一行 C³/ART veto-set(ACE A2/C1/E2;ART T1/T2),与 CORE-EEAT、CITE 并列(行**非字节相同**;**不改名 runbook、不改 `class:` 标识符**)。
 - memory-management 去 SEO 化措辞(:17/:124/:137-156)→"营销记忆"+ 加影响者查找路径;**name/metadata.version 字节稳定**(避免 validator SPLIT + 8 文件连锁)。
-- **CONNECTORS.md 加 Discipline 列(search/influencer/both)+ 每类目一行"Agent 推荐"**(默认选谁+何时换),保留 keyless Tier-1。⚠ **已统一,非重建**(§4-A);`ledger.py`/`rss_monitor.py` 改标 both(无代码)。
+- **CONNECTORS.md 加 Discipline 列(search/influencer/both)+ 每类目一行"Agent 推荐"**(默认选谁+何时换),保留 keyless Tier-1。⚠ **已统一,非重建**(§4-A);在 **CONNECTORS.md 里把 `ledger.py`/`rss_monitor.py` 的配方行标 Discipline=both**(改的是表行、**非 .py 文件**,零代码)。
 - `_http.py:26` UA 改名(cosmetic,changelog;**零依赖项,可搭任何 PR**)。
 **退出**:runbook 列三套 veto;memory 无 SEO 措辞且版本不变;CONNECTORS 有 Discipline 列;UA 中性;`--status` 仍全 OK 无 SPLIT。
 
@@ -81,7 +84,7 @@
 **目标**:给语料正确的回归保护——结构 lint(**非 runner**)、C³ 算例+golden-math 守护、PII 哨兵、依赖防 creep 守卫。
 - c3-benchmark.md 加数值 `CVI=(ACE×ART×ROI)^(1/3)` 算例(**硬前置**;CI 顺序:算例 commit 先于断言 commit)。
 - golden-auditor-math.py 加 C³ CVI 断言块,用**写死的期望输入/输出向量**(不动态解析 Markdown 表);CORE-EEAT/CITE 守护保持。golden-math 的两个 SEO 审计路径**保持内联**(不为它建 disciplines.md)。
-- 新 `scripts/check-evals.py`(stdlib)**仅结构 lint**:每个 cases.md 可解析、必填键齐、target_skill 真实存在、无掉队技能;+ `evals/eval-baseline.json`(**只存结构事实:技能清单/必填键存在,绝不存输出分**)。**永不调模型/不执行技能。**
+- 新 `scripts/check-evals.py`(stdlib)**仅结构 lint**:每个 cases.md 可解析、必填键齐、target_skill 真实存在、无掉队技能;+ `evals/structure-manifest.json`(**改名,避免与被拒 runner 的"输出分 baseline"撞名**;只存结构事实:技能清单/必填键存在,**绝不存输出分**;check-evals 加"键白名单、拒绝任何分数字段"断言,把散文承诺变强制)。**永不调模型/不执行技能。**
 - CI 只接 check-evals 的**结构 lint 那半**(fail-closed)+ 非致命 per-discipline eval-presence 滚动;**输出打分不进 CI**。
 - **【新增·对抗补】依赖防 creep CI 守卫**:一条 grep,扫 `scripts/` 任何 .py 只 import stdlib(denylist:numpy/pandas/scipy/sklearn/requests/whisper/mediapipe/cv2),fail-closed。**比 tracking-verifier 更便宜,直接守护护城河**——尤其防 trend-scout/dossier/atom-extraction 这几个重依赖来源的 dep creep。
 - `scripts/check-pii.py`(stdlib regex:邮箱/key/token)+ CI 步 + 可选本地 pre-commit;**丢弃 CTA-block/归因强制、丢弃 telemetry**;加 example.com/555 allowlist。
@@ -92,6 +95,7 @@
 
 ### 波 3 — 纯 Markdown 能力补丁(批 A,M;每个小,可 2–3 个批 PR)
 **目标**:落地零依赖、零冲突、零回归风险的 Markdown 借鉴,补强现有 SEO/GEO 与影响者技能。无新技能、无新机器。
+**【对抗补·SKILL.md 预算】**凡补丁落在已 >450 行的影响者巨型技能(content-reviewer 528 / brief-generator 559 / campaign-planner 544 / ugc-repurposer 478 / outreach-manager 447),新增内容**一律进 `references/` 由技能链接**(照本波 humanizer-slop/platforms 做法),不往本体堆;软上限 SKILL.md ≤ ~450 行,守"SKILL.md 保持精简"贡献规则。
 - **写一份共享 `references/humanizer-slop.md`**(24 条 AI-slop 模式 + ~55 词禁用表 + 每条扣分 + 前后改写;并入 coreyhaines ai-writing-detection 启发式)。被 seo-content-writer / geo-content-optimizer / content-quality-auditor(映射 CORE-EEAT Experience,**先做软惩罚**)/ content-reviewer(映射 ART 质量维,**非 veto**——ART veto 留给 T1/T2)**引用,不内联复制**。⚠ **【新增·对抗补】与现有 skill-contract Output Voice 禁用词表去重**,避免两份分叉 banlist。
 - `geo-content-optimizer/references/ai-citation-patterns.md` 从 4 引擎扩到 9(加 Copilot/Gemini/Grok/Brave/Bing + 引用来源逻辑);被 content-quality-auditor 引用。
 - schema-markup-generator + technical-seo-checker + on-page-seo-auditor 加"JS 注入 JSON-LD 假阳性"警告(用 rendered DOM/Rich Results Test 再报"无 schema")。
@@ -109,7 +113,7 @@
 
 ### 波 4 — 闭环度量 + 审计改进环 + 影响者方法升级(M–L)
 **目标**:加度量严谨层、限域递归改进、outreach 人物面板、UGC 原子提取、(stdlib)创作者 dossier。
-- **扩**现有 `references/measurement-protocol.md`(**不新建 closed-loop.md**——⚠ OSS 源说"create closed-loop.md",但我们已有 measurement-protocol.md,执行波须读"EXTEND"):readback 窗口(7/14/28/56 天)、必填字段、promote/keep-testing/rollback/unproven 规则、不可升级清单、显著性门**仅作文档方法**(bootstrap CI + Mann-Whitney U,p<0.05 且 ≥15% lift;**无 scipy/代码**);插入 performance-reporter/performance-analyzer/roi-calculator/content-refresher/alert-manager。
+- **扩**现有 `references/measurement-protocol.md`(**不新建 closed-loop.md**——⚠ OSS 源说"create closed-loop.md",但我们已有 measurement-protocol.md,执行波须读"EXTEND"):readback 窗口(7/14/28/56 天)、必填字段、promote/keep-testing/rollback/unproven 规则、不可升级清单、显著性门**仅作文档方法**(bootstrap CI + Mann-Whitney U,p<0.05 且 ≥15% lift;**无 scipy/代码**);插入 performance-reporter/performance-analyzer/roi-calculator/content-refresher/alert-manager。⚠ **该文件现为 SEO/GEO 标题**(爬虫→可引用→排名延迟模型),复用前先做**去 SEO 化 pass**(标题+层级语言中性化,平行波 1 的 memory/runbook 去 SEO);给付费/影响者各加延迟段(付费:转化滞后 + 归因窗口 + 学习期噪声,非排名延迟);它已有 `*(proposed)*` 连接器 stub(botlog/citations/gsc),勿当既有 scope 静默继承。
 - content-quality-auditor 加**限域**递归打磨环(≤3 轮、**永不覆盖 veto**)。**【对抗订正】学习型拒绝记忆默认 DEFER**(今天无拒绝语料 = 同 creator-entity 的错误抽象);若做,**仅项目本地 memory、有上限,不写 committed 文件**。
 - outreach-manager 加多人物递归评审面板(≤3 轮、每轮投票表,**复用波 3 的 expert-panel.md**)+ 冷邮硬规则(首句禁词、Step1 ≤3 句、软 CTA、Step1 不放链接)。
 - ugc-repurposer 加 7 级内容原子提取 + 病毒启发式 + Jaccard ~0.70 近重复 flag(批内 + 对近 30 天)**仅作 Markdown 方法**(**不移植 whisper/mediapipe/pandas**)。
@@ -120,11 +124,11 @@
 **目标**:在平台缝 + eval-lint 网就位后,补真正缺的 SEO/GEO 技能单元;(决策门控)把 content-reviewer 接入运行时 Artifact Gate;播种影响者路由。
 **规则**:每个新技能**合并前先有手动 `evals/<skill>/cases.md`**(波 2 的 lint 网保证无掉队/损坏);validator 本就自动校验相位目录里任何 SKILL.md,SEO 技能无需 infra 改动。**【对抗补】每个加技能 PR 必须同步 8 文件 + 两份 marketplace 镜像(HARD 合并要求)。**
 - 新技能:`build/programmatic-seo`(12 打法 + 5 级数据可防御 + N-gram 薄页去重)、`optimize/site-architecture`(全站 IA + Mermaid)、`local-seo`(GBP/NAP/引用优先级;`~~local-listings` 标 Tier-1 手动)、`build/parasite-seo`(平台分层 + 站点声誉滥用规避)、`build/comparison-page-builder`(vs/alternative 页;**命名避开** analytical competitor-analysis)、`monitor/ai-traffic`(GA4/GSC 追 AI 流量,复用现有 keyless own-data 配方)。每个**先落 cases.md**。
-- **【决策门控】content-reviewer 入门**:若决定产持久 gated 产物 → 它读 auditor-runbook、发 `class:` 标记;hook **加 additive、fail-open 的第二套 C³ 字段 schema** 或让 content-reviewer 写完整 handoff schema 到 `memory/audits/influencer/`;给 `tests/test_hook_artifact_gate.sh` 加影响者 fixture。若否 → 保持对话内,slop 屏维持顾问性。
+- **【已定·net-new hook 编辑,非 additive】content-reviewer 入门**:它产持久 gated 产物、写 `memory/audits/influencer/`。⚠ 线上 hook 的 `memory/audits/*.md` 分支是 **fail-CLOSED**,硬要求 `cap_applied/raw_overall_score/final_overall_score`(cap 模型字段),而 C³ 用几何 CVI **没有这些**;runbook 又规定**非审计器不得用 `class:auditor-output` 标记**。故**不能 additive 接入,必须改 hook 派发**:给 `audits/influencer/` 路径(或第二个 class 标记)加**子类型感知分支**,按 **C³ 字段集**校验。落地三件套:(a) 明记这是 hook 编辑(全案最危险运行时改动);(b) `tests/test_hook_artifact_gate.sh` 加一个 **fail-open 负例**(畸形 C³ 产物**不得** block);(c) 把 runbook §1"非审计器不得用 marker"与本决策二选一对齐写死。前置:波 1 的 C³ runbook veto 行先落。
 - **影响者路由**:**先**在 auto-routing-scenarios.md 播种真实影响者场景;**仅在场景存在后**才考虑 `/impact` 命令——**而命令的前置是改写 `aaron-product-api-contract.md` 的"declines non-SEO/GEO"边界行**(场景的前置不是它,**别在 auto 仍拒 IMPACT 时加 /impact**)。
 
 ### 波 6 — 第三学科:付费广告 Paid Ads(已定)+ discipline-contract(L)
-**目标**:把付费广告作为**独立顶层第三学科**落地——先写 discipline-contract 文档,再按 6 缝建 **ROAS** 质量框架 + 精简 4 技能 + own-data keyless 连接器。**CRO/留存降为 DEFER**。
+**目标**:把付费广告作为**独立顶层第三学科**落地。**【对抗补·分期 + kill-switch】**波 6 是**全新零消费者学科**(不同于 CORE/CITE/C³ 当年都对着已有技能上线),量级远超"改个 UA",故**精简分期**:先建 **ad-account-auditor + ROAS rubric + `~~ad platform` 导出契约**,对 **2–3 个真实手动导出账户**跑通(provisional),再加另 3 技能;满 N 次审计前标 provisional(仿 runbook 校准门)。**CRO/留存降为 DEFER**。
 **keyless 定调(红线第一)**:付费广告全部从**自有账户手动导出**的数据运行(原生广告后台 CSV/截图/粘贴),与 GSC/GA4 own-data 同理;keyed 广告 API(google-ads SDK / Meta Marketing API)**仅可选 Tier-2/3 MCP,永不作 Tier-1 前置**。这是本学科最高红线漂移风险 → 见下方 lint 守卫。
 **理由**:用户拍板;付费广告是真正净新增的获客学科(SEO/影响者均不覆盖),且与现有"流量+落地页+ROI"工作协同强(复用 roi-calculator/budget-optimizer/landing-optimizer)。
 
@@ -134,8 +138,9 @@
 - Rollup = **RQS(ROAS Quality Score 0–100)= floor(weighted({R,O,A,S}, 目标权重))** —— **算术加权平均(同 CITE),非 C³ 几何 CVI**;复用 `golden-auditor-math.py` 现有 `weighted()/floor()` helper,**不引入新数学**。⚠ RQS(0–100 质量分)≠ 字面 roas 倍数(后者只是 Return 维的一个输入)。
 - 目标权重双列:DR/绩效 `R0.40 O0.20 A0.15 S0.25`、拉新/品宣 `R0.15 O0.30 A0.30 S0.25`,两列各 sum=1.0。
 - veto(**钉死一套稳定 ID,5 条,按维度对称归位 R:2 / O:2 / A:1**):**R1**=转化追踪损坏/不可验证(无数据=veto;**iOS/ATT 建模/部分=Partial/flag,不自动 veto**,否则现代账户几乎必触)· **R2**=跨平台归因重复计数/虚高(按订单 ID/时间戳跨两份粘贴 CSV 对账作 **LLM 读表,非 pandas join**,并校正不同归因窗口)· **O1**=广告宣称真实性/必需披露(claim integrity,虚假/无据宣称、缺法定披露)· **O2**=平台政策合规(违禁品类/商标滥用/受限行业 → 拒登或账户风险;与 O1 证据与补救不同,故拆开)· **A1**=品牌/版位安全(需版位报告导出)。**"过早扩量/学习期违规"降级为 S 维下高严重度 guardrail/flag,非 veto**(流程错误,不使分数不可信)。注:5 条单 veto cap-to-60、**2+ 同时硬失败 → BLOCKED 是正确行为**(追踪坏+政策违规的账户本就不该投),非过严——iOS/ATT 已软化 R1 降低误触。
+- **命名消歧 + MECE(对抗补)**:① ROAS 的 R/O/A 与 C³ ACE/ART/**ROI(R/O/I)** 字母重叠、veto ID R1/R2/O1/O2 与 C³ ROI scope item ID 文本重叠(注:C³ ROI scope **无 veto**,故仅文档内字母/ID 重叠、**非共享 veto 表冲突**)——规矩:共享文档(auditor-runbook §5)字母/ID **一律带框架名限定**(`ROAS-R` vs `C³ ROI-R`),付费 veto 行置于 §5 "Paid-Ads" 子标题下,绝不裸出。② **S 保持纯竞价效率**(CPC/CPM/CTR/CVR);预算分配委托 budget-optimizer、付费↔自然蚕食作跨学科子项(需 GSC join),不混进 S 核心打分——给 ROAS 出一张 MECE 表(仿 c3 §7)。
 - cap:完全复用 `auditor-runbook §2`(单 veto cap-to-60;2+ veto → BLOCKED 不出 final),**无新 cap 机器**。
-- golden-math 算例:`R=75 O=80 A=85 S=78`,DR 权重 → 30+16+12.75+19.5=78.25 → floor 78;veto 分支(R1 触发)→ min(78,60)=60。**断言两列权重各 sum=1.0、断言算例输入向量字符串出现在审计器本体、断言 2+veto BLOCKED 不出 final**。QS 5→7 ≈ −30~50% CPC 仅作**有标注的估算区间**(kostja94),不作框架计算分。
+- golden-math 算例(**钉死字面字符串供逐字断言**,仿 CITE `C=80 I=70 T=85 E=75`):DR 列 `R=75 O=80 A=85 S=78` → 30+16+12.75+19.5=78.25 → floor **78**;Prospecting 列同向量 → 11.25+24+25.5+19.5=80.25 → floor **80**(**两列都给算例**);veto 分支(R1)→ min(78,60)=60。**断言:两列权重各 sum=1.0(both 列,非只 DR)、两条输入向量字符串逐字现于审计器本体、2+veto BLOCKED 不出 final、raw==60+单 veto 边界锁约定**。QS 5→7 ≈ −30~50% CPC 仅作**有标注的估算区间**(kostja94),不作框架计算分。
 
 **技能集(精简 4 个,新相位目录;复用而非重复)**:
 - `paid/build · campaign-architect` —— 账户/活动结构、活动类型选择(Search/PMax/broad)、定向、否定词/排除卫生、**付费↔自然蚕食审计**(kostja94);评 A/结构;**budget-optimizer 为分配 SSOT**。
@@ -144,13 +149,13 @@
 - `paid/scale · paid-measurement-loop` —— ROAS/CPA readback,**复用 measurement-protocol.md + ledger.py + roi-calculator**;与 performance-analyzer 划清快照/diff 边界;输出走 report-generator。
 
 **连接器(全部 own-data keyless Tier-1;对抗订正后)**:
-- `~~ad platform`(已在 CONNECTORS.md,标 own-data 手动导出)→ **明列各 veto/维度所需的原生导出列契约**(搜索词报告列、版位报告列等)。
-- `~~conversion tracking / analytics` → GA4 own-data 导出(S1/S2 据此评);跨平台去重从**两份手动粘贴的 per-platform 导出**按订单 ID/时间戳对账。
+- `~~ad platform`(已在 CONNECTORS.md,标 own-data 手动导出)→ **明列每个 veto/维度所需的原生导出列契约**:S/CTR/CVR ← 活动+搜索词报告;**A1 ← 版位报告(无此导出则 A1=NEEDS_INPUT,非默认 pass)**;R2 ← 各平台**报告转化数**(注意:聚合数,**非行级 order ID**)。
+- 衡量信号(R1/R2)**复用已有 `~~web analytics`(GA4)+ `~~ecommerce`**,**不虚构 `~~conversion tracking` 类目**(CONNECTORS.md 无此类目)。R1 凭某个具体 GA4 报告(Conversions + 含 source/medium 的 Traffic acquisition)证明追踪可用。**R2 真值集来自 GA4/电商 own-data 按 order ID**(广告导出只给报告转化数 → R2 需第二份 own-data 导出,非"广告 CSV 原生");跨平台对账须**先归一化归因窗口 + 币种**(Meta 7-day-click vs Google last-click;多币种账户先换算)再比。
 - 落地页 → 复用现有零依赖 `_http.py/onpage.py` 抓取 + 粘贴回退(R 维)。
 - **丢弃 `~~creative asset library(DAM)`**(无 Tier-1 消费步骤,"粘贴你的创意"即可);**广告政策/合规改为 `references/` 包**喂 R1,**非连接器类目**(它只是文档、无导出路径)。
 
 **discipline-contract 与落地(6 缝)**:
-- 写 `references/discipline-contract.md` 为 **6 缝 Markdown 清单**(相位目录;rubric 插 auditor-runbook + golden-math 数值算例;`memory/paid-ads/<skill>/` 进 state-model WARM;连接器 `~~category` 带 keyless Tier-1 或 manual-export;命令入口;eval 集)——**非 loader/非重组/非 disciplines.md**;兼作两现有学科 onboarding SSOT;**保持"描述现有学科",不为付费广告预建投机字段**。
+- `references/discipline-contract.md`(**6 缝清单**:相位目录;rubric 插 auditor-runbook + golden-math 数值算例;`memory/paid-ads/<skill>/` 进 state-model WARM;连接器 `~~category` 带 keyless Tier-1 或 manual-export;命令入口;eval 集)——⚠ **默认推迟**:它当前只有 1 个消费者(付费广告自己),正是用来推迟 disciplines.md 的同一 <2 消费者判据;**先按缝直接建付费广告,待第 2 个新学科出现再把契约文档化**。非 loader/非重组/非 disciplines.md;若先写则仅作"描述现有学科"的 onboarding,不为付费广告预建投机字段。
 - 前置:确认波 1+2 缝已落(C³ 为可用第三框架 = 第 4 框架 ROAS 插入前的彩排、记忆/连接器中性、golden-math 守三框架)。
 - **红线漂移 lint(必做)**:validator 新增一条——**任何 paid-ads SKILL.md 本体把广告平台 API 措辞成"必需/Tier-1"即 fail**(authoring 期最高红线风险);并入波 2 的"依赖防 creep"守卫。
 - 每个付费技能建时即写手动 `cases.md`,**含 NEEDS_INPUT(缺导出)与 多-veto BLOCKED 两个非 happy-path 用例**。
@@ -164,13 +169,13 @@
 ## 3. 关键依赖
 
 - 波 0 cap 决策 **先于** 波 1 C³ runbook 措辞(否则现有影响者裁决漂移一分)。
-- 波 1 C³ runbook 行(便宜的文档半)**先于** 波 5 content-reviewer 门接入(把耦合变成更小的 additive 改动)。
+- 波 1 C³ runbook 行(便宜的文档半)**先于** 波 5 content-reviewer 门接入(让耦合更小)。⚠ content-reviewer 入 Gate **不是 additive**:线上 hook fail-CLOSED 且要 cap 字段 → 须新增 hook 子类型分支按 C³ 字段校验 + fail-open 负例测试(见波 5)——这是该波最危险的运行时改动,单列为依赖节点。
 - 波 2 C³ 数值算例 **硬先于** golden-math C³ 断言(算例 commit 先,否则断言空过)。
 - 波 2 check-evals 结构 lint **先于** 波 5/6 任何新技能(防能力扩张时 cases.md 静默腐烂)。
 - 波 2 依赖防 creep 守卫宜早(波 4 的 trend-scout/dossier/atom-extraction 是 dep creep 最高风险来源)。
-- 波 4 measurement-protocol 扩展是任何波 6 学科"报结果"的前置 → 可早做且学科中立。
+- 波 4 measurement-protocol 扩展是任何波 6 学科"报结果"的前置;**但须先做一次去 SEO 化 pass**(它现为 SEO/GEO 标题/模型),去 SEO 后才学科中立、可被付费/影响者复用。
 - 波 6 discipline-contract + 付费广告 ROAS 受波 1/2 缝落地门控(C³ 须为可用第三框架 = 第 4 框架 ROAS 插入前的彩排;golden-math 须先守三框架);付费广告命令受"先播种付费路由场景 + 改写 api-contract 边界"双前置。ROAS 用算术加权(同 CITE)→ golden-math 复用现有 helper,无新解析。
-- `/impact` 命令受"先播种场景 + 改写 api-contract 边界"双前置;auto-discovery/disciplines.md 受"消费者 <2"判定门控(默认不建)。
+- `/impact`(影响者)与 `/aaron-marketing:paid`(付费)**共享同一卡点**:都需改写 `aaron-product-api-contract.md` 的"declines non-SEO/GEO"边界——**作一处统一编辑,非两处独立**。命令 5→7 还须同步所有硬编码"five commands/五个命令"串(README/CLAUDE/AGENTS/docs/README.zh.md/api-contract),纳入 8 文件追踪。auto-discovery/disciplines.md 受"消费者 <2"判定门控(默认不建)。
 
 ---
 
@@ -179,14 +184,24 @@
 > 复核结论 `sound-with-fixes`。以下订正已写入对应波次:
 
 - **A · CONNECTORS.md 已统一,重 scope**:不是"合并两表"(P2-1 已把它做成"Tool Categories + Influencer/IMPACT 子段 + keyless 列",已核验)。波 1 的真实剩余工作只剩**加 Discipline 标签列 + 每类目 Agent-推荐行**——一个 Quick Win,非表重建。
-- **B · eval 调和锁死**:check-evals.py **只做**结构 lint + 存在性滚动,**绝不调模型/不执行技能**;`eval-baseline.json` **只存结构事实,不存输出分**(否则 baseline 悄悄变成被拒 runner 的状态文件);输出打分层 opt-in/非 CI;在 CONTRIBUTING/evals/README 写一行"禁止 scope creep"。
+- **B · eval 调和锁死**:check-evals.py **只做**结构 lint + 存在性滚动,**绝不调模型/不执行技能**;结构清单文件**改名 `structure-manifest.json`**(避免与 OSS 源同名的"输出分回归 baseline"混淆——那正是被拒 runner)+ **check-evals 加键白名单断言、拒绝任何分数字段**(把散文承诺变强制);输出打分层 opt-in/非 CI;在 CONTRIBUTING/evals/README 写一行"禁止 scope creep"。
 - **C · 砍/降级 tracking-sync 脚本**:别建跨文件 count/version 解析器(单消费者过度设计);用现有 marketplace 字节校验 + PR-checklist 行 + 至多 1-2 条 grep。
 - **D · 学习型拒绝记忆默认 DEFER**:波 4 只发限域递归环(≤3 轮、不覆盖 veto);拒绝记忆无语料 = 错误抽象,若做则项目本地、有上限。
 - **E · dossier 默认 method-only**:不为单薄 helper 建 influencer/ 子目录。
 - **F · 人物面板合并一份**:expert-panel.md + 多人物面板 + scoring-rubrics 三处同源,合成一份 reference 被两技能引用。
 - **G · 新增三条遗漏守卫**:① 依赖防 creep CI grep(波 2,**最高性价比护城河守卫**);② humanizer banlist 与现有 Output Voice 禁用词去重(波 3);③ cap 对账对现有影响者 eval cases 做零漂移人工抽查(波 0/1)。
-- **H · 诚实 scope**:CI find-loop 已覆盖全 12 目录(P0-2),auto-discovery 是维护气味、低优先非覆盖修;golden-math 两审计路径保持内联,**不宣称"4 处写死全替换"**。
+- **H · 诚实 scope**:CI find-loop 已覆盖全 **11** 目录(5 SEO + 6 影响者;P0-2),auto-discovery 是维护气味、低优先非覆盖修;golden-math 两审计路径保持内联,**不宣称"4 处写死全替换"**。
 - **I · 硬顺序**:cap 对账 commit 先于 C³ runbook 行;C³ 算例 commit 先于 golden-math 断言;`/impact` 的前置是改 api-contract 边界(非场景)。
+
+> **第二轮 review(6 视角并行 + 合成,`ship-with-fixes`)的必修/should-fix 也已并入上文:**
+> - **J · hook 非 additive(must-fix)**:content-reviewer 入 Gate 是真 hook 编辑(线上 fail-CLOSED + 硬要 cap 字段、C³ 无),须加子类型分支按 C³ 字段校验 + fail-open 负例(见波 5 / §3 / §5#3)。
+> - **K · "11 目录" 非 12**(§1 / §4-H);**L · cap "≤1 分 band 对齐" 非 "零漂移"** + golden-math 锁 raw==60 边界(波 0 / §5#2)。
+> - **M · 版本策略(must-fix)**:付费=11.0.0 major、新技能带 `metadata.version`、每波跑 8 文件同步(波 0)。
+> - **N · 影响者巨型技能补丁进 `references/`**(波 3 预算规则);**O · 不虚构 `~~conversion` 类目**、复用 GA4+ecommerce、R2 需第二份 own-data + 归因窗口/币种归一、A1=NEEDS_INPUT(波 6 连接器)。
+> - **P · measurement-protocol 先去 SEO 化**(波 4 / §3);**结构清单改名 `structure-manifest.json`** + 键白名单(波 2 / §4-B)。
+> - **Q · 波 6 分期 + provisional + discipline-contract 默认推迟**;ROAS 字母/ID 带框架名限定、S 维 MECE、Prospecting 列也给算例(波 6)。
+> - 北极星加 **DoD**(§0);命令 5→7 与 api-contract 边界为**单一卡点**(§3);QW1/2/6 标注"非微改"(§0);§7 去"按 id 可溯"宣称。
+> - **判为误报、未改**:ROAS"撞 C³ 共享 veto 表"(C³ ROI 无 veto,仅文档内 ID 重叠,已做 namespacing);"2+→BLOCKED 过严"(未证实,列校准 watch-item);site-architecture 是否应降为 reference(不确定,改为要求每个新技能附一句差距证据)。
 
 ---
 
@@ -195,8 +210,8 @@
 | # | 决策 | 已定 |
 |---|------|------|
 | 1 | eval 形态(头号冲突) | ✅ stdlib 结构 lint + 非致命存在滚动作 CI 门;**输出打分手动/opt-in、不进 CI;拒绝自动 runner**。结构 lint 先发 |
-| 2 | cap 阈值对账 | ✅ C³ ≤59 记为 ≤60 的 band 对齐形式(零裁决漂移),显式 changelog |
-| 3 | content-reviewer gated 产物 | ✅ **是**——产持久 gated 产物、进 Artifact Gate(影响者侧 slop 屏转为强制 veto);改动 **additive + fail-open** |
+| 2 | cap 阈值对账 | ✅ C³ ≤59 记为 ≤60 的 band 对齐形式(**接缝处差 ≤1 分,非"零漂移"**),显式 changelog + 波 2 golden-math 锁 raw==60+单 veto 边界 |
+| 3 | content-reviewer gated 产物 | ✅ **是**——产持久 gated 产物、进 Artifact Gate。⚠ **这是真的 hook 编辑(非"additive")**:线上 hook 对 `memory/audits/*.md` 是 **fail-CLOSED** 且硬要 cap 字段,C³ 无这些 → 须给 hook 加**子类型感知分支**按 C³ 字段校验 + fail-open 负例测试。**强制的是"产物过 Gate 结构校验";slop 本身仍是软质量信号(非 veto),ART veto 仍仅 T1/T2** |
 | 4 | 影响者门写路径 | ✅ `memory/audits/influencer/`(统一 Gate 路径,更干净) |
 | 5 | `/impact` 命令 | ✅ 先播种影响者路由场景,**缓命令**;加命令前先改写 api-contract 的"declines non-SEO/GEO" |
 | 6 | **第三学科** | ✅ **付费广告 Paid Ads**(独立顶层学科,ROAS 框架);**CRO 与留存降为 DEFER**;付费广告之外的扩张暂缓 |
@@ -236,7 +251,7 @@
 
 ## 7. 主题项索引
 
-六个对齐主题共产出可执行建议项,已全部按 id 编织进上文波次:`quality-eval`(11)· `platform-protocol`(15)· `seo-geo-capability`(20)· `influencer-capability`(11)· `new-disciplines`(9)· `repo-governance`(10)。每条均带 source(oss/arch/internal-done/new)/target/effort/risk/depends_on,详见各波次条目与 §4 订正。
+六个对齐主题的可执行建议项已全部并入上文波次的**散文条目**(本文件用波次叙事、非 id 行表;下列计数为来源主题的**粗略规模,非可逐条溯源的 id 表**):`quality-eval` ~11 · `platform-protocol` ~15 · `seo-geo-capability` ~20 · `influencer-capability` ~11 · `new-disciplines` ~9 · `repo-governance` ~10。每项的 source/target/effort/risk/依赖见对应波次条目与 §4 订正。
 
 ## 8. 文档治理(已执行 ✅,2026-06-29)
 
