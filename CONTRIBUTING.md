@@ -66,7 +66,7 @@ Auditor-class skills are the exception: they inline the authoritative auditor ru
 | `content-reviewer` | C³ ART (influencer content gate) | `memory/audits/influencer/` |
 | `ad-account-auditor` | ROAS RQS (paid-ads gate) | `memory/audits/paid/` |
 
-Cross-cutting reference protocols apply across disciplines: the humanizer-slop protocol, the measurement-protocol decision protocol, and the per-channel `platforms/` reference packs.
+Cross-cutting reference protocols apply across disciplines: the humanizer-slop protocol, the measurement-protocol decision protocol, and the per-channel `platforms/` reference packs. These stay references (not skills) by design — each is consumed as a pre-handoff sub-step inside discipline skills, so promoting one to a standalone skill would duplicate that step.
 
 ### 5. Validate
 

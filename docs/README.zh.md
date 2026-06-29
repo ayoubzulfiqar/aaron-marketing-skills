@@ -15,7 +15,7 @@
 - **SEO/GEO** — **22 个技能**：关键词研究、内容创作、程序化/寄生/本地/对比页构建、on-page 与技术审计、结构化数据、站点架构、排名/外链/AI 流量监控。
 - **红人营销（IMPACT）** — **18 个技能**：受众洞察、红人发现与适配打分、活动规划、brief、外联、内容审核、放大、UGC 二次利用、ROI 追踪。
 - **付费广告（ROAS）** — **8 个技能**：账户结构、受众分群、广告创意、实验设计、账户审计门、转化信号 QA、衡量回读循环、归因对账。
-- **协议层（跨学科）** — **4 个技能**：CORE-EEAT/CITE 质量与权威门、实体事实、HOT/WARM/COLD 记忆——服务全部三个学科。
+- **协议层** — **4 个技能**：位于学科 phase 流程之外的共享机件（门 + SSOT + 记忆）——1 个真跨学科（`memory-management`）+ 3 个 SEO/GEO 质量与信任门。真正横向的是 `references/` 协议，而非技能。
 
 全部为**纯 Markdown**（唯一的代码是一个 Bash hook runner、一个 Bash 校验器、以及零依赖的 Python 标准库数据助手——无 `pip`、无构建步骤）。**每个技能都能在 Tier 1 仅凭你粘贴的数据运行**；可选连接器只是自动化取数。内置四套评分框架并支撑发布/信任/质量门：[CORE-EEAT](../references/core-eeat-benchmark.md)、[CITE](../references/cite-domain-rating.md)、[C³](../references/c3-benchmark.md)、[ROAS](../references/roas-benchmark.md)。
 
@@ -32,7 +32,7 @@
 - [质量框架](#质量框架)
 - [技能目录](#技能目录)
   - [SEO/GEO(22)](#seogeo22)
-  - [协议层 — 跨学科（4）](#协议层--跨学科4)
+  - [协议层（4）](#协议层4)
   - [红人 — IMPACT(18)](#红人--impact18)
   - [付费广告 — ROAS(8)](#付费广告--roas8)
 - [命令](#命令)
@@ -117,18 +117,29 @@
 
 ### 协议层
 
-四个跨领域技能 + 两个 auditor-class 消费者构成协议层。auditor-class 技能写入一个**带门工件**(`class: auditor-output`)，由 PostToolUse hook 在落盘前校验：
+这里有两个容易混淆的概念，分开命名，避免再加出 6：
 
-| 协议技能 | 角色 | 框架 | 写入 |
+**结构 —— `protocol/` 目录（4 个技能）。** 位于学科 phase 流程之外的共享机件（门 + SSOT + 记忆）。其中只有 `memory-management` 真正跨学科；另外三个是 SEO/GEO 的质量/信任技能，因属“门/SSOT 类”才归在此处。
+
+| `protocol/` 技能 | 角色 | 框架 | 覆盖 |
 |----------|------|------|------|
-| `content-quality-auditor` | 发布就绪门 | CORE-EEAT | `memory/audits/<skill>/` |
-| `domain-authority-auditor` | 引用信任门 | CITE | `memory/audits/<skill>/` |
-| `content-reviewer` | 红人内容门（C³ ART） | C³ | `memory/audits/influencer/` |
-| `ad-account-auditor` | 付费账户门（ROAS RQS） | ROAS | `memory/audits/paid/` |
-| `entity-optimizer` | 规范实体档案 | — | `memory/` |
-| `memory-management` | HOT/WARM/COLD 记忆循环 | — | `memory/` |
+| `content-quality-auditor` | 发布就绪门 | CORE-EEAT | SEO/GEO |
+| `domain-authority-auditor` | 引用信任门 | CITE | SEO/GEO |
+| `entity-optimizer` | 规范实体档案 | — | SEO/GEO |
+| `memory-management` | HOT/WARM/COLD 记忆循环 | — | 全部学科 |
 
-门的机制——handoff schema、封顶算术、工件门清单——在 [auditor-runbook.md](../references/auditor-runbook.md) 中统一规定。
+**角色 —— auditor-class 门（4 个，不单独计数）。** 这是运行期*角色*而非目录：写出受 PostToolUse hook 校验的**带门工件**（`class: auditor-output`）、按单一框架打分的技能。其中 2 个在 `protocol/`，另 2 个驻留学科目录、**计入各自学科**，不在此处重复计数：
+
+| 门 | 框架 | 所在 | 计入 |
+|----|------|------|------|
+| `content-quality-auditor` | CORE-EEAT | `protocol/` | protocol (4) |
+| `domain-authority-auditor` | CITE | `protocol/` | protocol (4) |
+| `content-reviewer` | C³ ART | `activate/` | influencer (18) |
+| `ad-account-auditor` | ROAS RQS | `paid/` | paid (8) |
+
+四者都 `Read` 框架无关的门 SSOT —— [auditor-runbook.md](../references/auditor-runbook.md)（handoff schema、封顶算术、工件门清单）。
+
+**共享协议（`references/`，0 技能，不计数）。** 真正服务每个学科的横向层 —— [auditor-runbook.md](../references/auditor-runbook.md)、[state-model.md](../references/state-model.md)、[skill-contract.md](../references/skill-contract.md)、[humanizer-slop.md](../references/humanizer-slop.md)、[measurement-protocol.md](../references/measurement-protocol.md) —— 按设计以参考协议形式存在，而非技能。
 
 ---
 
@@ -189,9 +200,9 @@
 
 </details>
 
-### 协议层 — 跨学科（4）
+### 协议层（4）
 
-服务全部三个学科的跨领域技能——CORE-EEAT/CITE 质量与权威门、实体事实、项目记忆。它们位于 `protocol/`，单独计数，不算进 SEO/GEO。
+位于学科 phase 流程之外的共享机件（门 + SSOT + 记忆）。其中只有 `memory-management` 真正跨学科；另外三个是 SEO/GEO 的质量/信任门。它们位于 `protocol/`，单独计数，不算进 SEO/GEO。
 
 | 组 | 技能 |
 |------|------|

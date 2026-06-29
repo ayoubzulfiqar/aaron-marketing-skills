@@ -15,7 +15,7 @@ This plugin provides **52 skills and 5 commands** across three marketing discipl
 | **Optimize** | `on-page-seo-auditor`, `technical-seo-checker`, `internal-linking-optimizer`, `content-refresher`, `site-architecture` |
 | **Monitor** | `rank-tracker`, `backlink-analyzer`, `performance-reporter`, `alert-manager`, `ai-traffic` |
 
-**Protocol layer — cross-cutting (4):** shared across all disciplines; counted separately, not under SEO/GEO.
+**Protocol layer (4):** shared-machinery skills (gates + SSOT + memory) that sit outside the discipline phase-flows — 1 cross-discipline (`memory-management`) + 3 SEO/GEO quality/trust gates (`content-quality-auditor`, `domain-authority-auditor`, `entity-optimizer`). Counted separately, not under SEO/GEO. The auditor-class **gate role** spans 4 skills — these 2 plus `content-reviewer` and `ad-account-auditor`, which are counted under their home disciplines.
 
 | Group | Skills |
 |-------|--------|
@@ -66,7 +66,7 @@ Reused cross-discipline (counted in the phases, not duplicated): `budget-optimiz
 
 - Shared contract reference: [references/skill-contract.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/skill-contract.md)
 - Shared state model: [references/state-model.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/state-model.md)
-- Protocol roles:
+- Protocol roles (role assignments — the `protocol/` directory itself is 4 skills; `content-reviewer`/`ad-account-auditor` play gate roles but are counted under their home disciplines):
   - `content-quality-auditor` = publish readiness gate
   - `domain-authority-auditor` = citation trust gate
   - `content-reviewer` = C³ ART gate

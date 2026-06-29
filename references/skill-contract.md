@@ -199,6 +199,8 @@ Auditor skills (`content-quality-auditor`, `domain-authority-auditor`) MUST igno
 
 ### Protocol layer
 
+The 4 shared-machinery skills under `protocol/` (gates + SSOT + memory). The auditor-class **gate role** additionally spans `content-reviewer` and `ad-account-auditor`, which live in and are counted under their home disciplines (influencer, paid) — not here.
+
 - Reads: outputs from every other category
 - Writes: gates, truth records, and memory structure
 - Promotes: the canonical state other skills should trust

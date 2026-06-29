@@ -15,7 +15,7 @@ A library of Claude Skills and slash commands that turns a chat agent into a mar
 - **SEO/GEO** — **22 skills**: keyword research, content creation, programmatic/parasite/local/comparison builds, on-page & technical audits, schema, site architecture, and rank/backlink/AI-traffic monitoring.
 - **Influencer marketing (IMPACT)** — **18 skills**: audience insight, creator discovery & fit scoring, campaign planning, briefs, outreach, content review, amplification, UGC repurposing, and ROI tracking.
 - **Paid ads (ROAS)** — **8 skills**: account structure, audience segments, ad creative, experiment design, the account-audit gate, conversion-signal QA, the measurement loop, and attribution reconciliation.
-- **Protocol layer (cross-cutting)** — **4 skills**: the CORE-EEAT/CITE quality & authority gates, entity truth, and HOT/WARM/COLD memory — shared across all three disciplines.
+- **Protocol layer** — **4 skills**: shared-machinery (gates + SSOT + memory) that sits outside the discipline phase-flows — 1 cross-discipline (`memory-management`) + 3 SEO/GEO quality & trust gates (`content-quality-auditor`, `domain-authority-auditor`, `entity-optimizer`). The genuinely horizontal layer is the `references/` protocols, not skills.
 
 Everything is **plain Markdown** (the only code is a Bash hook runner, a Bash validator, and zero-dependency Python-stdlib data helpers — no `pip`, no build step). **Every skill runs at Tier 1 with nothing but data you paste in**; optional connectors only automate retrieval. Four scoring frameworks ship inside and back the publish/trust/quality gates: [CORE-EEAT](references/core-eeat-benchmark.md), [CITE](references/cite-domain-rating.md), [C³](references/c3-benchmark.md), and [ROAS](references/roas-benchmark.md).
 
@@ -117,18 +117,29 @@ This is documented once in [skill-contract.md](references/skill-contract.md); th
 
 ### The protocol layer
 
-Four cross-cutting skills + two auditor-class consumers form the protocol layer. Auditor-class skills write a **gated artifact** (`class: auditor-output`) that a PostToolUse hook validates before it lands:
+Two things here are easy to conflate, so they are named apart — neither sums to "6".
 
-| Protocol skill | Role | Framework | Writes to |
-|----------------|------|-----------|-----------|
-| `content-quality-auditor` | Publish-readiness gate | CORE-EEAT | `memory/audits/<skill>/` |
-| `domain-authority-auditor` | Citation-trust gate | CITE | `memory/audits/<skill>/` |
-| `content-reviewer` | Creator-content gate (C³ ART) | C³ | `memory/audits/influencer/` |
-| `ad-account-auditor` | Paid-account gate (ROAS RQS) | ROAS | `memory/audits/paid/` |
-| `entity-optimizer` | Canonical entity profile | — | `memory/` |
-| `memory-management` | HOT/WARM/COLD memory loop | — | `memory/` |
+**Structure — the `protocol/` directory (4 skills).** Shared-machinery skills (gates + SSOT + memory) that sit outside the discipline phase-flows. Only `memory-management` is genuinely cross-discipline; the other three are SEO/GEO quality/trust skills grouped here because they are gate/SSOT-class.
 
-Gate mechanics — handoff schema, cap arithmetic, and the artifact-gate checklist — are specified once in [auditor-runbook.md](references/auditor-runbook.md).
+| `protocol/` skill | Role | Framework | Reach |
+|-------------------|------|-----------|-------|
+| `content-quality-auditor` | Publish-readiness gate | CORE-EEAT | SEO/GEO |
+| `domain-authority-auditor` | Citation-trust gate | CITE | SEO/GEO |
+| `entity-optimizer` | Canonical entity profile | — | SEO/GEO |
+| `memory-management` | HOT/WARM/COLD memory loop | — | all disciplines |
+
+**Role — the auditor-class gate (4 skills, no separate count).** A runtime *role*, not a directory: a skill that writes a **gated artifact** (`class: auditor-output`) validated by the PostToolUse hook and scored against one framework. Two live in `protocol/`; two are discipline-resident and **counted under their home discipline**, not here:
+
+| Gate | Framework | Lives in | Counted under |
+|------|-----------|----------|---------------|
+| `content-quality-auditor` | CORE-EEAT | `protocol/` | protocol (4) |
+| `domain-authority-auditor` | CITE | `protocol/` | protocol (4) |
+| `content-reviewer` | C³ ART | `activate/` | influencer (18) |
+| `ad-account-auditor` | ROAS RQS | `paid/` | paid (8) |
+
+All four `Read` the framework-agnostic gate SSOT — [auditor-runbook.md](references/auditor-runbook.md) (handoff schema, cap arithmetic, artifact-gate checklist).
+
+**Shared protocols (`references/`, 0 skills, uncounted).** The genuinely horizontal layer serving every discipline — [auditor-runbook.md](references/auditor-runbook.md), [state-model.md](references/state-model.md), [skill-contract.md](references/skill-contract.md), [humanizer-slop.md](references/humanizer-slop.md), [measurement-protocol.md](references/measurement-protocol.md) — stays as reference protocols by design, not skills.
 
 ---
 
@@ -191,7 +202,7 @@ Skill links open each `SKILL.md`. Expand the **Details** under each discipline f
 
 ### Protocol layer (4)
 
-Cross-cutting skills that serve all three disciplines — the CORE-EEAT/CITE quality & authority gates, entity truth, and project memory. They live under `protocol/` and are counted separately, not inside SEO/GEO.
+Shared-machinery skills (gates + SSOT + memory) that sit outside the discipline phase-flows. Only `memory-management` is genuinely cross-discipline; the other three are SEO/GEO-bound quality/trust gates. They live under `protocol/`, counted separately, not inside SEO/GEO.
 
 | Group | Skills |
 |-------|--------|
