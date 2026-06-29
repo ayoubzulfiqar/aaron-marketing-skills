@@ -31,6 +31,10 @@
 - [运行模型](#运行模型)
 - [质量框架](#质量框架)
 - [技能目录](#技能目录)
+  - [SEO/GEO(22)](#seogeo22)
+  - [协议层 — 跨学科（4）](#协议层--跨学科4)
+  - [红人 — IMPACT(18)](#红人--impact18)
+  - [付费广告 — ROAS(8)](#付费广告--roas8)
 - [命令](#命令)
 - [连接器与层级](#连接器与层级)
 - [记忆与自动化](#记忆与自动化)
@@ -347,7 +351,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 **付费广告（ROAS 循环）**
 1. **研究** — `audience-segment-builder` → `campaign-architect`
-2. **编排** — `ad-creative-builder` → `ad-test-designer`(落地页配 `landing-optimizer`)
+2. **编排** — `ad-creative-builder` → `ad-test-designer`（落地页配 `landing-optimizer`）
 3. **激活** — `conversion-signal-qa` → `ad-account-auditor`（RQS 门），在任何预算上线前
 4. **放大** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
 
