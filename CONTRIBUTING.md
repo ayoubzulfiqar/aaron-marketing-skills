@@ -23,7 +23,7 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 | Activate | `activate/` | Runs outreach, content review, contracts (influencer/IMPACT) |
 | Convert | `convert/` | Amplifies and repurposes content (influencer/IMPACT) |
 | Track | `track/` | Measures performance and ROI (influencer/IMPACT) |
-| Paid Ads | `paid/` | Builds, audits, and scales paid-ad campaigns (paid ads/ROAS) |
+| Paid Ads | `paid/<phase>/` | Builds, audits, and scales paid-ad campaigns (ROAS loop: research/orchestrate/activate/scale) |
 
 ### 2. Create the skill directory
 

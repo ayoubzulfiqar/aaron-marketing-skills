@@ -257,14 +257,14 @@ Shared-machinery skills (gates + SSOT + memory) that sit outside the discipline 
 
 ### Paid Ads — ROAS (8)
 
-Phases are the conceptual **ROAS loop** (Research → Orchestrate → Activate → Scale); all paid skills live flat under `paid/`. Only `ad-account-auditor` computes the goal-weighted RQS and runs the five vetoes — every other skill operates on a single lever and hands off.
+Phases follow the **ROAS loop** (Research → Orchestrate → Activate → Scale) as directories under `paid/<phase>/`. Only `ad-account-auditor` computes the goal-weighted RQS and runs the five vetoes — every other skill operates on a single lever and hands off.
 
 | Phase | Skills |
 |-------|--------|
-| **Research** | [campaign-architect](paid/campaign-architect/SKILL.md), [audience-segment-builder](paid/audience-segment-builder/SKILL.md) |
-| **Orchestrate** | [ad-creative-builder](paid/ad-creative-builder/SKILL.md), [ad-test-designer](paid/ad-test-designer/SKILL.md) |
-| **Activate** | [ad-account-auditor](paid/ad-account-auditor/SKILL.md), [conversion-signal-qa](paid/conversion-signal-qa/SKILL.md) |
-| **Scale** | [paid-measurement-loop](paid/paid-measurement-loop/SKILL.md), [attribution-reconciler](paid/attribution-reconciler/SKILL.md) |
+| **Research** | [campaign-architect](paid/research/campaign-architect/SKILL.md), [audience-segment-builder](paid/research/audience-segment-builder/SKILL.md) |
+| **Orchestrate** | [ad-creative-builder](paid/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](paid/orchestrate/ad-test-designer/SKILL.md) |
+| **Activate** | [ad-account-auditor](paid/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](paid/activate/conversion-signal-qa/SKILL.md) |
+| **Scale** | [paid-measurement-loop](paid/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](paid/scale/attribution-reconciler/SKILL.md) |
 
 <details><summary><b>Per-skill purpose (Paid Ads)</b></summary>
 
@@ -378,7 +378,7 @@ For a full trust review, pair `content-quality-auditor` with `domain-authority-a
 research/ build/ optimize/ monitor/                  # SEO/GEO (22)
 protocol/                                            # Protocol layer (4) — shared gates, entity, memory
 insight/ map/ plan/ activate/ convert/ track/        # Influencer — IMPACT (18)
-paid/                                                 # Paid Ads — ROAS (8, flat)
+paid/research|orchestrate|activate|scale/             # Paid Ads — ROAS (8)
 commands/        # 5 slash commands
 references/      # shared contract, state model, the 4 benchmarks, auditor runbook, platform packs
 evals/           # per-skill structural eval cases + structure-manifest.json

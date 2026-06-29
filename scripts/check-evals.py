@@ -34,7 +34,7 @@ MANIFEST = os.path.join(EVALS, "structure-manifest.json")
 PHASE_DIRS = [
     "research", "build", "optimize", "monitor", "protocol",   # SEO/GEO
     "insight", "map", "plan", "activate", "convert", "track",      # influencer
-    "paid",                                                        # paid ads (when present)
+    "paid/research", "paid/orchestrate", "paid/activate", "paid/scale",                                                        # paid ads (when present)
 ]
 REQUIRED_CASE_KEYS = [
     "id", "type", "target_skill", "scenario",

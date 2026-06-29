@@ -22,7 +22,7 @@ Run before launching or scaling paid campaigns. Mark each item **pass / fail / n
 
 ## 3. Cross-platform dedup
 
-> Pre-flight **gates** only — confirm the rule and routing *exist*. The actual order-ID matching, de-dup, and inflation math are the standing job of [attribution-reconciler](../../attribution-reconciler/SKILL.md).
+> Pre-flight **gates** only — confirm the rule and routing *exist*. The actual order-ID matching, de-dup, and inflation math are the standing job of [attribution-reconciler](../../../scale/attribution-reconciler/SKILL.md).
 
 | Item | Pass when | Fail / needs-input |
 |------|-----------|--------------------|

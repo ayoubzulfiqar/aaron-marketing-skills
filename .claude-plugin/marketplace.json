@@ -84,14 +84,14 @@
         "./build/local-seo",
         "./optimize/site-architecture",
         "./monitor/ai-traffic",
-        "./paid/campaign-architect",
-        "./paid/audience-segment-builder",
-        "./paid/ad-creative-builder",
-        "./paid/ad-test-designer",
-        "./paid/ad-account-auditor",
-        "./paid/conversion-signal-qa",
-        "./paid/paid-measurement-loop",
-        "./paid/attribution-reconciler"
+        "./paid/research/campaign-architect",
+        "./paid/research/audience-segment-builder",
+        "./paid/orchestrate/ad-creative-builder",
+        "./paid/orchestrate/ad-test-designer",
+        "./paid/activate/ad-account-auditor",
+        "./paid/activate/conversion-signal-qa",
+        "./paid/scale/paid-measurement-loop",
+        "./paid/scale/attribution-reconciler"
       ]
     }
   ]

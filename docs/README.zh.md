@@ -257,14 +257,14 @@
 
 ### 付费广告 — ROAS(8)
 
-阶段是概念上的 **ROAS 循环**(Research → Orchestrate → Activate → Scale)；所有付费技能平铺在 `paid/` 下。只有 `ad-account-auditor` 计算目标加权 RQS 并跑五个否决项——其余每个技能只操作单一杠杆并交棒。
+阶段按 **ROAS 循环**(Research → Orchestrate → Activate → Scale)以目录形式存在于 `paid/<阶段>/` 下。只有 `ad-account-auditor` 计算目标加权 RQS 并跑五个否决项——其余每个技能只操作单一杠杆并交棒。
 
 | 阶段 | 技能 |
 |------|------|
-| **Research 研究** | [campaign-architect](../paid/campaign-architect/SKILL.md), [audience-segment-builder](../paid/audience-segment-builder/SKILL.md) |
-| **Orchestrate 编排** | [ad-creative-builder](../paid/ad-creative-builder/SKILL.md), [ad-test-designer](../paid/ad-test-designer/SKILL.md) |
-| **Activate 激活** | [ad-account-auditor](../paid/ad-account-auditor/SKILL.md), [conversion-signal-qa](../paid/conversion-signal-qa/SKILL.md) |
-| **Scale 放大** | [paid-measurement-loop](../paid/paid-measurement-loop/SKILL.md), [attribution-reconciler](../paid/attribution-reconciler/SKILL.md) |
+| **Research 研究** | [campaign-architect](../paid/research/campaign-architect/SKILL.md), [audience-segment-builder](../paid/research/audience-segment-builder/SKILL.md) |
+| **Orchestrate 编排** | [ad-creative-builder](../paid/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](../paid/orchestrate/ad-test-designer/SKILL.md) |
+| **Activate 激活** | [ad-account-auditor](../paid/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](../paid/activate/conversion-signal-qa/SKILL.md) |
+| **Scale 放大** | [paid-measurement-loop](../paid/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](../paid/scale/attribution-reconciler/SKILL.md) |
 
 <details><summary><b>逐技能用途（付费广告）</b></summary>
 
@@ -378,7 +378,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 research/ build/ optimize/ monitor/                  # SEO/GEO(22)
 protocol/                                            # 协议层(4) — 跨学科门/实体/记忆
 insight/ map/ plan/ activate/ convert/ track/        # 红人 — IMPACT(18)
-paid/                                                 # 付费广告 — ROAS(8,平铺)
+paid/research|orchestrate|activate|scale/             # 付费广告 — ROAS(8)
 commands/        # 7 个斜杠命令
 references/      # 共享契约、状态模型、四套基准、auditor runbook、平台资料包
 evals/           # 各技能结构化 eval 用例 + structure-manifest.json

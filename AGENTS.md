@@ -8,13 +8,13 @@ Guidelines for AI agents working in this repository. For full runtime context, s
 - **Repository**: https://github.com/aaron-he-zhu/aaron-marketing-skills
 - **Author**: Aaron He Zhu | **License**: Apache 2.0
 - **Specs**: [Agent Skills](https://agentskills.io/specification.md)
-Content-first repository: skills and commands are Markdown; Claude Code hooks use a small Bash runner; `scripts/connectors/` holds zero-dependency Python-stdlib data helpers (no pip deps). Primary directories: SEO/GEO `research/`, `build/`, `optimize/`, `monitor/`; protocol layer `protocol/`; influencer/IMPACT `insight/`, `map/`, `plan/`, `activate/`, `convert/`, `track/`; paid ads `paid/`; plus `commands/`, `references/`, `scripts/connectors/`.
+Content-first repository: skills and commands are Markdown; Claude Code hooks use a small Bash runner; `scripts/connectors/` holds zero-dependency Python-stdlib data helpers (no pip deps). Primary directories: SEO/GEO `research/`, `build/`, `optimize/`, `monitor/`; protocol layer `protocol/`; influencer/IMPACT `insight/`, `map/`, `plan/`, `activate/`, `convert/`, `track/`; paid ads `paid/research`, `paid/orchestrate`, `paid/activate`, `paid/scale`; plus `commands/`, `references/`, `scripts/connectors/`.
 
 Install instructions live in [README.md](README.md). Keep this file focused on authoring and maintenance rules.
 
 ### New skills (v11.0.0)
 
-Fourteen skills added across the 38 → 52 expansion (six SEO/GEO + four paid in v11, then four more paid in the Balanced paid-ads expansion). Full per-phase listings are in [CLAUDE.md § Skills by Phase](CLAUDE.md). Paid phases are the conceptual ROAS loop (Research → Orchestrate → Activate → Scale); all paid skills live flat under `paid/`.
+Fourteen skills added across the 38 → 52 expansion (six SEO/GEO + four paid in v11, then four more paid in the Balanced paid-ads expansion). Full per-phase listings are in [CLAUDE.md § Skills by Phase](CLAUDE.md). Paid phases are directories under `paid/` following the ROAS loop (paid/research, paid/orchestrate, paid/activate, paid/scale).
 
 | Discipline | Phase | Skill |
 |------------|-------|-------|

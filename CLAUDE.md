@@ -16,7 +16,7 @@ The three disciplines share one **meta-lifecycle** spine (an approximate bridge 
 | **Measure** | monitor | track | Scale |
 | **Cross-cutting** | the **protocol layer** (quality/authority gates · entity · memory) serves all three | | |
 
-Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. SEO/GEO and influencer use phase *directories*; paid's ROAS-loop phases are conceptual (skills are flat under `paid/`).
+Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. All three disciplines use phase *directories* — paid skills live under `paid/<phase>/` (research/orchestrate/activate/scale).
 
 **SEO/GEO (22):**
 
@@ -44,7 +44,7 @@ Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS �
 | **Convert** | `content-amplifier`, `ugc-repurposer`, `landing-optimizer` |
 | **Track** | `performance-analyzer`, `roi-calculator`, `report-generator` |
 
-**Paid Ads — ROAS (8):** phases are the conceptual ROAS loop (Research → Orchestrate → Activate → Scale); all paid skills live flat under `paid/`.
+**Paid Ads — ROAS (8):** phase directories under `paid/` follow the ROAS loop (Research → Orchestrate → Activate → Scale).
 
 | Phase | Skills |
 |-------|--------|
