@@ -12,13 +12,13 @@
 
 A library of Claude Skills and slash commands that turns a chat agent into a marketing operator across **three disciplines on one operating contract**:
 
-- **Search (SEO/GEO)** — **26 skills**: keyword research, content creation, programmatic/parasite/local/comparison builds, on-page & technical audits, schema, site architecture, rank/backlink/AI-traffic monitoring, plus the quality, entity, and memory protocol layer.
+- **SEO/GEO** — **26 skills**: keyword research, content creation, programmatic/parasite/local/comparison builds, on-page & technical audits, schema, site architecture, rank/backlink/AI-traffic monitoring, plus the quality, entity, and memory protocol layer.
 - **Influencer marketing (IMPACT)** — **18 skills**: audience insight, creator discovery & fit scoring, campaign planning, briefs, outreach, content review, amplification, UGC repurposing, and ROI tracking.
 - **Paid ads (ROAS)** — **8 skills**: account structure, audience segments, ad creative, experiment design, the account-audit gate, conversion-signal QA, the measurement loop, and attribution reconciliation.
 
 Everything is **plain Markdown** (the only code is a Bash hook runner, a Bash validator, and zero-dependency Python-stdlib data helpers — no `pip`, no build step). **Every skill runs at Tier 1 with nothing but data you paste in**; optional connectors only automate retrieval. Four scoring frameworks ship inside and back the publish/trust/quality gates: [CORE-EEAT](references/core-eeat-benchmark.md), [CITE](references/cite-domain-rating.md), [C³](references/c3-benchmark.md), and [ROAS](references/roas-benchmark.md).
 
-> The SEO/GEO half also ships on its own, unchanged, at [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) for users who only want search work.
+> The SEO/GEO half also ships on its own, unchanged, at [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) for users who only want SEO/GEO work.
 
 ---
 
@@ -30,7 +30,7 @@ Everything is **plain Markdown** (the only code is a Bash hook runner, a Bash va
 - [Operating model](#operating-model)
 - [Quality frameworks](#quality-frameworks)
 - [Skill catalog](#skill-catalog)
-  - [Search — SEO/GEO (26)](#search--seogeo-26)
+  - [SEO/GEO (26)](#seogeo-26)
   - [Influencer — IMPACT (18)](#influencer--impact-18)
   - [Paid Ads — ROAS (8)](#paid-ads--roas-8)
 - [Commands](#commands)
@@ -89,7 +89,7 @@ Find TikTok creators for a skincare launch and score their fit
 Audit this Google Ads account before I scale — exports attached
 ```
 
-Or drive the search workflow with a slash command:
+Or drive the SEO/GEO workflow with a slash command:
 
 ```text
 /aaron-marketing:auto audit https://example.com/blog/my-article
@@ -149,7 +149,7 @@ Four benchmarks make "good" measurable. Each defines dimensions, a rollup method
 
 Skill links open each `SKILL.md`. Expand the **Details** under each discipline for a one-line purpose per skill.
 
-### Search — SEO/GEO (26)
+### SEO/GEO (26)
 
 | Phase | Skills |
 |-------|--------|
@@ -159,7 +159,7 @@ Skill links open each `SKILL.md`. Expand the **Details** under each discipline f
 | **Monitor** | [rank-tracker](monitor/rank-tracker/SKILL.md), [backlink-analyzer](monitor/backlink-analyzer/SKILL.md), [performance-reporter](monitor/performance-reporter/SKILL.md), [alert-manager](monitor/alert-manager/SKILL.md), [ai-traffic](monitor/ai-traffic/SKILL.md) |
 | **Cross-cutting** | [content-quality-auditor](cross-cutting/content-quality-auditor/SKILL.md), [domain-authority-auditor](cross-cutting/domain-authority-auditor/SKILL.md), [entity-optimizer](cross-cutting/entity-optimizer/SKILL.md), [memory-management](cross-cutting/memory-management/SKILL.md) |
 
-<details><summary><b>Per-skill purpose (Search)</b></summary>
+<details><summary><b>Per-skill purpose (SEO/GEO)</b></summary>
 
 | Skill | What it does |
 |-------|--------------|
@@ -260,7 +260,7 @@ Phases are the conceptual **ROAS loop** (Research → Orchestrate → Activate �
 
 ## Commands
 
-Five commands cover the search workflow end-to-end; influencer and paid skills are reached by name or via `/aaron-marketing:auto` routing. Source: [commands/](commands/).
+Five commands cover the SEO/GEO workflow end-to-end; influencer and paid skills are reached by name or via `/aaron-marketing:auto` routing. Source: [commands/](commands/).
 
 | Command | Use it for | Flags |
 |---------|-----------|-------|
@@ -319,7 +319,7 @@ The Artifact Gate is **framework-agnostic** — the same hook validates CORE-EEA
 
 ## Recommended workflows
 
-**Search (SEO/GEO)**
+**SEO/GEO**
 1. **Research** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
 2. **Build** — `seo-content-writer` → `geo-content-optimizer` → `meta-tags-optimizer` / `schema-markup-generator`
 3. **Optimize** — `content-quality-auditor` → `on-page-seo-auditor` → `technical-seo-checker`
@@ -346,7 +346,7 @@ For a full trust review, pair `content-quality-auditor` with `domain-authority-a
 ## Repository layout
 
 ```
-research/ build/ optimize/ monitor/ cross-cutting/   # Search — SEO/GEO (26)
+research/ build/ optimize/ monitor/ cross-cutting/   # SEO/GEO (26)
 insight/ map/ plan/ activate/ convert/ track/        # Influencer — IMPACT (18)
 paid/                                                 # Paid Ads — ROAS (8, flat)
 commands/        # 5 slash commands

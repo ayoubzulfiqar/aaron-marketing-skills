@@ -12,13 +12,13 @@
 
 一套 Claude 技能与斜杠命令，让聊天 Agent 成为营销操作员，**三类学科共用一套运行契约**：
 
-- **搜索（SEO/GEO）** — **26 个技能**：关键词研究、内容创作、程序化/寄生/本地/对比页构建、on-page 与技术审计、结构化数据、站点架构、排名/外链/AI 流量监控，以及质量、实体、记忆协议层。
+- **SEO/GEO** — **26 个技能**：关键词研究、内容创作、程序化/寄生/本地/对比页构建、on-page 与技术审计、结构化数据、站点架构、排名/外链/AI 流量监控，以及质量、实体、记忆协议层。
 - **红人营销（IMPACT）** — **18 个技能**：受众洞察、红人发现与适配打分、活动规划、brief、外联、内容审核、放大、UGC 二次利用、ROI 追踪。
 - **付费广告（ROAS）** — **8 个技能**：账户结构、受众分群、广告创意、实验设计、账户审计门、转化信号 QA、衡量回读循环、归因对账。
 
 全部为**纯 Markdown**（唯一的代码是一个 Bash hook runner、一个 Bash 校验器、以及零依赖的 Python 标准库数据助手——无 `pip`、无构建步骤）。**每个技能都能在 Tier 1 仅凭你粘贴的数据运行**；可选连接器只是自动化取数。内置四套评分框架并支撑发布/信任/质量门：[CORE-EEAT](../references/core-eeat-benchmark.md)、[CITE](../references/cite-domain-rating.md)、[C³](../references/c3-benchmark.md)、[ROAS](../references/roas-benchmark.md)。
 
-> SEO/GEO 部分也作为独立仓库不变地存在于 [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills)，供只做搜索的用户使用。
+> SEO/GEO 部分也作为独立仓库不变地存在于 [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills)，供只做 SEO/GEO 的用户使用。
 
 ---
 
@@ -86,7 +86,7 @@
 在我加预算前，审计这个 Google Ads 账户——导出文件已附上
 ```
 
-或用斜杠命令驱动搜索工作流：
+或用斜杠命令驱动 SEO/GEO 工作流：
 
 ```text
 /aaron-marketing:auto audit https://example.com/blog/my-article
@@ -146,7 +146,7 @@
 
 技能链接打开各自的 `SKILL.md`。展开每个学科下的 **详情** 可看每个技能的一句话用途。
 
-### 搜索 — SEO/GEO(26)
+### SEO/GEO(26)
 
 | 阶段 | 技能 |
 |------|------|
@@ -156,7 +156,7 @@
 | **监控** | [rank-tracker](../monitor/rank-tracker/SKILL.md), [backlink-analyzer](../monitor/backlink-analyzer/SKILL.md), [performance-reporter](../monitor/performance-reporter/SKILL.md), [alert-manager](../monitor/alert-manager/SKILL.md), [ai-traffic](../monitor/ai-traffic/SKILL.md) |
 | **协议层** | [content-quality-auditor](../cross-cutting/content-quality-auditor/SKILL.md), [domain-authority-auditor](../cross-cutting/domain-authority-auditor/SKILL.md), [entity-optimizer](../cross-cutting/entity-optimizer/SKILL.md), [memory-management](../cross-cutting/memory-management/SKILL.md) |
 
-<details><summary><b>逐技能用途（搜索）</b></summary>
+<details><summary><b>逐技能用途（SEO/GEO）</b></summary>
 
 | 技能 | 用途 |
 |------|------|
@@ -257,7 +257,7 @@
 
 ## 命令
 
-5 个命令端到端覆盖搜索工作流；红人与付费技能按名称调用或经 `/aaron-marketing:auto` 路由。源文件：[commands/](../commands/)。
+5 个命令端到端覆盖 SEO/GEO 工作流；红人与付费技能按名称调用或经 `/aaron-marketing:auto` 路由。源文件：[commands/](../commands/)。
 
 | 命令 | 用途 | 参数 |
 |------|------|------|
@@ -316,7 +316,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 ## 推荐工作流
 
-**搜索（SEO/GEO）**
+**SEO/GEO**
 1. **研究** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
 2. **构建** — `seo-content-writer` → `geo-content-optimizer` → `meta-tags-optimizer` / `schema-markup-generator`
 3. **优化** — `content-quality-auditor` → `on-page-seo-auditor` → `technical-seo-checker`
@@ -343,7 +343,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 ## 仓库结构
 
 ```
-research/ build/ optimize/ monitor/ cross-cutting/   # 搜索 — SEO/GEO(26)
+research/ build/ optimize/ monitor/ cross-cutting/   # SEO/GEO(26)
 insight/ map/ plan/ activate/ convert/ track/        # 红人 — IMPACT(18)
 paid/                                                 # 付费广告 — ROAS(8,平铺)
 commands/        # 5 个斜杠命令
