@@ -22,17 +22,19 @@ Run before launching or scaling paid campaigns. Mark each item **pass / fail / n
 
 ## 3. Cross-platform dedup
 
+> Pre-flight **gates** only — confirm the rule and routing *exist*. The actual order-ID matching, de-dup, and inflation math are the standing job of [attribution-reconciler](../../attribution-reconciler/SKILL.md).
+
 | Item | Pass when | Fail / needs-input |
 |------|-----------|--------------------|
 | Single source of truth named | GA4/ecommerce order IDs are the truth set, not each platform's self-reported count | Platform counts trusted directly |
-| Order IDs reconcile | Order IDs/timestamps match across GA4/ecommerce and each platform export | Same order credited on Meta AND Google (double-count) |
-| Inflation quantified | Sum of platform-claimed conversions vs unique GA4 orders is stated | Overlap noticed but not measured |
+| Dedup method defined | A method to reconcile platform claims against the truth set is stated, owned by attribution-reconciler | No plan for resolving Meta/Google overlap |
+| Overlap flagged & routed | Any obvious Meta+Google double-count is flagged and routed to attribution-reconciler | Overlap ignored (or quantified here instead of routed) |
 
 ## 4. Attribution-window alignment
 
 | Item | Pass when | Fail / needs-input |
 |------|-----------|--------------------|
-| Windows normalized | Each platform's click/view window is stated and compared on the same basis | Comparing 7-day-click to 1-day-view as if equal |
+| Windows stated & aligned | Each platform's click/view window is stated and a common comparison basis is chosen (the actual re-scoping runs in attribution-reconciler) | Windows unknown, or compared 7-day-click to 1-day-view as if equal |
 | Currency/timezone aligned | Exports normalized to one currency and timezone before matching | Mixed timezones shifting conversions across days |
 
 ## 5. Offline + iOS-ATT modeled gaps (flags, not fails)

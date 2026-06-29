@@ -15,7 +15,7 @@ metadata:
 
 # Attribution Reconciler
 
-> Based on the ROAS dimension **R** (attribution integrity) in the [ROAS Benchmark](../../references/roas-benchmark.md). This is the **standing de-dup / incrementality workbook**: it reconciles platform-reported conversions against the GA4/ecommerce order-ID truth set on a recurring cadence. It delegates **all** ratio/ROAS math to [roi-calculator](../../track/roi-calculator/SKILL.md) and does **not** re-run the R2 veto — [ad-account-auditor](../ad-account-auditor/SKILL.md) judges R2 once, point-in-time. This workbook just keeps the truth set clean between audits.
+> Based on the ROAS dimension **R** (attribution integrity) in the [ROAS Benchmark](../../references/roas-benchmark.md). This is the **standing de-dup / incrementality workbook**: it reconciles platform-reported conversions against the GA4/ecommerce order-ID truth set on a recurring cadence. It delegates **all** ratio/ROAS math to [roi-calculator](../../track/roi-calculator/SKILL.md) and does **not** re-run the R2 veto — [ad-account-auditor](../ad-account-auditor/SKILL.md) judges R2 once, point-in-time. This workbook just keeps the truth set clean between audits. Upstream, [conversion-signal-qa](../conversion-signal-qa/SKILL.md) is the **pre-launch** instrumentation pass that makes the signal trustworthy and only *gates* that a dedup rule exists; this skill is the recurring reconciliation that runs **on** that signal — match, de-dup, quantify, read incrementality.
 
 The single rule: the truth set is the **order IDs** from GA4/ecommerce, **never** any platform's reported-conversion count.
 
