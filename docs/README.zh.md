@@ -12,10 +12,10 @@
 
 一套 Claude 技能与斜杠命令，让聊天 Agent 成为营销操作员，**三类学科共用一套运行契约**：
 
-- **SEO/GEO** — **22 个技能**：关键词研究、内容创作、程序化/寄生/本地/对比页构建、on-page 与技术审计、结构化数据、站点架构、排名/外链/AI 流量监控。
+- **SEO/GEO** — **24 个技能**：关键词研究、内容创作、程序化/寄生/本地/对比页构建、on-page 与技术审计、结构化数据、站点架构、排名/外链/AI 流量监控，外加 CORE-EEAT 发布门与 CITE 权威门。
 - **红人营销（IMPACT）** — **18 个技能**：受众洞察、红人发现与适配打分、活动规划、brief、外联、内容审核、放大、UGC 二次利用、ROI 追踪。
 - **付费广告（ROAS）** — **8 个技能**：账户结构、受众分群、广告创意、实验设计、账户审计门、转化信号 QA、衡量回读循环、归因对账。
-- **协议层** — **6 个技能**：位于学科 phase 流程之外的共享机件（门 + 真相 SSOT + 记忆）——2 个 SEO/GEO 质量与信任门（`content-quality-auditor`、`domain-authority-auditor`）+ 3 个学科锚定的真相注册表（`entity-optimizer`→SEO/GEO、`creator-registry`→红人、`offer-claims-registry`→付费）+ 1 个跨学科记忆（`memory-management`）。
+- **协议层** — **4 个技能**：位于学科 phase 流程之外的共享真相与记忆机件——3 个学科锚定的真相注册表（`entity-optimizer`→SEO/GEO、`creator-registry`→红人、`offer-claims-registry`→付费）+ 1 个跨学科记忆（`memory-management`）。四个 auditor-class 门全部驻留各自学科。
 
 全部为**纯 Markdown**（唯一的代码是一个 Bash hook runner、一个 Bash 校验器、以及零依赖的 Python 标准库数据助手——无 `pip`、无构建步骤）。**每个技能都能在 Tier 1 仅凭你粘贴的数据运行**；可选连接器只是自动化取数。内置四套评分框架并支撑发布/信任/质量门：[CORE-EEAT](../references/core-eeat-benchmark.md)、[CITE](../references/cite-domain-rating.md)、[C³](../references/c3-benchmark.md)、[ROAS](../references/roas-benchmark.md)。
 
@@ -31,8 +31,8 @@
 - [运行模型](#运行模型)
 - [质量框架](#质量框架)
 - [技能目录](#技能目录)
-  - [SEO/GEO(22)](#seogeo22)
-  - [协议层（6）](#协议层6)
+  - [SEO/GEO(24)](#seogeo24)
+  - [协议层（4）](#协议层4)
   - [红人 — IMPACT(18)](#红人--impact18)
   - [付费广告 — ROAS(8)](#付费广告--roas8)
 - [命令](#命令)
@@ -119,23 +119,21 @@
 
 这里有两个容易混淆的概念，分开命名——目录计数与门角色永不相加：
 
-**结构 —— `protocol/` 目录（6 个技能）。** 位于学科 phase 流程之外的共享机件（门 + 真相 SSOT + 记忆）：2 个 SEO/GEO 质量与信任门、3 个学科锚定的真相注册表（实体→SEO/GEO、创作者→红人、offer/声明→付费）、1 个跨学科记忆循环。
+**结构 —— `protocol/` 目录（4 个技能）。** 位于学科 phase 流程之外的共享真相与记忆机件：3 个学科锚定的真相注册表（实体→SEO/GEO、创作者→红人、offer/声明→付费）+ 1 个跨学科记忆循环。门是工作流步骤，所以驻留在各自学科。
 
 | `protocol/` 技能 | 角色 | 框架 | 覆盖 |
 |----------|------|------|------|
-| `content-quality-auditor` | 发布就绪门 | CORE-EEAT | SEO/GEO |
-| `domain-authority-auditor` | 引用信任门 | CITE | SEO/GEO |
 | `entity-optimizer` | 规范实体档案 | — | SEO/GEO |
 | `creator-registry` | 规范创作者名册/档案 SSOT | — | 红人 |
 | `offer-claims-registry` | offer 与声明实证 SSOT | — | 付费 |
 | `memory-management` | HOT/WARM/COLD 记忆循环 | — | 全部学科 |
 
-**角色 —— auditor-class 门（4 个，不单独计数）。** 这是运行期*角色*而非目录：写出受 PostToolUse hook 校验的**带门工件**（`class: auditor-output`）、按单一框架打分的技能。其中 2 个在 `protocol/`，另 2 个驻留学科目录、**计入各自学科**，不在此处重复计数：
+**角色 —— auditor-class 门（4 个，不单独计数）。** 这是运行期*角色*而非目录：写出受 PostToolUse hook 校验的**带门工件**（`class: auditor-output`）、按单一框架打分的技能。四个门全部驻留学科目录、**计入各自学科**，不在此处重复计数：
 
 | 门 | 框架 | 所在 | 计入 |
 |----|------|------|------|
-| `content-quality-auditor` | CORE-EEAT | `protocol/` | protocol (4) |
-| `domain-authority-auditor` | CITE | `protocol/` | protocol (4) |
+| `content-quality-auditor` | CORE-EEAT | `optimize/` | SEO/GEO (24) |
+| `domain-authority-auditor` | CITE | `monitor/` | SEO/GEO (24) |
 | `content-reviewer` | C³ ART | `activate/` | influencer (18) |
 | `ad-account-auditor` | ROAS RQS | `paid/activate/` | paid (8) |
 
@@ -164,14 +162,14 @@
 
 技能链接打开各自的 `SKILL.md`。展开每个学科下的 **详情** 可看每个技能的一句话用途。
 
-### SEO/GEO(22)
+### SEO/GEO(24)
 
 | 阶段 | 技能 |
 |------|------|
 | **研究** | [keyword-research](../research/keyword-research/SKILL.md), [competitor-analysis](../research/competitor-analysis/SKILL.md), [serp-analysis](../research/serp-analysis/SKILL.md), [content-gap-analysis](../research/content-gap-analysis/SKILL.md) |
 | **构建** | [seo-content-writer](../build/seo-content-writer/SKILL.md), [geo-content-optimizer](../build/geo-content-optimizer/SKILL.md), [meta-tags-optimizer](../build/meta-tags-optimizer/SKILL.md), [schema-markup-generator](../build/schema-markup-generator/SKILL.md), [programmatic-seo](../build/programmatic-seo/SKILL.md), [parasite-seo](../build/parasite-seo/SKILL.md), [comparison-page-builder](../build/comparison-page-builder/SKILL.md), [local-seo](../build/local-seo/SKILL.md) |
-| **优化** | [on-page-seo-auditor](../optimize/on-page-seo-auditor/SKILL.md), [technical-seo-checker](../optimize/technical-seo-checker/SKILL.md), [internal-linking-optimizer](../optimize/internal-linking-optimizer/SKILL.md), [content-refresher](../optimize/content-refresher/SKILL.md), [site-architecture](../optimize/site-architecture/SKILL.md) |
-| **监控** | [rank-tracker](../monitor/rank-tracker/SKILL.md), [backlink-analyzer](../monitor/backlink-analyzer/SKILL.md), [performance-reporter](../monitor/performance-reporter/SKILL.md), [alert-manager](../monitor/alert-manager/SKILL.md), [ai-traffic](../monitor/ai-traffic/SKILL.md) |
+| **优化** | [on-page-seo-auditor](../optimize/on-page-seo-auditor/SKILL.md), [technical-seo-checker](../optimize/technical-seo-checker/SKILL.md), [internal-linking-optimizer](../optimize/internal-linking-optimizer/SKILL.md), [content-refresher](../optimize/content-refresher/SKILL.md), [site-architecture](../optimize/site-architecture/SKILL.md), [content-quality-auditor](../optimize/content-quality-auditor/SKILL.md) |
+| **监控** | [rank-tracker](../monitor/rank-tracker/SKILL.md), [backlink-analyzer](../monitor/backlink-analyzer/SKILL.md), [performance-reporter](../monitor/performance-reporter/SKILL.md), [alert-manager](../monitor/alert-manager/SKILL.md), [ai-traffic](../monitor/ai-traffic/SKILL.md), [domain-authority-auditor](../monitor/domain-authority-auditor/SKILL.md) |
 
 <details><summary><b>逐技能用途（SEO/GEO）</b></summary>
 
@@ -199,23 +197,23 @@
 | performance-reporter | 多指标 SEO/GEO 绩效报告与利益相关者看板。 |
 | alert-manager | 排名、流量、外链、技术问题、AI 可见性的告警。 |
 | ai-traffic | 在你自己的 GA4 / GSC / 服务器日志中度量来自 AI 助手的引荐流量。 |
+| content-quality-auditor | 80 项 CORE-EEAT 发布就绪门。 |
+| domain-authority-auditor | 40 项 CITE 域名信任门。 |
 
 </details>
 
-### 协议层（6）
+### 协议层（4）
 
-位于学科 phase 流程之外的共享机件（门 + 真相 SSOT + 记忆）：2 个 SEO/GEO 门、3 个学科锚定的真相注册表（SEO/GEO / 红人 / 付费）、1 个跨学科记忆循环。它们位于 `protocol/`，单独计数。
+位于学科 phase 流程之外的共享真相与记忆机件：3 个学科锚定的真相注册表（SEO/GEO / 红人 / 付费）+ 1 个跨学科记忆循环。auditor-class 门驻留各自学科。它们位于 `protocol/`，单独计数。
 
 | 组 | 技能 |
 |------|------|
-| **协议层** | [content-quality-auditor](../protocol/content-quality-auditor/SKILL.md), [domain-authority-auditor](../protocol/domain-authority-auditor/SKILL.md), [entity-optimizer](../protocol/entity-optimizer/SKILL.md), [creator-registry](../protocol/creator-registry/SKILL.md), [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md), [memory-management](../protocol/memory-management/SKILL.md) |
+| **协议层** | [entity-optimizer](../protocol/entity-optimizer/SKILL.md), [creator-registry](../protocol/creator-registry/SKILL.md), [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md), [memory-management](../protocol/memory-management/SKILL.md) |
 
 <details><summary><b>逐技能用途（协议层）</b></summary>
 
 | 技能 | 用途 |
 |------|------|
-| content-quality-auditor | 80 项 CORE-EEAT 发布就绪门。 |
-| domain-authority-auditor | 40 项 CITE 域名信任门。 |
 | entity-optimizer | 面向知识图谱、Wikidata、AI 消歧的规范实体档案。 |
 | creator-registry | 规范创作者名册/档案——去重 handle、带溯源标签的受众数据、费率与合规历史。 |
 | offer-claims-registry | 规范 offer 与声明实证台账——O1/T2 声明检查所对照评判的那份记录。 |
@@ -379,8 +377,8 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 ## 仓库结构
 
 ```
-research/ build/ optimize/ monitor/                  # SEO/GEO(22)
-protocol/                                            # 协议层(6) — 门 + 真相注册表 + 记忆
+research/ build/ optimize/ monitor/                  # SEO/GEO(24)
+protocol/                                            # 协议层(4) — 真相注册表 + 记忆
 insight/ map/ plan/ activate/ convert/ track/        # 红人 — IMPACT(18)
 paid/research|orchestrate|activate|scale/             # 付费广告 — ROAS(8)
 commands/        # 7 个斜杠命令

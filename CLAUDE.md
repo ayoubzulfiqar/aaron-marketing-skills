@@ -14,24 +14,24 @@ The three disciplines share one **meta-lifecycle** spine (an approximate bridge 
 | **Plan / create** | build | plan | Orchestrate |
 | **Activate / optimize** | optimize | activate, convert | Activate |
 | **Measure** | monitor | track | Scale |
-| **Cross-cutting** | the **protocol layer** (quality/authority gates · entity/creator/claims truth registries · memory) serves all three | | |
+| **Cross-cutting** | the **protocol layer** (entity/creator/claims truth registries · memory) serves all three; the 4 auditor-class gates live in their disciplines | | |
 
 Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. All three disciplines use phase *directories* — paid skills live under `paid/<phase>/` (research/orchestrate/activate/scale).
 
-**SEO/GEO (22):**
+**SEO/GEO (24):**
 
 | Phase | Skills |
 |-------|--------|
 | **Research** | `keyword-research`, `competitor-analysis`, `serp-analysis`, `content-gap-analysis` |
 | **Build** | `seo-content-writer`, `geo-content-optimizer`, `meta-tags-optimizer`, `schema-markup-generator`, `programmatic-seo`, `parasite-seo`, `comparison-page-builder`, `local-seo` |
-| **Optimize** | `on-page-seo-auditor`, `technical-seo-checker`, `internal-linking-optimizer`, `content-refresher`, `site-architecture` |
-| **Monitor** | `rank-tracker`, `backlink-analyzer`, `performance-reporter`, `alert-manager`, `ai-traffic` |
+| **Optimize** | `on-page-seo-auditor`, `technical-seo-checker`, `internal-linking-optimizer`, `content-refresher`, `site-architecture`, `content-quality-auditor` |
+| **Monitor** | `rank-tracker`, `backlink-analyzer`, `performance-reporter`, `alert-manager`, `ai-traffic`, `domain-authority-auditor` |
 
-**Protocol layer — cross-cutting (6):** shared-machinery skills (gates + truth SSOTs + memory) outside the discipline phase-flows — 2 SEO/GEO quality/trust gates (`content-quality-auditor`, `domain-authority-auditor`), 3 discipline-anchored truth registries (`entity-optimizer` → SEO/GEO, `creator-registry` → influencer, `offer-claims-registry` → paid), and the cross-discipline `memory-management`. Counted separately, not under any discipline. The auditor-class **gate role** still spans 4 skills — the 2 gates here plus `content-reviewer` and `ad-account-auditor`, counted under their home disciplines.
+**Protocol layer — cross-cutting (4):** shared truth & memory machinery outside the discipline phase-flows — 3 discipline-anchored truth registries (`entity-optimizer` → SEO/GEO, `creator-registry` → influencer, `offer-claims-registry` → paid) plus the cross-discipline `memory-management`. Counted separately. The auditor-class **gate role** spans 4 skills, all discipline-resident and counted there: `content-quality-auditor` (optimize/), `domain-authority-auditor` (monitor/), `content-reviewer` (activate/), `ad-account-auditor` (paid/activate/).
 
 | Group | Skills |
 |-------|--------|
-| **Protocol** | `content-quality-auditor`, `domain-authority-auditor`, `entity-optimizer`, `creator-registry`, `offer-claims-registry`, `memory-management` |
+| **Protocol** | `entity-optimizer`, `creator-registry`, `offer-claims-registry`, `memory-management` |
 
 **Influencer — IMPACT (18):**
 
@@ -80,7 +80,7 @@ Reused cross-discipline (counted in the phases, not duplicated): `budget-optimiz
 
 - Shared contract reference: [references/skill-contract.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/skill-contract.md)
 - Shared state model: [references/state-model.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/references/state-model.md)
-- Protocol roles (role assignments — the `protocol/` directory itself is 6 skills; `content-reviewer`/`ad-account-auditor` play gate roles but are counted under their home disciplines):
+- Protocol roles (role assignments — the `protocol/` directory itself is 4 skills; the 4 gates live in their home disciplines; `content-reviewer`/`ad-account-auditor` play gate roles but are counted under their home disciplines):
   - `content-quality-auditor` = publish readiness gate
   - `domain-authority-auditor` = citation trust gate
   - `content-reviewer` = C³ ART gate

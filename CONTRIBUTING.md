@@ -16,7 +16,7 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 | Build | `build/` | Creates new content or markup (SEO/GEO) |
 | Optimize | `optimize/` | Improves existing content or site health (SEO/GEO) |
 | Monitor | `monitor/` | Tracks performance over time (SEO/GEO) |
-| Protocol | `protocol/` | Cross-cutting layer (quality/authority gates, entity, memory) — shared across disciplines |
+| Protocol | `protocol/` | Cross-cutting layer (truth registries: entity/creator/claims + memory) — shared across disciplines |
 | Insight | `insight/` | Understands audience, niche, trends (influencer/IMPACT) |
 | Map | `map/` | Discovers and scores influencers (influencer/IMPACT) |
 | Plan | `plan/` | Designs campaigns, briefs, budgets (influencer/IMPACT) |
@@ -90,7 +90,7 @@ After adding or updating a skill, keep these **8 tracking files** in sync. **Thi
 - `README.md` — skills table + version badge
 - `CLAUDE.md` — category table + version
 - `AGENTS.md` — name/count line + framework item/dimension counts (CORE-EEAT / CITE / C³ / ROAS)
-- `docs/README.zh.md` — Chinese README: the 54 / 22 / 18 / 8 / 7 counts (skills / SEO-GEO / influencer / paid ads / commands) + version badge
+- `docs/README.zh.md` — Chinese README: the 54 / 24 / 18 / 8 / 7 counts (skills / SEO-GEO / influencer / paid ads / commands) + version badge
 
 For release bumps, also sync README badges and localized README badges.
 

@@ -11,8 +11,8 @@ class: auditor
 metadata:
   author: aaron-he-zhu
   version: "11.0.0"
-  discipline: protocol
-  phase: protocol
+  discipline: seo-geo
+  phase: monitor
   geo-relevance: "medium"
 ---
 
@@ -21,7 +21,7 @@ metadata:
 > Based on [CITE Domain Rating](https://github.com/aaron-he-zhu/cite-domain-rating). Full benchmark reference: [references/cite-domain-rating.md](../../references/cite-domain-rating.md)
 This skill evaluates domain authority across 40 standardized criteria organized in 4 dimensions. It produces a comprehensive audit report with per-item scoring, dimension and weighted scores by domain type, veto item checks, and a prioritized action plan.
 
-**Sister skill**: [content-quality-auditor](../content-quality-auditor/SKILL.md) evaluates content at the page level (80 items). This skill evaluates the domain behind the content (40 items). Together they provide a complete 120-item assessment.
+**Sister skill**: [content-quality-auditor](../../optimize/content-quality-auditor/SKILL.md) evaluates content at the page level (80 items). This skill evaluates the domain behind the content (40 items). Together they provide a complete 120-item assessment.
 
 > **Namespace note**: CITE uses C01-C10 for Citation items; CORE-EEAT uses C01-C10 for Contextual Clarity items. In combined 120-item assessments, prefix with the framework name (e.g., CITE-C01 vs CORE-C01) to avoid confusion.
 
@@ -479,4 +479,4 @@ See [Example Report](references/example-report.md) for a complete CITE audit of 
 
 ## Next Best Skill
 
-CAUTIOUS + link-quality: [backlink-analyzer](../../monitor/backlink-analyzer/SKILL.md). UNTRUSTED: [entity-optimizer](../entity-optimizer/SKILL.md). TRUSTED: terminal. Visited-set rule applies per [skill-contract.md](../../references/skill-contract.md).
+CAUTIOUS + link-quality: [backlink-analyzer](../backlink-analyzer/SKILL.md). UNTRUSTED: [entity-optimizer](../../protocol/entity-optimizer/SKILL.md). TRUSTED: terminal. Visited-set rule applies per [skill-contract.md](../../references/skill-contract.md).

@@ -24,8 +24,8 @@ Current versions for the plugin and all 54 skills. Agents can fetch this file fr
 | backlink-analyzer | monitor | 11.0.0 | 2026-06-28 |
 | performance-reporter | monitor | 11.0.0 | 2026-06-28 |
 | alert-manager | monitor | 11.0.0 | 2026-06-28 |
-| content-quality-auditor | protocol | 11.0.0 | 2026-06-28 |
-| domain-authority-auditor | protocol | 11.0.0 | 2026-06-28 |
+| content-quality-auditor | optimize | 11.0.0 | 2026-06-30 |
+| domain-authority-auditor | monitor | 11.0.0 | 2026-06-30 |
 | entity-optimizer | protocol | 11.0.0 | 2026-06-28 |
 | memory-management | protocol | 11.0.0 | 2026-06-28 |
 | creator-registry | protocol | 11.0.0 | 2026-06-30 |
@@ -85,10 +85,10 @@ Current versions for the plugin and all 54 skills. Agents can fetch this file fr
 - **Capability borrows (Markdown/keyless)**: `humanizer-slop.md`, `llms-txt-okf.md`, 6 platform playbooks (`references/platforms/`), conversion/visual scoring rubrics, `expert-panel.md`, AI-citation factors (4→9 engines), JS-injected-JSON-LD caveat, Impact×Confidence keyword scoring, trend-scout, atom-extraction, cold-copy rules, creator-dossier, recursive auditor loop.
 - **6 new SEO/GEO skills**: programmatic-seo, parasite-seo, comparison-page-builder, local-seo, site-architecture, ai-traffic.
 - **Paid Ads discipline (8 skills + ROAS framework)** across the 4-phase ROAS loop — Research: campaign-architect, audience-segment-builder; Orchestrate: ad-creative-builder, ad-test-designer; Activate: ad-account-auditor (auditor-class gate → `memory/audits/paid/`), conversion-signal-qa; Scale: paid-measurement-loop, attribution-reconciler. `roas-benchmark.md` (R/O/A/S, RQS arithmetic rollup, vetoes R1/R2/O1/O2/A1). content-reviewer promoted to the C³ ART gate consumer (`memory/audits/influencer/`). Per the Balanced anti-bloat design, search-term mining and bid-pacing/learning-phase ship as **modes** of campaign-architect and budget-optimizer (not standalone skills); budget-optimizer/landing-optimizer/roi-calculator/report-generator/performance-analyzer are reused cross-discipline.
-- **Systematization + protocol truth-SSOTs**: unified `discipline`/`phase` frontmatter on every skill; influencer skills trimmed to baseline density (templates → per-skill `references/`); `/impact` + `/paid` commands (5 → 7); paid phase directories (`paid/<phase>/`); **creator-registry** (influencer roster/dossier SSOT) + **offer-claims-registry** (offer & claim-substantiation SSOT) added to the protocol layer (4 → 6) — the earlier `creator-entity` deferral is superseded by creator-registry.
+- **Systematization + protocol truth-SSOTs**: unified `discipline`/`phase` frontmatter on every skill; influencer skills trimmed to baseline density (templates → per-skill `references/`); `/impact` + `/paid` commands (5 → 7); paid phase directories (`paid/<phase>/`); **creator-registry** (influencer roster/dossier SSOT) + **offer-claims-registry** (offer & claim-substantiation SSOT) added to the protocol layer; content-quality-auditor/domain-authority-auditor re-homed to optimize//monitor/ (gates live in their disciplines — protocol/ is now 3 truth registries + memory). The earlier `creator-entity` deferral is superseded by creator-registry.
 - **Deferred by design**: `disciplines.md` registry, eval runner, standalone bid/search-term/policy skills (shipped as modes) — per the roadmap's over-engineering guard.
 
-**Versions**: all **54** skills (22 SEO/GEO + 18 influencer + 8 paid + 6 protocol), plugin manifests, and marketplace mirrors unified at `11.0.0`.
+**Versions**: all **54** skills (24 SEO/GEO + 18 influencer + 8 paid + 4 protocol), plugin manifests, and marketplace mirrors unified at `11.0.0`.
 
 ### v10.0.0 — Marketing umbrella: SEO/GEO + influencer-marketing merge + rename (2026-06-28)
 

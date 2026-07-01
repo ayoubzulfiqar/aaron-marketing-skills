@@ -12,10 +12,10 @@
 
 A library of Claude Skills and slash commands that turns a chat agent into a marketing operator across **three disciplines on one operating contract**:
 
-- **SEO/GEO** — **22 skills**: keyword research, content creation, programmatic/parasite/local/comparison builds, on-page & technical audits, schema, site architecture, and rank/backlink/AI-traffic monitoring.
+- **SEO/GEO** — **24 skills**: keyword research, content creation, programmatic/parasite/local/comparison builds, on-page & technical audits, schema, site architecture, rank/backlink/AI-traffic monitoring, plus the CORE-EEAT publish gate and CITE authority gate.
 - **Influencer marketing (IMPACT)** — **18 skills**: audience insight, creator discovery & fit scoring, campaign planning, briefs, outreach, content review, amplification, UGC repurposing, and ROI tracking.
 - **Paid ads (ROAS)** — **8 skills**: account structure, audience segments, ad creative, experiment design, the account-audit gate, conversion-signal QA, the measurement loop, and attribution reconciliation.
-- **Protocol layer** — **6 skills**: shared-machinery (gates + truth SSOTs + memory) outside the discipline phase-flows — 2 SEO/GEO quality & trust gates (`content-quality-auditor`, `domain-authority-auditor`), 3 discipline-anchored truth registries (`entity-optimizer` → SEO/GEO, `creator-registry` → influencer, `offer-claims-registry` → paid), plus the cross-discipline `memory-management`.
+- **Protocol layer** — **4 skills**: shared truth & memory machinery outside the discipline phase-flows — 3 discipline-anchored truth registries (`entity-optimizer` → SEO/GEO, `creator-registry` → influencer, `offer-claims-registry` → paid) plus the cross-discipline `memory-management`. The four auditor-class gates live inside their disciplines.
 
 Everything is **plain Markdown** (the only code is a Bash hook runner, a Bash validator, and zero-dependency Python-stdlib data helpers — no `pip`, no build step). **Every skill runs at Tier 1 with nothing but data you paste in**; optional connectors only automate retrieval. Four scoring frameworks ship inside and back the publish/trust/quality gates: [CORE-EEAT](references/core-eeat-benchmark.md), [CITE](references/cite-domain-rating.md), [C³](references/c3-benchmark.md), and [ROAS](references/roas-benchmark.md).
 
@@ -31,8 +31,8 @@ Everything is **plain Markdown** (the only code is a Bash hook runner, a Bash va
 - [Operating model](#operating-model)
 - [Quality frameworks](#quality-frameworks)
 - [Skill catalog](#skill-catalog)
-  - [SEO/GEO (22)](#seogeo-22)
-  - [Protocol layer (6)](#protocol-layer-6)
+  - [SEO/GEO (24)](#seogeo-24)
+  - [Protocol layer (4)](#protocol-layer-4)
   - [Influencer — IMPACT (18)](#influencer--impact-18)
   - [Paid Ads — ROAS (8)](#paid-ads--roas-8)
 - [Commands](#commands)
@@ -119,23 +119,21 @@ This is documented once in [skill-contract.md](references/skill-contract.md); th
 
 Two things here are easy to conflate, so they are named apart — the directory count and the gate role never add together.
 
-**Structure — the `protocol/` directory (6 skills).** Shared-machinery skills (gates + truth SSOTs + memory) that sit outside the discipline phase-flows: two SEO/GEO quality & trust gates, three discipline-anchored truth registries (entity → SEO/GEO, creator → influencer, offer/claims → paid), and the cross-discipline memory loop.
+**Structure — the `protocol/` directory (4 skills).** Shared truth & memory machinery outside the discipline phase-flows: three discipline-anchored truth registries (entity → SEO/GEO, creator → influencer, offer/claims → paid) plus the cross-discipline memory loop. Gates are workflow steps, so they live in their disciplines.
 
 | `protocol/` skill | Role | Framework | Reach |
 |-------------------|------|-----------|-------|
-| `content-quality-auditor` | Publish-readiness gate | CORE-EEAT | SEO/GEO |
-| `domain-authority-auditor` | Citation-trust gate | CITE | SEO/GEO |
 | `entity-optimizer` | Canonical entity profile | — | SEO/GEO |
 | `creator-registry` | Canonical creator roster / dossier SSOT | — | influencer |
 | `offer-claims-registry` | Offer & claim-substantiation SSOT | — | paid |
 | `memory-management` | HOT/WARM/COLD memory loop | — | all disciplines |
 
-**Role — the auditor-class gate (4 skills, no separate count).** A runtime *role*, not a directory: a skill that writes a **gated artifact** (`class: auditor-output`) validated by the PostToolUse hook and scored against one framework. Two live in `protocol/`; two are discipline-resident and **counted under their home discipline**, not here:
+**Role — the auditor-class gate (4 skills, no separate count).** A runtime *role*, not a directory: a skill that writes a **gated artifact** (`class: auditor-output`) validated by the PostToolUse hook and scored against one framework. All four are discipline-resident and **counted under their home discipline**:
 
 | Gate | Framework | Lives in | Counted under |
 |------|-----------|----------|---------------|
-| `content-quality-auditor` | CORE-EEAT | `protocol/` | protocol (4) |
-| `domain-authority-auditor` | CITE | `protocol/` | protocol (4) |
+| `content-quality-auditor` | CORE-EEAT | `optimize/` | SEO/GEO (24) |
+| `domain-authority-auditor` | CITE | `monitor/` | SEO/GEO (24) |
 | `content-reviewer` | C³ ART | `activate/` | influencer (18) |
 | `ad-account-auditor` | ROAS RQS | `paid/activate/` | paid (8) |
 
@@ -164,14 +162,14 @@ Four benchmarks make "good" measurable. Each defines dimensions, a rollup method
 
 Skill links open each `SKILL.md`. Expand the **Details** under each discipline for a one-line purpose per skill.
 
-### SEO/GEO (22)
+### SEO/GEO (24)
 
 | Phase | Skills |
 |-------|--------|
 | **Research** | [keyword-research](research/keyword-research/SKILL.md), [competitor-analysis](research/competitor-analysis/SKILL.md), [serp-analysis](research/serp-analysis/SKILL.md), [content-gap-analysis](research/content-gap-analysis/SKILL.md) |
 | **Build** | [seo-content-writer](build/seo-content-writer/SKILL.md), [geo-content-optimizer](build/geo-content-optimizer/SKILL.md), [meta-tags-optimizer](build/meta-tags-optimizer/SKILL.md), [schema-markup-generator](build/schema-markup-generator/SKILL.md), [programmatic-seo](build/programmatic-seo/SKILL.md), [parasite-seo](build/parasite-seo/SKILL.md), [comparison-page-builder](build/comparison-page-builder/SKILL.md), [local-seo](build/local-seo/SKILL.md) |
-| **Optimize** | [on-page-seo-auditor](optimize/on-page-seo-auditor/SKILL.md), [technical-seo-checker](optimize/technical-seo-checker/SKILL.md), [internal-linking-optimizer](optimize/internal-linking-optimizer/SKILL.md), [content-refresher](optimize/content-refresher/SKILL.md), [site-architecture](optimize/site-architecture/SKILL.md) |
-| **Monitor** | [rank-tracker](monitor/rank-tracker/SKILL.md), [backlink-analyzer](monitor/backlink-analyzer/SKILL.md), [performance-reporter](monitor/performance-reporter/SKILL.md), [alert-manager](monitor/alert-manager/SKILL.md), [ai-traffic](monitor/ai-traffic/SKILL.md) |
+| **Optimize** | [on-page-seo-auditor](optimize/on-page-seo-auditor/SKILL.md), [technical-seo-checker](optimize/technical-seo-checker/SKILL.md), [internal-linking-optimizer](optimize/internal-linking-optimizer/SKILL.md), [content-refresher](optimize/content-refresher/SKILL.md), [site-architecture](optimize/site-architecture/SKILL.md), [content-quality-auditor](optimize/content-quality-auditor/SKILL.md) |
+| **Monitor** | [rank-tracker](monitor/rank-tracker/SKILL.md), [backlink-analyzer](monitor/backlink-analyzer/SKILL.md), [performance-reporter](monitor/performance-reporter/SKILL.md), [alert-manager](monitor/alert-manager/SKILL.md), [ai-traffic](monitor/ai-traffic/SKILL.md), [domain-authority-auditor](monitor/domain-authority-auditor/SKILL.md) |
 
 <details><summary><b>Per-skill purpose (SEO/GEO)</b></summary>
 
@@ -199,23 +197,23 @@ Skill links open each `SKILL.md`. Expand the **Details** under each discipline f
 | performance-reporter | Multi-metric SEO/GEO performance reports and stakeholder dashboards. |
 | alert-manager | Alerts for rankings, traffic, backlinks, technical issues, AI visibility. |
 | ai-traffic | Measure referral traffic from AI assistants in your own GA4 / GSC / server logs. |
+| content-quality-auditor | 80-item CORE-EEAT publish-readiness gate. |
+| domain-authority-auditor | 40-item CITE domain-trust gate. |
 
 </details>
 
-### Protocol layer (6)
+### Protocol layer (4)
 
-Shared-machinery skills (gates + truth SSOTs + memory) that sit outside the discipline phase-flows: two SEO/GEO gates, three discipline-anchored truth registries (SEO/GEO / influencer / paid), and the cross-discipline memory loop. They live under `protocol/`, counted separately.
+Shared truth & memory machinery outside the discipline phase-flows: three discipline-anchored truth registries (SEO/GEO / influencer / paid) plus the cross-discipline memory loop. The auditor-class gates live in their home disciplines. They live under `protocol/`, counted separately.
 
 | Group | Skills |
 |-------|--------|
-| **Protocol** | [content-quality-auditor](protocol/content-quality-auditor/SKILL.md), [domain-authority-auditor](protocol/domain-authority-auditor/SKILL.md), [entity-optimizer](protocol/entity-optimizer/SKILL.md), [creator-registry](protocol/creator-registry/SKILL.md), [offer-claims-registry](protocol/offer-claims-registry/SKILL.md), [memory-management](protocol/memory-management/SKILL.md) |
+| **Protocol** | [entity-optimizer](protocol/entity-optimizer/SKILL.md), [creator-registry](protocol/creator-registry/SKILL.md), [offer-claims-registry](protocol/offer-claims-registry/SKILL.md), [memory-management](protocol/memory-management/SKILL.md) |
 
 <details><summary><b>Per-skill purpose (Protocol)</b></summary>
 
 | Skill | What it does |
 |-------|--------------|
-| content-quality-auditor | 80-item CORE-EEAT publish-readiness gate. |
-| domain-authority-auditor | 40-item CITE domain-trust gate. |
 | entity-optimizer | Canonical entity profile for Knowledge Graph, Wikidata, AI disambiguation. |
 | creator-registry | Canonical creator roster/dossier — deduped handles, provenance-labeled audience stats, rates, compliance history. |
 | offer-claims-registry | Canonical offer & claim-substantiation ledger — the record the O1/T2 claim checks are judged against. |
@@ -379,8 +377,8 @@ For a full trust review, pair `content-quality-auditor` with `domain-authority-a
 ## Repository layout
 
 ```
-research/ build/ optimize/ monitor/                  # SEO/GEO (22)
-protocol/                                            # Protocol layer (6) — gates + truth registries + memory
+research/ build/ optimize/ monitor/                  # SEO/GEO (24)
+protocol/                                            # Protocol layer (4) — truth registries + memory
 insight/ map/ plan/ activate/ convert/ track/        # Influencer — IMPACT (18)
 paid/research|orchestrate|activate|scale/             # Paid Ads — ROAS (8)
 commands/        # 5 slash commands

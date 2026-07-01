@@ -12,8 +12,8 @@ class: auditor
 metadata:
   author: aaron-he-zhu
   version: "11.0.0"
-  discipline: protocol
-  phase: protocol
+  discipline: seo-geo
+  phase: optimize
   geo-relevance: "high"
 ---
 
@@ -466,7 +466,7 @@ See [references/item-reference.md](references/item-reference.md) for a complete 
 4. **Some EEAT items need site-level data** — Don't penalize content for things only observable at the site level (backlinks, brand recognition)
 5. **Use the weighted score, not just the raw average** — A product review with strong Exclusivity matters more than strong Authority
 6. **Re-audit after improvements** — Run again to verify score improvements and catch regressions
-7. **Pair with CITE for domain-level context** — A high content score on a low-authority domain signals a different priority than the reverse; run [domain-authority-auditor](../domain-authority-auditor/SKILL.md) for the full 120-item picture
+7. **Pair with CITE for domain-level context** — A high content score on a low-authority domain signals a different priority than the reverse; run [domain-authority-auditor](../../monitor/domain-authority-auditor/SKILL.md) for the full 120-item picture
 
 ## Reference Materials
 
@@ -479,4 +479,4 @@ See [references/item-reference.md](references/item-reference.md) for a complete 
 
 ## Next Best Skill
 
-Primary: [content-refresher](../../optimize/content-refresher/SKILL.md) (FIX verdict). BLOCK: [seo-content-writer](../../build/seo-content-writer/SKILL.md) or [entity-optimizer](../entity-optimizer/SKILL.md). SHIP: [rank-tracker](../../monitor/rank-tracker/SKILL.md).
+Primary: [content-refresher](../content-refresher/SKILL.md) (FIX verdict). BLOCK: [seo-content-writer](../../build/seo-content-writer/SKILL.md) or [entity-optimizer](../../protocol/entity-optimizer/SKILL.md). SHIP: [rank-tracker](../../monitor/rank-tracker/SKILL.md).
