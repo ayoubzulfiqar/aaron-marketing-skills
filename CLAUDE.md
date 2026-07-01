@@ -1,6 +1,6 @@
 # Aaron Marketing Skills — Claude Code Context
 
-This plugin provides **54 skills and 7 commands** across three marketing disciplines — SEO/GEO, influencer marketing (IMPACT), and Paid Ads (ROAS) — plus a shared protocol layer. All 54 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `11.0.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
+This plugin provides **54 skills and 4 commands** across three marketing disciplines — SEO/GEO, influencer marketing (IMPACT), and Paid Ads (ROAS) — plus a shared protocol layer. All 54 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `11.0.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
 
 > Umbrella repo, renamed from `seo-geo-claude-skills` (stars/forks/issues/history carried over by the GitHub rename). The SEO/GEO-only product still lives, unchanged, at the original [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) URL as a standalone repo.
 
@@ -57,14 +57,11 @@ Reused cross-discipline (counted in the phases, not duplicated): `budget-optimiz
 
 ## One-Shot Commands
 
-**Seven commands.** `/aaron-marketing:auto` infers intent across all disciplines; the four SEO/GEO mode commands plus `/aaron-marketing:impact` (influencer) and `/aaron-marketing:paid` (paid) are explicit entrypoints. Not sure? Use `/aaron-marketing:auto`:
+**Four commands.** `/aaron-marketing:auto` infers intent across all disciplines; each discipline has one explicit entrypoint. Not sure? Use `/aaron-marketing:auto`:
 
 ```
 /aaron-marketing:auto      — Infer SEO/GEO intent and run the smallest useful workflow (add --deep for exhaustive/stress-test)
-/aaron-marketing:research  — Keyword demand, SERP intent, competitors, content gaps, site/topic/entity maps
-/aaron-marketing:create    — Brief, write, series, refresh, CMS-neutral publish package (--brief|--series|--refresh|--publish|--meta|--schema)
-/aaron-marketing:audit     — On-page + CORE-EEAT quality, technical SEO, AI visibility, domain authority (--full|--tech|--visibility|--authority)
-/aaron-marketing:track     — Rankings, alerts, performance reports, project memory (--alert|--report|--remember)
+/aaron-marketing:seo-geo   — SEO/GEO end-to-end (--mode research|create|audit|track; per-mode flags preserved: --brief/--series/--refresh/--publish/--meta/--schema, --full/--tech/--visibility/--authority, --alert/--report/--remember, --competitors/--map)
 /aaron-marketing:impact    — Influencer (IMPACT): insight / map / plan / activate / convert / track (--phase to force a stage)
 /aaron-marketing:paid      — Paid ads (ROAS loop): research / orchestrate / activate / scale (--phase to force a stage)
 ```

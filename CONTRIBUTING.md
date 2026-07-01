@@ -90,7 +90,7 @@ After adding or updating a skill, keep these **8 tracking files** in sync. **Thi
 - `README.md` — skills table + version badge
 - `CLAUDE.md` — category table + version
 - `AGENTS.md` — name/count line + framework item/dimension counts (CORE-EEAT / CITE / C³ / ROAS)
-- `docs/README.zh.md` — Chinese README: the 54 / 24 / 18 / 8 / 7 counts (skills / SEO-GEO / influencer / paid ads / commands) + version badge
+- `docs/README.zh.md` — Chinese README: the 54 / 24 / 18 / 8 / 4 counts (skills / SEO-GEO / influencer / paid ads / commands) + version badge
 
 For release bumps, also sync README badges and localized README badges.
 

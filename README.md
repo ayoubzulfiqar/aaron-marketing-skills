@@ -1,6 +1,6 @@
 # Aaron Marketing Skills
 
-**54 skills. 7 commands. SEO/GEO, influencer, and paid ads marketing on one shared contract.**
+**54 skills. 4 commands. SEO/GEO, influencer, and paid ads marketing on one shared contract.**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
 [![Version](https://img.shields.io/badge/version-11.0.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
@@ -149,7 +149,7 @@ Four benchmarks make "good" measurable. Each defines dimensions, a rollup method
 
 | Framework | Scores | Items / dimensions | Rollup | Veto items | Used by |
 |-----------|--------|--------------------|--------|------------|---------|
-| **[CORE-EEAT](references/core-eeat-benchmark.md)** | Content quality (GEO = CORE avg, SEO = EEAT avg) | 80 items / 8 dimensions | per-dimension averages | `T04`, `C01`, `R10` | `content-quality-auditor`, `/audit` |
+| **[CORE-EEAT](references/core-eeat-benchmark.md)** | Content quality (GEO = CORE avg, SEO = EEAT avg) | 80 items / 8 dimensions | per-dimension averages | `T04`, `C01`, `R10` | `content-quality-auditor`, `/seo-geo --mode audit` |
 | **[CITE](references/cite-domain-rating.md)** | Domain authority & citation trust | 40 items / 4 dimensions | arithmetic weighted mean | `T03`, `T05`, `T09` | `domain-authority-auditor` |
 | **[C³](references/c3-benchmark.md)** | Influencer Creator / Content / Campaign | ACE / ART / ROI · 9 dimensions | **CVI = (ACE × ART × ROI)^⅓** (geometric) | ACE `A2`/`C1`/`E2`, ART `T1`/`T2` | `fit-scorer` (ACE), `content-reviewer` (ART) |
 | **[ROAS](references/roas-benchmark.md)** | Paid ads Return / Offer / Audience / Spend-efficiency | R / O / A / S | **RQS = floor(goal-weighted mean)** (arithmetic) | `R1`/`R2`/`O1`/`O2`/`A1` | `ad-account-auditor` |
@@ -289,21 +289,18 @@ Phases follow the **ROAS loop** (Research → Orchestrate → Activate → Scale
 
 ## Commands
 
-Seven commands: the four SEO/GEO mode commands (research, create, audit, track) plus `/aaron-marketing:impact` (influencer) and `/aaron-marketing:paid` (paid ads); `/aaron-marketing:auto` infers intent across all three. Source: [commands/](commands/).
+Four commands — `/aaron-marketing:auto` infers intent across all three disciplines, and each discipline has exactly one explicit entrypoint: `/aaron-marketing:seo-geo`, `/aaron-marketing:impact`, `/aaron-marketing:paid`. Source: [commands/](commands/).
 
 | Command | Use it for | Flags |
 |---------|-----------|-------|
 | `/aaron-marketing:auto` | Describe any goal — infers intent and runs the smallest useful workflow | `--deep` (exhaustive / stress-test) |
-| `/aaron-marketing:research` | Keyword demand, SERP intent, competitors, content gaps, site/topic/entity maps | — |
-| `/aaron-marketing:create` | Brief, write, series, refresh, CMS-neutral publish package | `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` |
-| `/aaron-marketing:audit` | On-page + CORE-EEAT quality, technical SEO, AI visibility, domain authority | `--full` `--tech` `--visibility` `--authority` |
-| `/aaron-marketing:track` | Rankings, alerts, performance reports, project memory | `--alert` `--report` `--remember` |
+| `/aaron-marketing:seo-geo` | SEO/GEO end-to-end: research demand/competitors, create content, audit quality/tech/visibility/authority, track rankings/reports/memory | `--mode research\|create\|audit\|track`; per-mode flags preserved (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember`) |
 | `/aaron-marketing:impact` | Influencer (IMPACT): audience insight, discovery & fit, planning, outreach, amplification, ROI | `--phase insight\|map\|plan\|activate\|convert\|track` |
 | `/aaron-marketing:paid` | Paid ads (ROAS loop): segments, structure, creative, experiment design, the audit gate, measurement | `--phase research\|orchestrate\|activate\|scale` |
 
-Daily work normally starts with `/aaron-marketing:auto`, which runs the workflow implied by your goal and stops only at blocking decisions. The others are explicit mode and discipline entrypoints.
+Daily work normally starts with `/aaron-marketing:auto`, which runs the workflow implied by your goal and stops only at blocking decisions. The other three are explicit discipline entrypoints; `--mode` (or `--phase`) narrows the stage.
 
-**Rename note:** commands use the `/aaron-marketing:` prefix. Older `/seo:*` and `/aaron-seo-geo:*` names recover via `auto` — e.g. `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` returns `/aaron-marketing:audit https://example.com/blog/post`.
+**Rename note:** commands use the `/aaron-marketing:` prefix. The former `research` / `create` / `audit` / `track` commands are now modes of `/aaron-marketing:seo-geo` (flags unchanged). Older `/seo:*` and `/aaron-seo-geo:*` names recover via `auto` — e.g. `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` returns `/aaron-marketing:seo-geo https://example.com/blog/post --mode audit`.
 
 ---
 

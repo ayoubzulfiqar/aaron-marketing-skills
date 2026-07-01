@@ -1,6 +1,6 @@
 # Aaron 营销技能库
 
-**54 个技能。7 个命令。SEO/GEO、红人营销与付费广告，共享同一套契约。**
+**54 个技能。4 个命令。SEO/GEO、红人营销与付费广告，共享同一套契约。**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
 [![Version](https://img.shields.io/badge/version-11.0.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
@@ -149,7 +149,7 @@
 
 | 框架 | 评分对象 | 项数 / 维度 | 汇总 | 否决项 | 由谁使用 |
 |------|----------|-------------|------|--------|----------|
-| **[CORE-EEAT](../references/core-eeat-benchmark.md)** | 内容质量（GEO = CORE 均值，SEO = EEAT 均值） | 80 项 / 8 维 | 各维度均值 | `T04`、`C01`、`R10` | `content-quality-auditor`、`/audit` |
+| **[CORE-EEAT](../references/core-eeat-benchmark.md)** | 内容质量（GEO = CORE 均值，SEO = EEAT 均值） | 80 项 / 8 维 | 各维度均值 | `T04`、`C01`、`R10` | `content-quality-auditor`、`/seo-geo --mode audit` |
 | **[CITE](../references/cite-domain-rating.md)** | 域名权威与引用信任 | 40 项 / 4 维 | 算术加权平均 | `T03`、`T05`、`T09` | `domain-authority-auditor` |
 | **[C³](../references/c3-benchmark.md)** | 红人 创作者/内容/活动 | ACE / ART / ROI · 9 维 | **CVI =(ACE × ART × ROI)^⅓**（几何） | ACE `A2`/`C1`/`E2`、ART `T1`/`T2` | `fit-scorer`(ACE)、`content-reviewer`(ART) |
 | **[ROAS](../references/roas-benchmark.md)** | 付费广告 回报/创意/受众/花费效率 | R / O / A / S | **RQS = floor（目标加权均值）**（算术） | `R1`/`R2`/`O1`/`O2`/`A1` | `ad-account-auditor` |
@@ -289,21 +289,18 @@
 
 ## 命令
 
-7 个命令：四个 SEO/GEO 模式命令（research、create、audit、track）+ `/aaron-marketing:impact`（红人）+ `/aaron-marketing:paid`（付费）；`/aaron-marketing:auto` 跨三学科推断意图。源文件：[commands/](../commands/)。
+4 个命令 —— `/aaron-marketing:auto` 跨三学科推断意图；每个学科恰有一个显式入口：`/aaron-marketing:seo-geo`、`/aaron-marketing:impact`、`/aaron-marketing:paid`。源文件：[commands/](../commands/)。
 
 | 命令 | 用途 | 参数 |
 |------|------|------|
 | `/aaron-marketing:auto` | 描述任意目标——推断意图并执行最小够用的工作流 | `--deep`（穷尽/压测） |
-| `/aaron-marketing:research` | 关键词需求、SERP 意图、竞品、内容缺口、站点/主题/实体地图 | — |
-| `/aaron-marketing:create` | brief、写作、系列、刷新、CMS 中立发布包 | `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` |
-| `/aaron-marketing:audit` | on-page + CORE-EEAT 质量、技术 SEO、AI 可见性、域权威 | `--full` `--tech` `--visibility` `--authority` |
-| `/aaron-marketing:track` | 排名、告警、绩效报告、项目记忆 | `--alert` `--report` `--remember` |
+| `/aaron-marketing:seo-geo` | SEO/GEO 端到端：研究需求/竞品、创作内容、审计质量/技术/可见性/权威、追踪排名/报告/记忆 | `--mode research\|create\|audit\|track`；各模式子参数全保留（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember`） |
 | `/aaron-marketing:impact` | 红人（IMPACT）：受众洞察、发现与适配、规划、外联、放大、ROI | `--phase insight\|map\|plan\|activate\|convert\|track` |
 | `/aaron-marketing:paid` | 付费广告（ROAS 循环）：分群、结构、创意、实验设计、审计门、衡量 | `--phase research\|orchestrate\|activate\|scale` |
 
-日常工作通常从 `/aaron-marketing:auto` 开始，它执行你目标隐含的工作流，只在阻塞性决策处停下。其余命令是显式的模式/学科入口。
+日常工作通常从 `/aaron-marketing:auto` 开始，它执行你目标隐含的工作流，只在阻塞性决策处停下。其余三个是显式的学科入口；用 `--mode`（或 `--phase`）收窄阶段。
 
-**改名说明：** 命令使用 `/aaron-marketing:` 前缀。旧 `/seo:*` 与 `/aaron-seo-geo:*` 可经 `auto` 恢复——例如 `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` 返回 `/aaron-marketing:audit https://example.com/blog/post`。
+**改名说明：** 命令使用 `/aaron-marketing:` 前缀。原 `research` / `create` / `audit` / `track` 四个命令现为 `/aaron-marketing:seo-geo` 的 `--mode`（子参数不变）。旧 `/seo:*` 与 `/aaron-seo-geo:*` 可经 `auto` 恢复——例如 `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` 返回 `/aaron-marketing:seo-geo https://example.com/blog/post --mode audit`。
 
 ---
 
@@ -381,7 +378,7 @@ research/ build/ optimize/ monitor/                  # SEO/GEO(24)
 protocol/                                            # 协议层(4) — 真相注册表 + 记忆
 insight/ map/ plan/ activate/ convert/ track/        # 红人 — IMPACT(18)
 paid/research|orchestrate|activate|scale/             # 付费广告 — ROAS(8)
-commands/        # 7 个斜杠命令
+commands/        # 4 个斜杠命令
 references/      # 共享契约、状态模型、四套基准、auditor runbook、平台资料包
 evals/           # 各技能结构化 eval 用例 + structure-manifest.json
 hooks/           # hooks.json + claude-hook.sh(唯一运行逻辑)

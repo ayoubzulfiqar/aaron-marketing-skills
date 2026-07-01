@@ -419,7 +419,7 @@ Sorted by: weight × points lost across all tiers (highest impact first). This i
 - For full content rewrite: use `seo-content-writer` with CORE-EEAT constraints
 - For GEO optimization: use `geo-content-optimizer` targeting failed GEO-First items
 - For content refresh: use `content-refresher` with weak dimensions as focus
-- For technical fixes: run `/aaron-marketing:audit --tech` for site-level issues
+- For technical fixes: run `/aaron-marketing:seo-geo --mode audit --tech` for site-level issues
 ```
 
 ### Step 4.5: Apply Scoring Runbook
