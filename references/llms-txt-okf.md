@@ -90,4 +90,4 @@ Google built OKF for data teams sharing catalog metadata (BigQuery tables, metri
 - **`entity-optimizer`**: uses the cross-linked bundle to express entity relationships consistently across pages (the canonical entity profile).
 - **`schema-markup-generator`**: produces the per-page schema layer that sits alongside the bundle; OKF `type` values map to schema types (Article, FAQPage, Product).
 
-See also `../skill-contract.md` for the shared handoff contract.
+See also `skill-contract.md` for the shared handoff contract.

@@ -69,4 +69,4 @@ Keep one such table per round in the deliverable so the revise→rescore trail i
 
 - These persona scores are structured judgment, not measured performance. A high panel average does not predict an actual reply rate, ranking, or view count — treat it as a pre-flight critique, then measure real results separately.
 - The named-expert framing is a thinking device for forcing distinct lenses; it does not mean the named person endorsed anything.
-- See `../skill-contract.md` for how the scored draft and open objections hand off to the next skill.
+- See `skill-contract.md` for how the scored draft and open objections hand off to the next skill.

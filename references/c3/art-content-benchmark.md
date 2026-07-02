@@ -53,7 +53,7 @@
 
 - Item: **Pass 10 · Partial 5 · Fail 0**
 - Dimension = mean(items) × 10 → 0–100
-- **ART = A·w_A + R·w_R + T·w_T** (weights by campaign goal — see §7)
+- **ART = A·w_A + R·w_R + T·w_T** (weights by campaign goal — see §6)
 - Bands: 90–100 Excellent · 75–89 Good · 60–74 Medium · 40–59 Low · 0–39 Poor
 - **Veto:** failing **T1** or **T2** caps ART at **Low (≤ 59)** + a Compliance flag. Disclosure basis: FTC **16 CFR §255** / **Part 465**. Not legal advice.
 
