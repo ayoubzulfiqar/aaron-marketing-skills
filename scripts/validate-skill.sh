@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # validate-skill.sh — Validate a SKILL.md against the Agent Skills spec (frontmatter, shared contract, termination)
+# Required frontmatter (FAIL if missing): name, version, description, license, compatibility, metadata.
+# Recommended frontmatter (WARN if missing): when_to_use (underscores — `when-to-use` is a FAIL), argument-hint.
+# blob/main GitHub URL ban covers SKILL.md AND every .md under the skill's references/.
 # Usage: ./scripts/validate-skill.sh <path-to-skill-directory>
 # Example: ./scripts/validate-skill.sh research/keyword-research
 
@@ -176,22 +179,22 @@ else
     fi
 fi
 
-# --- Optional but recommended: license ---
+# --- Required field: license ---
 if echo "$FRONTMATTER" | grep -qE '^license:'; then
     LICENSE=$(echo "$FRONTMATTER" | grep -E '^license:' | sed 's/license: *//')
     pass "license present: $LICENSE"
 else
-    warn "Missing recommended field: license"
+    fail "Missing required field: license"
 fi
 
-# --- Optional but recommended: compatibility ---
+# --- Required field: compatibility ---
 if echo "$FRONTMATTER" | grep -qE '^compatibility:'; then
     pass "compatibility field present"
 else
-    warn "Missing recommended field: compatibility"
+    fail "Missing required field: compatibility"
 fi
 
-# --- Optional but recommended: metadata ---
+# --- Required field: metadata ---
 if echo "$FRONTMATTER" | grep -qE '^metadata:'; then
     pass "metadata block present"
     if echo "$FRONTMATTER" | grep -qE '  author:'; then
@@ -205,7 +208,23 @@ if echo "$FRONTMATTER" | grep -qE '^metadata:'; then
         warn "metadata.version not found"
     fi
 else
-    warn "Missing recommended field: metadata"
+    fail "Missing required field: metadata"
+fi
+
+# --- Recommended field: when_to_use (key spelling enforced: underscores, not hyphens) ---
+if echo "$FRONTMATTER" | grep -qE '^when-to-use:'; then
+    fail "frontmatter key must be 'when_to_use' (underscores), not 'when-to-use' (hyphens)"
+elif echo "$FRONTMATTER" | grep -qE '^when_to_use:'; then
+    pass "when_to_use present (correct underscore key)"
+else
+    warn "Missing recommended field: when_to_use"
+fi
+
+# --- Recommended field: argument-hint ---
+if echo "$FRONTMATTER" | grep -qE '^argument-hint:'; then
+    pass "argument-hint present"
+else
+    warn "Missing recommended field: argument-hint"
 fi
 
 # --- Body length advisory ---
@@ -288,11 +307,22 @@ fi
 # --- Regression guard: runtime files must use relative links, not blob/main URLs ---
 # (A skill that WebFetches GitHub HTML instead of Reading the installed file breaks
 #  version pinning and offline use. Human-facing docs may still use absolute URLs.)
+# Documented rule covers SKILL.md AND references/ — scan both.
 if grep -q 'blob/main/' "$SKILL_FILE"; then
     BLOB_HITS=$(grep -c 'blob/main/' "$SKILL_FILE")
     fail "SKILL.md contains ${BLOB_HITS} blob/main GitHub URL(s) — use plugin-relative paths so the agent Reads the installed file (offline-safe, version-pinned)"
 else
-    pass "no blob/main GitHub URLs (references load via relative paths)"
+    pass "no blob/main GitHub URLs in SKILL.md (references load via relative paths)"
+fi
+
+if [ -d "$SKILL_DIR/references" ]; then
+    REF_BLOB_HITS=$(grep -rn 'blob/main/' "$SKILL_DIR/references" --include='*.md' 2>/dev/null || true)
+    if [ -n "$REF_BLOB_HITS" ]; then
+        fail "references/ contains blob/main GitHub URL(s) — use plugin-relative paths (file:line):"
+        echo "$REF_BLOB_HITS"
+    else
+        pass "no blob/main GitHub URLs in references/"
+    fi
 fi
 
 # --- File type check (text only, no binaries) ---

@@ -10,6 +10,7 @@ on:
       - "commands/**"
       - "evals/**"
       - "scripts/**"
+      - "tests/**"
       - ".github/workflows/**"
       - ".github/ISSUE_TEMPLATE/**"
       - ".github/PULL_REQUEST_TEMPLATE.md"
@@ -25,7 +26,7 @@ on:
       - "CONNECTORS.md"
       - "VERSIONS.md"
       - "marketplace.json"
-      - ".mcp.json"
+      - "docs/mcp-catalog.json"
   pull_request:
     branches: [main]
     paths:
@@ -35,6 +36,7 @@ on:
       - "commands/**"
       - "evals/**"
       - "scripts/**"
+      - "tests/**"
       - ".github/workflows/**"
       - ".github/ISSUE_TEMPLATE/**"
       - ".github/PULL_REQUEST_TEMPLATE.md"
@@ -50,7 +52,7 @@ on:
       - "CONNECTORS.md"
       - "VERSIONS.md"
       - "marketplace.json"
-      - ".mcp.json"
+      - "docs/mcp-catalog.json"
 
 jobs:
   validate:
@@ -68,6 +70,14 @@ jobs:
             bash scripts/validate-skill.sh "$(dirname "$file")"
           done
           bash scripts/validate-skill.sh --status
+
+      - name: Root references/ blob-main guard
+        run: |
+          # Repo-level half of the documented blob/main ban: the per-skill validator
+          # scans each skill's SKILL.md + references/, but cannot see root references/.
+          # `!` must stay the last command — under bash -e an inverted failure does not
+          # abort the script, so a trailing echo would mask a hit.
+          ! grep -rn "blob/main" references/ --include="*.md"
 
       - name: Lint connector code (py_compile)
         run: |
@@ -93,7 +103,7 @@ jobs:
       - name: Validate JSON / shell manifests
         run: |
           set -euo pipefail
-          for f in .claude-plugin/plugin.json marketplace.json .claude-plugin/marketplace.json .mcp.json; do
+          for f in .claude-plugin/plugin.json marketplace.json .claude-plugin/marketplace.json docs/mcp-catalog.json; do
             python3 -c "import json,sys; json.load(open('$f')); print('ok: $f')"
           done
           # the two marketplace.json files must stay byte-identical mirrors

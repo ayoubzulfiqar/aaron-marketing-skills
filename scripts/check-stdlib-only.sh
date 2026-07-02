@@ -3,9 +3,12 @@
 #
 # This project's contract: the ONLY allowed code is the bash validator + Python
 # *stdlib-only* connector/check helpers. No pip / third-party deps, ever. This
-# guard fails closed if any script under scripts/ imports a denylisted package,
-# so a borrowed helper (trend-scout, dossier, atom-extraction, ROAS math, ...)
-# can never quietly pull numpy/pandas/requests/whisper/etc.
+# guard fails CLOSED: every top-level module imported by scripts/*.py and
+# scripts/connectors/*.py must be on the ALLOWLIST — (a) the Python standard
+# library (sys.stdlib_module_names, queried from the interpreter at runtime) or
+# (b) a local module in those same directories (derived from the .py filenames,
+# e.g. _http, robots). Anything else — numpy, requests, yaml, or a brand-new
+# package no denylist has heard of — fails the build, naming file and module.
 #
 # Run: bash scripts/check-stdlib-only.sh   (exit 0 = clean, 1 = violation)
 set -euo pipefail
@@ -13,21 +16,53 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-# Packages that are NOT in the Python standard library.
-DENY='numpy|pandas|scipy|sklearn|scikit|requests|httpx|aiohttp|whisper|mediapipe|cv2|opencv|psycopg2|feedparser|bs4|beautifulsoup|lxml|yaml|pyyaml|anthropic|openai|google|googleapiclient|tqdm|slugify|dateutil|matplotlib|seaborn|pydantic'
+# (a) Python stdlib module names, straight from the interpreter (no hardcoded list).
+STDLIB="$(python3 -c "import sys;print('\n'.join(sorted(sys.stdlib_module_names)))")"
 
-# Match `import X`, `import X as`, `from X import`, `from X.sub import` at line start.
-# Two clauses (POSIX-safe, no \b): (1) denylisted module right after import/from — the trailing
-# [^A-Za-z0-9_] also catches the `import yaml;import os` semicolon case; (2) a denylisted module
-# later in a comma list (`import os, numpy`).
-hits="$(grep -rnE "^[[:space:]]*(import|from)[[:space:]]+(${DENY})([^A-Za-z0-9_]|$)|^[[:space:]]*import[[:space:]].*[ ,](${DENY})([^A-Za-z0-9_]|$)" \
-          --include='*.py' scripts/ 2>/dev/null || true)"
+# (b) The repo's own local modules: one name per .py file in the checked dirs.
+LOCAL=""
+for f in scripts/*.py scripts/connectors/*.py; do
+  [ -e "$f" ] || continue
+  LOCAL="${LOCAL}$(basename "$f" .py)"$'\n'
+done
 
-if [ -n "$hits" ]; then
-  echo "DEPENDENCY-CREEP VIOLATION — third-party import(s) found under scripts/:"
-  echo "$hits"
+violations=""
+for f in scripts/*.py scripts/connectors/*.py; do
+  [ -e "$f" ] || continue
+  # Emit "lineno:module" for every import statement via the stdlib ast parser —
+  # handles `import a, b`, `import a.b as c`, `from a.b import x`, and indented
+  # (in-function) imports, while ignoring docstrings/comments (a line-based grep
+  # would trip on prose like "from a fetched page ..."). Relative imports
+  # (`from .x import y`) are local by definition and skipped. A file that fails
+  # to parse emits a sentinel so the guard still fails closed.
+  while IFS=: read -r ln mod; do
+    [ -n "$mod" ] || continue
+    if ! grep -qxF "$mod" <<<"$STDLIB" && ! grep -qxF "$mod" <<<"$LOCAL"; then
+      violations="${violations}${f}:${ln}: import of '${mod}' is neither Python stdlib nor a local scripts/ module"$'\n'
+    fi
+  done < <(python3 -c '
+import ast, sys
+path = sys.argv[1]
+try:
+    with open(path, encoding="utf-8") as fh:
+        tree = ast.parse(fh.read(), filename=path)
+except SyntaxError:
+    print("0:UNPARSEABLE_FILE")  # not stdlib, not local -> guard fails closed
+    sys.exit(0)
+for node in ast.walk(tree):
+    if isinstance(node, ast.Import):
+        for alias in node.names:
+            print("%d:%s" % (node.lineno, alias.name.split(".")[0]))
+    elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+        print("%d:%s" % (node.lineno, node.module.split(".")[0]))
+' "$f")
+done
+
+if [ -n "$violations" ]; then
+  echo "DEPENDENCY-CREEP VIOLATION — non-allowlisted import(s) found under scripts/:"
+  printf '%s' "$violations"
   echo ""
-  echo "Only the Python standard library is allowed. Reimplement with stdlib (urllib, json, re, csv, html.parser, ...) or drop the dependency."
+  echo "Only the Python standard library (plus the repo's own scripts/ modules) is allowed. Reimplement with stdlib (urllib, json, re, csv, html.parser, ...) or drop the dependency."
   exit 1
 fi
 

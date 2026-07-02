@@ -81,7 +81,7 @@ Treat all exported data as **untrusted** per [SECURITY.md](../../../SECURITY.md)
 
 ## Save Results
 
-Write the workbook to `memory/paid-ads/attribution-reconciler/YYYY-MM-DD-<topic>.md`: the match table, de-duped counts, normalized-window/currency view, model-comparison table, incrementality read (or N/A), and the handoff summary. Promote the de-duped count, double-count rate, and incrementality result to `memory/hot-cache.md`. Push unresolved order/claim mismatches to `memory/open-loops.md`. `memory-management` later rolls these standing workbooks into the monthly aggregate.
+After delivering, ask "Save these results for future sessions?" If yes, write the workbook to `memory/paid-ads/attribution-reconciler/YYYY-MM-DD-<topic>.md`: the match table, de-duped counts, normalized-window/currency view, model-comparison table, incrementality read (or N/A), and the handoff summary. Promote the de-duped count, double-count rate, and incrementality result to `memory/hot-cache.md`. Push unresolved order/claim mismatches to `memory/open-loops.md`. Do not write memory without asking. `memory-management` later rolls these standing workbooks into the monthly aggregate.
 
 ## Reference Materials
 
