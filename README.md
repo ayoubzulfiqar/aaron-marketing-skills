@@ -79,7 +79,7 @@ Use it with Claude Code, any Agent Skills-compatible host, or a plain `git clone
 
 In Claude Code, `marketplace add` only registers the catalog — run `/plugin install aaron-marketing@aaron` (or pick it from `/plugin`) to actually enable the skills and commands. To pull a **single** skill on a generic host: `npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`.
 
-Installing the plugin adds **nothing** to your `/mcp` list — the MCP catalogue in `.mcp.json` is a copy-paste reference, not auto-registered (see [Connectors](#connectors--enhancement-tiers)).
+Installing the plugin adds **nothing** to your `/mcp` list — the MCP catalogue lives in [`docs/mcp-catalog.json`](docs/mcp-catalog.json), deliberately outside the plugin-root `.mcp.json` path that Claude Code auto-registers, so it is a copy-paste reference only (see [Connectors](#connectors--enhancement-tiers)).
 
 ---
 
@@ -190,7 +190,7 @@ The registries follow a **sole-writer rule** (other skills submit via `candidate
 |-------|---------|--------------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | Injects the **sanitized** hot-cache + an open-loops pointer (prompt-injection lines are redacted; symlinked caches are rejected). |
 | `UserPromptSubmit` | (all) | Lightweight per-prompt context hook. |
-| `PostToolUse` | `Write\|Edit` | Hot-cache size warning **+ the Artifact Gate**: anything written under `memory/audits/` must carry `class: auditor-output` and the cap fields, or the write is blocked. |
+| `PostToolUse` | `Write\|Edit` | Hot-cache size warning **+ the Artifact Gate**: any file under `memory/audits/` that declares `class: auditor-output` is validated against the handoff schema and cap fields, or the write is blocked. The four auditor-class gates must declare that marker by contract; unmarked files are not auditor artifacts and pass through. |
 | `Stop` | (all) | No-op (exits silently). |
 
 The Artifact Gate is **framework-agnostic** — the same hook validates CORE-EEAT, CITE, C³, and ROAS artifacts with no per-framework code.
@@ -337,7 +337,7 @@ Four commands: `/aaron-marketing:auto` routes any goal across all three discipli
 | Command | Use it for | Narrowing |
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | Describe any goal — infers intent and runs the smallest useful workflow | `--deep` (exhaustive / stress-test) |
-| `/aaron-marketing:seo-geo` | SEO/GEO end-to-end: research demand/competitors, create content, audit quality/tech/visibility/authority, track rankings/reports/memory | `--mode research\|create\|audit\|track` + per-mode flags (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember`) |
+| `/aaron-marketing:seo-geo` | SEO/GEO end-to-end: research demand/competitors, create content, audit quality/tech/visibility/authority, track rankings/reports/memory | `--mode research\|create\|audit\|track` + per-mode flags (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`) |
 | `/aaron-marketing:impact` | Influencer (IMPACT): audience insight, discovery & fit, planning, outreach, amplification, ROI | `--phase insight\|map\|plan\|activate\|convert\|track` |
 | `/aaron-marketing:paid` | Paid ads (ROAS loop): segments, structure, creative, experiment design, the audit gate, measurement | `--phase research\|orchestrate\|activate\|scale` |
 
@@ -359,7 +359,7 @@ Skills name tools with `~~category` placeholders (`~~SEO tool`, `~~web analytics
 
 - **Bundled zero-dependency helpers** under `scripts/connectors/` (Python stdlib only) pull public/own data locally — e.g. PageSpeed/CrUX, Open PageRank, page crawl, Wayback CDX, Wikidata SPARQL, Common Crawl, advertools recipes.
 - **Free/keyless sources** documented per category: Google Search Console & GA4 (own data), PageSpeed/CrUX, Wikidata, Common Crawl, Open PageRank, and more.
-- **Opt-in MCP servers** (Ahrefs, Semrush, SE Ranking, SISTRIX, SimilarWeb, the self-hosted free **OpenSEO** suite, Cloudflare, Vercel, HubSpot, Amplitude, Notion, Webflow, Sanity, Contentful, Slack) are catalogued in `.mcp.json` as a **copy-paste reference only** — they are not auto-registered. Copy the entries you want into your own MCP config.
+- **Opt-in MCP servers** (Ahrefs, Semrush, SE Ranking, SISTRIX, SimilarWeb, the self-hosted free **OpenSEO** suite, Cloudflare, Vercel, HubSpot, Amplitude, Notion, Webflow, Sanity, Contentful, Slack) are catalogued in [`docs/mcp-catalog.json`](docs/mcp-catalog.json) as a **copy-paste reference only** — the catalog sits outside the auto-registered plugin-root `.mcp.json` path, so nothing is registered for you. Copy the entries you want into your own MCP config.
 
 Paid-ads skills score from your **own-account manual export** (native ad-manager CSV, GA4, ecommerce). Keyed ad-platform APIs (Google Ads SDK, Meta Marketing API) are opt-in Tier-2/3 only and **never** a Tier-1 requirement.
 

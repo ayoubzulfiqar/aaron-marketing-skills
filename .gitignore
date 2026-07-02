@@ -21,6 +21,7 @@ reference-oss/
 
 # Local agent/app state
 .claude/
+.codex/
 .docs/
 
 # Environment variables

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The SEO & GEO Skills Library is a collection of markdown-based skill files that run locally within your Claude Code environment. This project does not collect, store, or transmit any user data by itself. When users invoke certain skills, those skills may fetch URLs or call connected MCP servers — the specifics are documented below.
+Aaron Marketing Skills is a collection of markdown-based skill files — spanning SEO/GEO, influencer marketing, and paid ads — that run locally within your Claude Code environment. This project does not collect, store, or transmit any user data by itself. When users invoke certain skills, those skills may fetch URLs or call connected MCP servers — the specifics are documented below.
 
 ## Data Transmission (accurate as of 2026-04)
 
@@ -14,7 +14,7 @@ By default, this library:
 
 ### When data DOES leave your machine (user-initiated)
 
-**1. WebFetch-enabled skills** (`content-quality-auditor`, `on-page-seo-auditor`, `technical-seo-checker`, `schema-markup-generator`, `serp-analysis`):
+**1. WebFetch-enabled skills** (`content-quality-auditor`, `on-page-seo-auditor`, `technical-seo-checker`, `schema-markup-generator`, `serp-analysis`, `backlink-analyzer`, `rank-tracker`, `ad-account-auditor`):
 - These skills fetch URLs you provide
 - Your request headers (IP, User-Agent) reach the target server
 - Fetched page content re-enters your Claude session as context
@@ -25,10 +25,10 @@ By default, this library:
 - Your IP and a project-identifying User-Agent reach those endpoints; only `http(s)` URLs are ever fetched (scheme-guarded)
 - Optional API keys (Open PageRank, PageSpeed) are read from your environment at call time and never stored
 
-**3. MCP connectors** (catalogued in `.mcp.json`, **opt-in — not auto-registered**):
+**3. MCP connectors** (catalogued in `docs/mcp-catalog.json`, **opt-in — not auto-registered**; the catalog is kept outside the plugin-root `.mcp.json` path that Claude Code auto-registers):
 - Installing the plugin does NOT register these; you enable a connector by copying its entry into your own MCP config
 - Each enabled connector sends data to its vendor per the vendor's privacy policy
-- Connectors: Ahrefs, Semrush, SE Ranking, SISTRIX, SimilarWeb, Cloudflare, Vercel, HubSpot, Amplitude, Notion, Webflow, Sanity, Contentful, Slack (14 total, all HTTPS)
+- Connectors: Ahrefs, Semrush, SE Ranking, SISTRIX, SimilarWeb, the self-hosted OpenSEO suite (proxies your own DataForSEO account), Cloudflare, Vercel, HubSpot, Amplitude, Notion, Webflow, Sanity, Contentful, Slack (15 total, all HTTPS)
 - **No connector is enabled without explicit OAuth / API key setup**
 
 **4. Memory files contain third-party data**:
@@ -59,4 +59,4 @@ For privacy-related questions: **hello@zhuhe.io**
 
 This privacy policy may be updated as the project evolves. Changes will be documented in commit history.
 
-*Last updated: 2026-06-10*
+*Last updated: 2026-07-02*

@@ -87,6 +87,7 @@ The fastest way to keep a skill zero-dependency is to feed it data from a free, 
 | Link Database | `~~link database` | search | Ahrefs, Majestic, Moz | Open PageRank + Common Crawl + GSC Links | Open PageRank + GSC |
 | Competitive Intel | `~~competitive intel` | search | SimilarWeb, SpyFu, Semrush | Wayback CDX + Common Crawl | Wayback CDX |
 | Page Speed | `~~page speed tool` | search | GTmetrix, WebPageTest | PSI / CrUX / Lighthouse | PSI (keyless) |
+| CDN | `~~CDN` | search | Cloudflare, Fastly, Akamai, CloudFront | response-header inspection (`curl -sI URL` → `cf-ray` / `x-served-by` / `x-cache` / `server`) + `dig CNAME host` for edge mapping + CrUX/PSI TTFB as the performance signal | header + DNS inspection (keyless) |
 | Schema Validator | `~~schema validator` | search | — | validator.schema.org / Rich Results Test | Rich Results Test |
 | Knowledge Graph | `~~knowledge graph` | both | Google KG API, CrunchBase | Wikidata SPARQL | Wikidata SPARQL |
 | Local Listings | `~~local listings` | search | Google Business Profile, Yext, BrightLocal, Whitespark | GBP dashboard (own data, manual export) + manual NAP/citation check | GBP own data (keyless) |
@@ -110,7 +111,7 @@ The influencer-marketing skills use these additional placeholders (plus `~~CRM`,
 | Trend Database | `~~trend database` | both | Exploding Topics, TrendTok | Google Trends / platform trending pages | Google Trends RSS (`rss_monitor.py`) |
 | Ad Platform | `~~ad platform` | both (influencer + paid) | Meta Ads, TikTok Ads, Google Ads | native ad manager (own data, manual export) | manual export (own); keyed API = opt-in MCP |
 | Web Analytics | `~~web analytics` | both | GA4, Adobe Analytics, Plausible | GA4 Data API (own data) | GA4 own-data |
-| E-commerce / Sales | `~~ecommerce / sales platform` / `~~ecommerce / analytics` | both | Shopify, WooCommerce, Stripe | platform order export (own data) | order CSV (own) |
+| E-commerce / Sales | `~~ecommerce` (bare alias covering both `~~ecommerce / sales platform` and `~~ecommerce / analytics`) | both | Shopify, WooCommerce, Stripe | platform order export (own data) | order CSV (own) |
 | A/B Testing | `~~A/B testing platform` | both | Optimizely, VWO | server-side split / manual variant test | manual variant |
 | Landing / Page Builder | `~~CMS / landing page builder` | both | Webflow, Unbounce, Instapage | static HTML / existing CMS | existing CMS |
 | DAM / Asset Library | `~~DAM / asset library` | influencer | Bynder, Brandfolder | shared Drive / Dropbox folder | shared folder |
@@ -126,22 +127,22 @@ A skill might say: *"Pull keyword rankings from `~~SEO tool` and cross-reference
 
 ## Optional MCP servers (Tier 2/3 automation)
 
-`.mcp.json` is a **copy-paste reference** of official remote HTTP MCP endpoints (plus one self-hosted entry, OpenSEO) — it is **opt-in, not auto-registered**. The plugin no longer wires `.mcp.json` into `plugin.json`, so installing the plugin does NOT add 15 servers to your `/mcp` list or trigger any auth prompts. To enable any of these, copy the entries you want into your own host/user MCP config; auth happens interactively on first use. MCP automates retrieval but is never required — the free sources above cover the same data.
+[`docs/mcp-catalog.json`](docs/mcp-catalog.json) is a **copy-paste reference** of official remote HTTP MCP endpoints (plus one self-hosted entry, OpenSEO) — it is **opt-in, not auto-registered**. The catalog is deliberately kept outside the plugin-root `.mcp.json` path that Claude Code auto-discovers (and `plugin.json` carries no `mcpServers` key), so installing the plugin does NOT add 15 servers to your `/mcp` list or trigger any auth prompts. To enable any of these, copy the entries you want into your own host/user MCP config; auth happens interactively on first use. MCP automates retrieval but is never required — the free sources above cover the same data.
 
 **SEO data** (endpoints verified 2026-05):
 
-| Vendor | Endpoint (`.mcp.json`) | Transport | Auth | Cost model | Sample tools |
+| Vendor | Endpoint (`docs/mcp-catalog.json`) | Transport | Auth | Cost model | Sample tools |
 |--------|------------------------|-----------|------|------------|--------------|
 | Ahrefs | `https://api.ahrefs.com/mcp/mcp` | streamable HTTP | API key (MCP scope; Lite+ plan) | subscription | keyword & backlink data, site audit |
 | Semrush | `https://mcp.semrush.com/v1/mcp` | streamable HTTP | OAuth, or `Authorization: Apikey KEY` | subscription | `organic_research`, `keyword_research`, `backlink_research` |
 | SE Ranking | `https://api.seranking.com/mcp` | streamable HTTP | OAuth or API key (`X-Api-Key`) | subscription | keyword/backlink/domain, AI-search visibility (160+ tools) |
 | SISTRIX | `https://api.sistrix.com/mcp` | HTTP | OAuth / Bearer / `X-API-Key` | subscription | `domain`, `keyword`, `links`, `ai` modules |
 | SimilarWeb | `https://mcp.similarweb.com` | HTTP | OAuth / key | subscription | traffic estimates, competitive intel |
-| OpenSEO (self-hosted) | `https://<your-host>/mcp` (edit `.mcp.json`) | streamable HTTP | none (local Docker) / OAuth (Cloudflare) | **free app + pay-as-you-go data** | `research_keywords`, `get_ranked_keywords`, `get_serp_results`, `find_serp_competitors`, `get_domain_overview`, `get_backlinks_overview`, `get_search_console_performance`, local-SERP/Maps tools |
+| OpenSEO (self-hosted) | `https://<your-host>/mcp` (edit your copied entry) | streamable HTTP | none (local Docker) / OAuth (Cloudflare) | **free app + pay-as-you-go data** | `research_keywords`, `get_ranked_keywords`, `get_serp_results`, `find_serp_competitors`, `get_domain_overview`, `get_backlinks_overview`, `get_search_console_performance`, local-SERP/Maps tools |
 
 **Cost model — read before enabling.** The five vendors above are **subscription** (flat monthly fee for plan-gated API access). OpenSEO is the one **pay-as-you-go** option: the app is free and self-hosted, and it bills only the underlying [DataForSEO](https://dataforseo.com) API calls you actually make — so it fits the free/keyless-first ethos better than a subscription suite while still returning real SERP/keyword/backlink data.
 
-**OpenSEO — self-hosted full SEO suite ([github.com/every-app/open-seo](https://github.com/every-app/open-seo), open source).** Run it via Docker (single-user, no auth — local only) or Cloudflare Workers (OAuth, team-ready, free plan compatible), connect your own DataForSEO key, and the app exposes an MCP server at `/<host>/mcp`. Set the host in your `.mcp.json` `openseo` entry (placeholder ships as `your-openseo-host.example`). It natively reads Google Search Console (`get_search_console_performance`), which makes the [keyword-research](research/keyword-research/SKILL.md) striking-distance loop and rank tracking first-party. Indicative DataForSEO spend (vendor pay-as-you-go pricing, verify current rates — $1 free starter credit, $50 min top-up as of early 2026):
+**OpenSEO — self-hosted full SEO suite ([github.com/every-app/open-seo](https://github.com/every-app/open-seo), open source).** Run it via Docker (single-user, no auth — local only) or Cloudflare Workers (OAuth, team-ready, free plan compatible), connect your own DataForSEO key, and the app exposes an MCP server at `/<host>/mcp`. Set the host in the `openseo` entry you copied from `docs/mcp-catalog.json` into your MCP config (placeholder ships as `your-openseo-host.example`). It natively reads Google Search Console (`get_search_console_performance`), which makes the [keyword-research](research/keyword-research/SKILL.md) striking-distance loop and rank tracking first-party. Indicative DataForSEO spend (vendor pay-as-you-go pricing, verify current rates — $1 free starter credit, $50 min top-up as of early 2026):
 
 | Task (×100 requests) | Approx. cost |
 |---|---|
@@ -151,14 +152,14 @@ A skill might say: *"Pull keyword rankings from `~~SEO tool` and cross-reference
 | Backlinks domain search | ~$6.34 |
 | Track 100 keywords weekly at depth 50 | ~$1.20 / month |
 
-**Free Google data via MCP** (not shipped in `.mcp.json` — these run locally and need your own Google credentials):
+**Free Google data via MCP** (not shipped in `docs/mcp-catalog.json` — these run locally and need your own Google credentials):
 
 - **Google Analytics** — official ([github.com/googleanalytics/google-analytics-mcp](https://github.com/googleanalytics/google-analytics-mcp)): `pipx run analytics-mcp`, stdio, ADC scope `analytics.readonly`; tools `run_report`, `run_realtime_report`, `get_account_summaries`.
 - **Google Search Console** — community ([github.com/AminForou/mcp-gsc](https://github.com/AminForou/mcp-gsc), MIT): `uvx mcp-search-console`, stdio, OAuth or service account; tools `get_search_analytics`, `inspect_url_enhanced`, `list_properties`.
 
-**Infra / CMS / CRM / comms** (listed in `.mcp.json` as opt-in references, official remote endpoints, OAuth on first use): Cloudflare, Vercel, HubSpot, Amplitude, Notion, Webflow, Sanity, Contentful, Slack. See each vendor's MCP docs for its current tool list.
+**Infra / CMS / CRM / comms** (listed in `docs/mcp-catalog.json` as opt-in references, official remote endpoints, OAuth on first use): Cloudflare, Vercel, HubSpot, Amplitude, Notion, Webflow, Sanity, Contentful, Slack. See each vendor's MCP docs for its current tool list.
 
-To enable a server, copy its `.mcp.json` entry into your host/user MCP config. The project `.mcp.json` is a curated catalog, not an active registration — keep it in sync only when contributing a new default endpoint.
+To enable a server, copy its entry from `docs/mcp-catalog.json` into your host/user MCP config. The catalog is a curated reference, not an active registration — it deliberately does not live at the plugin root as `.mcp.json` (which Claude Code would auto-register); keep it in sync only when contributing a new default endpoint.
 
 ## Progressive enhancement tiers
 

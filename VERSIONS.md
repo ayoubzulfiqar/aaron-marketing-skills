@@ -24,12 +24,12 @@ Current versions for the plugin and all 54 skills. Agents can fetch this file fr
 | backlink-analyzer | monitor | 11.0.0 | 2026-06-28 |
 | performance-reporter | monitor | 11.0.0 | 2026-06-28 |
 | alert-manager | monitor | 11.0.0 | 2026-06-28 |
-| content-quality-auditor | optimize | 11.0.0 | 2026-06-30 |
-| domain-authority-auditor | monitor | 11.0.0 | 2026-06-30 |
+| content-quality-auditor | optimize | 11.0.0 | 2026-06-29 |
+| domain-authority-auditor | monitor | 11.0.0 | 2026-06-29 |
 | entity-optimizer | protocol | 11.0.0 | 2026-06-28 |
 | memory-management | protocol | 11.0.0 | 2026-06-28 |
-| creator-registry | protocol | 11.0.0 | 2026-06-30 |
-| offer-claims-registry | protocol | 11.0.0 | 2026-06-30 |
+| creator-registry | protocol | 11.0.0 | 2026-06-29 |
+| offer-claims-registry | protocol | 11.0.0 | 2026-06-29 |
 | audience-analyzer | insight | 11.0.0 | 2026-06-28 |
 | niche-researcher | insight | 11.0.0 | 2026-06-28 |
 | trend-spotter | insight | 11.0.0 | 2026-06-28 |
@@ -112,7 +112,7 @@ Ships the `refactor/url-stable-overhaul` line as a single release. The 20 skill 
 **URL-stable overhaul**:
 - All intra-repo links in `SKILL.md`/`references/` are plugin-relative paths; `validate-skill.sh` now fails on any `blob/main` GitHub URL. Connector invocations use `${CLAUDE_PLUGIN_ROOT}/scripts/connectors/...`.
 - `references/auditor-runbook.md` is the framework-agnostic SSOT both auditors `Read` at activation; each inlines only its framework-specific CORE-EEAT (8-dim weighted) vs CITE (`C×.35+I×.20+T×.25+E×.20`) examples and veto rows. `raw_overall_score` = weighted total (floor-rounded, pre-cap).
-- MCP stays opt-in (`plugin.json` carries no `mcpServers` key; `.mcp.json` is a copy-paste catalog). New `_http.get` scheme allowlist (`http`/`https`) guards sitemap-harvested URLs (LFI/SSRF); `crawl.py` uses `robots.py` for correct Allow/wildcard/UA handling.
+- MCP stays opt-in (`plugin.json` carries no `mcpServers` key; the copy-paste catalog then shipped as `.mcp.json`, since relocated to `docs/mcp-catalog.json`). New `_http.get` scheme allowlist (`http`/`https`) guards sitemap-harvested URLs (LFI/SSRF); `crawl.py` uses `robots.py` for correct Allow/wildcard/UA handling.
 - Honesty-bound memory model: explicit-pin + `last_updated` only, no frequency-based promotion; SessionStart surfaces an open-loops pointer.
 - New `scripts/connectors/ledger.py` (local JSONL time-series) and `scripts/golden-auditor-math.py` (CI-wired weight-table guard); ledger wired into rank-tracker / performance-reporter / technical-seo-checker. `evals/product-api-scenarios.md` → `references/auto-routing-scenarios.md`.
 

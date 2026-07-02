@@ -57,12 +57,12 @@ The `name` field must match the directory name exactly.
 
 Use the compact shared skeleton from `references/skill-contract.md`: `Quick Start`, `Skill Contract`, `Handoff Summary`, `Data Sources`, `Instructions`, `Reference Materials`, and `Next Best Skill`. Optional sections such as `What This Skill Does`, `Example`, `Tips for Success`, `Save Results`, and `Validation Checkpoints` are welcome when they improve execution quality. Put detailed references in the skill's `references/` subdirectory.
 
-Auditor-class skills are the exception: they inline the authoritative auditor runbook directly in their `SKILL.md` body. Four skills are auditor-class gate consumers, each scored against one framework and writing to its own audit sink:
+Auditor-class skills are the exception: they `Read references/auditor-runbook.md` at activation (the framework-agnostic SSOT: handoff schema, cap method, Artifact Gate, translation format) via a plugin-relative path, and keep only their framework-specific §2 worked examples, §3 guardrails, and §5 veto-ID rows inline in the `SKILL.md` body. Four skills are auditor-class gate consumers, each scored against one framework and writing to its own audit sink:
 
 | Auditor-class skill | Framework | Audit sink |
 |---------------------|-----------|------------|
-| `content-quality-auditor` | CORE-EEAT (publish readiness) | `memory/audits/` |
-| `domain-authority-auditor` | CITE (citation trust) | `memory/audits/` |
+| `content-quality-auditor` | CORE-EEAT (publish readiness) | `memory/audits/content/` |
+| `domain-authority-auditor` | CITE (citation trust) | `memory/audits/domain/` |
 | `content-reviewer` | C³ ART (influencer content gate) | `memory/audits/influencer/` |
 | `ad-account-auditor` | ROAS RQS (paid-ads gate) | `memory/audits/paid/` |
 

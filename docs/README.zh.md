@@ -79,7 +79,7 @@
 
 在 Claude Code 中，`marketplace add` 只是注册目录——还需运行 `/plugin install aaron-marketing@aaron`（或在 `/plugin` 中选择）才能真正启用技能与命令。通用宿主单技能安装：`npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`。
 
-安装插件**不会**往你的 `/mcp` 列表添加任何东西——`.mcp.json` 中的 MCP 目录只是复制粘贴参考，不会自动注册（见[连接器与层级](#连接器与层级)）。
+安装插件**不会**往你的 `/mcp` 列表添加任何东西——MCP 目录位于 [`docs/mcp-catalog.json`](mcp-catalog.json)，刻意放在 Claude Code 会自动注册的插件根 `.mcp.json` 路径之外，仅作复制粘贴参考（见[连接器与层级](#连接器与层级)）。
 
 ---
 
@@ -148,7 +148,7 @@
 | **[CORE-EEAT](../references/core-eeat-benchmark.md)** | 内容质量（GEO = CORE 均值，SEO = EEAT 均值） | 80 项 / 8 维 | 各维度均值 | `T04`、`C01`、`R10` |
 | **[CITE](../references/cite-domain-rating.md)** | 域名权威与引用信任 | 40 项 / 4 维 | 算术加权平均 | `T03`、`T05`、`T09` |
 | **[C³](../references/c3-benchmark.md)** | 红人 创作者/内容/活动 | ACE / ART / ROI · 9 维 | **CVI =（ACE × ART × ROI）^⅓**（几何） | ACE `A2`/`C1`/`E2`、ART `T1`/`T2` |
-| **[ROAS](../references/roas-benchmark.md)** | 付费广告 回报/创意/受众/花费效率 | R / O / A / S | **RQS = floor（目标加权均值）**（算术） | `R1`/`R2`/`O1`/`O2`/`A1` |
+| **[ROAS](../references/roas-benchmark.md)** | 付费广告 回报/报价/受众/花费效率 | R / O / A / S | **RQS = floor（目标加权均值）**（算术） | `R1`/`R2`/`O1`/`O2`/`A1` |
 
 每套框架由一个 **auditor-class 门**执行——写出受 PostToolUse hook 校验的带门工件（`class: auditor-output`）。门是工作流步骤，所以驻留并计入各自学科：
 
@@ -190,7 +190,7 @@
 |------|------|------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | 注入**净化后**的 hot-cache + 未决事项指针（提示注入行被涂掉；符号链接缓存被拒）。 |
 | `UserPromptSubmit` | （全部） | 轻量逐提示上下文 hook。 |
-| `PostToolUse` | `Write\|Edit` | hot-cache 体积告警 **+ Artifact Gate**：写到 `memory/audits/` 下的任何文件必须带 `class: auditor-output` 与封顶字段，否则写入被拦。 |
+| `PostToolUse` | `Write\|Edit` | hot-cache 体积告警 **+ Artifact Gate**：写到 `memory/audits/` 下、声明了 `class: auditor-output` 的文件都会被校验 handoff schema 与封顶字段，不合规则拦截写入。四个 auditor-class 门按契约必须声明该标记；未标记的文件不是审计工件，直接放行。 |
 | `Stop` | （全部） | 空操作（静默退出）。 |
 
 Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE、C³、ROAS 工件，无任何针对单框架的代码。
@@ -337,7 +337,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 | 命令 | 用途 | 收窄 |
 |------|------|------|
 | `/aaron-marketing:auto` | 描述任意目标——推断意图并执行最小够用的工作流 | `--deep`（穷尽/压测） |
-| `/aaron-marketing:seo-geo` | SEO/GEO 端到端：研究需求/竞品、创作内容、审计质量/技术/可见性/权威、追踪排名/报告/记忆 | `--mode research\|create\|audit\|track` + 各模式子参数（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember`） |
+| `/aaron-marketing:seo-geo` | SEO/GEO 端到端：研究需求/竞品、创作内容、审计质量/技术/可见性/权威、追踪排名/报告/记忆 | `--mode research\|create\|audit\|track` + 各模式子参数（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`） |
 | `/aaron-marketing:impact` | 红人（IMPACT）：受众洞察、发现与适配、规划、外联、放大、ROI | `--phase insight\|map\|plan\|activate\|convert\|track` |
 | `/aaron-marketing:paid` | 付费广告（ROAS 循环）：分群、结构、创意、实验设计、审计门、衡量 | `--phase research\|orchestrate\|activate\|scale` |
 
@@ -359,7 +359,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 - **内置零依赖助手** 位于 `scripts/connectors/`（仅 Python 标准库），在本地拉取公开/自有数据——如 PageSpeed/CrUX、Open PageRank、页面抓取、Wayback CDX、Wikidata SPARQL、Common Crawl、advertools 配方。
 - **免费/keyless 来源** 按类别记录：Google Search Console 与 GA4（自有数据）、PageSpeed/CrUX、Wikidata、Common Crawl、Open PageRank 等。
-- **可选 MCP 服务器**（Ahrefs、Semrush、SE Ranking、SISTRIX、SimilarWeb、自托管免费的 **OpenSEO** 套件、Cloudflare、Vercel、HubSpot、Amplitude、Notion、Webflow、Sanity、Contentful、Slack）在 `.mcp.json` 中作为**仅复制粘贴参考**——不自动注册。把你想要的条目复制进自己的 MCP 配置即可。
+- **可选 MCP 服务器**（Ahrefs、Semrush、SE Ranking、SISTRIX、SimilarWeb、自托管免费的 **OpenSEO** 套件、Cloudflare、Vercel、HubSpot、Amplitude、Notion、Webflow、Sanity、Contentful、Slack）在 [`docs/mcp-catalog.json`](mcp-catalog.json) 中作为**仅复制粘贴参考**——目录位于会被自动注册的插件根 `.mcp.json` 路径之外，不会为你注册任何东西。把你想要的条目复制进自己的 MCP 配置即可。
 
 付费广告技能基于你的**自有账户手动导出**（原生广告管理后台 CSV、GA4、电商）评分。带密钥的广告 API（Google Ads SDK、Meta Marketing API）仅是 opt-in Tier-2/3，**绝不**作为 Tier-1 要求。
 

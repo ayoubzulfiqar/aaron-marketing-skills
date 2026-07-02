@@ -1,5 +1,5 @@
 name: Skill Request
-description: Suggest a new skill for the SEO & GEO Skills Library
+description: Suggest a new skill for Aaron Marketing Skills (SEO/GEO, influencer/IMPACT, or paid ads/ROAS)
 title: "[Skill Request] "
 labels: ["skill-request"]
 body:
@@ -18,11 +18,22 @@ body:
       label: Category
       description: Which category does this skill belong to?
       options:
-        - Research (market analysis — keywords, competitors, SERP, content gaps)
-        - Build (content creation — SEO writing, GEO optimization, meta tags, schema)
-        - Optimize (improvement — on-page audit, technical SEO, linking, content refresh)
-        - Monitor (tracking — rankings, backlinks, performance, alerts)
-        - Cross-cutting (spans all phases — quality, authority, entity, memory)
+        - SEO/GEO — Research (keywords, competitors, SERP, content gaps)
+        - SEO/GEO — Build (SEO writing, GEO optimization, meta tags, schema)
+        - SEO/GEO — Optimize (on-page audit, technical SEO, linking, content quality)
+        - SEO/GEO — Monitor (rankings, backlinks, performance, domain authority)
+        - IMPACT — Insight (audience, niche, trends)
+        - IMPACT — Map (influencer discovery, fit scoring, competitor tracking)
+        - IMPACT — Plan (campaign, brief, budget)
+        - IMPACT — Activate (outreach, content review, contracts)
+        - IMPACT — Convert (amplification, UGC repurposing, landing pages)
+        - IMPACT — Track (performance, ROI, reporting)
+        - Paid ROAS — Research (campaign structure, audience segments)
+        - Paid ROAS — Orchestrate (ad creative, test design)
+        - Paid ROAS — Activate (account gate, conversion-signal QA)
+        - Paid ROAS — Scale (measurement loop, attribution)
+        - Protocol (truth registries — entity/creator/offer-claims — and memory)
+        - Cross-discipline (spans SEO/GEO, IMPACT, and paid)
     validations:
       required: true
 
@@ -39,7 +50,7 @@ body:
     id: existing-gaps
     attributes:
       label: Why can't existing skills cover this?
-      description: Explain why the 20 existing skills don't address this need.
+      description: Explain why the 54 existing skills don't address this need.
       placeholder: "The closest existing skill is X, but it doesn't handle..."
     validations:
       required: true
