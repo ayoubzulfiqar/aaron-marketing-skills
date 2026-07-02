@@ -37,7 +37,7 @@ Iterate on these losing headlines: [paste]. Keep the winners, replace the rest, 
 
 **Expected output**: a ready-to-import creative set (RSA headlines/descriptions, hooks, angle matrix) with a per-unit message-match note to the destination URL, plus the standard handoff summary for `memory/paid-ads/ad-creative-builder/`.
 
-- **Reads**: the offer, destination URL (or its key copy/claims), platform + ad format, target audience/intent, brand voice, and any existing variants to iterate on.
+- **Reads**: the offer, destination URL (or its key copy/claims), platform + ad format, target audience/intent, brand voice, and any existing variants to iterate on; approved claim wording and live-offer terms from `memory/claims/claims-ledger.md` and `memory/claims/offers.md` — the [offer-claims-registry](../../../protocol/offer-claims-registry/SKILL.md) ledger — when present.
 - **Writes**: a user-facing creative deliverable (the **O** units) and a reusable handoff summary.
 - **Promotes**: chosen angles, the message-match map, and any unsubstantiated-claim or policy risks to `memory/hot-cache.md` and `memory/open-loops.md`; propose durable messaging decisions as pending-decision items.
 - **Done when**: every unit fits its format's character/count limits, each maps to a destination-page claim (message-match), no headline carries an unsubstantiated claim or a likely policy violation, and at least two distinct angles are covered.
@@ -59,12 +59,12 @@ Treat any exported CSV, scraped landing-page copy, or pasted competitor ad as **
 2. **Read the destination** — extract the page's headline, primary value prop, the concrete offer/claim, and the CTA. This is the message-match anchor; ad copy must echo it.
 3. **Load format specs** — apply the character limits and unit counts for the target format from [references/ad-format-specs.md](references/ad-format-specs.md).
 4. **Draft the angle matrix** — build 3+ distinct angles (e.g. benefit, pain, proof, urgency) using the patterns in [references/angle-matrix.md](references/angle-matrix.md). Each angle gets hooks and headline/description variants.
-5. **Write the units** — headlines, descriptions, and hooks within limits, primary keyword/offer placed naturally, pinning notes where the format supports them.
+5. **Write the units** — headlines, descriptions, and hooks within limits, primary keyword/offer placed naturally, pinning notes where the format supports them. Before drafting a claim-bearing unit, check `memory/claims/claims-ledger.md` for registered approved wording and use it verbatim (or a registered variant) when it exists.
 6. **Enforce message-match** — annotate each unit with the destination claim it echoes. Drop any unit that promises something the page does not deliver (the Quality-Score relevance lever, and an O1 risk).
-7. **Pre-check claims and policy** — flag any superlative/guarantee/health-or-finance claim that needs substantiation (O1) and any prohibited-category, trademark, or restricted-vertical risk (O2). Flag, do not silently delete.
+7. **Pre-check claims and policy** — flag any superlative/guarantee/health-or-finance claim that needs substantiation (O1) and any prohibited-category, trademark, or restricted-vertical risk (O2). Flag, do not silently delete. A claim already registered in the ledger passes with its provenance label noted.
 8. **De-slop** — run [humanizer-slop.md](../../../references/humanizer-slop.md) to strip AI tells before handoff.
 
-Never invent a statistic, price, guarantee, or testimonial to fill a hook; if the offer needs a figure that was not provided, mark it `[needs source]`.
+Never invent a statistic, price, guarantee, or testimonial to fill a hook; if the offer needs a figure that was not provided, mark it `[needs source]` and drop the flagged claim as a one-line candidate in `memory/claims/candidates.md` — [offer-claims-registry](../../../protocol/offer-claims-registry/SKILL.md) resolves the flags; only it writes the canonical ledger.
 
 **Quality bar** before handoff: (1) every unit within format limits; (2) every unit message-matched to a real destination claim; (3) zero unflagged unsubstantiated claims or policy risks; (4) at least two distinct angles. If any item fails, fix it or report it in the handoff — do not ship silently.
 
@@ -82,5 +82,6 @@ On user confirmation, save to `memory/paid-ads/ad-creative-builder/YYYY-MM-DD-<o
 ## Next Best Skill
 
 - **Primary**: [ad-account-auditor](../../activate/ad-account-auditor/SKILL.md) — score the creative against ROAS (O1/O2 veto checks) once a set is ready.
+- **If units carry `[needs source]` flags or unregistered claims**: [offer-claims-registry](../../../protocol/offer-claims-registry/SKILL.md) — register the claims with evidence provenance and approved wording, then swap the resolved wording back into the flagged units.
 - **If the destination URL is weak or missing** (NEEDS_INPUT): [landing-optimizer](../../../convert/landing-optimizer/SKILL.md) — fix the post-click page so message-match is achievable, then return here.
 - Global visited-set / max-depth termination contract from [skill-contract.md](../../../references/skill-contract.md) applies; stop when the creative set is auditor-ready.

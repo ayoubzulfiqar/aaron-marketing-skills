@@ -36,7 +36,7 @@ Compare performance of these influencers from [campaign]: @handle1, @handle2, @h
 
 ## Skill Contract
 
-- **Reads**: campaign name and date range; native platform analytics (reach, views, engagement); influencer-supplied reports or screenshots; website/GA traffic and conversion data; sales and promo-code redemption data; targets and benchmarks if the user has them.
+- **Reads**: campaign name and date range; native platform analytics (reach, views, engagement); influencer-supplied reports or screenshots; website/GA traffic and conversion data; sales and promo-code redemption data; targets and benchmarks if the user has them; per-creator performance baselines from `memory/creators/<handle-slug>.md` ([creator-registry](../../protocol/creator-registry/SKILL.md) roster records) when present.
 - **Writes**: a performance analysis to `memory/influencer/performance-analyzer/YYYY-MM-DD-<campaign>.md` covering core-metric scorecards, platform/influencer/content rankings, engagement-quality and sentiment reads, conversion attribution, and ranked learnings.
 - **Promotes**: durable facts (top-performing creators, winning formats, platform ROI splits, roster renew/drop calls) to `memory/hot-cache.md`.
 - **Done when**:
@@ -75,7 +75,7 @@ Work the steps in order. Each fill-in template lives in [references/analysis-tem
 7. **Conversion & attribution analysis** — draw the funnel, score conversion metrics vs benchmark, attribute by method (promo / UTM / direct / estimated), and table promo-code performance. Template: step 7.
 8. **Generate insights & recommendations** — write the top-5 learnings, what worked / what didn't, optimization opportunities, roster renew/drop calls, and future-campaign guidance. Template: step 8.
 
-Before naming any creator/format/platform a real winner, clear the significance bar in [measurement-protocol.md](../../references/measurement-protocol.md) — otherwise mark it Keep-testing. When a structured score is needed, apply the C3 benchmark (ACE/ART/ROI → CVI) from [c3/scoring-architecture.md](../../references/c3/scoring-architecture.md).
+Before naming any creator/format/platform a real winner, clear the significance bar in [measurement-protocol.md](../../references/measurement-protocol.md) — otherwise mark it Keep-testing. When a structured score is needed, apply per-dimension C3 analysis (ACE/ART scope scores) from [c3/scoring-architecture.md](../../references/c3/scoring-architecture.md), and hand the measured inputs to [roi-calculator](../../track/roi-calculator/SKILL.md) for the ROI score and CVI rollup — this skill contributes the inputs but does not compute the rollup.
 
 ## Example
 

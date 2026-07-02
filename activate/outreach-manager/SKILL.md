@@ -36,8 +36,8 @@ Help me negotiate with @[influencer] who is asking for $[X] when our budget is $
 
 ## Skill Contract
 
-- **Reads**: target influencer handle(s), platform, follower count, niche; campaign and product context; compensation type and budget; deliverables and timeline; any prior contact history supplied by the user or loaded from memory.
-- **Writes**: outreach artifact (pitches, follow-up sequence, negotiation guide, pipeline tracker) to `memory/influencer/outreach-manager/YYYY-MM-DD-<topic>.md`.
+- **Reads**: target influencer handle(s), platform, follower count, niche; campaign and product context; compensation type and budget; deliverables and timeline; any prior contact history supplied by the user or loaded from memory. Before any outreach, check `memory/creators/<handle-slug>.md` — the [creator-registry](../../protocol/creator-registry/SKILL.md) roster record — for the confirmed contact path, last agreed rate, and negotiation/response history.
+- **Writes**: outreach artifact (pitches, follow-up sequence, negotiation guide, pipeline tracker) to `memory/influencer/outreach-manager/YYYY-MM-DD-<topic>.md`. When a cycle closes, the closed outcome (final agreed rate, response history, confirmed contact path) goes as a one-line update to `memory/creators/candidates.md` — only `creator-registry` writes canonical roster records.
 - **Promotes**: durable facts (confirmed partners, agreed rates, top objection patterns, response-rate baselines) to `memory/hot-cache.md`.
 - **Done when**:
   - A personalized pitch (plus at least one variation) exists for each target influencer.
@@ -66,11 +66,11 @@ See [CONNECTORS.md](../../CONNECTORS.md) for the free/keyless recipe per categor
 
 When a user requests outreach help, run these steps. Each step has a fill-in template in [references/templates.md](references/templates.md) — copy the matching block and replace the placeholders. Apply the hard copy rules in [references/cold-copy-rules.md](references/cold-copy-rules.md) before any message ships.
 
-1. **Gather outreach context** — capture campaign/product context, target handle(s), platform, followers, niche, compensation type, budget, deliverables, and timeline. Template: [Step 1](references/templates.md#step-1--outreach-parameters).
+1. **Gather outreach context** — capture campaign/product context, target handle(s), platform, followers, niche, compensation type, budget, deliverables, and timeline. Load the `memory/creators/<handle-slug>.md` roster record first when it exists — re-engaging a rostered creator starts from the confirmed contact path and last agreed rate, not a cold pitch. Template: [Step 1](references/templates.md#step-1--outreach-parameters).
 2. **Create personalized outreach** — list personalization points (recent content, style, audience, values, past partners), then write the primary message plus a DM-friendly short version and a formal email/management version. Template: [Step 2](references/templates.md#step-2--personalized-outreach).
 3. **Create follow-up sequence** — build a 4-touch cadence (Day 0 / 3-4 / 7-8 / 14, then archive at Day 21), each touch adding new value and getting shorter. Cap at 3-4 follow-ups; make it easy to say no. Template: [Step 3](references/templates.md#step-3--follow-up-sequence).
 4. **Provide negotiation support** — map the ask/budget gap, then apply value-exchange, scope-adjustment, or future-value strategies with ready scripts and an objection/response table. Template: [Step 4](references/templates.md#step-4--negotiation-guide).
-5. **Track outreach pipeline** — record stage counts and conversion rates, a per-creator detailed pipeline, today's prioritized actions, and pipeline health (response rate, confirmation rate, time-to-confirm, top objection). Template: [Step 5](references/templates.md#step-5--outreach-pipeline-tracker).
+5. **Track outreach pipeline** — record stage counts and conversion rates, a per-creator detailed pipeline, today's prioritized actions, and pipeline health (response rate, confirmation rate, time-to-confirm, top objection). Template: [Step 5](references/templates.md#step-5--outreach-pipeline-tracker). Active-cycle tracking lives here; when a cycle closes (confirmed or archived), submit the closed outcome as a one-line update to `memory/creators/candidates.md` for [creator-registry](../../protocol/creator-registry/SKILL.md) to reconcile.
 
 ## Example
 

@@ -38,7 +38,7 @@ Compare influencer strategies across [competitor 1], [competitor 2], and [compet
 
 - **Reads**: your brand name, the competitor set, platforms to monitor, time period, focus areas (partnerships/campaigns/content/all). Public creator handles and post data the user supplies or that ~~social platform analytics returns.
 - **Writes**: a competitive intelligence report saved to `memory/influencer/competitor-tracker/YYYY-MM-DD-<topic>.md` (partnership roster, campaign analysis, content-strategy review, performance estimates, side-by-side comparison, opportunity list).
-- **Promotes**: durable facts (named competitors, their primary tiers/platforms, confirmed exclusive partners, recurring campaign windows) to `memory/hot-cache.md`.
+- **Promotes**: durable facts (named competitors, their primary tiers/platforms, confirmed exclusive partners, recurring campaign windows) to `memory/hot-cache.md`. Competitor-partner and exclusivity flags for creators already on the roster go as one-line updates to `memory/creators/candidates.md` for [creator-registry](../../protocol/creator-registry/SKILL.md) to reconcile.
 - **Done when**:
   1. Each tracked competitor has a partnership roster and campaign breakdown with sources or stated estimates.
   2. A side-by-side comparison table covers your brand plus every competitor.

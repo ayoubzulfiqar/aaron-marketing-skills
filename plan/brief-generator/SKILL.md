@@ -59,6 +59,8 @@ Optional connectors that can enrich a brief when available:
 - `~~social platform analytics` — confirm current format specs and best-performing post lengths per platform.
 - `~~CRM` — fetch the assigned point of contact and prior brief versions for an ambassador.
 
+When the brief makes marketing claims (performance figures, guarantees, health/finance statements), pull approved claim wording and claim-level disclaimers from `memory/claims/claims-ledger.md` — the [offer-claims-registry](../../protocol/offer-claims-registry/SKILL.md) ledger — when present (keyless Tier 1).
+
 See [CONNECTORS.md](../../CONNECTORS.md) for the verified free/keyless recipe per category. None are required.
 
 ## Instructions
@@ -66,7 +68,7 @@ See [CONNECTORS.md](../../CONNECTORS.md) for the verified free/keyless recipe pe
 When a user requests a brief:
 
 1. **Gather brief inputs** — capture campaign info, deliverables (platform, content type, quantity), key message, CTA, timeline, and compensation. Use the input checklist in [references/brief-templates.md](references/brief-templates.md#brief-input-capture). Pull prior campaign facts from `memory/hot-cache.md` if present. If the user wants the brief to reflect the creator's real voice, capture it first via [creator-voice-intake.md](references/creator-voice-intake.md).
-2. **Generate the professional brief** — fill the master template (overview, key messages, deliverables, creative direction, product details, campaign assets, timeline, approval process, legal/compliance with disclosure + usage rights, compensation, contact, FAQ, acknowledgment). Full fill-in template: [references/brief-templates.md](references/brief-templates.md#master-brief-template). Tune wording to the platform.
+2. **Generate the professional brief** — fill the master template (overview, key messages, deliverables, creative direction, product details, campaign assets, timeline, approval process, legal/compliance with disclosure + usage rights, compensation, contact, FAQ, acknowledgment). Full fill-in template: [references/brief-templates.md](references/brief-templates.md#master-brief-template). Tune wording to the platform. Source claim-bearing key messages from the approved wording in `memory/claims/claims-ledger.md` when the claim is registered; mark unregistered claims `[needs source]` in the brief and drop them as one-line candidates in `memory/claims/candidates.md` for [offer-claims-registry](../../protocol/offer-claims-registry/SKILL.md) to resolve.
 3. **Apply content-type and campaign-type variations** — adjust emphasis per platform (TikTok hook/sounds, IG Reels/Stories/Feed, YouTube integration/Shorts) and per campaign type (launch, review, event, ambassador, giveaway). Variation tables: [references/brief-templates.md](references/brief-templates.md#brief-variations-by-content-type).
 4. **Save and promote** — write the finished brief to `memory/influencer/brief-generator/YYYY-MM-DD-<topic>.md`. Promote durable facts (brand handle, campaign hashtag, disclosure standard, posting window, usage-rights duration) to `memory/hot-cache.md`.
 

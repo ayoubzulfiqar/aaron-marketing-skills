@@ -20,7 +20,7 @@ metadata:
 
 This skill helps you create and optimize landing pages specifically for influencer marketing traffic. When users click from an influencer's post, the landing experience should feel connected and optimized for conversion.
 
-> **Cross-discipline (paid ads):** this is also the **paid-ads** post-click skill — the page half of the ROAS **Offer** message-match (it pairs with [ad-creative-builder](../../paid/orchestrate/ad-creative-builder/SKILL.md), which owns the ad half). The same diagnose-and-fix flow applies to paid landing pages; save paid runs under `memory/paid-ads/landing-optimizer/`.
+> **Cross-discipline (paid ads):** this is also the **paid-ads** post-click skill — the page half of the ROAS **Offer** message-match (it pairs with [ad-creative-builder](../../paid/orchestrate/ad-creative-builder/SKILL.md), which owns the ad half). The same diagnose-and-fix flow applies to paid landing pages; save paid runs under `memory/paid-ads/landing-optimizer/`. On paid runs, message-match the page against the [offer-claims-registry](../../protocol/offer-claims-registry/SKILL.md) ledger when present: offer terms, promo codes, and dates against `memory/claims/offers.md`, and claim wording against the approved variants in `memory/claims/claims-ledger.md`.
 
 ## Quick Start
 
@@ -69,7 +69,7 @@ See [CONNECTORS.md](../../CONNECTORS.md) for the verified free/keyless recipe pe
 When a user requests landing page help, work through these steps. Each step's fill-in template, ASCII layout, and HTML snippet live in [references/templates.md](references/templates.md) — keyed by the same step numbers.
 
 1. **Assess current state** — capture campaign, URL, traffic source, current conversion rate, goal, and the traffic context (influencers, platforms, content type, key message, promo code, audience).
-2. **Evaluate message match** — compare what the influencer says against what the page shows across message, value prop, offer, product, and tone; produce a Message Match Score (X/10) and named fixes. Mismatch causes confusion and abandonment.
+2. **Evaluate message match** — compare what the influencer says against what the page shows across message, value prop, offer, product, and tone; produce a Message Match Score (X/10) and named fixes. Mismatch causes confusion and abandonment. For paid runs, also verify the page's offer/promo terms against `memory/claims/offers.md` when the ledger exists — an ad's "50% off" promise is only true while the offer row is live.
 3. **Page structure** — recommend the influencer-traffic layout (hero → social proof → product → more proof → FAQ → final CTA) and give section-by-section hero/social-proof/product fixes.
 4. **Social proof integration** — place the driving creator most prominently, then the proof hierarchy: other influencers → customer reviews → trust indicators.
 5. **Conversion optimization** — tune CTA copy/placement, design the promo-code experience (auto-apply via URL param, prominent display, confirmation), cut friction, and check mobile (load speed, thumb-friendly CTA, scroll depth).

@@ -73,7 +73,7 @@ AI systems confuse [my entity] with [other entity] — help me disambiguate
 
 This skill is the sole writer of canonical entity profiles at `memory/entities/<name>.md`. Other skills write entity candidates to `memory/entities/candidates.md` only. When 3+ candidates accumulate, this skill should be recommended.
 
-**Profile schema**: the frontmatter of every canonical entity profile follows the authoritative contract in [Entity-GEO Handoff Schema](../../references/entity-geo-handoff-schema.md). That schema defines which fields downstream skills (`geo-content-optimizer`, `schema-markup-generator`, `meta-tags-optimizer`, `ai-overview-recovery`) depend on. Do not omit required fields — the consumers will degrade gracefully to `DONE_WITH_CONCERNS` and surface an `open_loop` pointing back here.
+**Profile schema**: the frontmatter of every canonical entity profile follows the authoritative contract in [Entity-GEO Handoff Schema](../../references/entity-geo-handoff-schema.md). That schema defines which fields downstream skills (`geo-content-optimizer` — including its [AI-overview-recovery playbook](../../build/geo-content-optimizer/references/ai-overview-recovery.md) — `schema-markup-generator`, `meta-tags-optimizer`) depend on. Do not omit required fields — the consumers will degrade gracefully to `DONE_WITH_CONCERNS` and surface an `open_loop` pointing back here.
 
 - **Primary next skill**: use the `Next Best Skill` below once the entity truth is clear.
 

@@ -33,8 +33,8 @@ based in [location], engagement above 4%, who have worked with brands like [bran
 
 ## Skill Contract
 
-- **Reads**: brand/product, niche or category, target platforms, follower range, engagement floor, location/language, audience demographics, exclusions; prior `entity-optimizer` brand profile and any `audience-analyzer` output if present in memory.
-- **Writes**: discovery results to `memory/influencer/influencer-discovery/YYYY-MM-DD-<topic>.md` — search criteria, candidate pool stats, per-influencer profiles, tiered shortlist with fit scores.
+- **Reads**: brand/product, niche or category, target platforms, follower range, engagement floor, location/language, audience demographics, exclusions; prior `entity-optimizer` brand profile and any `audience-analyzer` output if present in memory; existing roster records under `memory/creators/` (dedupe the candidate pool against creators already rostered by [creator-registry](../../protocol/creator-registry/SKILL.md)).
+- **Writes**: discovery results to `memory/influencer/influencer-discovery/YYYY-MM-DD-<topic>.md` — search criteria, candidate pool stats, per-influencer profiles, tiered shortlist with fit scores. Roster-worthy shortlisted creators (verified handles, contact path, audience stats) go as one-line updates to `memory/creators/candidates.md` — only `creator-registry` writes canonical records under `memory/creators/`.
 - **Promotes**: durable facts (top-tier handles, confirmed niche/platform mix, competitor-saturated creators) to `memory/hot-cache.md`.
 - **Done when**:
   - A candidate pool exists with at least the requested count screened past follower, engagement, and brand-safety filters.
@@ -70,7 +70,7 @@ Each step has a fill-in block in [references/templates.md](references/templates.
 5. **Compile the discovery report.** Roll profiles into summary stats, by-platform and by-tier breakdowns, the three-tier shortlist, mix recommendation, and next steps. Step 5 template.
 6. **Add insights.** Note niche content trends, the competitive picture, and recommendations for future searches. Step 6 template.
 
-Save the report to `memory/influencer/influencer-discovery/YYYY-MM-DD-<topic>.md` and promote top-tier handles + competitor-saturated creators to `memory/hot-cache.md`.
+Save the report to `memory/influencer/influencer-discovery/YYYY-MM-DD-<topic>.md` and promote top-tier handles + competitor-saturated creators to `memory/hot-cache.md`. Drop roster-worthy shortlisted creators as one-line updates in `memory/creators/candidates.md`; when 3+ candidate updates accumulate for one creator, recommend [creator-registry](../../protocol/creator-registry/SKILL.md).
 
 ## Compact Example
 

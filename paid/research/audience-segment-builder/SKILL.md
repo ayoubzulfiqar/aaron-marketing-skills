@@ -79,3 +79,4 @@ On user confirmation, save to `memory/paid-ads/audience-segment-builder/YYYY-MM-
 ## Next Best Skill
 
 - **Primary**: [campaign-architect](../campaign-architect/SKILL.md) — consume these segments into campaign types, ad groups, and match types.
+- **If the account structure already exists and creative is the next gap**: [ad-creative-builder](../../orchestrate/ad-creative-builder/SKILL.md) — angle-match creative variants to the named segments and funnel stages.

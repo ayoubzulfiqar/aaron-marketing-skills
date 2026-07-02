@@ -84,3 +84,5 @@ On user confirmation, save to `memory/paid-ads/campaign-architect/YYYY-MM-DD-<ac
 ## Next Best Skill
 
 - **Primary**: [ad-account-auditor](../../activate/ad-account-auditor/SKILL.md) — score the full RQS and enforce the ROAS veto items.
+- **If the structure is approved and creatives are the next gap**: [ad-creative-builder](../../orchestrate/ad-creative-builder/SKILL.md) — build the ad/creative set for the approved structure.
+- **If the launch should run as an experiment**: [ad-test-designer](../../orchestrate/ad-test-designer/SKILL.md) — design the launch test (hypothesis, single variable, sample/duration) on the new structure.

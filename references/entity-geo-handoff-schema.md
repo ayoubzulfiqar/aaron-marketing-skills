@@ -85,7 +85,7 @@ next_action: null                      # null if entity is healthy
 | `wikidata_q` | QID or null | Optional | geo-content-optimizer (as authoritative signal) |
 | `description_short` | string ≤160 chars | Yes | meta-tags-optimizer (fallback meta desc), geo-content-optimizer (first-paragraph boilerplate) |
 | `description_long` | markdown paragraph | Yes | geo-content-optimizer (about-page source of truth) |
-| `ai_resolution_status` | per-engine enum | Yes | geo-content-optimizer (decides which engines need targeting), ai-overview-recovery (scopes rewrite effort) |
+| `ai_resolution_status` | per-engine enum | Yes | geo-content-optimizer (decides which engines need targeting; its [AI-overview-recovery playbook](../build/geo-content-optimizer/references/ai-overview-recovery.md) scopes rewrite effort) |
 | `ai_resolution_notes[]` | strings | Recommended | geo-content-optimizer (what disambiguation to add in body) |
 | `gap_type` | enum or null | Yes | next-best-skill routing for downstream |
 | `next_action` | string or null | Yes | Open loop if non-null |
@@ -147,7 +147,7 @@ ai_resolution_status:
   claude: unrecognized
   last_tested: 2026-04-17
 gap_type: ai_recognition
-next_action: "Submit Wikidata entry; add founder bio page; run ai-overview-recovery on brand queries"
+next_action: "Submit Wikidata entry; add founder bio page; run geo-content-optimizer's AI-overview-recovery playbook on brand queries"
 ---
 
 # Acme SaaS

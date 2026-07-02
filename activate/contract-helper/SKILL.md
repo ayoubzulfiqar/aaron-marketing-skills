@@ -33,8 +33,8 @@ Review these contract terms from an influencer agency: [paste terms]
 
 ## Skill Contract
 
-- **Reads**: campaign brief, agreed deliverables, compensation figure, platform list, usage-rights and exclusivity needs, any pasted incoming agreement. If `memory-management` is active, prior outreach terms and budget caps load from the hot cache.
-- **Writes**: drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`.
+- **Reads**: campaign brief, agreed deliverables, compensation figure, platform list, usage-rights and exclusivity needs, any pasted incoming agreement. If `memory-management` is active, prior outreach terms and budget caps load from the hot cache. For rostered creators, read `memory/creators/<handle-slug>.md` — the [creator-registry](../../protocol/creator-registry/SKILL.md) roster record — for existing exclusivity windows, contract status, usage-rights history, and standard-range anchors before drafting or reviewing.
+- **Writes**: drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`. Signed terms (usage-rights window, exclusivity scope, final rate) also go as a one-line update to `memory/creators/candidates.md` — only `creator-registry` writes canonical roster records.
 - **Promotes**: durable facts (signed terms, usage-rights window, exclusivity scope, payment schedule) to `memory/hot-cache.md`.
 - **Done when**:
   - Every required term is filled or explicitly marked TBD (parties, deliverables, compensation, payment timeline, usage rights, exclusivity, termination).
@@ -67,7 +67,7 @@ When a user requests contract help:
 3. **Explain key clauses** — for each material clause give what it covers, why it matters, and what to watch for. Clause guide in [references/templates.md §3](references/templates.md).
 4. **Review and flag** — for any incoming paper, run the checklist: essential terms present, red flags, and per-clause negotiation ranges. Checklist + tables in [references/templates.md §4-5](references/templates.md).
 
-Save the drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`, and promote durable signed terms to the hot cache.
+Save the drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`, and promote durable signed terms to the hot cache. Once terms are signed, also submit them (usage-rights window, exclusivity scope, final rate) as a one-line update to `memory/creators/candidates.md` for [creator-registry](../../protocol/creator-registry/SKILL.md) to reconcile into the roster record.
 
 ## Example
 

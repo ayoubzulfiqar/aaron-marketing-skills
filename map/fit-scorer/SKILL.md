@@ -36,7 +36,7 @@ Compare and rank these influencers for [campaign]: @influencer1, @influencer2, @
 
 ## Skill Contract
 
-- **Reads**: brand/campaign context, target audience definition, campaign goal, and a shortlist of influencer handles (supplied by the user or carried over from `influencer-discovery`). Optional prior audience profiles from `memory/influencer/audience-analyzer/` and competitor partner benchmarks from `memory/influencer/competitor-tracker/`.
+- **Reads**: brand/campaign context, target audience definition, campaign goal, and a shortlist of influencer handles (supplied by the user or carried over from `influencer-discovery`). Optional prior audience profiles from `memory/influencer/audience-analyzer/` and competitor partner benchmarks from `memory/influencer/competitor-tracker/`. For rostered creators, read partnership history and audience-stat provenance from `memory/creators/<handle-slug>.md` — the [creator-registry](../../protocol/creator-registry/SKILL.md) roster record — as Partnership Potential inputs.
 - **Writes**: a fit-score report (per-dimension raw scores, weighted totals, verdict, ranked comparison) to `memory/influencer/fit-scorer/YYYY-MM-DD-<topic>.md`.
 - **Promotes**: top-ranked handles, final scores, and the go/pass verdict to `memory/hot-cache.md` so downstream skills pick the right targets.
 - **Done when**:
@@ -56,7 +56,7 @@ This family needs no live integrations (Tier 1). Fit Scorer works end to end by 
 - `~~influencer database` — follower counts, audience demographics, and partnership history.
 - `~~social platform analytics` — engagement rate, comment quality samples, posting cadence, growth trend.
 - `~~audience intelligence` — real-vs-bot follower estimates and audience overlap with your target.
-- `~~CRM` — prior contact, response reputation, and delivery history for partnership potential.
+- **Roster record (keyless Tier 1)** — prior contact, response reputation, and delivery history come from `memory/creators/<handle-slug>.md` when the creator is rostered ([creator-registry](../../protocol/creator-registry/SKILL.md) curates it); `~~CRM` is an optional Tier-2 sharpener for the same history when no roster record exists.
 
 With zero integrations, ask the user to supply each value the scoring tables request; the framework and weighting still produce a defensible ranking. See [CONNECTORS.md](../../CONNECTORS.md) for the free/keyless recipe per category.
 
@@ -78,7 +78,7 @@ All fill-in tables and the comparison/report layouts live in [references/scoring
 3. **Score Content Quality** — production value, cadence, content mix, best examples, concerns. Step 3 template.
 4. **Score Brand Alignment** — value/aesthetic/messaging fit and the Brand Safety check (feeds ACE C1). Step 4 template.
 5. **Score Engagement Quality** — engagement rate vs industry avg, authenticity indicators, pod/buying signs (feeds ACE E2). Step 5 template.
-6. **Score Partnership Potential** — partnership history, professionalism, exclusivity/availability, estimated value. Step 6 template.
+6. **Score Partnership Potential** — partnership history, professionalism, exclusivity/availability, estimated value; pull prior-partnership and response-history facts from the `memory/creators/` roster record when one exists. Step 6 template.
 7. **Calculate the final score** — roll raw × weight into the weighted total, apply the interpretation band, write the verdict and expected performance. Step 7 template.
 8. **For multiple influencers**, produce the ranking summary, dimension-by-dimension comparison, and prioritize/combine/pass recommendation. Step 8 template.
 

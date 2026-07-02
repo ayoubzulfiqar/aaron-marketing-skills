@@ -101,7 +101,7 @@ Append to monthly file (`memory/audits/YYYY-MM.md`), newest at bottom:
 ## YYYY-MM-DD · <target> · <framework>
 - runbook_version: 1.1
 - status: DONE | DONE_WITH_CONCERNS | BLOCKED
-- framework: CORE-EEAT | CITE
+- framework: CORE-EEAT | CITE | ROAS
 - vetos_failed: [T04, R10]    # empty list [] if none
 - veto_count: 2
 - raw_overall: 78
@@ -109,13 +109,14 @@ Append to monthly file (`memory/audits/YYYY-MM.md`), newest at bottom:
 - cap_applied: true
 - audit_gap_types: [missing, shallow]  # distinct from entity-geo-handoff-schema.md's gap_type enum
 - false_positive: false        # set true only on explicit user feedback
-- audit_source: content-quality-auditor | domain-authority-auditor
+- audit_source: content-quality-auditor | domain-authority-auditor | ad-account-auditor
 ```
 
 **Rules**:
 - One block per audit. Do not overwrite existing blocks.
-- `target` is the URL or domain audited.
+- `target` is the URL or domain audited (for ROAS blocks, the ad account or campaign).
 - `runbook_version` copied from current runbook header.
+- Paid artifacts roll in too: ROAS blocks come from ad-account-auditor's gated artifacts under `memory/audits/paid/`; attribution-reconciler's standing workbooks under `memory/paid-ads/attribution-reconciler/` are folded into the same monthly pass (a one-line pointer per workbook is enough — do not copy tables).
 - `false_positive` is the ONLY field that can be flipped after initial write.
 - GDPR/CCPA erasure is the exception: replace subject identifiers with a stable redacted label while preserving scores, status, and timestamps. (Working-tree redaction only — no salted fingerprint or reingest tombstone; see [memory-management SKILL.md §GDPR](../SKILL.md) and [GDPR Purge Log Template](gdpr-purge-log-template.md).)
 - If monthly file doesn't exist, create with `# Audit Archive — YYYY-MM` header.
