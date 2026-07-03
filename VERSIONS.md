@@ -2,83 +2,93 @@
 
 Current versions for the plugin and all 69 skills. Agents can fetch this file from `https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/VERSIONS.md` once per session.
 
-**Current release**: `12.0.0` (2026-07-03). First release since v11 — adds the **email-marketing (SEND) discipline** and makes all 4 disciplines symmetric at 4 phases × 4 skills (16 each); **54 → 69 skills**, all aligned to `12.0.0`.
+**Current release**: `12.1.0` (2026-07-04). Folder-symmetry refactor — every discipline lives under its own top-level folder (`seo-geo/` · `influencer/` · `ad/` · `email/` · `protocol/`), completing 4×4 symmetry; **69 skills**, all at `12.1.0`. (v12.0.0 below added the email discipline + 4×4.)
 
 ## Skills
 
 | Skill | Category | Version | Last Updated |
 |-------|----------|---------|--------------|
-| competitor-analysis | research | 12.0.0 | 2026-07-03 |
-| content-gap-analysis | research | 12.0.0 | 2026-07-03 |
-| keyword-research | research | 12.0.0 | 2026-07-03 |
-| serp-analysis | research | 12.0.0 | 2026-07-03 |
-| content-writer | build | 12.0.0 | 2026-07-03 |
-| geo-content-optimizer | build | 12.0.0 | 2026-07-03 |
-| page-play-builder | build | 12.0.0 | 2026-07-03 |
-| serp-markup-builder | build | 12.0.0 | 2026-07-03 |
-| content-quality-auditor | optimize | 12.0.0 | 2026-07-03 |
-| on-page-seo-auditor | optimize | 12.0.0 | 2026-07-03 |
-| site-structure-optimizer | optimize | 12.0.0 | 2026-07-03 |
-| technical-seo-checker | optimize | 12.0.0 | 2026-07-03 |
-| domain-authority-auditor | monitor | 12.0.0 | 2026-07-03 |
-| offsite-signal-analyzer | monitor | 12.0.0 | 2026-07-03 |
-| performance-monitor | monitor | 12.0.0 | 2026-07-03 |
-| rank-tracker | monitor | 12.0.0 | 2026-07-03 |
-| audience-mapper | discover | 12.0.0 | 2026-07-03 |
-| fit-scorer | discover | 12.0.0 | 2026-07-03 |
-| influencer-discovery | discover | 12.0.0 | 2026-07-03 |
-| trend-spotter | discover | 12.0.0 | 2026-07-03 |
-| brief-generator | plan | 12.0.0 | 2026-07-03 |
-| budget-optimizer | plan | 12.0.0 | 2026-07-03 |
-| campaign-planner | plan | 12.0.0 | 2026-07-03 |
-| competitor-tracker | plan | 12.0.0 | 2026-07-03 |
-| content-amplifier | activate | 12.0.0 | 2026-07-03 |
-| content-reviewer | activate | 12.0.0 | 2026-07-03 |
-| contract-helper | activate | 12.0.0 | 2026-07-03 |
-| outreach-manager | activate | 12.0.0 | 2026-07-03 |
-| landing-optimizer | measure | 12.0.0 | 2026-07-03 |
-| performance-analyzer | measure | 12.0.0 | 2026-07-03 |
-| report-generator | measure | 12.0.0 | 2026-07-03 |
-| roi-calculator | measure | 12.0.0 | 2026-07-03 |
-| audience-segment-builder | paid | 12.0.0 | 2026-07-03 |
-| campaign-architect | paid | 12.0.0 | 2026-07-03 |
-| product-feed-optimizer | paid | 12.0.0 | 2026-07-03 |
-| search-term-miner | paid | 12.0.0 | 2026-07-03 |
-| ad-creative-builder | paid | 12.0.0 | 2026-07-03 |
-| ad-test-designer | paid | 12.0.0 | 2026-07-03 |
-| bid-strategy-planner | paid | 12.0.0 | 2026-07-03 |
-| landing-experience-checker | paid | 12.0.0 | 2026-07-03 |
-| ad-account-auditor | paid | 12.0.0 | 2026-07-03 |
-| conversion-signal-qa | paid | 12.0.0 | 2026-07-03 |
-| conversion-value-mapper | paid | 12.0.0 | 2026-07-03 |
-| placement-exclusion-manager | paid | 12.0.0 | 2026-07-03 |
-| attribution-reconciler | paid | 12.0.0 | 2026-07-03 |
-| budget-pacing-monitor | paid | 12.0.0 | 2026-07-03 |
-| fatigue-frequency-manager | paid | 12.0.0 | 2026-07-03 |
-| paid-measurement-loop | paid | 12.0.0 | 2026-07-03 |
-| deliverability-qa | email | 12.0.0 | 2026-07-03 |
-| list-growth-designer | email | 12.0.0 | 2026-07-03 |
-| list-hygiene-monitor | email | 12.0.0 | 2026-07-03 |
-| list-segment-builder | email | 12.0.0 | 2026-07-03 |
-| dynamic-content-personalizer | email | 12.0.0 | 2026-07-03 |
-| email-creative-builder | email | 12.0.0 | 2026-07-03 |
-| email-render-builder | email | 12.0.0 | 2026-07-03 |
-| subject-line-lab | email | 12.0.0 | 2026-07-03 |
-| email-sequence-designer | email | 12.0.0 | 2026-07-03 |
-| newsletter-monetization-planner | email | 12.0.0 | 2026-07-03 |
-| preference-frequency-manager | email | 12.0.0 | 2026-07-03 |
-| reactivation-specialist | email | 12.0.0 | 2026-07-03 |
-| cold-outbound-sequencer | email | 12.0.0 | 2026-07-03 |
-| email-quality-auditor | email | 12.0.0 | 2026-07-03 |
-| inbox-placement-monitor | email | 12.0.0 | 2026-07-03 |
-| send-experiment-designer | email | 12.0.0 | 2026-07-03 |
-| consent-registry | protocol | 12.0.0 | 2026-07-03 |
-| creator-registry | protocol | 12.0.0 | 2026-07-03 |
-| entity-optimizer | protocol | 12.0.0 | 2026-07-03 |
-| memory-management | protocol | 12.0.0 | 2026-07-03 |
-| offer-claims-registry | protocol | 12.0.0 | 2026-07-03 |
+| competitor-analysis | research | 12.1.0 | 2026-07-03 |
+| content-gap-analysis | research | 12.1.0 | 2026-07-03 |
+| keyword-research | research | 12.1.0 | 2026-07-03 |
+| serp-analysis | research | 12.1.0 | 2026-07-03 |
+| content-writer | build | 12.1.0 | 2026-07-03 |
+| geo-content-optimizer | build | 12.1.0 | 2026-07-03 |
+| page-play-builder | build | 12.1.0 | 2026-07-03 |
+| serp-markup-builder | build | 12.1.0 | 2026-07-03 |
+| content-quality-auditor | optimize | 12.1.0 | 2026-07-03 |
+| on-page-seo-auditor | optimize | 12.1.0 | 2026-07-03 |
+| site-structure-optimizer | optimize | 12.1.0 | 2026-07-03 |
+| technical-seo-checker | optimize | 12.1.0 | 2026-07-03 |
+| domain-authority-auditor | monitor | 12.1.0 | 2026-07-03 |
+| offsite-signal-analyzer | monitor | 12.1.0 | 2026-07-03 |
+| performance-monitor | monitor | 12.1.0 | 2026-07-03 |
+| rank-tracker | monitor | 12.1.0 | 2026-07-03 |
+| audience-mapper | discover | 12.1.0 | 2026-07-03 |
+| fit-scorer | discover | 12.1.0 | 2026-07-03 |
+| influencer-discovery | discover | 12.1.0 | 2026-07-03 |
+| trend-spotter | discover | 12.1.0 | 2026-07-03 |
+| brief-generator | plan | 12.1.0 | 2026-07-03 |
+| budget-optimizer | plan | 12.1.0 | 2026-07-03 |
+| campaign-planner | plan | 12.1.0 | 2026-07-03 |
+| competitor-tracker | plan | 12.1.0 | 2026-07-03 |
+| content-amplifier | activate | 12.1.0 | 2026-07-03 |
+| content-reviewer | activate | 12.1.0 | 2026-07-03 |
+| contract-helper | activate | 12.1.0 | 2026-07-03 |
+| outreach-manager | activate | 12.1.0 | 2026-07-03 |
+| landing-optimizer | measure | 12.1.0 | 2026-07-03 |
+| performance-analyzer | measure | 12.1.0 | 2026-07-03 |
+| report-generator | measure | 12.1.0 | 2026-07-03 |
+| roi-calculator | measure | 12.1.0 | 2026-07-03 |
+| audience-segment-builder | paid | 12.1.0 | 2026-07-03 |
+| campaign-architect | paid | 12.1.0 | 2026-07-03 |
+| product-feed-optimizer | paid | 12.1.0 | 2026-07-03 |
+| search-term-miner | paid | 12.1.0 | 2026-07-03 |
+| ad-creative-builder | paid | 12.1.0 | 2026-07-03 |
+| ad-test-designer | paid | 12.1.0 | 2026-07-03 |
+| bid-strategy-planner | paid | 12.1.0 | 2026-07-03 |
+| landing-experience-checker | paid | 12.1.0 | 2026-07-03 |
+| ad-account-auditor | paid | 12.1.0 | 2026-07-03 |
+| conversion-signal-qa | paid | 12.1.0 | 2026-07-03 |
+| conversion-value-mapper | paid | 12.1.0 | 2026-07-03 |
+| placement-exclusion-manager | paid | 12.1.0 | 2026-07-03 |
+| attribution-reconciler | paid | 12.1.0 | 2026-07-03 |
+| budget-pacing-monitor | paid | 12.1.0 | 2026-07-03 |
+| fatigue-frequency-manager | paid | 12.1.0 | 2026-07-03 |
+| paid-measurement-loop | paid | 12.1.0 | 2026-07-03 |
+| deliverability-qa | email | 12.1.0 | 2026-07-03 |
+| list-growth-designer | email | 12.1.0 | 2026-07-03 |
+| list-hygiene-monitor | email | 12.1.0 | 2026-07-03 |
+| list-segment-builder | email | 12.1.0 | 2026-07-03 |
+| dynamic-content-personalizer | email | 12.1.0 | 2026-07-03 |
+| email-creative-builder | email | 12.1.0 | 2026-07-03 |
+| email-render-builder | email | 12.1.0 | 2026-07-03 |
+| subject-line-lab | email | 12.1.0 | 2026-07-03 |
+| email-sequence-designer | email | 12.1.0 | 2026-07-03 |
+| newsletter-monetization-planner | email | 12.1.0 | 2026-07-03 |
+| preference-frequency-manager | email | 12.1.0 | 2026-07-03 |
+| reactivation-specialist | email | 12.1.0 | 2026-07-03 |
+| cold-outbound-sequencer | email | 12.1.0 | 2026-07-03 |
+| email-quality-auditor | email | 12.1.0 | 2026-07-03 |
+| inbox-placement-monitor | email | 12.1.0 | 2026-07-03 |
+| send-experiment-designer | email | 12.1.0 | 2026-07-03 |
+| consent-registry | protocol | 12.1.0 | 2026-07-03 |
+| creator-registry | protocol | 12.1.0 | 2026-07-03 |
+| entity-optimizer | protocol | 12.1.0 | 2026-07-03 |
+| memory-management | protocol | 12.1.0 | 2026-07-03 |
+| offer-claims-registry | protocol | 12.1.0 | 2026-07-03 |
 
 ## Changelog
+
+### v12.1.0 — Folder symmetry: one folder per discipline (2026-07-04)
+
+Structural + hygiene minor release. Every discipline lives under a single top-level folder — `seo-geo/{research,build,optimize,monitor}`, `influencer/{discover,plan,activate,measure}`, `ad/{research,orchestrate,activate,scale}`, `email/{setup,engage,nurture,deliver}`, `protocol/` — completing the 4×4 symmetry (top-level dirs **11 → 5**; eliminates the `activate/` vs `ad/activate/` collision). No skill content or count change (still **69**).
+
+- **Symmetry**: 32 SEO + influencer skills `git mv`-ed into subfolders (history preserved), then `seo/` → `seo-geo/` and `paid/` → `ad/` for a clean discipline slug set. Two generic relink passes recomputed **679 relative links** total (0 broken); `plugin.json` + both `marketplace.json` mirrors repathed.
+- **`paid/` → `ad/` — full alignment**: directory + command `/aaron-marketing:ad` (`commands/ad.md`) + `discipline: ad` slug (17 refs) + `memory/ad/` + `memory/audits/ad/`. The **"Paid Ads" display name and the ROAS framework are unchanged** — the technical identifier is `ad`, exactly as `seo-geo/` displays as "SEO/GEO".
+- **Fixed — v12.0.0 refactor residue**: stale influencer 6-phase names (`insight/map/convert/track` → `discover/plan/activate/measure`) in c3-benchmark, auto-routing-scenarios, PR/ISSUE templates; merged-away skill names → live names (humanizer-slop, entity-geo-handoff-schema, llms-txt-okf, tiktok pack); duplicate/wrong sibling links (trend-spotter, influencer-discovery, fit-scorer, report-generator); `landing-optimizer` `convert/` → `measure/`.
+- **Fixed — CI blind spots** (structure-only, invisible to local test): hardcoded old paths/phase-lists in `validate-skill.yml` find, `check-evals.py` PHASE_DIRS, `golden-auditor-math.py` CQA/DAA, `validate-skill.sh` IS_INFLUENCER.
+- **Cleanup**: removed empty `convert/` + 85 macOS cloud-sync copy files; `.gitignore` now ignores `* N` / `* N.md` conflict copies.
 
 ### v12.0.0 — Email Marketing (SEND) discipline + 4×4 symmetry refactor (2026-07-03)
 
@@ -123,7 +133,7 @@ The first release since v11 — **two stacked changes shipped as one version** (
 - **New guards**: `golden-auditor-math.py` now guards all **4 frameworks** (CORE-EEAT/CITE/C³/ROAS); `check-evals.py` (eval structural-lint, not a runner) + `evals/structure-manifest.json`; `check-pii.py`; `check-stdlib-only.sh` (dependency-creep + Paid-Ads keyed-API red-line). All wired into CI.
 - **Capability borrows (Markdown/keyless)**: `humanizer-slop.md`, `llms-txt-okf.md`, 6 platform playbooks (`references/platforms/`), conversion/visual scoring rubrics, `expert-panel.md`, AI-citation factors (4→9 engines), JS-injected-JSON-LD caveat, Impact×Confidence keyword scoring, trend-scout, atom-extraction, cold-copy rules, creator-dossier, recursive auditor loop.
 - **6 new SEO/GEO skills**: programmatic-seo, parasite-seo, comparison-page-builder, local-seo, site-architecture, ai-traffic.
-- **Paid Ads discipline (8 skills + ROAS framework)** across the 4-phase ROAS loop — Research: campaign-architect, audience-segment-builder; Orchestrate: ad-creative-builder, ad-test-designer; Activate: ad-account-auditor (auditor-class gate → `memory/audits/paid/`), conversion-signal-qa; Scale: paid-measurement-loop, attribution-reconciler. `roas-benchmark.md` (R/O/A/S, RQS arithmetic rollup, vetoes R1/R2/O1/O2/A1). content-reviewer promoted to the C³ ART gate consumer (`memory/audits/influencer/`). Per the Balanced anti-bloat design, search-term mining and bid-pacing/learning-phase ship as **modes** of campaign-architect and budget-optimizer (not standalone skills); budget-optimizer/landing-optimizer/roi-calculator/report-generator/performance-analyzer are reused cross-discipline.
+- **Paid Ads discipline (8 skills + ROAS framework)** across the 4-phase ROAS loop — Research: campaign-architect, audience-segment-builder; Orchestrate: ad-creative-builder, ad-test-designer; Activate: ad-account-auditor (auditor-class gate → `memory/audits/ad/`), conversion-signal-qa; Scale: paid-measurement-loop, attribution-reconciler. `roas-benchmark.md` (R/O/A/S, RQS arithmetic rollup, vetoes R1/R2/O1/O2/A1). content-reviewer promoted to the C³ ART gate consumer (`memory/audits/influencer/`). Per the Balanced anti-bloat design, search-term mining and bid-pacing/learning-phase ship as **modes** of campaign-architect and budget-optimizer (not standalone skills); budget-optimizer/landing-optimizer/roi-calculator/report-generator/performance-analyzer are reused cross-discipline.
 - **Systematization + protocol truth-SSOTs**: unified `discipline`/`phase` frontmatter on every skill; influencer skills trimmed to baseline density (templates → per-skill `references/`); `/impact` + `/paid` commands added, then the four SEO/GEO mode commands merged into **`/seo-geo`** (net **4 commands** — auto + one entrypoint per discipline); paid phase directories (`paid/<phase>/`); **creator-registry** (influencer roster/dossier SSOT) + **offer-claims-registry** (offer & claim-substantiation SSOT) added to the protocol layer; content-quality-auditor/domain-authority-auditor re-homed to optimize//monitor/ (gates live in their disciplines — protocol/ is now 3 truth registries + memory). The earlier `creator-entity` deferral is superseded by creator-registry.
 - **Deferred by design**: `disciplines.md` registry, eval runner, standalone bid/search-term/policy skills (shipped as modes) — per the roadmap's over-engineering guard.
 

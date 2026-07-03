@@ -1,7 +1,7 @@
 ---
 name: email-quality-auditor
 description: 'Use when the user asks to "audit an email program", "is this campaign safe to send", or run a pre-send go/no-go on their own exported email data; runs SEND EQS scoring with S1/S2/N1/D1 veto checks and a SHIP/FIX/BLOCK gate, and emits a gated audit artifact. Not for building deliverability setup — use deliverability-qa; not for designing lifecycle flows — use email-sequence-designer. 邮件质量审计/EQS评分/发送前放行'
-version: "12.0.0"
+version: "12.1.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -11,7 +11,7 @@ allowed-tools: WebFetch
 class: auditor
 metadata:
   author: aaron-he-zhu
-  version: "12.0.0"
+  version: "12.1.0"
   discipline: email
   phase: deliver
   geo-relevance: "low"
@@ -199,7 +199,7 @@ Write the artifact to `memory/audits/email/YYYY-MM-DD-<topic>.md` with `class: a
 
 Verdict-conditional primary next move:
 
-- **SHIP** → [performance-analyzer](../../../measure/performance-analyzer/SKILL.md) (measure the send) or [send-experiment-designer](../send-experiment-designer/SKILL.md) (run the A/B / hold-out).
+- **SHIP** → [performance-analyzer](../../../influencer/measure/performance-analyzer/SKILL.md) (measure the send) or [send-experiment-designer](../send-experiment-designer/SKILL.md) (run the A/B / hold-out).
 - **FIX** → the owning build skill for the flagged lever: S issues → [deliverability-qa](../../setup/deliverability-qa/SKILL.md); N issues → [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md); E/D creative issues → [email-creative-builder](../../engage/email-creative-builder/SKILL.md). Fix, then re-run this audit.
 - **BLOCK** → route to the specific fix owner (S1 → [deliverability-qa](../../setup/deliverability-qa/SKILL.md); S2 → [consent-registry](../../../protocol/consent-registry/SKILL.md); N1 → [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md); D1 → [offer-claims-registry](../../../protocol/offer-claims-registry/SKILL.md)), clear the vetoes, then re-audit before sending.
 

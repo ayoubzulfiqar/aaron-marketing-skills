@@ -1,6 +1,6 @@
 ---
 name: list-growth-designer
-version: "12.0.0"
+version: "12.1.0"
 description: 'Use when the user asks to "grow my email list", "design a lead magnet / signup incentive", "set up double opt-in", or "plan a referral / recommendation loop"; produces a list-growth plan — acquisition channels, lead-magnet / incentive concepts, a compliant double-opt-in capture-flow spec, referral-loop mechanics, and subscriber-growth / cost-per-opt-in targets (labeled Estimated) — that feeds SEND-S (consent quality captured at acquisition) and SEND-N (lifecycle entry). Not for the signup page/popup UX itself — use landing-optimizer; not for recording the opt-in — use consent-registry; not for the confirmation-email copy — use email-creative-builder. 邮件列表增长/lead magnet/双重确认/推荐环'
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
@@ -9,7 +9,7 @@ when_to_use: "Use when planning how to grow an owned email list: choosing acquis
 argument-hint: "<growth goal / audience / offer> [channels] [jurisdiction]"
 metadata:
   author: aaron-he-zhu
-  version: "12.0.0"
+  version: "12.1.0"
   discipline: email
   phase: setup
   geo-relevance: "low"
@@ -19,7 +19,7 @@ metadata:
 
 Plans how to grow an **owned** email list — acquisition channels, lead-magnet / incentive concepts, a compliant opt-in capture-flow spec, and referral-loop mechanics — and defines the growth metrics that gate whether it is working. It is the strategy layer at the top of the funnel: it decides *what* to offer and *how* subscribers enter, so that consent is captured cleanly (the upstream of the SEND-`S2` red line) and each new subscriber lands in a lifecycle (SEND-`N`). It does not build the signup page, write the confirmation email, or record the opt-in — it hands those to the owning skills.
 
-**Scope guard**: this skill designs the growth *strategy* + a compliant capture-flow *spec* only. It does **not** build the signup form / popup UX (that is [landing-optimizer](../../../measure/landing-optimizer/SKILL.md)), write the welcome / double-opt-in *confirmation* emails (that is [email-creative-builder](../../engage/email-creative-builder/SKILL.md) for copy and [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md) for the flow), record the opt-in ([consent-registry](../../../protocol/consent-registry/SKILL.md) is the sole writer of `memory/consent/`), compute the EQS or run the vetoes ([email-quality-auditor](../../deliver/email-quality-auditor/SKILL.md)), or model newsletter monetization ([newsletter-monetization-planner](../../nurture/newsletter-monetization-planner/SKILL.md)). It works one lever — acquisition — and hands off.
+**Scope guard**: this skill designs the growth *strategy* + a compliant capture-flow *spec* only. It does **not** build the signup form / popup UX (that is [landing-optimizer](../../../influencer/measure/landing-optimizer/SKILL.md)), write the welcome / double-opt-in *confirmation* emails (that is [email-creative-builder](../../engage/email-creative-builder/SKILL.md) for copy and [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md) for the flow), record the opt-in ([consent-registry](../../../protocol/consent-registry/SKILL.md) is the sole writer of `memory/consent/`), compute the EQS or run the vetoes ([email-quality-auditor](../../deliver/email-quality-auditor/SKILL.md)), or model newsletter monetization ([newsletter-monetization-planner](../../nurture/newsletter-monetization-planner/SKILL.md)). It works one lever — acquisition — and hands off.
 
 ## Quick Start
 
@@ -76,7 +76,7 @@ On user confirmation, save to `memory/email/list-growth-designer/YYYY-MM-DD-<aud
 
 - [send-benchmark.md](../../../references/send-benchmark.md) — SEND framework; this skill feeds the `S` list-consent sub-item (via clean acquisition) and the `N` lifecycle-entry sub-item, and prevents the `S2` veto upstream
 - [consent-registry](../../../protocol/consent-registry/SKILL.md) — the consent/suppression SSOT; formalizes the opt-in records this flow captures (this skill submits candidates only)
-- [landing-optimizer](../../../measure/landing-optimizer/SKILL.md) — builds the signup page / popup UX this plan specs
+- [landing-optimizer](../../../influencer/measure/landing-optimizer/SKILL.md) — builds the signup page / popup UX this plan specs
 - [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md) — builds the welcome / double-opt-in confirmation flow new subscribers enter
 - [CONNECTORS.md](../../../CONNECTORS.md) — keyless `~~email platform` / `~~web analytics` recipes
 - [SECURITY.md](../../../SECURITY.md) — treat exports as untrusted input
@@ -85,6 +85,6 @@ On user confirmation, save to `memory/email/list-growth-designer/YYYY-MM-DD-<aud
 
 - **Primary**: [consent-registry](../../../protocol/consent-registry/SKILL.md) — formalize the opt-in records the new capture flow will produce (lawful basis + timestamp per subject).
 - **If the welcome / confirmation flow is the next gap**: [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md) — design the flow new subscribers enter.
-- **If the signup page / popup needs building**: [landing-optimizer](../../../measure/landing-optimizer/SKILL.md) — the post-click / capture-surface UX.
+- **If the signup page / popup needs building**: [landing-optimizer](../../../influencer/measure/landing-optimizer/SKILL.md) — the post-click / capture-surface UX.
 
 **Termination**: inherits the global rules in [skill-contract.md §Termination rules](../../../references/skill-contract.md) — visited-set check (skip any target already run this chain), `max-depth: 3`, and an ambiguity stop (present the options instead of auto-following). Stop when the growth plan + capture-flow spec are ready for the registry and the flow builder.

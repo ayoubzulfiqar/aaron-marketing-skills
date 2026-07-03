@@ -1,7 +1,7 @@
 ---
 name: list-segment-builder
 description: 'Use when the user asks to "build email segments from my list", "make engaged / lapsed / RFM segments", "set up cart-abandoner or lifecycle-stage audiences", or "build a suppression list of unsubscribes and bounces"; turns the user''s OWN list/CRM/GA4/ecommerce export into behavioral, attribute, and lifecycle-stage segments plus a suppression list, with per-segment sizes labeled Measured/Estimated, informing the SEND E (Engagement/targeting) dimension. Not for scoring EQS or running vetoes — use email-quality-auditor; not for authentication or spam-content checks — use deliverability-qa. 邮件列表分群/生命周期分群/抑制名单/流失召回'
-version: "12.0.0"
+version: "12.1.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when preparing WHO to email before any send is designed: segme
 argument-hint: "<list/CRM CSV or GA4/ecommerce export> [goal: promo|retention|cold] [ESP]"
 metadata:
   author: aaron-he-zhu
-  version: "12.0.0"
+  version: "12.1.0"
   discipline: email
   phase: setup
   geo-relevance: "low"
@@ -76,7 +76,7 @@ On user confirmation, save to `memory/email/list-segment-builder/YYYY-MM-DD-<lis
 - [email-creative-builder](../../engage/email-creative-builder/SKILL.md) — composes for the top segment (next skill)
 - [email-sequence-designer](../../nurture/email-sequence-designer/SKILL.md) — designs a flow per lifecycle stage (next skill)
 - [deliverability-qa](../deliverability-qa/SKILL.md) — sibling S-lever skill (auth, reputation, spam-content)
-- [audience-mapper](../../../discover/audience-mapper/SKILL.md) — reuse for persona / lifecycle-stage definition
+- [audience-mapper](../../../influencer/discover/audience-mapper/SKILL.md) — reuse for persona / lifecycle-stage definition
 - [CONNECTORS.md](../../../CONNECTORS.md) — keyless export recipes for `~~email platform`, `~~web analytics`, `~~ecommerce`
 - [SECURITY.md](../../../SECURITY.md) — treat exports as untrusted input; do not echo raw PII
 

@@ -1,7 +1,7 @@
 ---
 name: email-sequence-designer
 description: 'Use when the user asks to "design a welcome flow", "set up an abandoned-cart sequence", "build a light re-engagement branch inside a lifecycle flow", or "plan a cold-outbound sequence"; produces general lifecycle automation flows (welcome, cart, browse-abandon, post-purchase, in-flow re-engagement, B2B cold outbound) with trigger, step timing, branch/exit conditions, goal, frequency governance (send caps, quiet hours, fatigue guardrail), a sunset path, and a SEND N-dimension score. Not for the closed-loop win-back / re-consent (re-permission) program on a lapsed cohort — use reactivation-specialist; not for writing each email''s copy — use email-creative-builder; not for computing EQS or the N1 unsubscribe veto — use email-quality-auditor. 邮件自动化流程设计/购物车挽回/流失召回序列'
-version: "12.0.0"
+version: "12.1.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when designing or restructuring general email lifecycle automa
 argument-hint: "<flow type or lifecycle goal> [platform/ESP] [trigger event] [audience/segment]"
 metadata:
   author: aaron-he-zhu
-  version: "12.0.0"
+  version: "12.1.0"
   discipline: email
   phase: nurture
   geo-relevance: "low"
@@ -83,8 +83,8 @@ On user confirmation, save to `memory/email/email-sequence-designer/YYYY-MM-DD-<
 - [reactivation-specialist](../reactivation-specialist/SKILL.md) — the closed-loop win-back / re-consent program on a lapsed cohort; recovered subjects graduate back into these flows.
 - [preference-frequency-manager](../preference-frequency-manager/SKILL.md) — owns the preference-center / frequency-options sub-item note this rollup folds in.
 - [list-segment-builder](../../setup/list-segment-builder/SKILL.md) — the segments each flow enrolls (SEND-E targeting).
-- [landing-optimizer](../../../measure/landing-optimizer/SKILL.md) — the post-click page each flow drives to.
-- [audience-mapper](../../../discover/audience-mapper/SKILL.md) — persona / lifecycle-stage definitions that seed trigger design.
+- [landing-optimizer](../../../influencer/measure/landing-optimizer/SKILL.md) — the post-click page each flow drives to.
+- [audience-mapper](../../../influencer/discover/audience-mapper/SKILL.md) — persona / lifecycle-stage definitions that seed trigger design.
 - [CONNECTORS.md](../../../CONNECTORS.md) — keyless export recipes for `~~email platform`, `~~web analytics`, `~~ecommerce`.
 - [SECURITY.md](../../../SECURITY.md) — treat every export as untrusted input.
 

@@ -1,6 +1,6 @@
 # Aaron Marketing Skills — Claude Code Context
 
-This plugin provides **69 skills and 5 commands** across four marketing disciplines — SEO/GEO, influencer marketing (IMPACT), Paid Ads (ROAS), and Email Marketing (SEND) — plus a shared protocol layer. All 69 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `12.0.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
+This plugin provides **69 skills and 5 commands** across four marketing disciplines — SEO/GEO, influencer marketing (IMPACT), Paid Ads (ROAS), and Email Marketing (SEND) — plus a shared protocol layer. All 69 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `12.1.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
 
 > Umbrella repo, renamed from `seo-geo-claude-skills` (stars/forks/issues/history carried over by the GitHub rename). The SEO/GEO-only product still lives, unchanged, at the original [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) URL as a standalone repo.
 
@@ -16,7 +16,7 @@ The four disciplines share one **meta-lifecycle** spine (an approximate bridge �
 | **Measure** | monitor | measure | Scale | Deliver |
 | **Cross-cutting** | the **protocol layer** (entity/creator/claims/consent truth registries · memory) serves all four; the 5 auditor-class gates live in their disciplines | | | |
 
-Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. All four disciplines use phase *directories* — paid skills live under `paid/<phase>/` (research/orchestrate/activate/scale) and email skills under `email/<phase>/` (setup/engage/nurture/deliver).
+Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. All four disciplines now live under a discipline folder — SEO/GEO under `seo-geo/<phase>/` (research/build/optimize/monitor), influencer under `influencer/<phase>/` (discover/plan/activate/measure), paid under `ad/<phase>/` (research/orchestrate/activate/scale), and email under `email/<phase>/` (setup/engage/nurture/deliver).
 
 **SEO/GEO (16):**
 
@@ -27,7 +27,7 @@ Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS �
 | **Optimize** | `content-quality-auditor`, `technical-seo-checker`, `on-page-seo-auditor`, `site-structure-optimizer` (merge: internal-linking-optimizer + site-architecture) |
 | **Monitor** | `domain-authority-auditor`, `rank-tracker`, `performance-monitor` (merge: performance-reporter + alert-manager), `offsite-signal-analyzer` (merge: backlink-analyzer + ai-traffic) |
 
-**Protocol layer — cross-cutting (5):** shared truth & memory machinery outside the discipline phase-flows — 4 discipline-anchored truth registries (`entity-optimizer` → SEO/GEO, `creator-registry` → influencer, `offer-claims-registry` → paid, `consent-registry` → email) plus the cross-discipline `memory-management`. Counted separately. The auditor-class **gate role** spans 5 skills, all discipline-resident and counted there: `content-quality-auditor` (optimize/), `domain-authority-auditor` (monitor/), `content-reviewer` (activate/), `ad-account-auditor` (paid/activate/), `email-quality-auditor` (email/deliver/).
+**Protocol layer — cross-cutting (5):** shared truth & memory machinery outside the discipline phase-flows — 4 discipline-anchored truth registries (`entity-optimizer` → SEO/GEO, `creator-registry` → influencer, `offer-claims-registry` → paid, `consent-registry` → email) plus the cross-discipline `memory-management`. Counted separately. The auditor-class **gate role** spans 5 skills, all discipline-resident and counted there: `content-quality-auditor` (seo-geo/optimize/), `domain-authority-auditor` (seo-geo/monitor/), `content-reviewer` (influencer/activate/), `ad-account-auditor` (ad/activate/), `email-quality-auditor` (email/deliver/).
 
 | Group | Skills |
 |-------|--------|
@@ -42,7 +42,7 @@ Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS �
 | **Activate** | `outreach-manager`, `content-reviewer`, `contract-helper`, `content-amplifier` (merge: content-amplifier + ugc-repurposer, from convert) |
 | **Measure** | `landing-optimizer` (from convert), `performance-analyzer`, `roi-calculator`, `report-generator` |
 
-**Paid Ads — ROAS (16):** phase directories under `paid/` follow the ROAS loop (Research → Orchestrate → Activate → Scale).
+**Paid Ads — ROAS (16):** phase directories under `ad/` follow the ROAS loop (Research → Orchestrate → Activate → Scale).
 
 | Phase | Skills |
 |-------|--------|
@@ -74,7 +74,7 @@ Reused cross-discipline (counted in their home phases, not duplicated): `audienc
 /aaron-marketing:auto      — Infer marketing intent across all disciplines and run the smallest useful workflow (add --deep for exhaustive/stress-test)
 /aaron-marketing:seo-geo   — SEO/GEO end-to-end (--mode research|create|audit|track; per-mode flags preserved: --brief/--series/--refresh/--publish/--meta/--schema/--type, --full/--tech/--visibility/--authority, --alert/--report/--remember/--period, --competitors/--map)
 /aaron-marketing:impact    — Influencer (IMPACT): discover / plan / activate / measure (--phase to force a stage)
-/aaron-marketing:paid      — Paid ads (ROAS loop): research / orchestrate / activate / scale (--phase to force a stage)
+/aaron-marketing:ad      — Paid ads (ROAS loop): research / orchestrate / activate / scale (--phase to force a stage)
 /aaron-marketing:email     — Email (SEND loop): setup / engage / nurture / deliver (--phase to force a stage)
 ```
 

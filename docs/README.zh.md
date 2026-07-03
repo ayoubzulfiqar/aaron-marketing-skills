@@ -3,7 +3,7 @@
 **69 个技能。5 个命令。四个营销学科 —— SEO/GEO、红人、付费广告、邮件营销 —— 共享同一套运行契约。**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
-[![Version](https://img.shields.io/badge/version-12.0.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
+[![Version](https://img.shields.io/badge/version-12.1.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills)](https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai/download)
@@ -16,7 +16,7 @@
 |----|------|----------------------|-----------|----------|
 | **SEO/GEO** | 16 | research → build → optimize → monitor | [CORE-EEAT](../references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](../references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
 | **红人（IMPACT）** | 16 | discover → plan → activate → measure | [C³](../references/c3-benchmark.md) → `content-reviewer`（ART）；`fit-scorer` 打 ACE 分 | `/aaron-marketing:impact` |
-| **付费广告（ROAS）** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor`（RQS） | `/aaron-marketing:paid` |
+| **付费广告（ROAS）** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor`（RQS） | `/aaron-marketing:ad` |
 | **邮件营销（SEND）** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor`（EQS） | `/aaron-marketing:email` |
 | **协议层** | 5 | ——（阶段流程之外的共享机件） | 4 个真相注册表（实体 · 创作者 · offer/声明 · 同意）+ HOT/WARM/COLD 记忆 | —— |
 
@@ -139,7 +139,7 @@
 | **激活 / 优化** | optimize | activate | activate | nurture |
 | **度量** | monitor | measure | scale | deliver |
 
-四个学科都用阶段**目录**（`research/`…、`discover/`…、`paid/research/`…、`email/setup/`…）。注意 "activate" 在 IMPACT 里指创作者外联、在 ROAS 里指账户门控——同词不同域。
+四个学科都用阶段**目录**（`seo-geo/research/`…、`influencer/discover/`…、`ad/research/`…、`email/setup/`…）。注意 "activate" 在 IMPACT 里指创作者外联、在 ROAS 里指账户门控——同词不同域。
 
 ### 质量体系：五框架、五门
 
@@ -157,10 +157,10 @@
 
 | 门 | 框架 | 所在 | 判定 |
 |----|------|------|------|
-| [content-quality-auditor](../optimize/content-quality-auditor/SKILL.md) | CORE-EEAT | `optimize/`（SEO/GEO） | 发布前 SHIP / FIX / BLOCK |
-| [domain-authority-auditor](../monitor/domain-authority-auditor/SKILL.md) | CITE | `monitor/`（SEO/GEO） | TRUSTED / CAUTIOUS / UNTRUSTED |
-| [content-reviewer](../activate/content-reviewer/SKILL.md) | C³ ART | `activate/`（红人） | 创作者内容上线前 APPROVED / REVISIONS / REJECTED |
-| [ad-account-auditor](../paid/activate/ad-account-auditor/SKILL.md) | ROAS RQS | `paid/activate/`（付费） | 加预算前 SHIP / FIX / BLOCK |
+| [content-quality-auditor](../seo-geo/optimize/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/optimize/`（SEO/GEO） | 发布前 SHIP / FIX / BLOCK |
+| [domain-authority-auditor](../seo-geo/monitor/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/monitor/`（SEO/GEO） | TRUSTED / CAUTIOUS / UNTRUSTED |
+| [content-reviewer](../influencer/activate/content-reviewer/SKILL.md) | C³ ART | `influencer/activate/`（红人） | 创作者内容上线前 APPROVED / REVISIONS / REJECTED |
+| [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md) | ROAS RQS | `ad/activate/`（付费） | 加预算前 SHIP / FIX / BLOCK |
 | [email-quality-auditor](../email/deliver/email-quality-auditor/SKILL.md) | SEND EQS | `email/deliver/`（邮件） | 发送前 SHIP / FIX / BLOCK |
 
 **共享封顶法：** 单个否决项把受影响维度与总分封顶到 `min(raw, 60)`；**两个及以上否决项 → `BLOCKED`**（无最终分）。判定对用户翻译成人话（报告里不出现项目 ID）。门的机制——handoff schema、封顶算术、工件门清单——在 [auditor-runbook.md](../references/auditor-runbook.md) 统一规定，五套框架的算术由确定性 golden 测试锁定（见[质量守卫](#质量守卫)）。
@@ -212,10 +212,10 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 | 阶段 | 技能 |
 |------|------|
-| **研究** | [keyword-research](../research/keyword-research/SKILL.md), [competitor-analysis](../research/competitor-analysis/SKILL.md), [serp-analysis](../research/serp-analysis/SKILL.md), [content-gap-analysis](../research/content-gap-analysis/SKILL.md) |
-| **构建** | [content-writer](../build/content-writer/SKILL.md)（合并 seo-content-writer + content-refresher）, [geo-content-optimizer](../build/geo-content-optimizer/SKILL.md), [serp-markup-builder](../build/serp-markup-builder/SKILL.md)（合并 meta-tags-optimizer + schema-markup-generator）, [page-play-builder](../build/page-play-builder/SKILL.md)（合并 programmatic + parasite + comparison + local，4 模式） |
-| **优化** | ⛩ [content-quality-auditor](../optimize/content-quality-auditor/SKILL.md), [technical-seo-checker](../optimize/technical-seo-checker/SKILL.md), [on-page-seo-auditor](../optimize/on-page-seo-auditor/SKILL.md), [site-structure-optimizer](../optimize/site-structure-optimizer/SKILL.md)（合并 internal-linking-optimizer + site-architecture） |
-| **监控** | ⛩ [domain-authority-auditor](../monitor/domain-authority-auditor/SKILL.md), [rank-tracker](../monitor/rank-tracker/SKILL.md), [performance-monitor](../monitor/performance-monitor/SKILL.md)（合并 performance-reporter + alert-manager）, [offsite-signal-analyzer](../monitor/offsite-signal-analyzer/SKILL.md)（合并 backlink-analyzer + ai-traffic） |
+| **研究** | [keyword-research](../seo-geo/research/keyword-research/SKILL.md), [competitor-analysis](../seo-geo/research/competitor-analysis/SKILL.md), [serp-analysis](../seo-geo/research/serp-analysis/SKILL.md), [content-gap-analysis](../seo-geo/research/content-gap-analysis/SKILL.md) |
+| **构建** | [content-writer](../seo-geo/build/content-writer/SKILL.md)（合并 seo-content-writer + content-refresher）, [geo-content-optimizer](../seo-geo/build/geo-content-optimizer/SKILL.md), [serp-markup-builder](../seo-geo/build/serp-markup-builder/SKILL.md)（合并 meta-tags-optimizer + schema-markup-generator）, [page-play-builder](../seo-geo/build/page-play-builder/SKILL.md)（合并 programmatic + parasite + comparison + local，4 模式） |
+| **优化** | ⛩ [content-quality-auditor](../seo-geo/optimize/content-quality-auditor/SKILL.md), [technical-seo-checker](../seo-geo/optimize/technical-seo-checker/SKILL.md), [on-page-seo-auditor](../seo-geo/optimize/on-page-seo-auditor/SKILL.md), [site-structure-optimizer](../seo-geo/optimize/site-structure-optimizer/SKILL.md)（合并 internal-linking-optimizer + site-architecture） |
+| **监控** | ⛩ [domain-authority-auditor](../seo-geo/monitor/domain-authority-auditor/SKILL.md), [rank-tracker](../seo-geo/monitor/rank-tracker/SKILL.md), [performance-monitor](../seo-geo/monitor/performance-monitor/SKILL.md)（合并 performance-reporter + alert-manager）, [offsite-signal-analyzer](../seo-geo/monitor/offsite-signal-analyzer/SKILL.md)（合并 backlink-analyzer + ai-traffic） |
 
 <details><summary><b>逐技能用途（SEO/GEO）</b></summary>
 
@@ -246,10 +246,10 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 | 阶段 | 技能 |
 |------|------|
-| **Discover 发现** | [audience-mapper](../discover/audience-mapper/SKILL.md)（合并 audience-analyzer + niche-researcher）, [trend-spotter](../discover/trend-spotter/SKILL.md), [influencer-discovery](../discover/influencer-discovery/SKILL.md), [fit-scorer](../discover/fit-scorer/SKILL.md) |
-| **Plan 规划** | [competitor-tracker](../plan/competitor-tracker/SKILL.md), [campaign-planner](../plan/campaign-planner/SKILL.md), [brief-generator](../plan/brief-generator/SKILL.md), [budget-optimizer](../plan/budget-optimizer/SKILL.md) |
-| **Activate 启动** | [outreach-manager](../activate/outreach-manager/SKILL.md), ⛩ [content-reviewer](../activate/content-reviewer/SKILL.md), [contract-helper](../activate/contract-helper/SKILL.md), [content-amplifier](../activate/content-amplifier/SKILL.md)（合并 content-amplifier + ugc-repurposer） |
-| **Measure 度量** | [landing-optimizer](../measure/landing-optimizer/SKILL.md), [performance-analyzer](../measure/performance-analyzer/SKILL.md), [roi-calculator](../measure/roi-calculator/SKILL.md), [report-generator](../measure/report-generator/SKILL.md) |
+| **Discover 发现** | [audience-mapper](../influencer/discover/audience-mapper/SKILL.md)（合并 audience-analyzer + niche-researcher）, [trend-spotter](../influencer/discover/trend-spotter/SKILL.md), [influencer-discovery](../influencer/discover/influencer-discovery/SKILL.md), [fit-scorer](../influencer/discover/fit-scorer/SKILL.md) |
+| **Plan 规划** | [competitor-tracker](../influencer/plan/competitor-tracker/SKILL.md), [campaign-planner](../influencer/plan/campaign-planner/SKILL.md), [brief-generator](../influencer/plan/brief-generator/SKILL.md), [budget-optimizer](../influencer/plan/budget-optimizer/SKILL.md) |
+| **Activate 启动** | [outreach-manager](../influencer/activate/outreach-manager/SKILL.md), ⛩ [content-reviewer](../influencer/activate/content-reviewer/SKILL.md), [contract-helper](../influencer/activate/contract-helper/SKILL.md), [content-amplifier](../influencer/activate/content-amplifier/SKILL.md)（合并 content-amplifier + ugc-repurposer） |
+| **Measure 度量** | [landing-optimizer](../influencer/measure/landing-optimizer/SKILL.md), [performance-analyzer](../influencer/measure/performance-analyzer/SKILL.md), [roi-calculator](../influencer/measure/roi-calculator/SKILL.md), [report-generator](../influencer/measure/report-generator/SKILL.md) |
 
 <details><summary><b>逐技能用途（红人）</b></summary>
 
@@ -276,14 +276,14 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 ### 付费广告 — ROAS（16）
 
-`paid/` 下四个阶段目录按 ROAS 循环排布；本学科的门（⛩ ad-account-auditor）位于 Activate。只有门计算目标加权 RQS——其余技能各管一个杠杆并交棒。
+`ad/` 下四个阶段目录按 ROAS 循环排布；本学科的门（⛩ ad-account-auditor）位于 Activate。只有门计算目标加权 RQS——其余技能各管一个杠杆并交棒。
 
 | 阶段 | 技能 |
 |------|------|
-| **Research 研究** | [campaign-architect](../paid/research/campaign-architect/SKILL.md), [audience-segment-builder](../paid/research/audience-segment-builder/SKILL.md), [search-term-miner](../paid/research/search-term-miner/SKILL.md)（NEW）, [product-feed-optimizer](../paid/research/product-feed-optimizer/SKILL.md)（NEW） |
-| **Orchestrate 编排** | [ad-creative-builder](../paid/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](../paid/orchestrate/ad-test-designer/SKILL.md), [bid-strategy-planner](../paid/orchestrate/bid-strategy-planner/SKILL.md)（NEW）, [landing-experience-checker](../paid/orchestrate/landing-experience-checker/SKILL.md)（NEW） |
-| **Activate 激活** | ⛩ [ad-account-auditor](../paid/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](../paid/activate/conversion-signal-qa/SKILL.md), [placement-exclusion-manager](../paid/activate/placement-exclusion-manager/SKILL.md)（NEW）, [conversion-value-mapper](../paid/activate/conversion-value-mapper/SKILL.md)（NEW） |
-| **Scale 放大** | [paid-measurement-loop](../paid/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](../paid/scale/attribution-reconciler/SKILL.md), [budget-pacing-monitor](../paid/scale/budget-pacing-monitor/SKILL.md)（NEW）, [fatigue-frequency-manager](../paid/scale/fatigue-frequency-manager/SKILL.md)（NEW） |
+| **Research 研究** | [campaign-architect](../ad/research/campaign-architect/SKILL.md), [audience-segment-builder](../ad/research/audience-segment-builder/SKILL.md), [search-term-miner](../ad/research/search-term-miner/SKILL.md)（NEW）, [product-feed-optimizer](../ad/research/product-feed-optimizer/SKILL.md)（NEW） |
+| **Orchestrate 编排** | [ad-creative-builder](../ad/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](../ad/orchestrate/ad-test-designer/SKILL.md), [bid-strategy-planner](../ad/orchestrate/bid-strategy-planner/SKILL.md)（NEW）, [landing-experience-checker](../ad/orchestrate/landing-experience-checker/SKILL.md)（NEW） |
+| **Activate 激活** | ⛩ [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](../ad/activate/conversion-signal-qa/SKILL.md), [placement-exclusion-manager](../ad/activate/placement-exclusion-manager/SKILL.md)（NEW）, [conversion-value-mapper](../ad/activate/conversion-value-mapper/SKILL.md)（NEW） |
+| **Scale 放大** | [paid-measurement-loop](../ad/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](../ad/scale/attribution-reconciler/SKILL.md), [budget-pacing-monitor](../ad/scale/budget-pacing-monitor/SKILL.md)（NEW）, [fatigue-frequency-manager](../ad/scale/fatigue-frequency-manager/SKILL.md)（NEW） |
 
 <details><summary><b>逐技能用途（付费广告）</b></summary>
 
@@ -306,7 +306,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 | budget-pacing-monitor（NEW） | S | 预算消耗节奏监控——超支/欠支告警、日内配速、月度落点预测。 |
 | fatigue-frequency-manager（NEW） | O（+S） | 创意疲劳与频次治理——频次上限、轮换节奏、衰减信号识别。 |
 
-**跨学科复用**（计入原阶段，不重复造轮子）：[budget-optimizer](../plan/budget-optimizer/SKILL.md)（花费 + 出价节奏/学习期模式）、[landing-optimizer](../measure/landing-optimizer/SKILL.md)（点击后）、[roi-calculator](../measure/roi-calculator/SKILL.md)（回报计算）、[report-generator](../measure/report-generator/SKILL.md)、[performance-analyzer](../measure/performance-analyzer/SKILL.md)。
+**跨学科复用**（计入原阶段，不重复造轮子）：[budget-optimizer](../influencer/plan/budget-optimizer/SKILL.md)（花费 + 出价节奏/学习期模式）、[landing-optimizer](../influencer/measure/landing-optimizer/SKILL.md)（点击后）、[roi-calculator](../influencer/measure/roi-calculator/SKILL.md)（回报计算）、[report-generator](../influencer/measure/report-generator/SKILL.md)、[performance-analyzer](../influencer/measure/performance-analyzer/SKILL.md)。
 
 </details>
 
@@ -342,7 +342,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 | inbox-placement-monitor（NEW） | S | 收件箱落位监控——seed 列表、垃圾/推广标签分布、ISP 级声誉追踪。 |
 | cold-outbound-sequencer（NEW） | D | B2B 冷触达序列——分步跟进节奏、合规同意/退订、送达与回复优化。 |
 
-**跨学科复用**（计入原阶段，不重复造轮子）：[audience-mapper](../discover/audience-mapper/SKILL.md)、[landing-optimizer](../measure/landing-optimizer/SKILL.md)（点击后）、[roi-calculator](../measure/roi-calculator/SKILL.md)（回报计算）、[report-generator](../measure/report-generator/SKILL.md)、[performance-analyzer](../measure/performance-analyzer/SKILL.md)、[offer-claims-registry](../protocol/offer-claims-registry/SKILL.md)。
+**跨学科复用**（计入原阶段，不重复造轮子）：[audience-mapper](../influencer/discover/audience-mapper/SKILL.md)、[landing-optimizer](../influencer/measure/landing-optimizer/SKILL.md)（点击后）、[roi-calculator](../influencer/measure/roi-calculator/SKILL.md)（回报计算）、[report-generator](../influencer/measure/report-generator/SKILL.md)、[performance-analyzer](../influencer/measure/performance-analyzer/SKILL.md)、[offer-claims-registry](../protocol/offer-claims-registry/SKILL.md)。
 
 </details>
 
@@ -370,14 +370,14 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 ## 命令
 
-5 个命令：`/aaron-marketing:auto` 跨四学科路由任意目标；每个学科恰有一个显式入口。源文件：[commands/](../commands/)。
+5 个命令：`/aaron-marketing:auto` 跨四学科路由任意目标；每个学科恰有一个显式入口。源文件：[commands/](../commands)。
 
 | 命令 | 用途 | 收窄 |
 |------|------|------|
 | `/aaron-marketing:auto` | 描述任意目标——推断意图并执行最小够用的工作流 | `--deep`（穷尽/压测） |
 | `/aaron-marketing:seo-geo` | SEO/GEO 端到端：研究需求/竞品、创作内容、审计质量/技术/可见性/权威、追踪排名/报告/记忆 | `--mode research\|create\|audit\|track` + 各模式子参数（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`） |
 | `/aaron-marketing:impact` | 红人（IMPACT）：受众洞察、发现与适配、规划、外联、放大、ROI | `--phase discover\|plan\|activate\|measure` |
-| `/aaron-marketing:paid` | 付费广告（ROAS 循环）：分群、结构、创意、实验设计、审计门、衡量 | `--phase research\|orchestrate\|activate\|scale` |
+| `/aaron-marketing:ad` | 付费广告（ROAS 循环）：分群、结构、创意、实验设计、审计门、衡量 | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | 邮件营销（SEND 循环）：送达/同意、分群、创意、生命周期流程、变现、发送测试、审计门 | `--phase setup\|engage\|nurture\|deliver` |
 
 日常工作通常从 `/aaron-marketing:auto` 开始；其余四个是显式的学科入口，用 `--mode` / `--phase` 收窄阶段。
@@ -437,9 +437,9 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 ## 仓库结构
 
 ```
-research/ build/ optimize/ monitor/                  # SEO/GEO(16，含其 2 个门)
-discover/ plan/ activate/ measure/                   # 红人 — IMPACT(16，含其门)
-paid/research|orchestrate|activate|scale/            # 付费广告 — ROAS(16，含其门)
+seo-geo/{research,build,optimize,monitor}/                  # SEO/GEO(16，含其 2 个门)
+influencer/{discover,plan,activate,measure}/                   # 红人 — IMPACT(16，含其门)
+ad/research|orchestrate|activate|scale/            # 付费广告 — ROAS(16，含其门)
 email/setup|engage|nurture|deliver/                  # 邮件营销 — SEND(16，含其门)
 protocol/                                            # 协议层(5) — 真相注册表 + 记忆
 commands/        # 5 个斜杠命令(auto、seo-geo、impact、paid、email)
@@ -482,7 +482,7 @@ docs/            # 本地化 README(zh)
 ## 贡献与文档
 
 - **[CONTRIBUTING.md](../CONTRIBUTING.md)** —— 撰写规则、贡献清单、权威的 8 文件追踪列表。
-- **[VERSIONS.md](../VERSIONS.md)** —— 各技能版本 + 变更日志（当前包：`12.0.0`）。
+- **[VERSIONS.md](../VERSIONS.md)** —— 各技能版本 + 变更日志（当前包：`12.1.0`）。
 - **[SECURITY.md](../SECURITY.md)** · **[PRIVACY.md](../PRIVACY.md)** · **[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)** —— 安全、隐私、社区政策。
 - **[CLAUDE.md](../CLAUDE.md)** / **[AGENTS.md](../AGENTS.md)** —— 面向 Agent 的本仓库上下文。
 
@@ -496,7 +496,7 @@ docs/            # 本地化 README(zh)
 
 Apache License 2.0 —— 见 [LICENSE](../LICENSE)。
 
-*最后同步英文 README：v12.0.0*
+*最后同步英文 README：v12.1.0*
 
 ## Star History
 

@@ -3,7 +3,7 @@
 **69 skills. 5 commands. Four marketing disciplines — SEO/GEO, influencer, paid ads, email — on one operating contract.**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
-[![Version](https://img.shields.io/badge/version-12.0.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
+[![Version](https://img.shields.io/badge/version-12.1.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills)](https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai/download)
@@ -16,7 +16,7 @@ A library of Claude Skills and slash commands that turns a chat agent into a mar
 |-------|--------|-------------------------------|------------------|------------|
 | **SEO/GEO** | 16 | research → build → optimize → monitor | [CORE-EEAT](references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
 | **Influencer (IMPACT)** | 16 | discover → plan → activate → measure | [C³](references/c3-benchmark.md) → `content-reviewer` (ART); `fit-scorer` scores ACE | `/aaron-marketing:impact` |
-| **Paid ads (ROAS)** | 16 | research → orchestrate → activate → scale | [ROAS](references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:paid` |
+| **Paid ads (ROAS)** | 16 | research → orchestrate → activate → scale | [ROAS](references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:ad` |
 | **Email (SEND)** | 16 | setup → engage → nurture → deliver | [SEND](references/send-benchmark.md) → `email-quality-auditor` (EQS) | `/aaron-marketing:email` |
 | **Protocol layer** | 5 | — (shared machinery, outside the phase flows) | 4 truth registries (entity · creator · offer/claims · consent) + HOT/WARM/COLD memory | — |
 
@@ -139,7 +139,7 @@ The four disciplines share one meta-lifecycle spine; each adapts the granularity
 | **Activate / optimize** | optimize | activate | activate | nurture |
 | **Measure** | monitor | measure | scale | deliver |
 
-All four use phase **directories** (`research/`…, `discover/`…, `paid/research/`…, `email/setup/`…). Note "activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope.
+All four use phase **directories** (`seo-geo/research/`…, `influencer/discover/`…, `ad/research/`…, `email/setup/`…). Note "activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope.
 
 ### Quality system: five frameworks, five gates
 
@@ -157,10 +157,10 @@ Each framework is enforced by an **auditor-class gate** — a skill that writes 
 
 | Gate | Framework | Lives in | Verdict |
 |------|-----------|----------|---------|
-| [content-quality-auditor](optimize/content-quality-auditor/SKILL.md) | CORE-EEAT | `optimize/` (SEO/GEO) | SHIP / FIX / BLOCK before publishing |
-| [domain-authority-auditor](monitor/domain-authority-auditor/SKILL.md) | CITE | `monitor/` (SEO/GEO) | TRUSTED / CAUTIOUS / UNTRUSTED |
-| [content-reviewer](activate/content-reviewer/SKILL.md) | C³ ART | `activate/` (influencer) | APPROVED / REVISIONS / REJECTED before a creator post ships |
-| [ad-account-auditor](paid/activate/ad-account-auditor/SKILL.md) | ROAS RQS | `paid/activate/` (paid) | SHIP / FIX / BLOCK before budgets scale |
+| [content-quality-auditor](seo-geo/optimize/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/optimize/` (SEO/GEO) | SHIP / FIX / BLOCK before publishing |
+| [domain-authority-auditor](seo-geo/monitor/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/monitor/` (SEO/GEO) | TRUSTED / CAUTIOUS / UNTRUSTED |
+| [content-reviewer](influencer/activate/content-reviewer/SKILL.md) | C³ ART | `influencer/activate/` (influencer) | APPROVED / REVISIONS / REJECTED before a creator post ships |
+| [ad-account-auditor](ad/activate/ad-account-auditor/SKILL.md) | ROAS RQS | `ad/activate/` (paid) | SHIP / FIX / BLOCK before budgets scale |
 | [email-quality-auditor](email/deliver/email-quality-auditor/SKILL.md) | SEND EQS | `email/deliver/` (email) | SHIP / FIX / BLOCK before send |
 
 **Shared cap chassis:** a single veto caps the affected dimension and the overall at `min(raw, 60)`; **two or more vetoes → `BLOCKED`** (no final score). Verdicts are translated to plain language (no item IDs in user-facing reports). Gate mechanics — handoff schema, cap arithmetic, artifact-gate checklist — are specified once in [auditor-runbook.md](references/auditor-runbook.md), and the arithmetic of all five frameworks is locked by a deterministic golden test (see [Quality guards](#quality-guards-ci)).
@@ -212,10 +212,10 @@ Four phase directories (4 skills each) plus the discipline's two quality gates (
 
 | Phase | Skills |
 |-------|--------|
-| **Research** | [keyword-research](research/keyword-research/SKILL.md), [competitor-analysis](research/competitor-analysis/SKILL.md), [serp-analysis](research/serp-analysis/SKILL.md), [content-gap-analysis](research/content-gap-analysis/SKILL.md) |
-| **Build** | [content-writer](build/content-writer/SKILL.md), [geo-content-optimizer](build/geo-content-optimizer/SKILL.md), [serp-markup-builder](build/serp-markup-builder/SKILL.md), [page-play-builder](build/page-play-builder/SKILL.md) |
-| **Optimize** | ⛩ [content-quality-auditor](optimize/content-quality-auditor/SKILL.md), [technical-seo-checker](optimize/technical-seo-checker/SKILL.md), [on-page-seo-auditor](optimize/on-page-seo-auditor/SKILL.md), [site-structure-optimizer](optimize/site-structure-optimizer/SKILL.md) |
-| **Monitor** | ⛩ [domain-authority-auditor](monitor/domain-authority-auditor/SKILL.md), [rank-tracker](monitor/rank-tracker/SKILL.md), [performance-monitor](monitor/performance-monitor/SKILL.md), [offsite-signal-analyzer](monitor/offsite-signal-analyzer/SKILL.md) |
+| **Research** | [keyword-research](seo-geo/research/keyword-research/SKILL.md), [competitor-analysis](seo-geo/research/competitor-analysis/SKILL.md), [serp-analysis](seo-geo/research/serp-analysis/SKILL.md), [content-gap-analysis](seo-geo/research/content-gap-analysis/SKILL.md) |
+| **Build** | [content-writer](seo-geo/build/content-writer/SKILL.md), [geo-content-optimizer](seo-geo/build/geo-content-optimizer/SKILL.md), [serp-markup-builder](seo-geo/build/serp-markup-builder/SKILL.md), [page-play-builder](seo-geo/build/page-play-builder/SKILL.md) |
+| **Optimize** | ⛩ [content-quality-auditor](seo-geo/optimize/content-quality-auditor/SKILL.md), [technical-seo-checker](seo-geo/optimize/technical-seo-checker/SKILL.md), [on-page-seo-auditor](seo-geo/optimize/on-page-seo-auditor/SKILL.md), [site-structure-optimizer](seo-geo/optimize/site-structure-optimizer/SKILL.md) |
+| **Monitor** | ⛩ [domain-authority-auditor](seo-geo/monitor/domain-authority-auditor/SKILL.md), [rank-tracker](seo-geo/monitor/rank-tracker/SKILL.md), [performance-monitor](seo-geo/monitor/performance-monitor/SKILL.md), [offsite-signal-analyzer](seo-geo/monitor/offsite-signal-analyzer/SKILL.md) |
 
 <details><summary><b>Per-skill purpose (SEO/GEO)</b></summary>
 
@@ -246,10 +246,10 @@ Four phase directories (4 skills each); the discipline's gate (⛩ content-revie
 
 | Phase | Skills |
 |-------|--------|
-| **Discover** | [audience-mapper](discover/audience-mapper/SKILL.md), [trend-spotter](discover/trend-spotter/SKILL.md), [influencer-discovery](discover/influencer-discovery/SKILL.md), [fit-scorer](discover/fit-scorer/SKILL.md) |
-| **Plan** | [competitor-tracker](plan/competitor-tracker/SKILL.md), [campaign-planner](plan/campaign-planner/SKILL.md), [brief-generator](plan/brief-generator/SKILL.md), [budget-optimizer](plan/budget-optimizer/SKILL.md) |
-| **Activate** | [outreach-manager](activate/outreach-manager/SKILL.md), ⛩ [content-reviewer](activate/content-reviewer/SKILL.md), [contract-helper](activate/contract-helper/SKILL.md), [content-amplifier](activate/content-amplifier/SKILL.md) |
-| **Measure** | [landing-optimizer](measure/landing-optimizer/SKILL.md), [performance-analyzer](measure/performance-analyzer/SKILL.md), [roi-calculator](measure/roi-calculator/SKILL.md), [report-generator](measure/report-generator/SKILL.md) |
+| **Discover** | [audience-mapper](influencer/discover/audience-mapper/SKILL.md), [trend-spotter](influencer/discover/trend-spotter/SKILL.md), [influencer-discovery](influencer/discover/influencer-discovery/SKILL.md), [fit-scorer](influencer/discover/fit-scorer/SKILL.md) |
+| **Plan** | [competitor-tracker](influencer/plan/competitor-tracker/SKILL.md), [campaign-planner](influencer/plan/campaign-planner/SKILL.md), [brief-generator](influencer/plan/brief-generator/SKILL.md), [budget-optimizer](influencer/plan/budget-optimizer/SKILL.md) |
+| **Activate** | [outreach-manager](influencer/activate/outreach-manager/SKILL.md), ⛩ [content-reviewer](influencer/activate/content-reviewer/SKILL.md), [contract-helper](influencer/activate/contract-helper/SKILL.md), [content-amplifier](influencer/activate/content-amplifier/SKILL.md) |
+| **Measure** | [landing-optimizer](influencer/measure/landing-optimizer/SKILL.md), [performance-analyzer](influencer/measure/performance-analyzer/SKILL.md), [roi-calculator](influencer/measure/roi-calculator/SKILL.md), [report-generator](influencer/measure/report-generator/SKILL.md) |
 
 <details><summary><b>Per-skill purpose (Influencer)</b></summary>
 
@@ -276,14 +276,14 @@ Four phase directories (4 skills each); the discipline's gate (⛩ content-revie
 
 ### Paid Ads — ROAS (16)
 
-Four phase directories under `paid/` (4 skills each) follow the ROAS loop; the gate (⛩ ad-account-auditor) sits in Activate. Only the gate computes the goal-weighted RQS — every other skill works one lever and hands off.
+Four phase directories under `ad/` (4 skills each) follow the ROAS loop; the gate (⛩ ad-account-auditor) sits in Activate. Only the gate computes the goal-weighted RQS — every other skill works one lever and hands off.
 
 | Phase | Skills |
 |-------|--------|
-| **Research** | [campaign-architect](paid/research/campaign-architect/SKILL.md), [audience-segment-builder](paid/research/audience-segment-builder/SKILL.md), [search-term-miner](paid/research/search-term-miner/SKILL.md), [product-feed-optimizer](paid/research/product-feed-optimizer/SKILL.md) |
-| **Orchestrate** | [ad-creative-builder](paid/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](paid/orchestrate/ad-test-designer/SKILL.md), [bid-strategy-planner](paid/orchestrate/bid-strategy-planner/SKILL.md), [landing-experience-checker](paid/orchestrate/landing-experience-checker/SKILL.md) |
-| **Activate** | ⛩ [ad-account-auditor](paid/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](paid/activate/conversion-signal-qa/SKILL.md), [placement-exclusion-manager](paid/activate/placement-exclusion-manager/SKILL.md), [conversion-value-mapper](paid/activate/conversion-value-mapper/SKILL.md) |
-| **Scale** | [paid-measurement-loop](paid/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](paid/scale/attribution-reconciler/SKILL.md), [budget-pacing-monitor](paid/scale/budget-pacing-monitor/SKILL.md), [fatigue-frequency-manager](paid/scale/fatigue-frequency-manager/SKILL.md) |
+| **Research** | [campaign-architect](ad/research/campaign-architect/SKILL.md), [audience-segment-builder](ad/research/audience-segment-builder/SKILL.md), [search-term-miner](ad/research/search-term-miner/SKILL.md), [product-feed-optimizer](ad/research/product-feed-optimizer/SKILL.md) |
+| **Orchestrate** | [ad-creative-builder](ad/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](ad/orchestrate/ad-test-designer/SKILL.md), [bid-strategy-planner](ad/orchestrate/bid-strategy-planner/SKILL.md), [landing-experience-checker](ad/orchestrate/landing-experience-checker/SKILL.md) |
+| **Activate** | ⛩ [ad-account-auditor](ad/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](ad/activate/conversion-signal-qa/SKILL.md), [placement-exclusion-manager](ad/activate/placement-exclusion-manager/SKILL.md), [conversion-value-mapper](ad/activate/conversion-value-mapper/SKILL.md) |
+| **Scale** | [paid-measurement-loop](ad/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](ad/scale/attribution-reconciler/SKILL.md), [budget-pacing-monitor](ad/scale/budget-pacing-monitor/SKILL.md), [fatigue-frequency-manager](ad/scale/fatigue-frequency-manager/SKILL.md) |
 
 <details><summary><b>Per-skill purpose (Paid Ads)</b></summary>
 
@@ -306,7 +306,7 @@ Four phase directories under `paid/` (4 skills each) follow the ROAS loop; the g
 | budget-pacing-monitor | S | *(NEW)* Track spend pace against budget over the flight, flag under/over-delivery, and recommend pacing corrections. |
 | fatigue-frequency-manager | O | *(NEW)* Watch frequency and creative-decay signals, flag fatigued ads, and schedule refresh/rotation. |
 
-**Reused cross-discipline** (counted in their home phases, not duplicated): [budget-optimizer](plan/budget-optimizer/SKILL.md) (spend + bid-pacing/learning-phase mode), [landing-optimizer](measure/landing-optimizer/SKILL.md) (post-click), [roi-calculator](measure/roi-calculator/SKILL.md) (return math), [report-generator](measure/report-generator/SKILL.md), [performance-analyzer](measure/performance-analyzer/SKILL.md).
+**Reused cross-discipline** (counted in their home phases, not duplicated): [budget-optimizer](influencer/plan/budget-optimizer/SKILL.md) (spend + bid-pacing/learning-phase mode), [landing-optimizer](influencer/measure/landing-optimizer/SKILL.md) (post-click), [roi-calculator](influencer/measure/roi-calculator/SKILL.md) (return math), [report-generator](influencer/measure/report-generator/SKILL.md), [performance-analyzer](influencer/measure/performance-analyzer/SKILL.md).
 
 </details>
 
@@ -342,7 +342,7 @@ Four phase directories under `email/` (4 skills each) follow the SEND loop; the 
 | inbox-placement-monitor | S | *(NEW)* Ongoing inbox-vs-spam placement tracking via seed lists and provider signals, with reputation-drift alerts. |
 | cold-outbound-sequencer | D | *(NEW)* Compliant B2B cold-outbound cadences — deliverability-safe ramp, personalization tokens, and reply-handling steps. |
 
-**Reused cross-discipline** (counted in their home phases, not duplicated): [audience-mapper](discover/audience-mapper/SKILL.md), [landing-optimizer](measure/landing-optimizer/SKILL.md), [roi-calculator](measure/roi-calculator/SKILL.md), [report-generator](measure/report-generator/SKILL.md), [performance-analyzer](measure/performance-analyzer/SKILL.md), [offer-claims-registry](protocol/offer-claims-registry/SKILL.md).
+**Reused cross-discipline** (counted in their home phases, not duplicated): [audience-mapper](influencer/discover/audience-mapper/SKILL.md), [landing-optimizer](influencer/measure/landing-optimizer/SKILL.md), [roi-calculator](influencer/measure/roi-calculator/SKILL.md), [report-generator](influencer/measure/report-generator/SKILL.md), [performance-analyzer](influencer/measure/performance-analyzer/SKILL.md), [offer-claims-registry](protocol/offer-claims-registry/SKILL.md).
 
 </details>
 
@@ -370,14 +370,14 @@ The shared truth & memory machinery — see [Architecture § The protocol layer]
 
 ## Commands
 
-Five commands: `/aaron-marketing:auto` routes any goal across all four disciplines, and each discipline has exactly one explicit entrypoint. Source: [commands/](commands/).
+Five commands: `/aaron-marketing:auto` routes any goal across all four disciplines, and each discipline has exactly one explicit entrypoint. Source: [commands/](commands).
 
 | Command | Use it for | Narrowing |
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | Describe any goal — infers intent and runs the smallest useful workflow | `--deep` (exhaustive / stress-test) |
 | `/aaron-marketing:seo-geo` | SEO/GEO end-to-end: research demand/competitors, create content, audit quality/tech/visibility/authority, track rankings/reports/memory | `--mode research\|create\|audit\|track` + per-mode flags (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`) |
 | `/aaron-marketing:impact` | Influencer (IMPACT): audience insight, discovery & fit, planning, outreach, amplification, ROI | `--phase discover\|plan\|activate\|measure` |
-| `/aaron-marketing:paid` | Paid ads (ROAS loop): segments, structure, creative, experiment design, the audit gate, measurement | `--phase research\|orchestrate\|activate\|scale` |
+| `/aaron-marketing:ad` | Paid ads (ROAS loop): segments, structure, creative, experiment design, the audit gate, measurement | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | Email (SEND loop): deliverability/consent, segmentation, creative, lifecycle flows, monetization, send-testing, the audit gate | `--phase setup\|engage\|nurture\|deliver` |
 
 Daily work normally starts with `/aaron-marketing:auto`; the other four are explicit discipline entrypoints, with `--mode` / `--phase` to narrow the stage.
@@ -437,9 +437,9 @@ For a full trust review, pair `content-quality-auditor` with `domain-authority-a
 ## Repository layout
 
 ```
-research/ build/ optimize/ monitor/                  # SEO/GEO (16, incl. its 2 gates)
-discover/ plan/ activate/ measure/                   # Influencer — IMPACT (16, incl. its gate)
-paid/research|orchestrate|activate|scale/            # Paid Ads — ROAS (16, incl. its gate)
+seo-geo/{research,build,optimize,monitor}/                  # SEO/GEO (16, incl. its 2 gates)
+influencer/{discover,plan,activate,measure}/                   # Influencer — IMPACT (16, incl. its gate)
+ad/research|orchestrate|activate|scale/            # Paid Ads — ROAS (16, incl. its gate)
 email/setup|engage|nurture|deliver/                  # Email — SEND (16, incl. its gate)
 protocol/                                            # Protocol layer (5) — truth registries + memory
 commands/        # 5 slash commands (auto, seo-geo, impact, paid, email)
@@ -482,7 +482,7 @@ Every change runs against a set of fail-closed guards (all in `scripts/` and `te
 ## Contributing & project docs
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — authoring rules, the contribution checklist, and the authoritative 8-file tracking list.
-- **[VERSIONS.md](VERSIONS.md)** — per-skill versions + changelog (current bundle: `12.0.0`).
+- **[VERSIONS.md](VERSIONS.md)** — per-skill versions + changelog (current bundle: `12.1.0`).
 - **[SECURITY.md](SECURITY.md)** · **[PRIVACY.md](PRIVACY.md)** · **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** — security, privacy, and community policy.
 - **[CLAUDE.md](CLAUDE.md)** / **[AGENTS.md](AGENTS.md)** — agent-facing context for this repo.
 

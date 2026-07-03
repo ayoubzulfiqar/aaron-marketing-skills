@@ -1,7 +1,7 @@
 ---
 name: email-render-builder
 description: 'Use when the user asks to "build the email HTML", "make this email responsive", "fix dark-mode rendering", or "QA the email across clients"; produces the coded HTML build — a responsive table layout, dark-mode + accessibility pass, a client-render matrix, image-block fallbacks, and a plain-text parity check. Not for writing the copy — use email-creative-builder; not for scoring the email or computing EQS — use email-quality-auditor. 邮件HTML/响应式邮件/暗色模式渲染'
-version: "12.0.0"
+version: "12.1.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
@@ -9,7 +9,7 @@ when_to_use: "Use when coding or QA-ing the HTML build of an email that copy is 
 argument-hint: "<email creative or HTML> [target clients] [mode: promo|cold|newsletter]"
 metadata:
   author: aaron-he-zhu
-  version: "12.0.0"
+  version: "12.1.0"
   discipline: email
   phase: engage
   geo-relevance: "low"
@@ -93,5 +93,5 @@ On user confirmation, save to `memory/email/email-render-builder/YYYY-MM-DD-<sub
 - **Primary**: [email-quality-auditor](../../deliver/email-quality-auditor/SKILL.md) — score the built unit's SEND dimensions, enforce S1/S2/N1/D1, and compute the goal-weighted EQS. This skill scores nothing and runs no veto.
 - **If a render fix needs the copy changed** (subject too long to render, CTA label overflows the button): [email-creative-builder](../email-creative-builder/SKILL.md) — revise the words, then return here to rebuild.
 - **If the build feeds a render/subject A/B test**: [send-experiment-designer](../../deliver/send-experiment-designer/SKILL.md) — design the test across the built variants.
-- **If image-off or dark-mode breakage traces to a broken destination page** (message-match fails post-click): [landing-optimizer](../../../measure/landing-optimizer/SKILL.md) — fix the post-click page, then return.
+- **If image-off or dark-mode breakage traces to a broken destination page** (message-match fails post-click): [landing-optimizer](../../../influencer/measure/landing-optimizer/SKILL.md) — fix the post-click page, then return.
 - Global visited-set / max-depth (`max-depth: 3`) termination contract from [skill-contract.md](../../../references/skill-contract.md) applies; if the recommended next skill was already run this session, or routing is ambiguous, stop and report options instead of auto-following. Stop when the build passes the quality bar and is auditor-ready.
