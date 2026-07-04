@@ -46,13 +46,29 @@ EMAIL = re.compile(r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b")
 EMAIL_LOCAL_ALLOW = {"user", "name", "test", "you", "noreply", "example", "email"}
 EMAIL_DOMAIN_ALLOW = ("example.com", "example.org", "example.net", "anthropic.com",
                       "your-domain.com", "yourdomain.com", "zhuhe.io")  # zhuhe.io = project public contact
+# Exact-address allowlist — the strongest anchor: the WHOLE address must match.
+# For fixture placeholders whose domains can't be domain-allowed (gmail.com /
+# outlook.com carry real mail — a domain allow would exempt real addresses) and
+# for third parties' own published public contacts.
+EMAIL_FULL_ALLOW = {
+    # connector test/docstring fixtures (tests/, scripts/connectors/resend.py,
+    # email/deliver/inbox-placement-monitor/) — provider domains are the point
+    # of seed-list examples, so they can't be rewritten to example.com
+    "me@x.dev", "a@y.com", "me@my.dom", "r@my.dom", "me@my.domain",
+    "s1@gmail.com", "s2@outlook.com", "seed1@gmail.com", "seed2@outlook.com",
+    # published public contact of agentskills.me (docs/registry-submissions.md)
+    "hi@evergreenai.cn",
+}
 # Placeholder fragments that exonerate a matched SECRET-LIKE TOKEN — applied to the matched token ONLY,
 # never the whole line (whole-line skipping would let a real key on a "placeholder"/"example" line slip).
 TOKEN_PLACEHOLDER = ("xxxx", "redacted", "placeholder", "example", "akiaiosfodnn7example", "your-token")
 
 
 def _email_allowed(email):
-    local, _, domain = email.lower().partition("@")
+    lowered = email.lower()
+    if lowered in EMAIL_FULL_ALLOW:
+        return True
+    local, _, domain = lowered.partition("@")
     return local in EMAIL_LOCAL_ALLOW or domain in EMAIL_DOMAIN_ALLOW
 
 

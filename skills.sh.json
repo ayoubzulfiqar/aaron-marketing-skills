@@ -1,0 +1,105 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "SEO/GEO (16) — research → build → optimize → monitor",
+      "description": "Search & generative-engine optimization: keyword/SERP/gap research, content drafting and GEO citation-readiness, schema & page plays, then two auditor gates — CORE-EEAT (content-quality-auditor) and CITE (domain-authority-auditor) — plus rank/performance/off-site monitoring.",
+      "skills": [
+        "keyword-research",
+        "competitor-analysis",
+        "serp-analysis",
+        "content-gap-analysis",
+        "content-writer",
+        "geo-content-optimizer",
+        "serp-markup-builder",
+        "page-play-builder",
+        "content-quality-auditor",
+        "technical-seo-checker",
+        "on-page-seo-auditor",
+        "site-structure-optimizer",
+        "domain-authority-auditor",
+        "rank-tracker",
+        "performance-monitor",
+        "offsite-signal-analyzer"
+      ]
+    },
+    {
+      "title": "Influencer marketing · IMPACT (16) — discover → plan → activate → measure",
+      "description": "Creator campaigns end to end: audience/niche mapping, trend and creator discovery with fit scoring, campaign planning/briefs/budgets, outreach and the C³ ART compliance gate (content-reviewer), contracts, amplification, and post-click/ROI measurement.",
+      "skills": [
+        "audience-mapper",
+        "trend-spotter",
+        "influencer-discovery",
+        "fit-scorer",
+        "competitor-tracker",
+        "campaign-planner",
+        "brief-generator",
+        "budget-optimizer",
+        "outreach-manager",
+        "content-reviewer",
+        "contract-helper",
+        "content-amplifier",
+        "landing-optimizer",
+        "performance-analyzer",
+        "roi-calculator",
+        "report-generator"
+      ]
+    },
+    {
+      "title": "Paid ads · ROAS (16) — research → orchestrate → activate → scale",
+      "description": "The ROAS loop: campaign architecture, audience segments, search-term mining and feed optimization; creative, tests, bids and landing checks; the RQS launch gate (ad-account-auditor) with conversion-signal QA; then measurement, attribution reconciliation, pacing and fatigue control.",
+      "skills": [
+        "campaign-architect",
+        "audience-segment-builder",
+        "search-term-miner",
+        "product-feed-optimizer",
+        "ad-creative-builder",
+        "ad-test-designer",
+        "bid-strategy-planner",
+        "landing-experience-checker",
+        "ad-account-auditor",
+        "conversion-signal-qa",
+        "placement-exclusion-manager",
+        "conversion-value-mapper",
+        "paid-measurement-loop",
+        "attribution-reconciler",
+        "budget-pacing-monitor",
+        "fatigue-frequency-manager"
+      ]
+    },
+    {
+      "title": "Email · SEND (16) — setup → engage → nurture → deliver",
+      "description": "Email programs for B2C lifecycle, B2B outbound, and newsletters: deliverability/auth pre-flight, list growth/segments/hygiene, creative and rendering, lifecycle sequences and monetization, then the EQS pre-send gate (email-quality-auditor), send experiments and inbox-placement monitoring.",
+      "skills": [
+        "deliverability-qa",
+        "list-segment-builder",
+        "list-growth-designer",
+        "list-hygiene-monitor",
+        "email-creative-builder",
+        "subject-line-lab",
+        "email-render-builder",
+        "dynamic-content-personalizer",
+        "email-sequence-designer",
+        "newsletter-monetization-planner",
+        "preference-frequency-manager",
+        "reactivation-specialist",
+        "email-quality-auditor",
+        "send-experiment-designer",
+        "inbox-placement-monitor",
+        "cold-outbound-sequencer"
+      ]
+    },
+    {
+      "title": "Protocol layer (5) — shared truth registries & memory",
+      "description": "Cross-discipline machinery the other 64 skills read from: canonical entity profiles, the creator roster, offer/claim substantiation, per-subject consent/suppression records, and the campaign memory loop. Anything below this section is a legacy pre-v12 skill name kept only for historical installs.",
+      "skills": [
+        "entity-optimizer",
+        "creator-registry",
+        "offer-claims-registry",
+        "consent-registry",
+        "memory-management"
+      ]
+    }
+  ]
+}

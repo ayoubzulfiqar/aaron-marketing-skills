@@ -49,8 +49,9 @@ if [ "$1" = "--status" ]; then
         # Extract top-level version: from SKILL.md frontmatter
         skill_ver=$(awk '/^---/{if(++n==2)exit} n && /^version:/{gsub(/version: */, ""); gsub(/["'"'"']/, ""); print; exit}' "$skill_file" | tr -d '\r')
 
-        # Extract metadata.version: (indented) from SKILL.md frontmatter
-        meta_ver=$(awk '/^---/{if(++n==2)exit} n && /^  version:/{gsub(/ *version: */, ""); gsub(/["'"'"']/, ""); print; exit}' "$skill_file" | tr -d '\r')
+        # Extract metadata "version" from the single-line JSON metadata object
+        # (metadata: {"author": "...", "version": "12.7.0", ...} — OpenClaw-parseable form)
+        meta_ver=$(sed -n 's/^metadata: .*"version": *"\([0-9][0-9.]*\)".*/\1/p' "$skill_file" | head -1 | tr -d '\r')
 
         # Determine status
         if [ -z "$skill_ver" ]; then
@@ -194,21 +195,53 @@ else
     fail "Missing required field: compatibility"
 fi
 
-# --- Required field: metadata ---
-if echo "$FRONTMATTER" | grep -qE '^metadata:'; then
-    pass "metadata block present"
-    if echo "$FRONTMATTER" | grep -qE '  author:'; then
+# --- Required field: metadata (single-line JSON object) ---
+# OpenClaw's frontmatter parser reads single-line keys only, so metadata must
+# be one strict-JSON object on the `metadata:` line — never a YAML block map.
+META_LINE=$(echo "$FRONTMATTER" | grep -E '^metadata:' | head -1)
+if [ -n "$META_LINE" ]; then
+    pass "metadata field present"
+    if echo "$META_LINE" | grep -qE '^metadata: \{.*\}$'; then
+        pass "metadata is a single-line JSON object (OpenClaw-parseable)"
+    else
+        fail "metadata must be a single-line JSON object (OpenClaw parser reads single-line keys only) — e.g. metadata: {\"author\": \"...\", \"version\": \"...\"}"
+    fi
+    if echo "$META_LINE" | grep -q '"author":'; then
         pass "metadata.author present"
     else
         warn "metadata.author not found"
     fi
-    if echo "$FRONTMATTER" | grep -qE '  version:'; then
+    if echo "$META_LINE" | grep -q '"version":'; then
         pass "metadata.version present"
     else
         warn "metadata.version not found"
     fi
+elif echo "$FRONTMATTER" | grep -qE '^  (author|version|discipline):'; then
+    fail "metadata appears to be a YAML block map — convert it to a single-line JSON object on the metadata: line (OpenClaw parser reads single-line keys only)"
 else
     fail "Missing required field: metadata"
+fi
+
+# --- Required fields: SkillHub.cn publishing frontmatter ---
+# skillhub.cn (skillhub publish) requires slug/displayName + recommends summary;
+# the repo standardizes slug = aaron-<skill-name> (globally unique on the registry).
+SKH_SLUG=$(echo "$FRONTMATTER" | grep -E '^slug:' | sed 's/slug: *//' | tr -d '"' | tr -d '\r')
+if [ -z "$SKH_SLUG" ]; then
+    fail "Missing required field: slug (SkillHub.cn publishing — expected: aaron-$(basename "$SKILL_DIR"))"
+elif [ "$SKH_SLUG" != "aaron-$(basename "$SKILL_DIR")" ]; then
+    fail "slug '$SKH_SLUG' != 'aaron-$(basename "$SKILL_DIR")' (repo slug convention: aaron-<skill-name>)"
+else
+    pass "slug follows the aaron-<skill-name> convention"
+fi
+if echo "$FRONTMATTER" | grep -qE '^displayName:'; then
+    pass "displayName present (SkillHub.cn listing name)"
+else
+    fail "Missing required field: displayName (SkillHub.cn listing name, bilingual)"
+fi
+if echo "$FRONTMATTER" | grep -qE '^summary:'; then
+    pass "summary present (SkillHub.cn listing summary)"
+else
+    fail "Missing required field: summary (SkillHub.cn listing summary, Chinese)"
 fi
 
 # --- Recommended field: when_to_use (key spelling enforced: underscores, not hyphens) ---
@@ -323,6 +356,55 @@ if [ -d "$SKILL_DIR/references" ]; then
     else
         pass "no blob/main GitHub URLs in references/"
     fi
+fi
+
+# --- YAML single-quote escaping (cross-agent portability guard) ---
+# In a single-quoted YAML scalar a literal apostrophe must be doubled ('').
+# One unescaped apostrophe makes the whole frontmatter invalid YAML and the
+# skill silently invisible to every spec-compliant host (npx skills, Codex,
+# Cursor, OpenCode, …) — found the hard way in v12.7.0 (reactivation-specialist).
+SQ_BAD=0
+while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    val=${line#*: }
+    case "$val" in
+        "'"*"'")
+            inner=${val#\'}; inner=${inner%\'}
+            if printf '%s' "$inner" | sed "s/''//g" | grep -q "'"; then
+                key=${line%%:*}
+                fail "frontmatter '$key' is single-quoted with an unescaped apostrophe — double it ('') or the YAML is invalid on spec parsers"
+                SQ_BAD=1
+            fi
+            ;;
+    esac
+done <<SQEOF
+$(echo "$FRONTMATTER" | grep -E "^[a-zA-Z_-]+: *'" || true)
+SQEOF
+if [ "$SQ_BAD" -eq 0 ]; then
+    pass "single-quoted frontmatter scalars escape apostrophes correctly"
+fi
+
+# --- Relative-link resolution (cross-agent portability guard) ---
+# Every ./ or ../ link to a .md file must resolve from the file that names it.
+# A wrong-depth path (e.g. ../../references/ where the 3-level discipline
+# layout needs ../../../) breaks the runbook Read in every install mode.
+LINK_FAIL=0
+while IFS='|' read -r src rel; do
+    [ -z "$rel" ] && continue
+    tgt="$(dirname "$src")/$rel"
+    if [ ! -e "$tgt" ]; then
+        fail "broken relative link in ${src#"$SKILL_DIR"/}: $rel"
+        LINK_FAIL=1
+    fi
+done <<LINKEOF
+$({ echo "$SKILL_FILE"; find "$SKILL_DIR/references" -name '*.md' 2>/dev/null; } | while IFS= read -r f; do
+    grep -oE '\]\(\.\.?/[^)#]*\.md|`Read \.\.?/[^`]*\.md|`\.\.?/[^`]*\.md' "$f" 2>/dev/null \
+      | sed 's/^](//; s/^`Read //; s/^`//' | sort -u \
+      | while IFS= read -r p; do printf '%s|%s\n' "$f" "$p"; done
+  done)
+LINKEOF
+if [ "$LINK_FAIL" -eq 0 ]; then
+    pass "all relative .md links resolve from their source files"
 fi
 
 # --- File type check (text only, no binaries) ---
