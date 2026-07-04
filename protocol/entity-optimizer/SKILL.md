@@ -1,18 +1,16 @@
 ---
 name: entity-optimizer
+slug: aaron-entity-optimizer
+displayName: "Entity Optimizer · 实体优化"
+summary: "实体优化/知识图谱"
 description: 'Use when the user asks to "optimize entity presence"; builds Knowledge Graph, Wikidata, sameAs, and AI recognition signals for a canonical entity identity. Not for page-level AI-citation readiness — use geo-content-optimizer. 实体优化/知识图谱'
-version: "12.5.0"
+version: "12.7.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
 when_to_use: "Use when optimizing entity presence for Knowledge Graph, Wikidata, or AI engine disambiguation. Also for brand entity canonicalization."
 argument-hint: "<entity name or brand>"
-metadata:
-  author: aaron-he-zhu
-  version: "12.5.0"
-  discipline: protocol
-  phase: protocol
-  geo-relevance: "high"
+metadata: {"author": "aaron-he-zhu", "version": "12.7.0", "discipline": "protocol", "phase": "protocol", "geo-relevance": "high", "hermes": {"tags": ["marketing", "protocol"], "category": "protocol"}, "openclaw": {"emoji": "🗂️", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 
 # Entity Optimizer

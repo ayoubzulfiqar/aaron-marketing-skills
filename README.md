@@ -3,7 +3,7 @@
 **69 skills. 5 commands. Four marketing disciplines — SEO/GEO, influencer, paid ads, email — on one operating contract.**
 
 [![GitHub Stars](https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat)](https://github.com/aaron-he-zhu/aaron-marketing-skills)
-[![Version](https://img.shields.io/badge/version-12.6.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
+[![Version](https://img.shields.io/badge/version-12.7.0-orange)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills)](https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai/download)
@@ -76,10 +76,11 @@ Use it with Claude Code, any Agent Skills-compatible host, or a plain `git clone
 | Host | Install |
 |------|---------|
 | **Claude Code** | `/plugin marketplace add aaron-he-zhu/aaron-marketing-skills` then `/plugin install aaron-marketing@aaron` |
-| **skills.sh / generic Agent Skills hosts** | `npx skills add aaron-he-zhu/aaron-marketing-skills` |
+| **Codex · Cursor · OpenCode · Antigravity · Gemini CLI · Copilot CLI · OpenClaw · Hermes · [70+ hosts](https://github.com/vercel-labs/skills#supported-agents)** | `npx skills add aaron-he-zhu/aaron-marketing-skills` |
+| **[SkillHub.cn](https://skillhub.cn) (中文社区)** | `skillhub install aaron-<skill-name>` (e.g. `aaron-keyword-research`) |
 | **Any host** | `git clone https://github.com/aaron-he-zhu/aaron-marketing-skills` |
 
-In Claude Code, `marketplace add` only registers the catalog — run `/plugin install aaron-marketing@aaron` (or pick it from `/plugin`) to actually enable the skills and commands. To pull a **single** skill on a generic host: `npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`.
+In Claude Code, `marketplace add` only registers the catalog — run `/plugin install aaron-marketing@aaron` (or pick it from `/plugin`) to actually enable the skills and commands. To pull a **single** skill on a generic host: `npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`. Browse the bundle on the [skills.sh registry](https://skills.sh/aaron-he-zhu/aaron-marketing-skills). Per-agent directories, frontmatter quirks, and what degrades outside the plugin: [docs/agent-compatibility.md](docs/agent-compatibility.md) (verified 69/69 installable, 2026-07).
 
 Installing the plugin adds **nothing** to your `/mcp` list — the MCP catalogue lives in [`docs/mcp-catalog.json`](docs/mcp-catalog.json), deliberately outside the plugin-root `.mcp.json` path that Claude Code auto-registers, so it is a copy-paste reference only (see [Connectors](#connectors--enhancement-tiers)).
 
@@ -390,6 +391,23 @@ Daily work normally starts with `/aaron-marketing:auto`; the other four are expl
 
 Skills name tools with `~~category` placeholders (`~~SEO tool`, `~~web analytics`, `~~ad platform`, `~~email platform`, …) instead of specific vendors, and every category has a **keyless Tier-1 path**. Full recipes — including the free/first-party endpoint for each category — are in [CONNECTORS.md](CONNECTORS.md).
 
+### The connector layer is a product in itself
+
+**100+ documented integration paths** across three engineered layers — and every one of them earns its place:
+
+| Layer | What you get |
+|-------|--------------|
+| **21 bundled zero-dependency connectors** | Pure Python stdlib — no `pip`, no build step. Keyless live SERP + JS-rendered scraping (Firecrawl, Tavily), an AI-answer citation probe, DNS-over-HTTPS email-auth pulls, Wikipedia attention series, GDELT news mentions, real YouTube creator metrics, IndexNow + Baidu index push, Resend ESP automation, and a git-diffable measurement ledger that turns any of them into a before/after time series. |
+| **60+ documented official/free APIs** | Every row links the vendor's **official documentation**, carries a verified-on date, and every link is HTTP-checked before it ships. Includes the paths most tool lists miss: GSC URL Inspection, CrUX History (40 weeks of field CWV), the Gmail Postmaster Tools API, Meta's Ad Library, Microsoft Clarity's Data Export API. |
+| **Vendor MCP servers** | 18 remote endpoints catalogued (never auto-registered — your `/mcp` list stays clean) plus the official self-hosted servers for Google Analytics, Search Console, **Google Ads**, and **Microsoft Clarity**. Two remote MCPs work with no key at all (Firecrawl, Tavily). |
+
+What makes them trustworthy rather than just numerous:
+
+- **Three safety classes, engineered gates** ([SECURITY.md](SECURITY.md)): hosted fetchers run a **local robots.txt pre-flight** before every delegated fetch and refuse on Disallow; anything that mutates external state (email sends, index pushes) is **dry-run by default** behind an explicit `--live` flag, with idempotency keys where the vendor supports them and no auto-retry where it doesn't.
+- **Verified, then re-verified**: endpoints are checked against primary vendor docs with dates, keyless paths are live-tested, a CI guard enforces version/tracking sync, and a pre-release live smoke catches endpoint drift (it has already caught real API changes — twice).
+- **Facts, not verdicts**: connectors report record presence, parsed tags, and raw series; the auditor gates do the judging, and skills label every number **Measured / User-provided / Estimated**.
+- **A written playbook** ([docs/connector-playbook.md](docs/connector-playbook.md)) governs every addition — qualify, verify, implement, test, wire, document, track, regress, record — so quality holds as the catalog grows.
+
 | Tier | Requires | You get |
 |------|----------|---------|
 | **Tier 1** (default) | Nothing | Paste data, or pull it from free/public sources. The full analysis framework runs either way. |
@@ -486,7 +504,7 @@ Live endpoint drift is covered separately by the **manual** [`scripts/connectors
 ## Contributing & project docs
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — authoring rules, the contribution checklist, and the authoritative 8-file tracking list.
-- **[VERSIONS.md](VERSIONS.md)** — per-skill versions + changelog (current bundle: `12.6.0`).
+- **[VERSIONS.md](VERSIONS.md)** — per-skill versions + changelog (current bundle: `12.7.0`).
 - **[SECURITY.md](SECURITY.md)** · **[PRIVACY.md](PRIVACY.md)** · **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** — security, privacy, and community policy.
 - **[CLAUDE.md](CLAUDE.md)** / **[AGENTS.md](AGENTS.md)** — agent-facing context for this repo.
 

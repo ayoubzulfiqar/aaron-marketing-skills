@@ -55,7 +55,9 @@ for f in seo-geo/*/*/SKILL.md influencer/*/*/SKILL.md ad/*/*/SKILL.md \
   skill_count=$((skill_count + 1))
   name=$(sed -n 's/^name: *//p' "$f" | head -1)
   top=$(sed -n 's/^version: *"\([0-9][0-9.]*\)".*/\1/p' "$f" | head -1)
-  meta=$(sed -n 's/^  version: *"\([0-9][0-9.]*\)".*/\1/p' "$f" | head -1)
+  # metadata is a single-line JSON object (OpenClaw parser requirement) —
+  # pull its "version" member off the metadata: line
+  meta=$(sed -n 's/^metadata: .*"version": *"\([0-9][0-9.]*\)".*/\1/p' "$f" | head -1)
   if [ -z "$name" ] || [ -z "$top" ]; then
     err "$f: missing name or top-level version"
     continue

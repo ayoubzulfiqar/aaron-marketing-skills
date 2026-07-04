@@ -82,6 +82,6 @@ The whole point is to funnel authority and clicks home, and to keep entity signa
 
 ## Related
 
-- `../../../protocol/entity-optimizer/SKILL.md` — keep site ↔ Medium ↔ GitHub entity identity consistent
+- `../../../../protocol/entity-optimizer/SKILL.md` — keep site ↔ Medium ↔ GitHub entity identity consistent
 - `../../../monitor/domain-authority-auditor/SKILL.md` — citation-trust gate (CITE)
 - `../SKILL.md` — geo-content-optimizer (the parent skill)

@@ -8,6 +8,7 @@ Guidelines for AI agents working in this repository. For full runtime context, s
 - **Repository**: https://github.com/aaron-he-zhu/aaron-marketing-skills
 - **Author**: Aaron He Zhu | **License**: Apache 2.0
 - **Specs**: [Agent Skills](https://agentskills.io/specification.md)
+- **Cross-agent compatibility**: all 69 skills install on the 70+ SKILL.md hosts served by `npx skills` (which reads the skill declarations from `.claude-plugin/plugin.json` — no mirror directory needed, never add one). Per-agent matrix + degradation rules: [docs/agent-compatibility.md](docs/agent-compatibility.md); CI enforces the discovery count. New/renamed skills must also be added to a grouping in the repo-root `skills.sh.json` (lays out the [skills.sh page](https://skills.sh/aaron-he-zhu/aaron-marketing-skills); CI-enforced coverage).
 Content-first repository: skills and commands are Markdown; Claude Code hooks use a small Bash runner; `scripts/connectors/` holds zero-dependency Python-stdlib helpers (no pip deps) — data pullers (including the keyless hosted fetchers `firecrawl.py` and `tavily.py`, which robots-pre-flight every delegated site fetch) plus one ESP-automation helper (`resend.py`, whose mutating subcommands dry-run by default and require `--live`). Primary directories: SEO/GEO `seo-geo/research/`, `seo-geo/build/`, `seo-geo/optimize/`, `seo-geo/monitor/`; protocol layer `protocol/`; influencer/IMPACT `influencer/discover/`, `influencer/plan/`, `influencer/activate/`, `influencer/measure/`; paid ads `ad/research`, `ad/orchestrate`, `ad/activate`, `ad/scale`; email `email/setup`, `email/engage`, `email/nurture`, `email/deliver`; plus `commands/`, `references/`, `scripts/connectors/`.
 
 Install instructions live in [README.md](README.md). Keep this file focused on authoring and maintenance rules.
@@ -64,8 +65,13 @@ Sixteen skills added across the 38 → 54 expansion (six SEO/GEO + four paid in 
 | `license` | License name (default: Apache-2.0) |
 | `compatibility` | Platform list |
 | `allowed-tools` | Pre-approved tools (e.g., `WebFetch`) |
-| `metadata.author/version/geo-relevance/tags/triggers` | Discovery and categorization. `metadata.version` must match top-level `version`. |
-| `metadata.discipline` + `metadata.phase` | On every skill (69/69): `discipline` = seo-geo/influencer/ad/email/protocol; `phase` = lifecycle phase. Uniform routing/clustering tags. |
+| `metadata` | **Single-line strict-JSON object** — OpenClaw's parser reads single-line keys only; the validator fails a YAML block map. `metadata.version` must match top-level `version`. |
+| `metadata.author/geo-relevance` | Discovery and categorization. |
+| `metadata.discipline` + `metadata.phase` | On every skill (69/69): `discipline` = seo-geo/influencer/paid/email/protocol; `phase` = lifecycle phase. Uniform routing/clustering tags. |
+| `metadata.hermes` | Hermes Agent extension: `{"tags": ["marketing", <discipline>, <phase>], "category": <discipline>}` for `hermes skills browse` filtering. |
+| `metadata.openclaw` | OpenClaw extension: `{"emoji": <discipline emoji>, "homepage": <repo URL>}` for the macOS UI. |
+| `slug` | SkillHub.cn publishing identity — must be `aaron-<skill-name>` (validator-enforced). |
+| `displayName` + `summary` | SkillHub.cn listing card: bilingual display name + Chinese one-liner. |
 | `when_to_use` | Trigger scenarios for auto-invocation (underscores, not hyphens) |
 | `argument-hint` | Argument format hint in command picker |
 

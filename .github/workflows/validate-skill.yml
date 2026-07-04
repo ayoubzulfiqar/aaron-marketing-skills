@@ -105,12 +105,42 @@ jobs:
       - name: Version-sync guard (8 tracking files)
         run: bash scripts/check-versions.sh
 
+      - name: Cross-agent discovery guard (npx skills)
+        run: |
+          set -euo pipefail
+          # End-to-end guard for the 70+ SKILL.md hosts served by `npx skills`
+          # (see docs/agent-compatibility.md): the installer must discover every
+          # skill declared in plugin.json. Catches invalid frontmatter YAML and
+          # manifest drift in one shot — a skill the installer cannot see is a
+          # skill no non-Claude host can install.
+          declared=$(python3 -c "import json; print(len(json.load(open('.claude-plugin/plugin.json'))['skills']))")
+          found=$(npx -y skills add . --list 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -oE 'Found [0-9]+ skill' | grep -oE '[0-9]+' | head -1 || true)
+          echo "declared=$declared found=${found:-none}"
+          [ "${found:-0}" = "$declared" ]
+
       - name: Validate JSON / shell manifests
         run: |
           set -euo pipefail
-          for f in .claude-plugin/plugin.json marketplace.json .claude-plugin/marketplace.json docs/mcp-catalog.json; do
+          for f in .claude-plugin/plugin.json marketplace.json .claude-plugin/marketplace.json docs/mcp-catalog.json skills.sh.json; do
             python3 -c "import json,sys; json.load(open('$f')); print('ok: $f')"
           done
+          # skills.sh.json (registry page groupings) must cover exactly the
+          # declared skill set — a skill missing from every grouping renders
+          # ungrouped at the bottom of https://skills.sh/aaron-he-zhu/aaron-marketing-skills
+          python3 - <<'PYEOF'
+          import json
+          cfg = json.load(open('skills.sh.json'))
+          declared = {p.split('/')[-1] for p in json.load(open('.claude-plugin/plugin.json'))['skills']}
+          grouped_list = [s for g in cfg['groupings'] for s in g['skills']]
+          grouped = set(grouped_list)
+          assert len(cfg['groupings']) <= 50
+          for g in cfg['groupings']:
+              assert 1 <= len(g['title']) <= 120 and len(g.get('description', '')) <= 500
+              assert 1 <= len(g['skills']) <= 500
+          assert len(grouped_list) == len(grouped), f"duplicate slugs: {sorted(s for s in grouped if grouped_list.count(s) > 1)}"
+          assert grouped == declared, f"missing: {sorted(declared - grouped)} unknown: {sorted(grouped - declared)}"
+          print(f"ok: skills.sh.json groupings cover {len(grouped)}/{len(declared)} declared skills")
+          PYEOF
           # the two marketplace.json files must stay byte-identical mirrors
           diff -q marketplace.json .claude-plugin/marketplace.json
           # hook script must parse
