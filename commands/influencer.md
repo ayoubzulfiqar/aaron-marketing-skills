@@ -1,15 +1,15 @@
 ---
-description: "Run an influencer (IMPACT) workflow: audience & creator discovery, campaign planning, briefs, outreach, amplification, and ROI measurement. Not sure? Use /aaron-marketing:auto."
+description: "Run an influencer-marketing workflow: audience & creator discovery, campaign planning, briefs, outreach, amplification, and ROI measurement. Not sure? Use /aaron-marketing:auto."
 argument-hint: "<goal-or-brand> [--phase discover|plan|activate|measure]"
 ---
 
-# Impact Command
+# Influencer Command
 
-Run the influencer-marketing (IMPACT) lifecycle: understand the audience, find and score creators, plan and brief the campaign, run outreach, amplify and convert, then track ROI. Skills score on the [C³ framework](../references/c3-benchmark.md).
+Run the influencer-marketing lifecycle: understand the audience, find and score creators, plan and brief the campaign, run outreach, amplify and convert, then track ROI. Skills score on the [C³ framework](../references/c3-benchmark.md).
 
 ## Route
 
-Infer the IMPACT phase from the goal (or honor `--phase`) and route to the matching skill:
+Infer the phase from the goal (or honor `--phase`) and route to the matching skill:
 
 - **Discover** — audience-mapper (audience/niche modes), trend-spotter, influencer-discovery, fit-scorer (C³ ACE); creator-registry dedupes candidates against the roster
 - **Plan** — competitor-tracker, campaign-planner, brief-generator, budget-optimizer

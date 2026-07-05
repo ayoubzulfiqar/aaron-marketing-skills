@@ -1,8 +1,8 @@
 # Aaron Marketing Skills — Claude Code Context
 
-This plugin provides **69 skills and 5 commands** across four marketing disciplines — SEO/GEO, influencer marketing (IMPACT), Paid Ads (ROAS), and Email Marketing (SEND) — plus a shared protocol layer. All 69 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `13.0.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
+This plugin provides **69 skills and 5 commands** across four marketing disciplines — SEO/GEO, influencer marketing, Paid Ads (ROAS), and Email Marketing (SEND) — plus a shared protocol layer. All 69 skills follow one shared contract: trigger, quick start, skill contract, handoff summary, and next best skill. Skills are auto-loaded by context; commands are invoked with `/aaron-marketing:`. Current bundle version: `13.0.0` (see [VERSIONS.md](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md)).
 
-> Umbrella repo, renamed from `seo-geo-claude-skills` (stars/forks/issues/history carried over by the GitHub rename). The SEO/GEO-only product still lives, unchanged, at the original [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) URL as a standalone repo.
+> Umbrella repo, renamed from `seo-geo-claude-skills` (stars/forks/issues/history carried over by the GitHub rename). This repo is the **SSOT for the whole repo family** — 5 benchmark repos (CORE-EEAT/CITE/C³/ROAS/SEND) are published-standard mirrors of `references/`, and 4 discipline signpost repos point installs here: [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) and [influencer-marketing-agent-skills](https://github.com/aaron-he-zhu/influencer-marketing-agent-skills) (former standalones, final lines preserved at tags `v9.9.12` / `standalone-final`) plus paid-ads-agent-skills and email-marketing-agent-skills. Registry, tiers, and sync policy: [docs/repo-family.md](docs/repo-family.md) — release-time sync via `scripts/sync-family.sh` (owner-run, dry-run default), weekly read-only drift sentinel `family-drift.yml`. **No family repo is created or synced outside that registry.**
 
 > Cross-agent: beyond the Claude Code plugin, all 69 skills install standalone on the 70+ SKILL.md hosts served by `npx skills` (Codex, Cursor, OpenCode, Antigravity, Gemini CLI, Copilot CLI, OpenClaw, Hermes, …) — the installer reads the skill declarations from `.claude-plugin/plugin.json`, so **no mirror skills directory may be added to this repo**. Per-agent matrix, frontmatter portability rules (YAML single-quote escaping!), and standalone degradation: [docs/agent-compatibility.md](docs/agent-compatibility.md). CI's discovery-count guard asserts all declared skills stay installer-visible. The bundle's [skills.sh registry page](https://skills.sh/aaron-he-zhu/aaron-marketing-skills) is laid out by the repo-root `skills.sh.json` groupings — every new/renamed skill must be added to a grouping (CI-enforced). OpenClaw's ClawHub registry is publish-based: `scripts/publish-clawhub.sh` (owner-run, MIT-0 relicensing acknowledgement required, never CI-automated); Hermes installs via its skills.sh source (`hermes skills install skills-sh/aaron-he-zhu/aaron-marketing-skills/<skill>`). SkillHub.cn (中文社区) is likewise publish-based via `scripts/publish-skillhub.sh` — its frontmatter contract (`slug: aaron-<name>` + `displayName` + `summary`) lives in every SKILL.md and is validator-enforced; the API key stays in `$SKILLHUB_KEY`, never in the repo.
 
@@ -10,7 +10,7 @@ This plugin provides **69 skills and 5 commands** across four marketing discipli
 
 The four disciplines share one **meta-lifecycle** spine (an approximate bridge — each adapts the granularity to its own workflow, so phase *counts* and exact semantics differ by design):
 
-| Meta-stage | SEO/GEO | Influencer (IMPACT) | Paid (ROAS) | Email (SEND) |
+| Meta-stage | SEO/GEO | Influencer | Paid (ROAS) | Email (SEND) |
 |------------|---------|---------------------|-------------|--------------|
 | **Understand** | research | discover | Research | Setup |
 | **Plan / create** | build | plan | Orchestrate | Engage |
@@ -18,7 +18,7 @@ The four disciplines share one **meta-lifecycle** spine (an approximate bridge �
 | **Measure** | monitor | measure | Scale | Deliver |
 | **Cross-cutting** | the **protocol layer** (entity/creator/claims/consent truth registries · memory) serves all four; the 5 auditor-class gates live in their disciplines | | | |
 
-Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope. All four disciplines now live under a discipline folder — SEO/GEO under `seo-geo/<phase>/` (research/build/optimize/monitor), influencer under `influencer/<phase>/` (discover/plan/activate/measure), paid under `ad/<phase>/` (research/orchestrate/activate/scale), and email under `email/<phase>/` (setup/engage/nurture/deliver).
+Notes: "Activate" means creator outreach for influencer but account-gating for paid ads — same word, discipline-specific scope. All four disciplines now live under a discipline folder — SEO/GEO under `seo-geo/<phase>/` (research/build/optimize/monitor), influencer under `influencer/<phase>/` (discover/plan/activate/measure), paid under `ad/<phase>/` (research/orchestrate/activate/scale), and email under `email/<phase>/` (setup/engage/nurture/deliver).
 
 **SEO/GEO (16):**
 
@@ -35,7 +35,7 @@ Notes: "Activate" means creator outreach in IMPACT but account-gating in ROAS �
 |-------|--------|
 | **Protocol** | `entity-optimizer`, `creator-registry`, `offer-claims-registry`, `consent-registry`, `memory-management` |
 
-**Influencer — IMPACT (16):** phases collapse 6 → 4 — the old insight + map fold into **discover**, activate + convert fold into **activate**, and track becomes **measure**.
+**Influencer (16):** phases collapse 6 → 4 — the old insight + map fold into **discover**, activate + convert fold into **activate**, and track becomes **measure**.
 
 | Phase | Skills |
 |-------|--------|
@@ -75,7 +75,7 @@ Reused cross-discipline (counted in their home phases, not duplicated): `audienc
 ```
 /aaron-marketing:auto      — Infer marketing intent across all disciplines and run the smallest useful workflow (add --deep for exhaustive/stress-test)
 /aaron-marketing:seo-geo   — SEO/GEO end-to-end (--mode research|create|audit|track; per-mode flags preserved: --brief/--series/--refresh/--publish/--meta/--schema/--type, --full/--tech/--visibility/--authority, --alert/--report/--remember/--period, --competitors/--map)
-/aaron-marketing:impact    — Influencer (IMPACT): discover / plan / activate / measure (--phase to force a stage)
+/aaron-marketing:influencer    — Influencer: discover / plan / activate / measure (--phase to force a stage)
 /aaron-marketing:ad      — Paid ads (ROAS loop): research / orchestrate / activate / scale (--phase to force a stage)
 /aaron-marketing:email     — Email (SEND loop): setup / engage / nurture / deliver (--phase to force a stage)
 ```

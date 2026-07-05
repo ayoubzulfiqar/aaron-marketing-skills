@@ -136,7 +136,7 @@ The fastest way to keep a skill zero-dependency is to feed it data from a free, 
 | Communication | `~~team chat` | all | Slack, Teams, Discord | — | manual paste |
 | Reporting | `~~reporting` | all | Looker Studio, Tableau, Power BI | — | Markdown report |
 
-### Influencer / IMPACT categories
+### Influencer categories
 
 The influencer-marketing skills use these additional placeholders (plus `~~CRM`, `~~content platform`/`~~CMS`, `~~team chat`, and `~~reporting` shared with the table above). Every one works at Tier 1 — paste the data manually; the right-hand column is the keyless / own-data path. Categories marked Discipline=**both** are also used by the **paid** (Paid Ads) discipline — notably `~~ad platform`, `~~web analytics`, `~~ecommerce`, which paid scores from **own-account manual export** (keyed ad-platform APIs are opt-in Tier-2/3 MCP, never required).
 

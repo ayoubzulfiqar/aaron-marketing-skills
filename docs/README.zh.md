@@ -25,14 +25,14 @@
 | 层 | 技能 | 生命周期（阶段目录） | 框架 → 门 | 入口命令 |
 |----|------|----------------------|-----------|----------|
 | **SEO/GEO** | 16 | research → build → optimize → monitor | [CORE-EEAT](../references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](../references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
-| **红人（IMPACT）** | 16 | discover → plan → activate → measure | [C³](../references/c3-benchmark.md) → `content-reviewer`（ART）；`fit-scorer` 打 ACE 分 | `/aaron-marketing:impact` |
+| **红人** | 16 | discover → plan → activate → measure | [C³](../references/c3-benchmark.md) → `content-reviewer`（ART）；`fit-scorer` 打 ACE 分 | `/aaron-marketing:influencer` |
 | **付费广告（ROAS）** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor`（RQS） | `/aaron-marketing:ad` |
 | **邮件营销（SEND）** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor`（EQS） | `/aaron-marketing:email` |
 | **协议层** | 5 | ——（阶段流程之外的共享机件） | 4 个真相注册表（实体 · 创作者 · offer/声明 · 同意）+ HOT/WARM/COLD 记忆 | —— |
 
 `/aaron-marketing:auto` 把任意自然语言目标路由到全库。全部为**纯 Markdown** —— 唯一的代码是一个 Bash hook runner、一个 Bash 校验器、以及零依赖的 Python 标准库数据助手（无 `pip`、无构建步骤）。**每个技能都能在 Tier 1 仅凭你粘贴的数据运行**；连接器只是自动化取数。
 
-> SEO/GEO 部分也作为独立仓库不变地存在于 [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills)，供只做 SEO/GEO 的用户使用。
+> 合并前的两个独立仓库现均为**纯路标仓库**——[seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills)（最终 20 技能版本线保留于 tag `v9.9.12`）与 [influencer-marketing-agent-skills](https://github.com/aaron-he-zhu/influencer-marketing-agent-skills)（最终 IMPACT 版本线保留于 tag `standalone-final`），安装一律指向本仓库。兄弟仓库策略见 [docs/repo-family.md](repo-family.md)。
 
 ---
 
@@ -49,7 +49,7 @@
   - [记忆与自动化](#记忆与自动化)
 - [技能目录](#技能目录)
   - [SEO/GEO（16）](#seogeo16)
-  - [红人 — IMPACT（16）](#红人--impact16)
+  - [红人（16）](#红人16)
   - [付费广告 — ROAS（16）](#付费广告--roas16)
   - [邮件营销 — SEND（16）](#邮件营销--send16)
   - [协议层（5）](#协议层5)
@@ -143,14 +143,14 @@
 
 四个学科共享一条元生命周期主线；各自按工作流调整粒度（阶段*数量*不同是有意为之）：
 
-| 元阶段 | SEO/GEO | 红人（IMPACT） | 付费（ROAS） | 邮件（SEND） |
+| 元阶段 | SEO/GEO | 红人 | 付费（ROAS） | 邮件（SEND） |
 |--------|---------|----------------|--------------|--------------|
 | **理解** | research | discover | research | setup |
 | **规划 / 创作** | build | plan | orchestrate | engage |
 | **激活 / 优化** | optimize | activate | activate | nurture |
 | **度量** | monitor | measure | scale | deliver |
 
-四个学科都用阶段**目录**（`seo-geo/research/`…、`influencer/discover/`…、`ad/research/`…、`email/setup/`…）。注意 "activate" 在 IMPACT 里指创作者外联、在 ROAS 里指账户门控——同词不同域。
+四个学科都用阶段**目录**（`seo-geo/research/`…、`influencer/discover/`…、`ad/research/`…、`email/setup/`…）。注意 "activate" 在红人里指创作者外联、在付费里指账户门控——同词不同域。
 
 ### 质量体系：五框架、五门
 
@@ -251,7 +251,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 </details>
 
-### 红人 — IMPACT（16）
+### 红人（16）
 
 四个阶段目录（原 6 阶段 insight+map→discover、activate+convert→activate、track→measure）；本学科的门（⛩ content-reviewer）位于 Activate。
 
@@ -387,7 +387,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 |------|------|------|
 | `/aaron-marketing:auto` | 描述任意目标——推断意图并执行最小够用的工作流 | `--deep`（穷尽/压测） |
 | `/aaron-marketing:seo-geo` | SEO/GEO 端到端：研究需求/竞品、创作内容、审计质量/技术/可见性/权威、追踪排名/报告/记忆 | `--mode research\|create\|audit\|track` + 各模式子参数（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`） |
-| `/aaron-marketing:impact` | 红人（IMPACT）：受众洞察、发现与适配、规划、外联、放大、ROI | `--phase discover\|plan\|activate\|measure` |
+| `/aaron-marketing:influencer` | 红人：受众洞察、发现与适配、规划、外联、放大、ROI | `--phase discover\|plan\|activate\|measure` |
 | `/aaron-marketing:ad` | 付费广告（ROAS 循环）：分群、结构、创意、实验设计、审计门、衡量 | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | 邮件营销（SEND 循环）：送达/同意、分群、创意、生命周期流程、变现、发送测试、审计门 | `--phase setup\|engage\|nurture\|deliver` |
 
@@ -440,7 +440,7 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 3. **优化** — `content-quality-auditor`（⛩ 发布门） → `on-page-seo-auditor` → `technical-seo-checker` → `site-structure-optimizer`
 4. **监控** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`；信任评审用 `domain-authority-auditor`（⛩）
 
-**红人（IMPACT）**
+**红人**
 1. **发现** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（C³ ACE）
 2. **规划** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
 3. **启动** — `outreach-manager` → `content-reviewer`（⛩ ART 门） → `contract-helper` → `content-amplifier`
@@ -466,11 +466,11 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 ```
 seo-geo/{research,build,optimize,monitor}/                  # SEO/GEO(16，含其 2 个门)
-influencer/{discover,plan,activate,measure}/                   # 红人 — IMPACT(16，含其门)
+influencer/{discover,plan,activate,measure}/                   # 红人(16，含其门)
 ad/research|orchestrate|activate|scale/            # 付费广告 — ROAS(16，含其门)
 email/setup|engage|nurture|deliver/                  # 邮件营销 — SEND(16，含其门)
 protocol/                                            # 协议层(5) — 真相注册表 + 记忆
-commands/        # 5 个斜杠命令(auto、seo-geo、impact、paid、email)
+commands/        # 5 个斜杠命令(auto、seo-geo、influencer、ad、email)
 references/      # 共享契约、状态模型、五套基准、auditor runbook、平台资料包
 evals/           # 各技能结构化 eval 用例 + structure-manifest.json
 hooks/           # hooks.json + claude-hook.sh(唯一运行逻辑)

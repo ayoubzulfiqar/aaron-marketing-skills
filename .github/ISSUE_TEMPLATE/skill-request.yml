@@ -1,5 +1,5 @@
 name: Skill Request
-description: Suggest a new skill for Aaron Marketing Skills (SEO/GEO, influencer/IMPACT, or paid ads/ROAS)
+description: Suggest a new skill for Aaron Marketing Skills (SEO/GEO, influencer, or paid ads/ROAS)
 title: "[Skill Request] "
 labels: ["skill-request"]
 body:
@@ -22,16 +22,16 @@ body:
         - SEO/GEO — Build (SEO writing, GEO optimization, meta tags, schema)
         - SEO/GEO — Optimize (on-page audit, technical SEO, linking, content quality)
         - SEO/GEO — Monitor (rankings, backlinks, performance, domain authority)
-        - IMPACT — Discover (audience, niche, trends, influencer discovery, fit scoring)
-        - IMPACT — Plan (competitor tracking, campaign, brief, budget)
-        - IMPACT — Activate (outreach, content review, contracts, amplification)
-        - IMPACT — Measure (landing pages, performance, ROI, reporting)
+        - Influencer — Discover (audience, niche, trends, influencer discovery, fit scoring)
+        - Influencer — Plan (competitor tracking, campaign, brief, budget)
+        - Influencer — Activate (outreach, content review, contracts, amplification)
+        - Influencer — Measure (landing pages, performance, ROI, reporting)
         - Paid ROAS — Research (campaign structure, audience segments)
         - Paid ROAS — Orchestrate (ad creative, test design)
         - Paid ROAS — Activate (account gate, conversion-signal QA)
         - Paid ROAS — Scale (measurement loop, attribution)
         - Protocol (truth registries — entity/creator/offer-claims — and memory)
-        - Cross-discipline (spans SEO/GEO, IMPACT, and paid)
+        - Cross-discipline (spans SEO/GEO, influencer, and paid)
     validations:
       required: true
 
