@@ -152,14 +152,23 @@ def write_badges(dirpath, clawhub, skillhub, skillssh):
     ]
     for fname, label, value, color in specs:
         path = dirpath / fname
+        # Preserve the committed logoSvg (platform icon) across refreshes — it
+        # lives only in the JSON, not hardcoded here.
+        prior = {}
+        if path.exists():
+            try:
+                prior = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                prior = {}
         if not value:  # 0 or None → keep prior committed value
-            if path.exists():
+            if prior:
                 print(f"[badge {fname}: fetch was empty, kept existing]", file=sys.stderr)
                 continue
             value = 0
-        path.write_text(json.dumps({
-            "schemaVersion": 1, "label": label, "message": _human(value), "color": color,
-        }, ensure_ascii=False) + "\n", encoding="utf-8")
+        obj = {"schemaVersion": 1, "label": label, "message": _human(value), "color": color}
+        if prior.get("logoSvg"):
+            obj["logoSvg"] = prior["logoSvg"]
+        path.write_text(json.dumps(obj, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"[badge {fname}: {_human(value)}]", file=sys.stderr)
 
 
