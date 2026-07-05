@@ -40,7 +40,7 @@ Optional sections such as `What This Skill Does`, `Example`, `Tips for Success`,
 | `name` | kebab-case | Yes | Skill identifier, must match directory |
 | `description` | String ≤1024 chars | Yes | UI display + vector search discovery |
 | `version` | Semver | Yes | Skill version tracking |
-| `metadata.discipline` | `seo-geo` / `influencer` / `paid` / `protocol` | Recommended | Uniform discipline tag on every skill — enables clustering / routing / discovery |
+| `metadata.discipline` | `seo-geo` / `influencer` / `ad` / `email` / `protocol` | Recommended | Uniform discipline tag on every skill — enables clustering / routing / discovery |
 | `metadata.phase` | phase slug | Recommended | Lifecycle phase within the discipline (see [CLAUDE.md § Skills by Phase](../CLAUDE.md) meta-lifecycle table) |
 | `when_to_use` | String (underscores) | Recommended | Detailed trigger scenarios for auto-invocation |
 | `argument-hint` | String | Recommended | Shows argument format in command picker |
@@ -207,7 +207,7 @@ The 5 shared-machinery skills under `protocol/` (4 truth registries + memory). T
 - Writes: truth records and memory structure
 - Promotes: the canonical state other skills should trust
 
-### Influencer categories (IMPACT discipline)
+### Influencer categories
 
 The 16 influencer skills span four phases (discover / plan / activate / measure) and score on the [C³ framework](c3-benchmark.md) (Creator/Content/Campaign on ACE/ART/ROI). They write to `memory/influencer/<skill>/`.
 
@@ -328,7 +328,7 @@ These norms apply to all skills when their output incorporates data from multipl
 | Optimize (4 skills) | `memory/audits/<skill>/` † | per-skill audit summaries, veto items, fix priorities |
 | Monitor (4 skills) | `memory/monitoring/` † | rank deltas, alert history, backlink changes |
 | Protocol layer (5 skills) | per-role paths | see protocol-layer definitions (incl. `consent-registry` → `memory/consent/`) |
-| Influencer / IMPACT (16 skills) | `memory/influencer/<skill>/` (working state) + `memory/audits/influencer/` (content-reviewer's gated C³ ART verdicts) | audience profiles, creator fit scores, campaign plans, briefs, outreach, content reviews, ROI/CVI calculations, reports |
+| Influencer (16 skills) | `memory/influencer/<skill>/` (working state) + `memory/audits/influencer/` (content-reviewer's gated C³ ART verdicts) | audience profiles, creator fit scores, campaign plans, briefs, outreach, content reviews, ROI/CVI calculations, reports |
 | Paid Ads / ROAS (16 skills) | `memory/ad/<skill>/` (working state) + `memory/audits/ad/` (ad-account-auditor's gated RQS verdicts) | account/campaign structures, audience segments, ad-creative scores, experiment designs, account-audit gates, conversion-signal QA, measurement-loop results, attribution reconciliations |
 | Email / SEND (16 skills) | `memory/email/<skill>/` (working state) + `memory/audits/email/` (email-quality-auditor's gated EQS verdicts); consent/suppression facts in `memory/consent/` (consent-registry SSOT) | deliverability pre-flights, list-growth plans, segment maps + suppression, email creative, lifecycle-flow designs, newsletter monetization models, send-test designs, EQS gate verdicts |
 | **Auditor gate aggregate (v7.1.0+)** | `memory/audits/YYYY-MM.md` | **owned by `memory-management`**; monthly archive of auditor-class gate handoffs in the structured format defined in [memory-management SKILL.md §Writes](../protocol/memory-management/SKILL.md); consumed by the Runbook §5 cross-version rule |

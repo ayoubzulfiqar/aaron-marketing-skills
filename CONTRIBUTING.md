@@ -17,10 +17,10 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 | Optimize | `seo-geo/optimize/` | Improves existing content or site health (SEO/GEO) |
 | Monitor | `seo-geo/monitor/` | Tracks performance over time (SEO/GEO) |
 | Protocol | `protocol/` | Cross-cutting layer (truth registries: entity/creator/claims/consent + memory) — shared across disciplines |
-| Discover | `influencer/discover/` | Audience/niche mapping + influencer discovery & fit (influencer/IMPACT) |
-| Plan | `influencer/plan/` | Competitor tracking, campaigns, briefs, budgets (influencer/IMPACT) |
-| Activate | `influencer/activate/` | Outreach, content review (C³ ART gate), contracts, amplification (influencer/IMPACT) |
-| Measure | `influencer/measure/` | Post-click, performance, ROI, reports (influencer/IMPACT) |
+| Discover | `influencer/discover/` | Audience/niche mapping + influencer discovery & fit (influencer) |
+| Plan | `influencer/plan/` | Competitor tracking, campaigns, briefs, budgets (influencer) |
+| Activate | `influencer/activate/` | Outreach, content review (C³ ART gate), contracts, amplification (influencer) |
+| Measure | `influencer/measure/` | Post-click, performance, ROI, reports (influencer) |
 | Paid Ads | `ad/<phase>/` | Builds, audits, and scales paid-ad campaigns (ROAS loop: research/orchestrate/activate/scale) |
 | Email | `email/<phase>/` | Grows, sends, and audits email programs (SEND loop: setup/engage/nurture/deliver) |
 
@@ -93,6 +93,8 @@ After adding or updating a skill, keep these **8 tracking files** in sync. **Thi
 For release bumps, also sync README badges and localized README badges.
 
 **Adding or renaming a skill?** Also add its slug to a grouping in the repo-root `skills.sh.json` — the [skills.sh registry page](https://skills.sh/aaron-he-zhu/aaron-marketing-skills) renders those sections, and CI fails when the groupings don't cover exactly the plugin.json skill set (an ungrouped skill would render below the legacy names at the bottom of the page).
+
+**Cutting a release?** Also sync the downstream repo family: `bash scripts/sync-family.sh` (dry-run drift report), then `bash scripts/sync-family.sh --live` to push the live mirrors. Registry, tiers, and banner templates: [docs/repo-family.md](docs/repo-family.md). Between releases, the weekly `family-drift.yml` sentinel fails red if a live mirror drifts.
 
 **CI enforces this list**: `scripts/check-versions.sh` fails the build when the bundle version drifts across plugin.json / the marketplace mirrors / the README badges / CLAUDE.md / VERSIONS.md, or when any SKILL.md version disagrees with its VERSIONS.md row — so a missed file surfaces in the PR, not in a user's session. Run it locally before pushing: `bash scripts/check-versions.sh`.
 

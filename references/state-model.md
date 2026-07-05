@@ -234,7 +234,7 @@ Store:
 
 ### `memory/influencer/`
 
-Per-skill subfolders, one per influencer-marketing (IMPACT) skill: `memory/influencer/<skill>/` (e.g. `audience-mapper/`, `fit-scorer/`, `roi-calculator/`). Scored on the [C³ framework](c3-benchmark.md).
+Per-skill subfolders, one per influencer-marketing skill: `memory/influencer/<skill>/` (e.g. `audience-mapper/`, `fit-scorer/`, `roi-calculator/`). Scored on the [C³ framework](c3-benchmark.md).
 
 Store:
 

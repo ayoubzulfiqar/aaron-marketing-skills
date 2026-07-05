@@ -25,14 +25,14 @@ A library of Claude Skills and slash commands that turns a chat agent into a mar
 | Layer | Skills | Lifecycle (phase directories) | Framework → gate | Entrypoint |
 |-------|--------|-------------------------------|------------------|------------|
 | **SEO/GEO** | 16 | research → build → optimize → monitor | [CORE-EEAT](references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
-| **Influencer (IMPACT)** | 16 | discover → plan → activate → measure | [C³](references/c3-benchmark.md) → `content-reviewer` (ART); `fit-scorer` scores ACE | `/aaron-marketing:impact` |
-| **Paid ads (ROAS)** | 16 | research → orchestrate → activate → scale | [ROAS](references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:ad` |
-| **Email (SEND)** | 16 | setup → engage → nurture → deliver | [SEND](references/send-benchmark.md) → `email-quality-auditor` (EQS) | `/aaron-marketing:email` |
+| **Influencer** | 16 | discover → plan → activate → measure | [C³](references/c3-benchmark.md) → `content-reviewer` (ART); `fit-scorer` scores ACE | `/aaron-marketing:influencer` |
+| **Paid ads** | 16 | research → orchestrate → activate → scale | [ROAS](references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:ad` |
+| **Email** | 16 | setup → engage → nurture → deliver | [SEND](references/send-benchmark.md) → `email-quality-auditor` (EQS) | `/aaron-marketing:email` |
 | **Protocol layer** | 5 | — (shared machinery, outside the phase flows) | 4 truth registries (entity · creator · offer/claims · consent) + HOT/WARM/COLD memory | — |
 
 `/aaron-marketing:auto` routes any natural-language goal across all of it. Everything is **plain Markdown** — the only code is a Bash hook runner, a Bash validator, and zero-dependency Python-stdlib data helpers (no `pip`, no build step). **Every skill runs at Tier 1 with nothing but data you paste in**; connectors only automate retrieval.
 
-> The SEO/GEO half also ships on its own, unchanged, at [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) for users who only want SEO/GEO work.
+> The pre-merge standalone repos are now **signpost repos** pointing here — [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) (final 20-skill line preserved at tag `v9.9.12`) and [influencer-marketing-agent-skills](https://github.com/aaron-he-zhu/influencer-marketing-agent-skills) (final IMPACT line at tag `standalone-final`). Sibling-repo policy: [docs/repo-family.md](docs/repo-family.md).
 
 ---
 
@@ -49,7 +49,7 @@ A library of Claude Skills and slash commands that turns a chat agent into a mar
   - [Memory & automation hooks](#memory--automation-hooks)
 - [Skill catalog](#skill-catalog)
   - [SEO/GEO (16)](#seogeo-16)
-  - [Influencer — IMPACT (16)](#influencer--impact-16)
+  - [Influencer (16)](#influencer-16)
   - [Paid Ads — ROAS (16)](#paid-ads--roas-16)
   - [Email — SEND (16)](#email--send-16)
   - [Protocol layer (5)](#protocol-layer-5)
@@ -143,14 +143,14 @@ Every skill also self-declares `metadata.discipline` (seo-geo / influencer / pai
 
 The four disciplines share one meta-lifecycle spine; each adapts the granularity to its own workflow (phase *counts* differ by design):
 
-| Meta-stage | SEO/GEO | Influencer (IMPACT) | Paid (ROAS) | Email (SEND) |
+| Meta-stage | SEO/GEO | Influencer | Paid (ROAS) | Email (SEND) |
 |------------|---------|---------------------|-------------|--------------|
 | **Understand** | research | discover | research | setup |
 | **Plan / create** | build | plan | orchestrate | engage |
 | **Activate / optimize** | optimize | activate | activate | nurture |
 | **Measure** | monitor | measure | scale | deliver |
 
-All four use phase **directories** (`seo-geo/research/`…, `influencer/discover/`…, `ad/research/`…, `email/setup/`…). Note "activate" means creator outreach in IMPACT but account-gating in ROAS — same word, discipline-specific scope.
+All four use phase **directories** (`seo-geo/research/`…, `influencer/discover/`…, `ad/research/`…, `email/setup/`…). Note "activate" means creator outreach for influencer but account-gating for paid ads — same word, discipline-specific scope.
 
 ### Quality system: five frameworks, five gates
 
@@ -251,7 +251,7 @@ Four phase directories (4 skills each) plus the discipline's two quality gates (
 
 </details>
 
-### Influencer — IMPACT (16)
+### Influencer (16)
 
 Four phase directories (4 skills each); the discipline's gate (⛩ content-reviewer) sits in Activate.
 
@@ -387,7 +387,7 @@ Five commands: `/aaron-marketing:auto` routes any goal across all four disciplin
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | Describe any goal — infers intent and runs the smallest useful workflow | `--deep` (exhaustive / stress-test) |
 | `/aaron-marketing:seo-geo` | SEO/GEO end-to-end: research demand/competitors, create content, audit quality/tech/visibility/authority, track rankings/reports/memory | `--mode research\|create\|audit\|track` + per-mode flags (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`) |
-| `/aaron-marketing:impact` | Influencer (IMPACT): audience insight, discovery & fit, planning, outreach, amplification, ROI | `--phase discover\|plan\|activate\|measure` |
+| `/aaron-marketing:influencer` | Influencer: audience insight, discovery & fit, planning, outreach, amplification, ROI | `--phase discover\|plan\|activate\|measure` |
 | `/aaron-marketing:ad` | Paid ads (ROAS loop): segments, structure, creative, experiment design, the audit gate, measurement | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | Email (SEND loop): deliverability/consent, segmentation, creative, lifecycle flows, monetization, send-testing, the audit gate | `--phase setup\|engage\|nurture\|deliver` |
 
@@ -440,7 +440,7 @@ Paid-ads skills score from your **own-account manual export** (native ad-manager
 3. **Optimize** — `content-quality-auditor` (⛩ publish gate) → `on-page-seo-auditor` → `technical-seo-checker` → `site-structure-optimizer`
 4. **Monitor** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; `domain-authority-auditor` (⛩) for the trust review
 
-**Influencer (IMPACT)**
+**Influencer**
 1. **Discover** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (C³ ACE)
 2. **Plan** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
 3. **Activate** — `outreach-manager` → `content-reviewer` (⛩ ART gate) → `contract-helper` → `content-amplifier`
@@ -466,11 +466,11 @@ For a full trust review, pair `content-quality-auditor` with `domain-authority-a
 
 ```
 seo-geo/{research,build,optimize,monitor}/                  # SEO/GEO (16, incl. its 2 gates)
-influencer/{discover,plan,activate,measure}/                   # Influencer — IMPACT (16, incl. its gate)
+influencer/{discover,plan,activate,measure}/                   # Influencer (16, incl. its gate)
 ad/research|orchestrate|activate|scale/            # Paid Ads — ROAS (16, incl. its gate)
 email/setup|engage|nurture|deliver/                  # Email — SEND (16, incl. its gate)
 protocol/                                            # Protocol layer (5) — truth registries + memory
-commands/        # 5 slash commands (auto, seo-geo, impact, paid, email)
+commands/        # 5 slash commands (auto, seo-geo, influencer, ad, email)
 references/      # shared contract, state model, the 5 benchmarks, auditor runbook, platform packs
 evals/           # per-skill structural eval cases + structure-manifest.json
 hooks/           # hooks.json + claude-hook.sh (the only runtime logic)
