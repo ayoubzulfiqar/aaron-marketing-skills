@@ -1,38 +1,47 @@
 #!/usr/bin/env python3
-"""stats-dashboard.py — cross-registry download/install stats for the bundle's skills.
+"""stats-dashboard.py — cross-registry download/install stats for the skills.
 
-Pulls per-skill public stats from the registries that expose them and prints a
-combined table + totals. Owner utility (not a skill); Python stdlib only.
+The three README badges show each registry's **owner-wide total** — the same
+number the platform prints on the publisher's own profile page, spanning every
+skill/repo the owner has published (present and future), not just this bundle.
+Reading the owner total (rather than summing this repo's declared skills) means
+new skills, and skills that live in sibling family repos, are counted with no
+code change. Owner utility (not a skill); Python stdlib only.
 
-  ClawHub    GET https://clawhub.ai/api/v1/search?q=<slug>   -> downloads
-  SkillHub   GET https://api.skillhub.cn/api/v1/skills/<slug> -> skill.stats
-             (downloads / installs / stars)
-  skills.sh  aggregate install total from the public badge SVG (no auth).
-             Per-skill detail needs a Vercel OIDC token (401 unauthenticated);
-             set SKILLS_SH_TOKEN to add a per-skill column, else only the total.
+  ClawHub    GET https://clawhub.ai/<owner>                    -> profile "downloads"
+  SkillHub   GET https://api.skillhub.cn/api/v1/users/<h>/skills -> totalDownloads
+  skills.sh  GET https://www.skills.sh/<owner>                 -> "N total installs"
+             (aggregates every repo under the owner)
+
+A per-skill detail table (this bundle's declared skills) is still available in
+the default / --out / --json modes for "which skills are most downloaded";
+ClawHub + SkillHub expose per-skill numbers publicly, skills.sh needs a Vercel
+OIDC token (SKILLS_SH_TOKEN) for its per-skill column.
 
 Usage:
-  python3 scripts/stats-dashboard.py                 # markdown table to stdout
+  python3 scripts/stats-dashboard.py                 # owner totals + per-skill table
   python3 scripts/stats-dashboard.py --json          # machine-readable
   python3 scripts/stats-dashboard.py --out FILE.md   # also write markdown
-  python3 scripts/stats-dashboard.py --badges DIR    # write shields.io endpoint JSONs
+  python3 scripts/stats-dashboard.py --badges DIR    # owner totals -> shields.io JSONs
 
-The --badges mode writes clawhub.json / skillhub.json / skillssh.json in the
-shields.io "endpoint" schema so the README can render live-looking badges via
-https://img.shields.io/endpoint?url=<raw-github-url>/badges/<platform>.json —
-refreshed by a scheduled GitHub Action. A transient fetch failure (total 0)
-keeps the previously committed value instead of zeroing the badge.
+--badges is the fast path used by the daily GitHub Action: three requests, one
+per platform. It writes clawhub.json / skillhub.json / skillssh.json in the
+shields.io "endpoint" schema so the README renders live-looking badges via
+https://img.shields.io/endpoint?url=<raw-github-url>/badges/<platform>.json.
+A transient fetch failure (value None) keeps the previously committed value
+instead of zeroing the badge.
 """
 from __future__ import annotations
-import json, os, sys, time, urllib.request, urllib.parse, pathlib
+import json, os, re, sys, time, urllib.request, urllib.parse, pathlib
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
-CLAWHUB_OWNER = "aaron-he-zhu"
+CLAWHUB_OWNER = "aaron-he-zhu"        # also the skills.sh owner handle
 SKILLHUB_OWNER = "user_2c0f1e77"
 SKILLS_SH_TOKEN = os.environ.get("SKILLS_SH_TOKEN")
 
 
 def _get(url, headers=None):
+    """Fetch JSON. Returns parsed object, or None on any failure."""
     try:
         req = urllib.request.Request(url, headers=headers or {"User-Agent": "stats/1.0"})
         with urllib.request.urlopen(req, timeout=20) as r:
@@ -40,6 +49,71 @@ def _get(url, headers=None):
     except Exception:
         return None
 
+
+def _get_text(url):
+    """Fetch text (HTML). Returns the body, or None on any failure."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "stats/1.0"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return r.read().decode("utf-8", "ignore")
+    except Exception:
+        return None
+
+
+def _parse_human(s):
+    """'49.4k' / '126.8K' / '1,234' / '84260' -> int. None if unparseable."""
+    m = re.match(r"\s*([\d.,]+)\s*([kmb]?)\s*$", s, re.I)
+    if not m:
+        return None
+    mult = {"": 1, "k": 1_000, "m": 1_000_000, "b": 1_000_000_000}[m.group(2).lower()]
+    return int(round(float(m.group(1).replace(",", "")) * mult))
+
+
+# ---- owner-wide totals (what the badges show) -----------------------------
+
+def clawhub_owner_total(owner):
+    """Owner-wide download total from the ClawHub publisher page — ClawHub has no
+    JSON endpoint for it, so scrape the profile the same figure is printed on.
+    Prefers the exact integer in the OG-card URL (…downloads=N, HTML-escaped as
+    &amp;); falls back to the humanized profile stat. Returns int, or None on a
+    fetch/parse failure so the caller preserves the prior badge."""
+    html = _get_text(f"https://clawhub.ai/{urllib.parse.quote(owner)}")
+    if html is None:
+        return None
+    m = re.search(r"[?&;]downloads=(\d+)", html)          # exact, from OG card url
+    if m:
+        return int(m.group(1))
+    m = re.search(r'stat-value">\s*([\d.,]+\s*[kmb]?)\s*</dd>\s*'
+                  r'<dt[^>]*stat-label">\s*downloads', html, re.I)   # humanized fallback
+    return _parse_human(m.group(1)) if m else None
+
+
+def skillhub_owner_total(owner):
+    """Owner-wide download total from SkillHub's user API. totalDownloads spans
+    every skill the owner has published (105 at writing) — more than this
+    bundle's declared set. pageSize=1 keeps it to one cheap request. Returns int,
+    or None on failure."""
+    d = _get(f"https://api.skillhub.cn/api/v1/users/{urllib.parse.quote(owner)}/skills?pageSize=1")
+    if not d or d.get("totalDownloads") is None:
+        return None
+    return d.get("totalDownloads")
+
+
+def skills_sh_owner_total(owner):
+    """Owner-wide install total from the skills.sh publisher page — it already
+    aggregates every repo under the owner ('N total installs across M
+    repositories'), so no per-repo list to maintain. Humanized on the page
+    ('126.8K'). Hits www.skills.sh directly (the apex host 308-redirects there,
+    which urllib < 3.11 won't follow). Returns int, or None on failure."""
+    html = _get_text(f"https://www.skills.sh/{urllib.parse.quote(owner)}")
+    if html is None:
+        return None
+    clean = re.sub(r"<!--.*?-->", "", html)  # drop React SSR comment markers first
+    m = re.search(r"([\d.,]+\s*[kmb]?)\s*total installs", clean, re.I)
+    return _parse_human(m.group(1)) if m else None
+
+
+# ---- per-skill detail (this bundle's declared skills) ---------------------
 
 def clawhub(slug):
     d = _get(f"https://clawhub.ai/api/v1/search?q={urllib.parse.quote(slug)}")
@@ -68,22 +142,23 @@ def skills_sh(owner, repo, slug):
     return {"installs": d.get("installs", 0)} if d else None
 
 
-def skills_sh_total(owner, repo):
-    """Aggregate install count from the public badge SVG (no auth needed).
-    Per-skill breakdowns require a Vercel OIDC token; the aggregate does not."""
-    import re
-    try:
-        req = urllib.request.Request(f"https://skills.sh/b/{owner}/{repo}",
-                                     headers={"User-Agent": "stats/1.0"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            svg = r.read().decode("utf-8", "ignore")
-        m = re.search(r"<title>Skills:\s*([\d,]+)</title>", svg)
-        return int(m.group(1).replace(",", "")) if m else None
-    except Exception:
-        return None
-
-
 def main():
+    # Owner-wide totals — the three numbers the README badges display.
+    owner = {
+        "clawhub": clawhub_owner_total(CLAWHUB_OWNER),
+        "skillhub": skillhub_owner_total(SKILLHUB_OWNER),
+        "skillssh": skills_sh_owner_total(CLAWHUB_OWNER),
+    }
+
+    # Fast path for the daily badge refresh: three requests, no per-skill crawl.
+    for i, a in enumerate(sys.argv):
+        if a == "--badges" and i + 1 < len(sys.argv):
+            write_badges(pathlib.Path(sys.argv[i + 1]),
+                         owner["clawhub"], owner["skillhub"], owner["skillssh"])
+            return
+
+    # Per-skill detail for this bundle's declared skills (a subset of the owner's
+    # published skills — hence the table can sum to less than the owner totals).
     names = [p[2:].split("/")[-1] for p in
              json.load(open(REPO / ".claude-plugin/plugin.json"))["skills"]]
     rows = []
@@ -106,18 +181,18 @@ def main():
     rows.sort(key=lambda r: r["total_downloads"], reverse=True)
 
     if "--json" in sys.argv:
-        print(json.dumps(rows, indent=2, ensure_ascii=False))
+        print(json.dumps({"owner_totals": owner, "skills": rows},
+                         indent=2, ensure_ascii=False))
         return
 
-    tot = lambda k: sum(r[k] for r in rows)
-    ssh_total = skills_sh_total(CLAWHUB_OWNER, "aaron-marketing-skills")
-    ssh_line = (f" · skills.sh installs (aggregate): **{ssh_total:,}**" if ssh_total is not None else "")
+    fmt = lambda n: f"{n:,}" if n is not None else "n/a"
     out = ["# Skill stats — cross-registry snapshot", "",
-           f"ClawHub downloads: **{tot('clawhub_downloads'):,}** · "
-           f"SkillHub downloads: **{tot('skillhub_downloads'):,}** "
-           f"(installs {tot('skillhub_installs'):,}, stars {tot('skillhub_stars'):,})"
-           + ssh_line,
-           "", "| Skill | ClawHub ↓ | SkillHub ↓ | SkillHub installs | ★ |",
+           f"Owner-wide totals (what the badges show) — ClawHub downloads: "
+           f"**{fmt(owner['clawhub'])}** · SkillHub downloads: **{fmt(owner['skillhub'])}** · "
+           f"skills.sh installs: **{fmt(owner['skillssh'])}** (across all skills/repos "
+           f"under the owner, present and future).", "",
+           "Per-skill breakdown below covers this bundle's declared skills only:", "",
+           "| Skill | ClawHub ↓ | SkillHub ↓ | SkillHub installs | ★ |",
            "|-------|-----------|------------|-------------------|---|"]
     for r in rows:
         out.append(f"| {r['skill']} | {r['clawhub_downloads']:,} | "
@@ -128,9 +203,6 @@ def main():
         if a == "--out" and i + 1 < len(sys.argv):
             pathlib.Path(sys.argv[i + 1]).write_text(text + "\n", encoding="utf-8")
             print(f"\n[written to {sys.argv[i + 1]}]", file=sys.stderr)
-        if a == "--badges" and i + 1 < len(sys.argv):
-            write_badges(pathlib.Path(sys.argv[i + 1]),
-                         tot("clawhub_downloads"), tot("skillhub_downloads"), ssh_total)
 
 
 def _human(n):
@@ -140,7 +212,7 @@ def _human(n):
 
 
 def write_badges(dirpath, clawhub, skillhub, skillssh):
-    """Write shields.io endpoint-badge JSONs. A total of 0 (transient fetch
+    """Write shields.io endpoint-badge JSONs. A value of None/0 (transient fetch
     failure) preserves the previously committed value so the badge never zeroes."""
     dirpath.mkdir(parents=True, exist_ok=True)
     # label = platform name only (mirrors the skills.sh "Skills <n>" badge);
