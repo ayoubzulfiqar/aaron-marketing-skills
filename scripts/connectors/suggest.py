@@ -147,9 +147,13 @@ def main(argv=None):
     result = suggest(args.query, hl=args.hl, gl=args.gl, expand=args.expand)
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
-    if result["status"] in (0, None) and not result["suggestions"]:
-        print("error: no suggestions returned (endpoint blocked or empty)",
-              file=sys.stderr)
+    status = result["status"]
+    # A non-2xx HTTP status (403/429/500) with no suggestions is a failure, not a
+    # clean empty result — it must not exit 0.
+    http_err = isinstance(status, int) and not (200 <= status < 300)
+    if http_err or (status in (0, None) and not result["suggestions"]):
+        print("error: no suggestions returned (status %s — endpoint blocked, "
+              "rate-limited, or empty)" % status, file=sys.stderr)
         return 2
     return 0
 

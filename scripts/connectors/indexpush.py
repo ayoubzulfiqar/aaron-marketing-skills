@@ -122,6 +122,16 @@ def execute(spec_request):
     if out["status"] in (200, 202) and out["data"] is None:
         out["error"] = None
         out["accepted"] = True
+    # Baidu 普通收录 answers HTTP 200 even on FAILURE, carrying {"error":N,"message":...}
+    # in the JSON body — a transport-level 200 must not be reported as success when the
+    # payload says otherwise.
+    elif isinstance(out["data"], dict) and out["data"].get("error") is not None:
+        out["error"] = "Baidu API error %s: %s" % (
+            out["data"].get("error"), out["data"].get("message", ""))
+        out["accepted"] = False
+    elif isinstance(out["data"], dict) and "success" in out["data"]:
+        out["error"] = None
+        out["accepted"] = True
     return out
 
 

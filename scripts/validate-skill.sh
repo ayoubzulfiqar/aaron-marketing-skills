@@ -180,19 +180,19 @@ else
     fi
 fi
 
-# --- Required field: license ---
-if echo "$FRONTMATTER" | grep -qE '^license:'; then
+# --- Required field: license (must carry a non-empty value, like name/version/description) ---
+if echo "$FRONTMATTER" | grep -qE '^license:[[:space:]]*[^[:space:]]'; then
     LICENSE=$(echo "$FRONTMATTER" | grep -E '^license:' | sed 's/license: *//')
     pass "license present: $LICENSE"
 else
-    fail "Missing required field: license"
+    fail "Missing or empty required field: license"
 fi
 
-# --- Required field: compatibility ---
-if echo "$FRONTMATTER" | grep -qE '^compatibility:'; then
+# --- Required field: compatibility (must carry a non-empty value) ---
+if echo "$FRONTMATTER" | grep -qE '^compatibility:[[:space:]]*[^[:space:]]'; then
     pass "compatibility field present"
 else
-    fail "Missing required field: compatibility"
+    fail "Missing or empty required field: compatibility"
 fi
 
 # --- Required field: metadata (single-line JSON object) ---
@@ -344,20 +344,25 @@ fi
 # (A skill that WebFetches GitHub HTML instead of Reading the installed file breaks
 #  version pinning and offline use. Human-facing docs may still use absolute URLs.)
 # Documented rule covers SKILL.md AND references/ — scan both.
-if grep -q 'blob/main/' "$SKILL_FILE"; then
-    BLOB_HITS=$(grep -c 'blob/main/' "$SKILL_FILE")
-    fail "SKILL.md contains ${BLOB_HITS} blob/main GitHub URL(s) — use plugin-relative paths so the agent Reads the installed file (offline-safe, version-pinned)"
+# Match GitHub HTML-view URLs (blob|tree)/(main|master) with or without a trailing
+# slash — the old 'blob/main/' literal let 'blob/main', 'tree/main', and master forms
+# evade. The raw.githubusercontent .../main/ fallback has no /blob/ or /tree/ segment,
+# so it stays allowed (it is the documented standalone-install runbook fallback).
+if grep -qE '/(blob|tree)/(main|master)' "$SKILL_FILE"; then
+    BLOB_HITS=$(grep -cE '/(blob|tree)/(main|master)' "$SKILL_FILE")
+    fail "SKILL.md contains ${BLOB_HITS} GitHub blob/tree URL(s) — use plugin-relative paths so the agent Reads the installed file (offline-safe, version-pinned)"
 else
-    pass "no blob/main GitHub URLs in SKILL.md (references load via relative paths)"
+    pass "no blob/tree GitHub URLs in SKILL.md (references load via relative paths)"
 fi
 
 if [ -d "$SKILL_DIR/references" ]; then
-    REF_BLOB_HITS=$(grep -rn 'blob/main/' "$SKILL_DIR/references" --include='*.md' 2>/dev/null || true)
+    # -I skips binaries; no --include filter so non-.md reference files are covered too.
+    REF_BLOB_HITS=$(grep -rInE '/(blob|tree)/(main|master)' "$SKILL_DIR/references" 2>/dev/null || true)
     if [ -n "$REF_BLOB_HITS" ]; then
-        fail "references/ contains blob/main GitHub URL(s) — use plugin-relative paths (file:line):"
+        fail "references/ contains GitHub blob/tree URL(s) — use plugin-relative paths (file:line):"
         echo "$REF_BLOB_HITS"
     else
-        pass "no blob/main GitHub URLs in references/"
+        pass "no blob/tree GitHub URLs in references/"
     fi
 fi
 

@@ -2,7 +2,7 @@
 
 Current versions for the plugin and all 120 skills. Agents can fetch this file from `https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/VERSIONS.md` once per session.
 
-**Current release**: `16.0.0` (2026-07-05). Seventh discipline: **Brand Narrative & Messaging (TALE)** — 16 new skills under `narrative/{trace,architect,land,evaluate}/`, the eighth protocol registry `narrative-registry` (the brand canon SSOT, root of the record), the eighth benchmark framework TALE (`references/tale-benchmark.md`), the eighth gate `narrative-quality-auditor` (NQS + pre-publish consistency go/no-go), and the eighth command `/aaron-marketing:narrative`. Ships **no new connector** — narrative resonance reuses the existing keyless surfaces (`bluesky.py`, `gdelt.py`, `tavily.py`, `wayback.py`) and the social `share-of-voice-tracker`. This release also re-narrates the bundle as a four-layer **Marketing Operating System** (Strategy · Channels · Orchestration · Protocol) with Narrative as the strategy layer, and brings the localized README set to full version-lock. Major version per the discipline-addition convention: the whole bundle — all **120 skills** — is at `16.0.0`.
+**Current release**: `16.0.1` (2026-07-07). Review-hardening patch — a full 7-phase review + independent adversarial acceptance. No skills added or removed (still **120 skills**); behavior-preserving except where a guard or connector was demonstrably wrong. Repo self-guards now fail **closed** (the paid-ads ToS red line scanned a non-existent `paid/` dir; check-versions / check-evals / validate-skill hardened); connector robustness fixes (`_http` truncated-gzip no longer escapes, ~14 connectors no longer report HTTP errors as success or crash on edge input); robots pre-flight fails closed on an unverifiable robots.txt (firecrawl/tavily/crawl, `--own-site` still bypasses); the `/aaron-marketing:auto` reference layer is un-frozen from the v12 four-discipline era (routing scenarios + API contract now cover all 7 disciplines, guarded by a new CI assertion); and a batch of v16 stale cross-references is cleaned. The 13 changed skills are at `16.0.1`; the rest remain at `16.0.0`.
 
 ## Skills
 
@@ -13,19 +13,19 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | serp-analysis | research | 16.0.0 | 2026-07-05 |
 | content-gap-analysis | research | 16.0.0 | 2026-07-05 |
 | content-writer | build | 16.0.0 | 2026-07-05 |
-| geo-content-optimizer | build | 16.0.0 | 2026-07-05 |
+| geo-content-optimizer | build | 16.0.1 | 2026-07-07 |
 | serp-markup-builder | build | 16.0.0 | 2026-07-05 |
-| page-play-builder | build | 16.0.0 | 2026-07-05 |
-| content-quality-auditor | optimize | 16.0.0 | 2026-07-05 |
+| page-play-builder | build | 16.0.1 | 2026-07-07 |
+| content-quality-auditor | optimize | 16.0.1 | 2026-07-07 |
 | technical-seo-checker | optimize | 16.0.0 | 2026-07-05 |
 | on-page-seo-auditor | optimize | 16.0.0 | 2026-07-05 |
 | site-structure-optimizer | optimize | 16.0.0 | 2026-07-05 |
-| domain-authority-auditor | monitor | 16.0.0 | 2026-07-05 |
+| domain-authority-auditor | monitor | 16.0.1 | 2026-07-07 |
 | rank-tracker | monitor | 16.0.0 | 2026-07-05 |
 | performance-monitor | monitor | 16.0.0 | 2026-07-05 |
 | offsite-signal-analyzer | monitor | 16.0.0 | 2026-07-05 |
 | audience-mapper | discover | 16.0.0 | 2026-07-05 |
-| trend-spotter | discover | 16.0.0 | 2026-07-05 |
+| trend-spotter | discover | 16.0.1 | 2026-07-07 |
 | influencer-discovery | discover | 16.0.0 | 2026-07-05 |
 | fit-scorer | discover | 16.0.0 | 2026-07-05 |
 | competitor-tracker | plan | 16.0.0 | 2026-07-05 |
@@ -34,13 +34,13 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | budget-optimizer | plan | 16.0.0 | 2026-07-05 |
 | outreach-manager | activate | 16.0.0 | 2026-07-05 |
 | content-reviewer | activate | 16.0.0 | 2026-07-05 |
-| contract-helper | activate | 16.0.0 | 2026-07-05 |
+| contract-helper | activate | 16.0.1 | 2026-07-07 |
 | content-amplifier | activate | 16.0.0 | 2026-07-05 |
-| landing-optimizer | measure | 16.0.0 | 2026-07-05 |
-| performance-analyzer | measure | 16.0.0 | 2026-07-05 |
-| roi-calculator | measure | 16.0.0 | 2026-07-05 |
-| report-generator | measure | 16.0.0 | 2026-07-05 |
-| campaign-architect | paid | 16.0.0 | 2026-07-05 |
+| landing-optimizer | measure | 16.0.1 | 2026-07-07 |
+| performance-analyzer | measure | 16.0.1 | 2026-07-07 |
+| roi-calculator | measure | 16.0.1 | 2026-07-07 |
+| report-generator | measure | 16.0.1 | 2026-07-07 |
+| campaign-architect | paid | 16.0.1 | 2026-07-07 |
 | audience-segment-builder | paid | 16.0.0 | 2026-07-05 |
 | search-term-miner | paid | 16.0.0 | 2026-07-05 |
 | product-feed-optimizer | paid | 16.0.0 | 2026-07-05 |
@@ -104,13 +104,13 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | share-of-voice-tracker | observe | 16.0.0 | 2026-07-05 |
 | dark-social-attributor | observe | 16.0.0 | 2026-07-05 |
 | social-measurement-loop | observe | 16.0.0 | 2026-07-05 |
-| entity-optimizer | protocol | 16.0.0 | 2026-07-05 |
+| entity-optimizer | protocol | 16.0.1 | 2026-07-07 |
 | creator-registry | protocol | 16.0.0 | 2026-07-05 |
 | offer-claims-registry | protocol | 16.0.0 | 2026-07-05 |
 | consent-registry | protocol | 16.0.0 | 2026-07-05 |
 | launch-registry | protocol | 16.0.0 | 2026-07-05 |
 | channel-registry | protocol | 16.0.0 | 2026-07-05 |
-| memory-management | protocol | 16.0.0 | 2026-07-05 |
+| memory-management | protocol | 16.0.1 | 2026-07-07 |
 | narrative-baseline-mapper | trace | 16.0.0 | 2026-07-05 |
 | category-narrative-mapper | trace | 16.0.0 | 2026-07-05 |
 | audience-belief-mapper | trace | 16.0.0 | 2026-07-05 |
@@ -130,6 +130,16 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | narrative-registry | protocol | 16.0.0 | 2026-07-05 |
 
 ## Changelog
+
+### v16.0.1 — Review-hardening patch (2026-07-07)
+
+Patch from a full 7-phase review (mechanical baseline → 120-skill content → 38-file connector/toolchain → 8-framework consistency → competitive) plus a mechanical + 7-agent adversarial **acceptance** pass. No skills added or removed (still 120); the 13 touched skills bump to `16.0.1`, the other 107 stay at `16.0.0`.
+
+- **Guards fail closed.** `check-stdlib-only.sh` paid-ads ToS red line scanned a non-existent `paid/` dir (now `ad/` — it was enforcing nothing); `check-versions.sh` mirror bundle-sync, `check-evals.py` key-presence + `--update`, and `validate-skill.sh` license/compatibility (non-empty) + blob/tree ban now fail closed.
+- **Connector robustness.** `_http.py` no longer escapes `get()` on a truncated-gzip body (EOFError) and honors `Retry-After`; sitemap/rss_monitor/wayback/ledger/fediverse/stats-dashboard no longer crash on edge input; indexpush (Baidu HTTP-200-with-error), linkgraph (duplicate-url PageRank), discourse (OP selection), openpagerank/suggest/gdelt/doh/hn/producthunt no longer report failures as success. producthunt `auth_failed` is now a hard exit 2 (not the skippable exit 3).
+- **Robots fail-closed.** firecrawl/tavily/crawl refuse when robots.txt is unverifiable (5xx/network) unless `--own-site`; robots UA-group matching is prefix-only per the Google spec; crawl re-fetches robots after a cross-host redirect and passes the query string.
+- **`/aaron-marketing:auto` reference layer un-frozen.** `aaron-product-api-contract.md` → 7 disciplines / 120 skills / 8 commands / 8 protocol; `auto-routing-scenarios.md` gains launch/social/narrative routing scenarios; a new `check-versions.sh` assertion fails the build if any command discipline loses routing coverage.
+- **v16 stale cross-references cleaned.** memory-management (5→8 gates, 4→7 disciplines), agent-compatibility + auditor-runbook (narrative/TALE added), retired influencer phase names (Convert/Track → Activate/Measure), echo-benchmark sub-item numbering made explicit, duplicate handoff slots de-duped, campaign-architect ROAS-A1 veto restored.
 
 ### v16.0.0 — Seventh discipline: Brand Narrative & Messaging (TALE) (2026-07-05)
 

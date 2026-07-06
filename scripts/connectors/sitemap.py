@@ -91,7 +91,9 @@ def _maybe_gunzip(body, url):
     if looks_gz:
         try:
             return gzip.decompress(body)
-        except OSError:
+        except Exception:
+            # Truncated/corrupt gzip raises EOFError or zlib.error (neither an
+            # OSError subclass) — degrade to the raw body instead of crashing.
             return body
     return body
 

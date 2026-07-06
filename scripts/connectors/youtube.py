@@ -92,8 +92,18 @@ def parse_channel_ref(ref):
         m = re.search(r"/(@[\w.\-]+)", path)
         if m:
             return ("handle", m.group(1))
+        # Legacy /c/<name> or /user/<name> (or any other youtube URL): resolve by the
+        # path's last name segment as a handle candidate — never fall through and echo
+        # the whole URL back as a bogus "@https://..." selector.
+        m = re.search(r"/(?:c|user)/([\w.\-]+)", path)
+        if m:
+            return ("handle", "@" + m.group(1))
+        seg = path.strip("/").split("/")[-1]
+        return ("handle", "@" + seg) if seg else ("handle", "@")
     if re.fullmatch(r"UC[\w-]{10,}", ref):
         return ("id", ref)
+    if not ref:
+        return ("handle", "@")
     return ("handle", ref if ref.startswith("@") else "@" + ref)
 
 

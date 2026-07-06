@@ -181,9 +181,11 @@ def time_to_first_response(posts):
     reply or timestamps are unusable. Pure — the community-warmth signal."""
     op = None
     for p in posts or []:
-        if p.get("post_number") == 1 or op is None:
+        if p.get("post_number") == 1:
             op = p
             break
+    if op is None and posts:
+        op = posts[0]  # fallback: first post in the stream when none is numbered 1
     if not op:
         return None
     op_time = _parse_iso(op.get("created_at"))
@@ -193,7 +195,9 @@ def time_to_first_response(posts):
     for p in posts or []:
         if p is op:
             continue
-        if p.get("username") == op_user:
+        # Only skip same-author replies when the OP HAS a username — otherwise
+        # None == None would treat every null-username user as the OP and skip them.
+        if op_user is not None and p.get("username") == op_user:
             continue
         reply_time = _parse_iso(p.get("created_at"))
         if reply_time is None:

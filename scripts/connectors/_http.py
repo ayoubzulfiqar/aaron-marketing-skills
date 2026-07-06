@@ -63,8 +63,13 @@ def get(url, *, headers=None, timeout=DEFAULT_TIMEOUT, max_bytes=DEFAULT_MAX_BYT
                 body = resp.read(max_bytes + 1)[:max_bytes]
                 if (resp.headers.get("Content-Encoding") or "").lower() == "gzip":
                     try:
-                        body = gzip.decompress(body)
-                    except OSError:
+                        # Degrade to the raw bytes on ANY decompression failure: a body
+                        # truncated at the max_bytes cap raises EOFError (NOT an OSError
+                        # subclass) or zlib.error, which would otherwise escape get() and
+                        # break the "Never raises" contract. Re-truncate the decompressed
+                        # output so the cap bounds the body callers actually consume.
+                        body = gzip.decompress(body)[:max_bytes]
+                    except Exception:
                         pass
                 return {
                     "status": getattr(resp, "status", resp.getcode()),
@@ -75,7 +80,16 @@ def get(url, *, headers=None, timeout=DEFAULT_TIMEOUT, max_bytes=DEFAULT_MAX_BYT
                 }
         except urllib.error.HTTPError as e:
             if e.code in (429, 503) and attempt < retries - 1:
-                time.sleep((2 ** attempt) * 2)
+                # Honor the server's Retry-After (integer seconds) when present, never
+                # waiting less than it asked; fall back to exponential backoff otherwise.
+                backoff = (2 ** attempt) * 2
+                ra = (getattr(e, "headers", None) or {}).get("Retry-After")
+                try:
+                    if ra is not None:
+                        backoff = max(backoff, int(str(ra).strip()))
+                except (TypeError, ValueError):
+                    pass
+                time.sleep(backoff)
                 last = "HTTP %s" % e.code
                 continue
             return {

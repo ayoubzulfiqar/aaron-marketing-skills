@@ -248,7 +248,11 @@ def fetch_page(url):
         "x_robots_tag": x_robots,
         "error": r["error"],
     }
-    ok = r["status"] == 200 and bool(r["text"])
+    # Only treat HTML (or unlabeled) 200s as parseable — a 200 PDF/image/JSON/plain
+    # body must not be parsed as HTML into a fully-populated on-page record.
+    ctype = (headers.get("Content-Type") or headers.get("content-type") or "").lower()
+    is_htmlish = ("html" in ctype) or (ctype == "")
+    ok = r["status"] == 200 and bool(r["text"]) and is_htmlish
     return r["text"], fetch_info, ok
 
 

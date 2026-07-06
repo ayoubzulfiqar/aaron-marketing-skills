@@ -125,6 +125,11 @@ def analyze(pages, top=10):
     is used for the orphan exclusion and depth metrics when present.
     Returns the report dict (also what the CLI serializes to stdout).
     """
+    # Dedupe by url (first occurrence wins): duplicate url entries otherwise inflate
+    # n (=len(nodes)) and double-count in-edges, corrupting PageRank into non-probability
+    # values that no longer sum to ~1.0.
+    _seen = set()
+    pages = [pg for pg in pages if not (pg["url"] in _seen or _seen.add(pg["url"]))]
     nodes = [pg["url"] for pg in pages]
     node_set = set(nodes)
     depth_by_url = {pg["url"]: pg.get("depth") for pg in pages}

@@ -112,12 +112,14 @@ check_ids_target() { # $1 repo, $2 references file, $3… repo files to scan
   local repo="$1" src="$2"; shift 2
   local remote_all="$TMP/$repo.all.md"
   : > "$remote_all"
-  local f ok=1
+  local f got=0
   for f in "$@"; do
-    fetch_raw "$repo" "$f" >> "$remote_all" 2>/dev/null || ok=0
+    if fetch_raw "$repo" "$f" >> "$remote_all" 2>/dev/null; then got=1; fi
     echo >> "$remote_all"
   done
-  if [ $ok -eq 0 ] && [ ! -s "$remote_all" ]; then
+  # got=0 means NOT ONE file fetched -> truly unreachable. (The per-iteration
+  # `echo` pads a newline every loop, so the old `! -s` emptiness test never fired.)
+  if [ $got -eq 0 ]; then
     echo "✗ $repo — unreachable"
     DRIFT=1
     return
