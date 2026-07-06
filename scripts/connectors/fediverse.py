@@ -308,13 +308,16 @@ def _classify(r, instance):
 
 
 def preflight(instance):
-    """GET /api/v2/instance -> (info, error). Keyless-availability probe."""
+    """GET /api/v2/instance -> (info, error). Keyless-availability probe.
+    Falls back to /api/v1/instance for older Mastodon (<4.0) that lacks v2."""
     r = _polite_get_json(build_instance_url(instance))
+    if r.get("status") == 404:
+        r = _polite_get_json("https://%s/api/v1/instance" % instance)
     err = _classify(r, instance)
     if err:
         return None, err
     j = r["json"] if isinstance(r["json"], dict) else {}
-    return {"domain": j.get("domain") or instance,
+    return {"domain": j.get("domain") or j.get("uri") or instance,
             "title": j.get("title"),
             "version": j.get("version")}, None
 
@@ -355,6 +358,9 @@ def account(instance, acct, limit=20):
                            "pass user@their.instance, or query their home "
                            "instance via --instance." % (acct, instance))
         return err
+    if not isinstance(r.get("json"), dict):
+        return {"error": "unexpected_response",
+                "hint": "account lookup from %s did not return a JSON object" % instance}
     profile = parse_account(r["json"])
     r = _polite_get_json(build_statuses_url(instance, profile["id"], limit))
     err = _classify(r, instance)

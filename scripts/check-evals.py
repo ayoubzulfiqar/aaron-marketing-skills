@@ -86,7 +86,11 @@ def lint_cases(slug):
         return True
     for i, obj in enumerate(objs, 1):
         for key in REQUIRED_CASE_KEYS:
-            if (key + ":") not in obj and ('"%s"' % key) not in obj:
+            # Match the key only at a key POSITION: line start, or right after '{'
+            # or ',' (with optional whitespace), optionally quoted, then ':'. Using
+            # '{' / ',' as the boundary (NOT bare \s) means a space-preceded '<key>:'
+            # inside a quoted prose value no longer masks a truly-missing key.
+            if not re.search(r'(?:^|[{,])\s*"?' + re.escape(key) + r'"?\s*:', obj):
                 fail("%s/cases.md case #%d missing required key '%s'" % (slug, i, key))
         m = re.search(r"target_skill:\s*([A-Za-z0-9_-]+)", obj)
         if m and m.group(1) not in VALID_SLUGS:
@@ -117,6 +121,12 @@ def main():
     print("== eval structural lint: %d skills, %d with cases.md ==" % (len(VALID_SLUGS), len(present)))
 
     if update:
+        # Fail CLOSED: never write the regression baseline from a failing lint —
+        # that would bake the current breakage in as the new "expected" structure.
+        if fails:
+            print("\nREFUSING to write structure-manifest.json — fix the %d lint "
+                  "issue(s) above first." % len(fails))
+            return 1
         with open(MANIFEST, "w", encoding="utf-8") as f:
             json.dump(build_manifest(), f, indent=2, ensure_ascii=False)
             f.write("\n")
@@ -124,7 +134,11 @@ def main():
         return 0
 
     if os.path.isfile(MANIFEST):
-        man = json.load(open(MANIFEST, encoding="utf-8"))
+        try:
+            man = json.load(open(MANIFEST, encoding="utf-8"))
+        except (ValueError, OSError) as e:
+            fail("structure-manifest.json is unreadable/corrupt: %s" % e)
+            man = {}
         stray = [k for k in man if k not in MANIFEST_ALLOWED_KEYS or SCORE_WORD.search(k)]
         if stray:
             fail("manifest has disallowed/score-like keys (scope creep): %s" % stray)

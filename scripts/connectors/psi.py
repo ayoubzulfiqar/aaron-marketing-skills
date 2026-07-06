@@ -175,10 +175,13 @@ def parse(payload):
     for key in ("LCP_ms", "INP_ms", "CLS"):
         src_val = None
         src = None
-        if report["field"] and key in report["field"]["metrics"]:
+        if (report["field"] and key in report["field"]["metrics"]
+                and report["field"]["metrics"][key].get("percentile") is not None):
             src_val = report["field"]["metrics"][key]["percentile"]
             src = "field"
         elif key != "INP_ms" and key in report["lab"]:
+            # Field absent OR its percentile is None -> use the gradeable lab value
+            # rather than silently dropping the metric.
             src_val = report["lab"][key]["value"]
             src = "lab"
         verdicts[key] = {

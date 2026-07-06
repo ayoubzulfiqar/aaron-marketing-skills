@@ -183,8 +183,11 @@ def main(argv=None):
         return 1
 
     print(json.dumps(result, indent=2, ensure_ascii=False))
-    if result.get("status") == 0 and result.get("error"):
-        print("error: %s" % result["error"], file=sys.stderr)
+    status = result.get("status")
+    # Exit non-zero on ANY error or non-2xx status — a completed request that
+    # returns 403 (bad/expired key), 429 (quota), or 500 must not exit 0.
+    if result.get("error") or (isinstance(status, int) and not (200 <= status < 300)):
+        print("error: %s (status %s)" % (result.get("error"), status), file=sys.stderr)
         return 2
     return 0
 

@@ -91,6 +91,8 @@ def parse_cdx_rows(rows):
     header = [str(h) for h in rows[0]]
     out = []
     for row in rows[1:]:
+        if not isinstance(row, list):
+            continue  # a malformed non-list data row would crash row[i]/len(row)
         rec = {}
         for i, key in enumerate(header):
             rec[key] = row[i] if i < len(row) else None

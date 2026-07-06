@@ -131,6 +131,11 @@ def auth_check(domain, selectors=None, resolver="google"):
     out = {"domain": domain, "resolver": resolver}
 
     root_txt = lookup(domain, "TXT", resolver)
+    # A transport/resolver failure (error set, no DNS status) is NOT the same as a
+    # domain that genuinely has no SPF — surface it (main() then exits non-zero)
+    # instead of silently reporting a false "no records present".
+    if root_txt.get("error") and root_txt.get("status") is None:
+        out["error"] = "DNS fetch failed for %s TXT: %s" % (domain, root_txt["error"])
     out["spf"] = spf_facts(root_txt["records"])
 
     dmarc_txt = lookup("_dmarc." + domain, "TXT", resolver)

@@ -66,7 +66,12 @@ def _parse_human(s):
     if not m:
         return None
     mult = {"": 1, "k": 1_000, "m": 1_000_000, "b": 1_000_000_000}[m.group(2).lower()]
-    return int(round(float(m.group(1).replace(",", "")) * mult))
+    try:
+        # group(1) is [\d.,]+, which still admits unparseable forms like "." or
+        # "1.2.3"; honor the documented None-on-parse-failure contract.
+        return int(round(float(m.group(1).replace(",", "")) * mult))
+    except ValueError:
+        return None
 
 
 # ---- owner-wide totals (what the badges show) -----------------------------

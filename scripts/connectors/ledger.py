@@ -94,7 +94,9 @@ def _is_num(x):
 
 
 def _read_snapshots(path):
-    if not os.path.exists(path):
+    if not os.path.isfile(path):
+        # isfile (not exists): a directory named "<x>.jsonl" in the store would
+        # otherwise reach open() below and raise IsADirectoryError.
         return []
     rows = []
     with open(path, encoding="utf-8") as fh:

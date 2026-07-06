@@ -69,7 +69,7 @@ fi
 # --- Paid Ads red line: a paid SKILL.md must never require a keyed ad-platform API at Tier 1 ---
 # Best-effort prose tripwire (heuristic; a sentence mixing "required" with an exonerating word on the
 # same line can evade it). The real guarantee is the keyless/own-export framing authored into each skill.
-ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' paid/ 2>/dev/null \
+ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' ad/ 2>/dev/null \
   | grep -Ei "require|must have|tier.?1|precondition|necessary" \
   | grep -Eiv "optional|opt-in|tier.?2|tier.?3|mcp|never|not required|own[ -]data|manual export" || true)"
 if [ -n "$ad_hits" ]; then
@@ -80,5 +80,5 @@ if [ -n "$ad_hits" ]; then
   exit 1
 fi
 
-echo "moat guard clean — no third-party imports under scripts/, no required keyed ad APIs in paid/."
+echo "moat guard clean — no third-party imports under scripts/, no required keyed ad APIs in ad/."
 exit 0

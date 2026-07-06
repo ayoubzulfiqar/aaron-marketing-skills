@@ -34,12 +34,15 @@ if [ -z "$BUNDLE" ]; then
   err "cannot read bundle version from .claude-plugin/plugin.json"
 else
   for f in marketplace.json .claude-plugin/marketplace.json; do
-    sed -n 's/.*"version": "\([0-9][0-9.]*\)".*/\1/p' "$f" | while read -r v; do
-      [ "$v" = "$BUNDLE" ] || echo "FAIL: $f carries version $v != bundle $BUNDLE" >&2
-    done
-    # while-in-pipe runs in a subshell; re-check aggregate for the exit code
-    if sed -n 's/.*"version": "\([0-9][0-9.]*\)".*/\1/p' "$f" | grep -qv "^$BUNDLE$"; then
-      fail=1
+    vers=$(sed -n 's/.*"version": "\([0-9][0-9.]*\)".*/\1/p' "$f")
+    # Fail CLOSED: a missing/renamed "version" key extracts nothing — that must
+    # FAIL, not silently pass (a `grep -qv` on empty input returns no-match).
+    if [ -z "$vers" ]; then
+      err "$f has no readable \"version\" key (bundle-sync cannot verify)"
+    else
+      while read -r v; do
+        [ "$v" = "$BUNDLE" ] || err "$f carries version $v != bundle $BUNDLE"
+      done <<< "$vers"
     fi
   done
   grep -q "version-$BUNDLE-orange" README.md || err "README.md badge != $BUNDLE"
@@ -107,7 +110,22 @@ else
   fi
 fi
 
+# ---- 5. auto-routing scenarios cover every command discipline ---------------
+# references/auto-routing-scenarios.md is the runtime routing data commands/auto.md
+# consults. It silently froze at the v12 four-discipline era (launch/social/narrative
+# shipped with ZERO expected_route scenarios) — assert every command discipline keeps
+# at least one routing scenario so a new discipline cannot ship uncovered again.
+ROUTING="references/auto-routing-scenarios.md"
+if [ ! -f "$ROUTING" ]; then
+  err "$ROUTING missing — the /aaron-marketing:auto routing contract"
+else
+  for cmd in seo-geo influencer ad email launch social narrative; do
+    grep -q "expected_route: \"/aaron-marketing:$cmd" "$ROUTING" \
+      || err "$ROUTING has no expected_route scenario for /aaron-marketing:$cmd (auto routing coverage gap)"
+  done
+fi
+
 if [ $fail -eq 0 ]; then
-  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 8 tracking files + the About SSOT"
+  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 8 tracking files + the About SSOT; auto-routing covers all 7 disciplines"
 fi
 exit $fail

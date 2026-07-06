@@ -505,9 +505,11 @@ class ProducthuntTests(unittest.TestCase):
              "json": None})
         self.assertEqual((code, err["error"], err["reset_seconds"]),
                          (3, "rate_limited", "600"))
+        # A rejected token (401/403) is a HARD error -> exit 2, not the transient
+        # exit-3 rate-limit/skippable class (so smoke suites FAIL on a bad token).
         code, err = producthunt.classify_failure(
             {"status": 401, "headers": {}, "json": None})
-        self.assertEqual((code, err["error"]), (3, "auth_failed"))
+        self.assertEqual((code, err["error"]), (2, "auth_failed"))
         self.assertIsNone(producthunt.classify_failure(
             {"status": 200, "headers": {},
              "json": {"data": {"posts": {"edges": []}}}}))

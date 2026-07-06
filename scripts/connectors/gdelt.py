@@ -82,11 +82,21 @@ def search(query, mode="artlist", days=7, maxrecords=25):
     r = _http.get_text(url, retries=1)  # no auto-retry: respect the 5s ask
     text = (r.get("text") or "").strip()
     # GDELT throttles two ways: a plain-text notice on HTTP 200, or a real 429.
-    if r.get("status") == 429 or (
-            r.get("status") == 200 and text and not text.startswith("{")):
-        return {"error": "rate_limited", "status": r.get("status"),
+    # But GDELT ALSO returns plain-text on 200 for query errors (too-short/invalid
+    # query) — those must not be misreported as throttling.
+    text_notice = r.get("status") == 200 and text and not text.startswith("{")
+    if r.get("status") == 429 or text_notice:
+        low = text.lower()
+        throttle = (r.get("status") == 429 or "too many request" in low
+                    or "wait a few" in low or "exceeded" in low)
+        if throttle:
+            return {"error": "rate_limited", "status": r.get("status"),
+                    "detail": text[:200],
+                    "hint": "GDELT asks for >=5s between requests; wait and retry."}
+        return {"error": "query_error", "status": r.get("status"),
                 "detail": text[:200],
-                "hint": "GDELT asks for >=5s between requests; wait and retry."}
+                "hint": "GDELT returned a plain-text notice — likely an invalid or "
+                        "too-short query, not throttling."}
     try:
         payload = json.loads(text) if text else None
     except ValueError:
