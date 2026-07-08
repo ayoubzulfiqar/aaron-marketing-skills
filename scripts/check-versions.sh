@@ -125,7 +125,23 @@ else
   done
 fi
 
+# ---- 6. every discipline command Route names all its own skills -------------
+# commands/<disc>.md is the human-facing skill catalog for its discipline. ad.md
+# and email.md once listed only 2 of 4 skills per phase (and ad.md's Rules even
+# claimed 3 real skills were "not separate skills"). Assert every skill physically
+# under a discipline dir is named in that discipline's command, so a new skill
+# cannot ship unlisted. (Protocol skills have no dedicated command — exempt.)
+for disc in seo-geo influencer ad email launch social narrative; do
+  cmd="commands/$disc.md"
+  if [ ! -f "$cmd" ]; then err "$cmd missing — the $disc command"; continue; fi
+  while IFS= read -r skill; do
+    [ -n "$skill" ] || continue
+    grep -qw "$skill" "$cmd" \
+      || err "$cmd Route does not name skill '$skill' (command coverage gap)"
+  done < <(find "$disc" -name SKILL.md 2>/dev/null | sed 's#/SKILL.md##; s#.*/##' | sort -u)
+done
+
 if [ $fail -eq 0 ]; then
-  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 8 tracking files + the About SSOT; auto-routing covers all 7 disciplines"
+  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 8 tracking files + the About SSOT; auto-routing covers all 7 disciplines; every discipline command lists its full skill set"
 fi
 exit $fail
