@@ -47,3 +47,6 @@ __pycache__/
 # macOS/iCloud cloud-sync conflict copies (e.g. "SKILL 2.md", ".gitkeep 3")
 * [0-9]
 * [0-9].md
+
+# ClawHub Plugin Inspector output
+reports/
