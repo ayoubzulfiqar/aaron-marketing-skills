@@ -15,10 +15,10 @@
 #    required before publishing — a 403 means complete it in the browser first)
 #
 # Usage:
-#   bash scripts/publish-skillhub.sh --dry-run                # local pre-check, all 69
+#   bash scripts/publish-skillhub.sh --dry-run                # local pre-check, all manifest skills
 #   bash scripts/publish-skillhub.sh --skill keyword-research --dry-run
 #   bash scripts/publish-skillhub.sh                          # publish all (changelog 首次发布)
-#   bash scripts/publish-skillhub.sh --changelog "v12.7.0 更新说明"
+#   bash scripts/publish-skillhub.sh --changelog "v16.0.3 更新说明"
 #
 # Exit: 0 all requested skills processed, 1 on any failure.
 

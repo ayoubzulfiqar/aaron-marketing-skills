@@ -29,6 +29,7 @@ import appstore  # noqa: E402
 import bluesky  # noqa: E402
 import fediverse  # noqa: E402
 import discourse  # noqa: E402
+import experiment  # noqa: E402
 import datetime as _dt  # noqa: E402
 
 
@@ -676,6 +677,187 @@ class DiscourseTests(unittest.TestCase):
         self.assertEqual(out["rows_counted"], 3)
         self.assertEqual(out["trust_level_distribution"]["2_member"], 2)
         self.assertEqual(out["trust_level_distribution"]["0_new"], 1)
+
+
+class ExperimentTests(unittest.TestCase):
+    """Statistical correctness against known values (pure math, no network)."""
+
+    def test_normal_helpers(self):
+        self.assertAlmostEqual(experiment.norm_ppf(0.975), 1.959963985, places=6)
+        self.assertAlmostEqual(experiment.norm_ppf(0.8), 0.841621234, places=6)
+        self.assertAlmostEqual(experiment.norm_cdf(1.959963985), 0.975, places=6)
+        for bad in (0.0, 1.0, -0.1, 1.1):
+            with self.assertRaises(ValueError):
+                experiment.norm_ppf(bad)
+
+    def test_two_proportion_textbook(self):
+        r = experiment.two_proportion(100, 1000, 130, 1000)
+        self.assertAlmostEqual(r["z"], 2.1027, places=3)
+        self.assertAlmostEqual(r["p_value"], 0.0355, places=3)
+        self.assertTrue(r["significant"])
+        self.assertTrue(r["promote"])              # +30% lift, min_lift 0
+        self.assertAlmostEqual(r["relative_lift"], 0.30, places=6)
+
+    def test_promote_requires_both_gates(self):
+        # significant but lift below threshold -> no promote
+        r = experiment.two_proportion(100, 1000, 130, 1000, min_lift=0.40)
+        self.assertTrue(r["significant"])
+        self.assertFalse(r["promote"])
+        # equal rates -> not significant, p == 1.0
+        r0 = experiment.two_proportion(100, 1000, 100, 1000)
+        self.assertFalse(r0["significant"])
+        self.assertAlmostEqual(r0["p_value"], 1.0, places=6)
+        # bad input
+        with self.assertRaises(ValueError):
+            experiment.two_proportion(100, 50, 10, 100)   # conv > n
+
+    def test_wilson_interval(self):
+        lo, hi = experiment.wilson_interval(50, 100)
+        self.assertAlmostEqual(lo, 0.404, places=2)
+        self.assertAlmostEqual(hi, 0.596, places=2)
+        self.assertEqual(experiment.wilson_interval(0, 0), (0.0, 0.0))
+
+    def test_mann_whitney(self):
+        sep = experiment.mann_whitney(list(range(1, 9)), list(range(9, 17)))
+        self.assertEqual(sep["u"], 0.0)
+        self.assertTrue(sep["p_value"] < 0.05)
+        same = experiment.mann_whitney([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+        self.assertEqual(same["u"], 12.5)
+        self.assertGreater(same["p_value"], 0.5)
+        with self.assertRaises(ValueError):
+            experiment.mann_whitney([], [1])
+
+    def test_sample_size_roundtrip(self):
+        ss = experiment.sample_size(0.10, 0.02)
+        self.assertTrue(3000 < ss["n_per_variant"] < 4500)
+        mde = experiment.min_detectable_effect(0.10, ss["n_per_variant"])
+        self.assertAlmostEqual(mde["mde_absolute"], 0.02, places=3)
+
+    def test_bootstrap_deterministic(self):
+        a, b = [1, 2, 3, 4, 5], [3, 4, 5, 6, 7]
+        r1 = experiment.bootstrap_diff(a, b, seed=0)
+        r2 = experiment.bootstrap_diff(a, b, seed=0)
+        self.assertEqual(r1["ci"], r2["ci"])            # deterministic given seed
+        self.assertAlmostEqual(r1["point_estimate"], 2.0, places=6)
+
+    def test_edge_case_validation(self):
+        # out-of-range alpha raises (was: crash / inverted CI / trivially significant)
+        for bad in (0.0, 1.0, 1.5, -0.1):
+            with self.assertRaises(ValueError):
+                experiment.two_proportion(100, 1000, 130, 1000, alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.mann_whitney([1, 2, 3], [4, 5, 6], alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.bootstrap_diff([1, 2, 3], [4, 5, 6], alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.sample_size(0.10, 0.02, alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.min_detectable_effect(0.10, 4000, alpha=bad)
+        with self.assertRaises(ValueError):        # B<1 was an IndexError on empty diffs
+            experiment.bootstrap_diff([1, 2, 3], [4, 5, 6], B=0)
+        with self.assertRaises(ValueError):
+            experiment.two_proportion(100, 1000, 130, 1000, min_lift=-0.01)
+        for bad_power in (0.0, 1.0, 1.2, -0.1):
+            with self.assertRaises(ValueError):
+                experiment.sample_size(0.10, 0.02, power=bad_power)
+            with self.assertRaises(ValueError):
+                experiment.min_detectable_effect(0.10, 4000, power=bad_power)
+
+    def test_zero_control_conversions(self):
+        # 0% -> 5% is an unbounded relative lift: promote when significant, no crash
+        r = experiment.two_proportion(0, 1000, 50, 1000)
+        self.assertTrue(r["significant"])
+        self.assertTrue(r["promote"])
+        self.assertIsNone(r["relative_lift"])
+        self.assertIn("infinite", r["reason"])
+        z = experiment.two_proportion(0, 1000, 0, 1000)   # both arms zero -> no promote
+        self.assertFalse(z["promote"])
+
+    def test_degenerate_bootstrap_not_significant(self):
+        # n=1 per arm: CI collapses to a point -> must NOT be read as significant
+        boot = experiment.bootstrap_diff([5], [9])
+        self.assertFalse(boot["reliable"])
+        self.assertFalse(boot["excludes_zero"])
+
+    def test_norm_ppf_tail_branches(self):
+        # Force Acklam's low/high-tail branches (p < 0.02425 / p > 0.97575), which use
+        # a different coefficient set than the central branch the other tests hit.
+        self.assertAlmostEqual(experiment.norm_ppf(0.001), -3.090232306, places=5)
+        self.assertAlmostEqual(experiment.norm_ppf(0.999), 3.090232306, places=5)
+        # symmetry across both tails
+        self.assertAlmostEqual(experiment.norm_ppf(0.001), -experiment.norm_ppf(0.999), places=6)
+
+    def test_mann_whitney_tie_correction(self):
+        # A tie-heavy, asymmetric input where the tie correction actually moves the
+        # answer — pins tie_term AND the continuity-correction sign together. A version
+        # that drops the tie term (or flips the sign) fails this.
+        r = experiment.mann_whitney([1, 1, 2, 3], [2, 3, 4, 4])
+        self.assertAlmostEqual(r["z"], -1.6269, places=4)
+        self.assertAlmostEqual(r["p_value"], 0.1038, places=4)
+        # same shape with no ties gives a materially different (more significant) result
+        r_notie = experiment.mann_whitney([1, 2, 3, 4], [5, 6, 7, 8])
+        self.assertLess(r_notie["p_value"], r["p_value"])
+
+    def test_bootstrap_median_path(self):
+        # Exercises the stat='median' branch (agg=_median) through the resampling loop.
+        b = experiment.bootstrap_diff([1, 2, 3, 4, 5], [10, 20, 30, 40, 50],
+                                      stat="median", seed=0)
+        self.assertEqual(b["statistic"], "median")
+        self.assertAlmostEqual(b["point_estimate"], 27.0, places=6)  # median(b)-median(a)=30-3
+        b2 = experiment.bootstrap_diff([1, 2, 3, 4, 5], [10, 20, 30, 40, 50],
+                                       stat="median", seed=0)
+        self.assertEqual(b["ci"], b2["ci"])              # deterministic given seed
+
+    def test_cli_main(self):
+        # The user-facing CLI (main/build_parser/_floats/dispatch) — untested by the
+        # direct-function cases above. Capture stdout so the run stays quiet.
+        import io
+        import contextlib
+
+        def run(argv):
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = experiment.main(argv)
+            return rc, buf.getvalue()
+
+        rc, out = run(["proportion", "--control", "100", "1000", "--variant", "130", "1000"])
+        self.assertEqual(rc, 0)
+        self.assertIn("promote", out)                     # JSON assembled + printed
+        rc, out = run(["continuous", "--a", "1,2,3", "--b", "10,20,30",
+                       "--stat", "median", "--seed", "0"])
+        self.assertEqual(rc, 0)
+        self.assertIn("mann_whitney", out)                # continuous combines MW + bootstrap
+        rc, _ = run(["samplesize", "--baseline", "0.10", "--mde", "0.02"])
+        self.assertEqual(rc, 0)
+        # neither --mde nor --n -> documented exit-1 branch (message goes to stderr)
+        with contextlib.redirect_stderr(io.StringIO()):
+            rc, _ = run(["samplesize", "--baseline", "0.10"])
+        self.assertEqual(rc, 1)
+        # bad input -> ValueError caught -> exit 1
+        with contextlib.redirect_stderr(io.StringIO()):
+            rc, _ = run(["proportion", "--control", "100", "50", "--variant", "10", "100"])
+        self.assertEqual(rc, 1)
+
+    def test_significant_regression_wording(self):
+        # A significant loss must be called a REGRESSION, not framed like a near-miss win.
+        r = experiment.two_proportion(130, 1000, 100, 1000)
+        self.assertTrue(r["significant"])
+        self.assertFalse(r["promote"])
+        self.assertLess(r["relative_lift"], 0)
+        self.assertIn("REGRESSION", r["reason"])
+        # a significant BUT immaterial positive lift keeps the "does not clear" wording
+        pos = experiment.two_proportion(100, 1000, 130, 1000, min_lift=0.5)
+        self.assertTrue(pos["significant"])
+        self.assertFalse(pos["promote"])
+        self.assertNotIn("REGRESSION", pos["reason"])
+
+    def test_output_notes_carry_caveats(self):
+        # The overlapping-CI and no-peeking caveats must be in the emitted notes.
+        prop = experiment.two_proportion(100, 1000, 130, 1000)
+        self.assertIn("do NOT imply non-significance", prop["note"])
+        self.assertIn("peeking", prop["note"])
+        cont = experiment.mann_whitney([1, 2, 3, 4], [5, 6, 7, 8])
+        self.assertIn("peeking", cont["note"])
 
 
 if __name__ == "__main__":

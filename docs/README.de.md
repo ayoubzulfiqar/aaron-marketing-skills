@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills"><img src="https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.2-orange" alt="Version"></a>
+  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.3-orange" alt="Version"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main"><img src="https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills" alt="Last Commit"></a>
 </p>
@@ -93,7 +93,7 @@ Nutze es mit Claude Code, jedem Agent-Skills-kompatiblen Host oder einem einfach
 |------|---------|
 | **Claude Code** | `/plugin marketplace add aaron-he-zhu/aaron-marketing-skills` dann `/plugin install aaron-marketing@aaron` |
 | **Codex · Cursor · OpenCode · Antigravity · Gemini CLI · Copilot CLI · OpenClaw · Hermes · [70+ Hosts](https://github.com/vercel-labs/skills#supported-agents)** | `npx skills add aaron-he-zhu/aaron-marketing-skills` |
-| **[SkillHub.cn](https://skillhub.cn) (chinesische Community)** | `skillhub install aaron-<skill-name>` (z. B. `aaron-keyword-research`) |
+| **[SkillHub.cn](https://skillhub.cn) (chinesische Community)** | `skillhub install <frontmatter-slug>` (z. B. `keyword-research`) |
 | **Beliebiger Host** | `git clone https://github.com/aaron-he-zhu/aaron-marketing-skills` |
 
 In Claude Code registriert `marketplace add` nur den Katalog — führe `/plugin install aaron-marketing@aaron` aus (oder wähle es in `/plugin`), um die Skills und Befehle tatsächlich zu aktivieren. Um einen **einzelnen** Skill auf einem generischen Host zu holen: `npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`. Durchstöbere das Bundle in der [skills.sh-Registry](https://skills.sh/aaron-he-zhu/aaron-marketing-skills). Verzeichnisse pro Agent, Frontmatter-Eigenheiten und was außerhalb des Plugins abbaut: [docs/agent-compatibility.md](agent-compatibility.md) (verifiziert 120/120 installierbar, 2026-07).
@@ -143,7 +143,7 @@ Jeder Skill folgt **demselben Aktivierungsvertrag** — sieben Abschnitte in fes
 6. **Instructions** — die nummerierte Methode (behandelt alle Exporte als nicht vertrauenswürdige Eingabe).
 7. **Next Best Skill** — wohin als Nächstes (mit Visited-Set- + Maximaltiefe-Abbruchregeln).
 
-Jeder Skill deklariert außerdem selbst `metadata.discipline` (narrative / seo-geo / influencer / paid / email / launch / social / protocol) und `metadata.phase`, sodass Routing und Clustering einheitlich funktionieren. Der Vertrag ist einmalig in [skill-contract.md](../references/skill-contract.md) dokumentiert; der gemeinsame Cross-Skill-Zustand lebt in [state-model.md](../references/state-model.md).
+Jeder Skill deklariert außerdem selbst `metadata.discipline` (narrative / seo-geo / influencer / ad / email / launch / social / protocol) und `metadata.phase`, sodass Routing und Clustering einheitlich funktionieren. Der Vertrag ist einmalig in [skill-contract.md](../references/skill-contract.md) dokumentiert; der gemeinsame Cross-Skill-Zustand lebt in [state-model.md](../references/state-model.md).
 
 ### Das System: ein Marketing-Betriebssystem aus vier Schichten
 
@@ -662,7 +662,7 @@ Diese Skills unterstützen Brand-Narrative-, SEO/GEO-, Influencer-Marketing-, Pa
 
 Apache License 2.0 — siehe [LICENSE](../LICENSE).
 
-*Zuletzt mit dem englischen README synchronisiert: v16.0.0*
+*Zuletzt mit dem englischen README synchronisiert: v16.0.3*
 
 ## Star History
 

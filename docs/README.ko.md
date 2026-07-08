@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills"><img src="https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.2-orange" alt="Version"></a>
+  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.3-orange" alt="Version"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main"><img src="https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills" alt="Last Commit"></a>
 </p>
@@ -93,7 +93,7 @@ Claude Code, 임의의 Agent Skills 호환 호스트, 또는 단순한 `git clon
 |------|---------|
 | **Claude Code** | `/plugin marketplace add aaron-he-zhu/aaron-marketing-skills` 후 `/plugin install aaron-marketing@aaron` |
 | **Codex · Cursor · OpenCode · Antigravity · Gemini CLI · Copilot CLI · OpenClaw · Hermes · [70+ 호스트](https://github.com/vercel-labs/skills#supported-agents)** | `npx skills add aaron-he-zhu/aaron-marketing-skills` |
-| **[SkillHub.cn](https://skillhub.cn)(중국어 커뮤니티)** | `skillhub install aaron-<skill-name>`(예: `aaron-keyword-research`) |
+| **[SkillHub.cn](https://skillhub.cn)(중국어 커뮤니티)** | `skillhub install <frontmatter-slug>`(예: `keyword-research`) |
 | **임의의 호스트** | `git clone https://github.com/aaron-he-zhu/aaron-marketing-skills` |
 
 Claude Code에서 `marketplace add`는 카탈로그만 등록합니다 — 스킬과 명령어를 실제로 활성화하려면 `/plugin install aaron-marketing@aaron`을 실행(또는 `/plugin`에서 선택)하세요. 범용 호스트에서 **단일** 스킬을 가져오려면: `npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`. 번들은 [skills.sh 레지스트리](https://skills.sh/aaron-he-zhu/aaron-marketing-skills)에서 둘러볼 수 있습니다. 에이전트별 디렉터리, frontmatter 특이점, 플러그인 밖에서 무엇이 저하되는지: [docs/agent-compatibility.md](agent-compatibility.md)(120/120 설치 가능 검증, 2026-07).
@@ -143,7 +143,7 @@ Audit this Google Ads account before I scale — exports attached
 6. **Instructions** — 번호가 매겨진 방법(모든 내보내기를 신뢰할 수 없는 입력으로 취급).
 7. **Next Best Skill** — 다음으로 어디로(visited-set + 최대 깊이 종료 규칙 포함).
 
-각 스킬은 `metadata.discipline`(narrative / seo-geo / influencer / paid / email / launch / social / protocol)과 `metadata.phase`도 스스로 선언하므로 라우팅과 클러스터링이 일관되게 작동합니다. 계약은 [skill-contract.md](../references/skill-contract.md)에 한 번 문서화되고, 스킬 간 공유 상태는 [state-model.md](../references/state-model.md)에 삽니다.
+각 스킬은 `metadata.discipline`(narrative / seo-geo / influencer / ad / email / launch / social / protocol)과 `metadata.phase`도 스스로 선언하므로 라우팅과 클러스터링이 일관되게 작동합니다. 계약은 [skill-contract.md](../references/skill-contract.md)에 한 번 문서화되고, 스킬 간 공유 상태는 [state-model.md](../references/state-model.md)에 삽니다.
 
 ### 시스템: 4계층 마케팅 운영체제
 
@@ -662,7 +662,7 @@ docs/            # 현지화된 README (de, es, fr, it, ja, ko, pt, zh, zh-Hant)
 
 Apache License 2.0 — [LICENSE](../LICENSE) 참조.
 
-*영어 README와 마지막 동기화: v16.0.0*
+*영어 README와 마지막 동기화: v16.0.3*
 
 ## Star History
 
