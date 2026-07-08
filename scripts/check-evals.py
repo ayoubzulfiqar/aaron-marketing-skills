@@ -30,6 +30,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EVALS = os.path.join(ROOT, "evals")
 MANIFEST = os.path.join(EVALS, "structure-manifest.json")
+ROUTING_LIBRARY = os.path.join(ROOT, "references", "auto-routing-scenarios.md")
 
 PHASE_DIRS = [
     "seo-geo/research", "seo-geo/build", "seo-geo/optimize", "seo-geo/monitor", "protocol",   # SEO/GEO
@@ -53,6 +54,25 @@ SCORE_WORD = re.compile(r"score|rating|cvi|rqs|pass[_-]?rate|metric|baseline_sco
 # extraction (first `{` to last `}` on the line) so inner braces like /blog/{slug}
 # inside a case do not confuse detection.
 CASE_LINE = re.compile(r"^\s*-?\s*(\{.*\})\s*$")
+# target_skill is quoted in the routing library ("skill-name") and bare in
+# evals/*/cases.md (skill-name) — tolerate both.
+TARGET_SKILL_RE = re.compile(r'target_skill:\s*"?([A-Za-z0-9_-]+)"?')
+# expected_route is a quoted chain like "/aaron-marketing:ad --phase activate -> ...".
+EXPECTED_ROUTE_RE = re.compile(r'expected_route:\s*"([^"]*)"')
+ROUTE_CMD_RE = re.compile(r'/aaron-marketing:([a-z-]+)(?:\s+--(mode|phase)\s+([a-z-]+))?')
+# Each command's valid selector: SEO/GEO uses --mode, the six others --phase,
+# auto takes neither (only --deep). Guards expected_route against a typo'd command
+# or an invalid/mismatched phase|mode value (e.g. "ad --mode research").
+COMMAND_MODES = {
+    "seo-geo": ("mode", {"research", "create", "audit", "track"}),
+    "influencer": ("phase", {"discover", "plan", "activate", "measure"}),
+    "ad": ("phase", {"research", "orchestrate", "activate", "scale"}),
+    "email": ("phase", {"setup", "engage", "nurture", "deliver"}),
+    "launch": ("phase", {"research", "assemble", "mobilize", "prove"}),
+    "social": ("phase", {"explore", "craft", "host", "observe"}),
+    "narrative": ("phase", {"trace", "architect", "land", "evaluate"}),
+    "auto": (None, set()),
+}
 
 fails = []
 def fail(msg):
@@ -101,6 +121,49 @@ def lint_cases(slug):
 VALID_SLUGS = set(discover_skills())
 
 
+def lint_routing_library():
+    """Guard the /aaron-marketing:auto routing library against skill-rename drift.
+
+    references/auto-routing-scenarios.md is a SECOND place that names skills by
+    slug (target_skill). check-evals otherwise only lints evals/<slug>/cases.md,
+    so a renamed or deleted skill used to leave a dangling routing target with NO
+    CI failure — the same drift class that once silently froze the library at the
+    v12 four-discipline era. Assert every target_skill in the library resolves to
+    a real skill. (Per-discipline coverage is guarded separately by
+    check-versions.sh; this guards slug validity.)
+    """
+    if not os.path.isfile(ROUTING_LIBRARY):
+        fail("references/auto-routing-scenarios.md missing — the /aaron-marketing:auto routing library")
+        return
+    text = open(ROUTING_LIBRARY, encoding="utf-8").read()
+    seen = 0
+    for i, line in enumerate(text.splitlines(), 1):
+        if not CASE_LINE.match(line):
+            continue
+        m = TARGET_SKILL_RE.search(line)
+        if not m:
+            fail("auto-routing-scenarios.md line %d: routing case has no target_skill" % i)
+            continue
+        seen += 1
+        if m.group(1) not in VALID_SLUGS:
+            fail("auto-routing-scenarios.md line %d: target_skill '%s' is not a real skill"
+                 % (i, m.group(1)))
+        er = EXPECTED_ROUTE_RE.search(line)
+        if er:
+            for mm in ROUTE_CMD_RE.finditer(er.group(1)):
+                cmd, flag, val = mm.group(1), mm.group(2), mm.group(3)
+                spec = COMMAND_MODES.get(cmd)
+                if spec is None:
+                    fail("auto-routing-scenarios.md line %d: expected_route names unknown "
+                         "command '/aaron-marketing:%s'" % (i, cmd))
+                    continue
+                exp_flag, allowed = spec
+                if flag and (flag != exp_flag or val not in allowed):
+                    fail("auto-routing-scenarios.md line %d: expected_route '--%s %s' is not "
+                         "valid for /aaron-marketing:%s" % (i, flag, val, cmd))
+    print("== routing-library lint: %d routing cases, target_skill + expected_route checked ==" % seen)
+
+
 def build_manifest():
     return {
         "skills": sorted(VALID_SLUGS),
@@ -119,6 +182,8 @@ def main():
         fail("skill '%s' has no evals/%s/cases.md (presence gate)" % (s, s))
 
     print("== eval structural lint: %d skills, %d with cases.md ==" % (len(VALID_SLUGS), len(present)))
+
+    lint_routing_library()
 
     if update:
         # Fail CLOSED: never write the regression baseline from a failing lint —

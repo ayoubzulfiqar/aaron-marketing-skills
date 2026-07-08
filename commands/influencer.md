@@ -5,7 +5,7 @@ argument-hint: "<goal-or-brand> [--phase discover|plan|activate|measure]"
 
 # Influencer Command
 
-Run the influencer-marketing lifecycle: understand the audience, find and score creators, plan and brief the campaign, run outreach, amplify and convert, then track ROI. Skills score on the [C³ framework](../references/c3-benchmark.md).
+Run the influencer-marketing lifecycle across four phases — **Discover → Plan → Activate → Measure**: understand the audience, find and score creators, plan and brief the campaign, run outreach and amplify, then track ROI. Skills score on the [C³ framework](../references/c3-benchmark.md) (Creator / Content / Campaign → CVI) and operate from the user's **own data and project memory** — keyed creator-analytics suites are never required; connectors only automate retrieval.
 
 ## Route
 
