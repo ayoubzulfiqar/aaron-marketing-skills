@@ -60,6 +60,9 @@ else
   grep -q "Current bundle version: \`$BUNDLE\`" CLAUDE.md || err "CLAUDE.md bundle declaration != $BUNDLE"
   grep -q "^\*\*Current release\*\*: \`$BUNDLE\`" VERSIONS.md || err "VERSIONS.md 'Current release' line != $BUNDLE"
   grep -q "^### v$BUNDLE " VERSIONS.md || err "VERSIONS.md changelog entry '### v$BUNDLE …' missing"
+  # openclaw.plugin.json is the OpenClaw bundle-plugin manifest (ClawHub package publish).
+  # It carries the bundle version too — keep it in the version-lock so it can't drift.
+  [ -f openclaw.plugin.json ] && { grep -q "\"version\": \"$BUNDLE\"" openclaw.plugin.json || err "openclaw.plugin.json version != $BUNDLE"; }
 fi
 
 # ---- 2. per-skill sync ------------------------------------------------------
