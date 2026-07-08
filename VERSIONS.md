@@ -2,7 +2,7 @@
 
 Current versions for the plugin and all 120 skills. Agents can fetch this file from `https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/VERSIONS.md` once per session.
 
-**Current release**: `16.0.2` (2026-07-07). Connector-robustness tail — clears the deferred LOW/NIT connector/toolchain robustness findings from the v16 review (51 edge-case fixes across 30 files), each independently adversarially accepted (the acceptance pass caught + fixed 3 regressions the fix pass introduced). **No skills changed** — all 120 keep their prior versions; connector/guard code only.
+**Current release**: `16.0.3` (2026-07-07). Adds the first compute-class connector `scripts/connectors/experiment.py` — keyless pure-stdlib **statistical significance** for A/B tests on your own counts (two-proportion z-test + Wilson CI + promote decision, Mann-Whitney U + bootstrap CI, sample-size/MDE; verified against textbook values), the piece the *-test-designer skills lacked. Wired into 5 test/measurement skills so a winner is called on evidence, not a raw delta — no new skill, no key. Also wires the existing anti-slop self-check into 3 copy skills that were missing it. **No skills added/removed** (still 120); 8 skills bumped to `16.0.3`.
 
 ## Skills
 
@@ -45,14 +45,14 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | search-term-miner | paid | 16.0.0 | 2026-07-05 |
 | product-feed-optimizer | paid | 16.0.0 | 2026-07-05 |
 | ad-creative-builder | paid | 16.0.0 | 2026-07-05 |
-| ad-test-designer | paid | 16.0.0 | 2026-07-05 |
+| ad-test-designer | paid | 16.0.3 | 2026-07-07 |
 | bid-strategy-planner | paid | 16.0.0 | 2026-07-05 |
 | landing-experience-checker | paid | 16.0.0 | 2026-07-05 |
 | ad-account-auditor | paid | 16.0.0 | 2026-07-05 |
 | conversion-signal-qa | paid | 16.0.0 | 2026-07-05 |
 | placement-exclusion-manager | paid | 16.0.0 | 2026-07-05 |
 | conversion-value-mapper | paid | 16.0.0 | 2026-07-05 |
-| paid-measurement-loop | paid | 16.0.0 | 2026-07-05 |
+| paid-measurement-loop | paid | 16.0.3 | 2026-07-07 |
 | attribution-reconciler | paid | 16.0.0 | 2026-07-05 |
 | budget-pacing-monitor | paid | 16.0.0 | 2026-07-05 |
 | fatigue-frequency-manager | paid | 16.0.0 | 2026-07-05 |
@@ -69,7 +69,7 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | preference-frequency-manager | email | 16.0.0 | 2026-07-05 |
 | reactivation-specialist | email | 16.0.0 | 2026-07-05 |
 | email-quality-auditor | email | 16.0.0 | 2026-07-05 |
-| send-experiment-designer | email | 16.0.0 | 2026-07-05 |
+| send-experiment-designer | email | 16.0.3 | 2026-07-07 |
 | inbox-placement-monitor | email | 16.0.0 | 2026-07-05 |
 | cold-outbound-sequencer | email | 16.0.0 | 2026-07-05 |
 | positioning-mapper | launch | 16.0.0 | 2026-07-05 |
@@ -94,7 +94,7 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | participation-warmup-planner | explore | 16.0.0 | 2026-07-05 |
 | social-calendar-builder | craft | 16.0.0 | 2026-07-05 |
 | social-creative-builder | craft | 16.0.0 | 2026-07-05 |
-| short-video-scripter | craft | 16.0.0 | 2026-07-05 |
+| short-video-scripter | craft | 16.0.3 | 2026-07-07 |
 | advocacy-program-designer | craft | 16.0.0 | 2026-07-05 |
 | social-quality-auditor | host | 16.0.0 | 2026-07-05 |
 | engagement-inbox-manager | host | 16.0.0 | 2026-07-05 |
@@ -103,7 +103,7 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | social-pulse-monitor | observe | 16.0.0 | 2026-07-05 |
 | share-of-voice-tracker | observe | 16.0.0 | 2026-07-05 |
 | dark-social-attributor | observe | 16.0.0 | 2026-07-05 |
-| social-measurement-loop | observe | 16.0.0 | 2026-07-05 |
+| social-measurement-loop | observe | 16.0.3 | 2026-07-07 |
 | entity-optimizer | protocol | 16.0.1 | 2026-07-07 |
 | creator-registry | protocol | 16.0.0 | 2026-07-05 |
 | offer-claims-registry | protocol | 16.0.0 | 2026-07-05 |
@@ -116,20 +116,28 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 | audience-belief-mapper | trace | 16.0.0 | 2026-07-05 |
 | positioning-truth-tracer | trace | 16.0.0 | 2026-07-05 |
 | strategic-narrative-designer | architect | 16.0.0 | 2026-07-05 |
-| message-system-architect | architect | 16.0.0 | 2026-07-05 |
+| message-system-architect | architect | 16.0.3 | 2026-07-07 |
 | brand-language-codifier | architect | 16.0.0 | 2026-07-05 |
 | story-bank-builder | architect | 16.0.0 | 2026-07-05 |
 | narrative-cascade-planner | land | 16.0.0 | 2026-07-05 |
-| pitch-narrative-builder | land | 16.0.0 | 2026-07-05 |
+| pitch-narrative-builder | land | 16.0.3 | 2026-07-07 |
 | narrative-enablement-kit | land | 16.0.0 | 2026-07-05 |
 | proof-point-packager | land | 16.0.0 | 2026-07-05 |
 | narrative-quality-auditor | evaluate | 16.0.0 | 2026-07-05 |
-| message-test-designer | evaluate | 16.0.0 | 2026-07-05 |
+| message-test-designer | evaluate | 16.0.3 | 2026-07-07 |
 | narrative-resonance-monitor | evaluate | 16.0.0 | 2026-07-05 |
 | narrative-drift-monitor | evaluate | 16.0.0 | 2026-07-05 |
 | narrative-registry | protocol | 16.0.0 | 2026-07-05 |
 
 ## Changelog
+
+### v16.0.3 — Significance connector: closes the design->measure loop (2026-07-07)
+
+Adds the first **compute-class** connector, `scripts/connectors/experiment.py` — keyless, pure-Python-stdlib statistical significance for marketing A/B tests on the user's own counts: two-proportion z-test + Wilson CIs + a **promote** decision (significant AND relative lift >= threshold), Mann-Whitney U + bootstrap CI for continuous metrics, and sample-size / min-detectable-effect. Verified against textbook values (16 unit tests in `tests/test_connectors_local.py`).
+
+- **Closes a real loop.** The discipline's *-test-designer skills DESIGNED A/B / hold-out / send-time tests but nothing computed whether a result was real. `experiment.py` is wired into `ad-test-designer`, `send-experiment-designer`, `message-test-designer`, `paid-measurement-loop`, and `social-measurement-loop` — a winner is now called on evidence, not a raw delta. No new skill, no external tool, no key (Tier-1).
+- **Anti-slop wiring.** The existing `references/humanizer-slop.md` self-check is now also referenced by `message-system-architect`, `pitch-narrative-builder`, and `short-video-scripter` (three copy-producing skills that were missing it).
+- No skills added or removed (still 120); the 8 touched skills bump to `16.0.3`, the rest unchanged.
 
 ### v16.0.2 — Connector-robustness tail (2026-07-07)
 

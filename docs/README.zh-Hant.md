@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills"><img src="https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.2-orange" alt="Version"></a>
+  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.3-orange" alt="Version"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main"><img src="https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills" alt="Last Commit"></a>
 </p>
@@ -93,7 +93,7 @@
 |------|------|
 | **Claude Code** | `/plugin marketplace add aaron-he-zhu/aaron-marketing-skills` 然後 `/plugin install aaron-marketing@aaron` |
 | **Codex · Cursor · OpenCode · Antigravity · Gemini CLI · Copilot CLI · OpenClaw · Hermes · [70+ 宿主](https://github.com/vercel-labs/skills#supported-agents)** | `npx skills add aaron-he-zhu/aaron-marketing-skills` |
-| **[SkillHub.cn](https://skillhub.cn)（中文社群）** | `skillhub install aaron-<技能名>`（如 `aaron-keyword-research`） |
+| **[SkillHub.cn](https://skillhub.cn)（中文社群）** | `skillhub install <frontmatter-slug>`（如 `keyword-research`） |
 | **任意宿主** | `git clone https://github.com/aaron-he-zhu/aaron-marketing-skills` |
 
 在 Claude Code 中，`marketplace add` 只是註冊目錄——還需執行 `/plugin install aaron-marketing@aaron`（或在 `/plugin` 中選擇）才能真正啟用技能與命令。通用宿主單技能安裝：`npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`。可在 [skills.sh 註冊表](https://skills.sh/aaron-he-zhu/aaron-marketing-skills)瀏覽本技能庫。各宿主的技能目錄、frontmatter 相容細節、以及脫離外掛安裝時的降級行為見 [docs/agent-compatibility.md](agent-compatibility.md)（2026-07 實測 120/120 可安裝）。
@@ -143,7 +143,7 @@
 6. **Instructions** —— 編號方法（把所有匯出當作不可信輸入）。
 7. **Next Best Skill** —— 下一步去哪（帶 visited-set + 最大深度終止規則）。
 
-每個技能還自帶 `metadata.discipline`（narrative / seo-geo / influencer / paid / email / launch / social / protocol）與 `metadata.phase`，路由與聚類因此全庫統一。契約在 [skill-contract.md](../references/skill-contract.md) 中定義一次；跨技能共享狀態見 [state-model.md](../references/state-model.md)。
+每個技能還自帶 `metadata.discipline`（narrative / seo-geo / influencer / ad / email / launch / social / protocol）與 `metadata.phase`，路由與聚類因此全庫統一。契約在 [skill-contract.md](../references/skill-contract.md) 中定義一次；跨技能共享狀態見 [state-model.md](../references/state-model.md)。
 
 ### 系統：四層行銷作業系統
 
@@ -662,7 +662,7 @@ docs/            # 在地化 README（zh）
 
 Apache License 2.0 —— 見 [LICENSE](../LICENSE)。
 
-*最後同步英文 README：v16.0.0*
+*最後同步英文 README：v16.0.3*
 
 ## Star History
 

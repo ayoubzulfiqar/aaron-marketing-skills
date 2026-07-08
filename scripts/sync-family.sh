@@ -16,7 +16,8 @@
 #          published standard; never auto-pushed (manual reconciliation)
 #
 # Owner-run at release time (CONTRIBUTING §6). CI (family-drift.yml) runs the dry-run
-# weekly — read-only raw.githubusercontent fetches, no auth, no push.
+# weekly — read-only GitHub Contents API fetches (token-authenticated when GITHUB_TOKEN
+# is present to clear the 60 req/hr unauthenticated cap), no push.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -32,7 +33,19 @@ trap 'rm -rf "$TMP"' EXIT
 DRIFT=0
 
 fetch_raw() { # $1 repo, $2 file → stdout (fails silently; caller checks)
-  curl -fsSL "https://raw.githubusercontent.com/$OWNER/$1/main/$2"
+  # Use the GitHub Contents API raw media response instead of raw.githubusercontent:
+  # right after --live pushes, raw.githubusercontent can serve a stale cached blob
+  # and make the owner-run verification look drifted even when the repo is synced.
+  # The UNAUTHENTICATED Contents API is only 60 req/hr per IP — on shared-IP CI runners
+  # that budget can already be spent by other jobs, and a 403 then reads as "repo
+  # missing/drifted" (a false CI failure). Pass a token when one is present (Actions
+  # always provides GITHUB_TOKEN) to raise the limit to 5,000/hr.
+  local url="https://api.github.com/repos/$OWNER/$1/contents/$2?ref=main"
+  if [ -n "${GITHUB_TOKEN:-}" ]; then
+    curl -fsSL -H "Authorization: Bearer $GITHUB_TOKEN" -H 'Accept: application/vnd.github.raw' "$url"
+  else
+    curl -fsSL -H 'Accept: application/vnd.github.raw' "$url"
+  fi
 }
 
 between_markers() { awk '/<!-- SYNC:BEGIN/{f=1;next} /<!-- SYNC:END/{f=0} f'; }
@@ -89,7 +102,9 @@ check_marker_target() { # $1 repo, $2 source label, $3 generated-body file
   echo "✗ $repo — DRIFT (remote vs regenerated):"
   diff "$TMP/$repo.remote-body" "$gen" | head -40 || true
   DRIFT=1
-  [ $LIVE -eq 1 ] && push_marker_target "$repo" "$src" "$gen"
+  if [ $LIVE -eq 1 ]; then
+    push_marker_target "$repo" "$src" "$gen"
+  fi
 }
 
 push_marker_target() { # $1 repo, $2 source label, $3 generated-body file
