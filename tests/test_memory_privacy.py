@@ -71,10 +71,25 @@ class MemoryPrivacyTests(unittest.TestCase):
             with self.assertRaisesRegex(self.module.PrivacyError, "tracked or is not ignored"):
                 self.module.require_private_memory_path(root, target)
 
-    def test_escaping_target_is_rejected(self):
+    def test_outside_root_target_is_out_of_jurisdiction(self):
         with tempfile.TemporaryDirectory() as directory:
-            with self.assertRaisesRegex(self.module.PrivacyError, "escapes the project root"):
-                self.module.require_private_memory_path(directory, "../memory/private.md")
+            # A destination outside the project root is not this plugin's
+            # namespace: the preflight must not police it.
+            self.module.require_private_memory_path(directory, "../elsewhere/private.md")
+            self.module.require_private_memory_path(directory, "/tmp/aaron-preflight-probe.md")
+
+    def test_outside_root_alias_into_memory_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "memory").mkdir()
+            with tempfile.TemporaryDirectory() as elsewhere:
+                alias = Path(elsewhere) / "alias"
+                try:
+                    alias.symlink_to(root / "memory", target_is_directory=True)
+                except (OSError, NotImplementedError) as exc:
+                    self.skipTest("symlinks unavailable: %s" % exc)
+                with self.assertRaisesRegex(self.module.PrivacyError, "symlink or alias"):
+                    self.module.require_private_memory_path(root, alias / "hot-cache.md")
 
     def test_symlinked_memory_parent_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -130,6 +145,46 @@ class MemoryPrivacyTests(unittest.TestCase):
             }
             with self.assertRaisesRegex(self.module.PrivacyError, "opaque shell/MCP"):
                 self.module.preflight_hook_input(root, bash)
+
+    def test_hook_input_blocks_memory_namespace_paths_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.git(root, "init", "--quiet")
+            denied = [
+                "cat memory/hot-cache.md > /tmp/x",
+                "tee %s/memory/audit.md" % root,
+                "rm -rf ./memory/",
+            ]
+            for command in denied:
+                payload = {"tool_name": "Bash", "tool_input": {"command": command}}
+                with self.assertRaisesRegex(self.module.PrivacyError, "opaque shell/MCP"):
+                    self.module.preflight_hook_input(root, payload)
+            allowed = [
+                "grep -rn memory README.md",
+                "git log --grep=memory",
+                "echo the in-memory cache design",
+                "python3 -c 'print(\"memory\")'",
+                "sysctl hw.memsize && vm_stat",
+            ]
+            for command in allowed:
+                payload = {"tool_name": "Bash", "tool_input": {"command": command}}
+                self.module.preflight_hook_input(root, payload)
+
+    def test_hook_input_allows_writes_outside_the_project_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.git(root, "init", "--quiet")
+            for tool in ("Write", "Edit"):
+                payload = {
+                    "tool_name": tool,
+                    "tool_input": {"file_path": "/tmp/aaron-scratch/report.md", "content": "x"},
+                }
+                self.module.preflight_hook_input(root, payload)
+            mcp = {
+                "tool_name": "mcp__filesystem__write_file",
+                "tool_input": {"destination": "/tmp/aaron-scratch/out.json", "content": "x"},
+            }
+            self.module.preflight_hook_input(root, mcp)
 
     def test_case_variant_and_symlink_alias_to_memory_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

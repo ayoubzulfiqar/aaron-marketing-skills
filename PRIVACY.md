@@ -14,7 +14,10 @@ model provider, connectors, MCP servers, and storage/sync configuration have the
   host/model under the user's host configuration; this repository does not control that provider.
 - Operational `memory/**` must be outside Git tracking. A full clone ships the ignore rule. In a
   plugin host project, PreToolUse checks exact-path direct writes; opaque shell/MCP memory mutations
-  are unsupported and denied when identifiable. The registry runtime independently checks every
+  are unsupported and denied when identifiable (a memory-namespace path shape or a bare-name variable
+  assignment). The preflight governs only the host project's `memory/` namespace — destinations
+  outside the project root (scratch directories, other repositories) are out of its jurisdiction and
+  pass through. The registry runtime independently checks every
   final, temporary, and lock path immediately around its atomic write. Post-use/failure/batch and
   first-Stop hooks audit existing operational files. Hooks do not edit ignore rules and are not an
   OS sandbox; the staged pre-commit and all-tracked CI scans protect committed Git content from PII,

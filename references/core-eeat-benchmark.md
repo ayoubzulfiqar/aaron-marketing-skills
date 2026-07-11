@@ -184,7 +184,7 @@ Do not use the old unweighted GEO/SEO average as a profile-independent total. Co
 
 ### Veto Items
 
-Failing any veto item activates the Critical Fail Cap. The cap arithmetic and thresholds are defined in [auditor-runbook.md §2](auditor-runbook.md). Do not restate cap numbers here or elsewhere — this file owns the item definitions only.
+Failing any veto item activates the Critical Fail Cap. The cap arithmetic and thresholds are defined in [auditor-runbook.md §4](auditor-runbook.md). Do not restate cap numbers here or elsewhere — this file owns the item definitions only.
 
 | Veto ID | Dimension | Check |
 |---------|-----------|-------|
@@ -192,7 +192,7 @@ Failing any veto item activates the Critical Fail Cap. The cap arithmetic and th
 | **C01** | Contextual Clarity | Clickbait — title promises something the page doesn't deliver |
 | **R10** | Referenceability | Material factual data on the page contradicts itself |
 
-**Single veto fail**: cap applies per [Runbook §2 decision table](auditor-runbook.md).
+**Single veto fail**: cap applies per [Runbook §4 Scoring Semantics](auditor-runbook.md).
 
 **2+ verified veto fails**: the completed audit returns `status: DONE`, `verdict: BLOCK`, and no final score. One verified veto caps the final score at 59. Missing veto evidence is Unknown and does not trigger a veto.
 

@@ -16,18 +16,17 @@ Every skill must:
 
 ## Required Top Sections
 
-Each `SKILL.md` includes:
+Validated by `scripts/validate-skill.sh` in every `SKILL.md`:
 
 - `## Quick Start`
 - `## Skill Contract`
 - `### Handoff Summary`
-- `## Data Sources` or an equivalent evidence section
-- `## Decision Gates`
+- `## Data Sources`
 - `## Instructions`
-- `## Save Results`
+- `## Reference Materials`
 - `## Next Best Skill`
 
-Compact protocol or auditor skills may combine adjacent explanatory sections, but must preserve the contract and handoff headings validated by `scripts/validate-skill.sh`.
+Recommended where they earn their space (not validator-enforced): `## Save Results` for skills that persist WARM artifacts, and `## Decision Gates` where a mid-flow user decision changes the path — most skills fold gate questions into `## Instructions`. Compact protocol or auditor skills may combine adjacent explanatory sections, but must preserve the validated headings above.
 
 ## Frontmatter Fields Reference
 
@@ -56,7 +55,7 @@ Declare:
 - **Done when:** verifiable completion criteria;
 - **Boundary:** what adjacent skills own.
 
-Do not use `Promotes` as a vague permission. State whether the skill writes an authorized WARM artifact, submits `operation: propose`, or performs an owner operation through the registry runtime.
+`**Promotes**` bullets are the fleet's standard label for that statement: each names the concrete WARM artifact(s) written (for example `memory/hot-cache.md`, `memory/open-loops.md`) and what is submitted as `operation: propose` pending-decision items. A bare `Promotes` that names no artifact or registry operation is not a permission.
 
 ### Decision Gates
 

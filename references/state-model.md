@@ -26,7 +26,7 @@ The repository tracks only safe templates and guidance under `memory/`. A full c
 1. One NDJSON stream per registry is canonical.
 2. Every request carries a stable idempotency key, source and observation date, actor, explicit authorization reference, and optional optimistic `expected_revision`.
 3. The runtime assigns monotonic offsets, deterministic event IDs, recorded timestamps, request hashes, and a SHA-256 hash chain.
-4. Ordinary producers may only `propose`. The owner may `accept`, `reject`, `upsert`, or `transition`. `memory-management` may `tombstone` or `erase` with explicit authority.
+4. Ordinary producers may only `propose`. The owner may `accept`, `reject`, `upsert`, or `transition` — exercised outside agent sessions via the Owner Ritual in `references/registry-event-protocol.md`; a proposal waiting on that ritual is a designed state, and builders proceed on `approved-fallback` meanwhile. `memory-management` may `tombstone` or `erase` with explicit authority.
 5. A proposal has no canonical effect until accepted. Rejecting or accepting never deletes the original event.
 6. JSON projections are installed atomically and can be rebuilt from verified history. Human Markdown is a rendering of the projection.
 7. Stale expected revisions fail. A caller must re-read and reconcile; force-overwrite is not a recovery path.

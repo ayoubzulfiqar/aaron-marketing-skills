@@ -117,6 +117,9 @@ The `scripts/connectors/*.py` helpers make outbound HTTP(S) requests through one
 - Host deployment is part of the trust boundary: `AARON_REGISTRY_HOST_KEY` must be injected only by
   a wrapper where the agent cannot inspect the environment or run arbitrary code. Exposing that key
   to an agent-controlled shell lets the agent mint capabilities and voids the authority guarantee.
+  For a solo operator the supported wrapper is the owner's own terminal outside any agent session —
+  the Owner Ritual in `references/registry-event-protocol.md` — with the key held in an OS
+  keychain/secret manager, never in the repository or an agent-visible environment.
 - Consent suppression is intentionally privacy-first and deny-only: any validated producer may add
   suppression, accepting a bounded denial-of-contact risk, but cannot clear state or authorize a
   send. Data-subject erasure requires a separately host-verified, request-bound safety capability.
@@ -127,7 +130,9 @@ The `scripts/connectors/*.py` helpers make outbound HTTP(S) requests through one
   storage-level deletion.
 - Before exact-path direct host-project `memory/**` writes, PreToolUse runs
   `scripts/check-memory-private.py`; opaque shell/MCP memory mutations are unsupported and denied
-  when identifiable. Registry writes repeat exact final/temp/lock checks inside
+  when identifiable (memory-namespace path shape or bare-name variable assignment — the preflight
+  does not police writes outside the host project root). Registry writes repeat exact
+  final/temp/lock checks inside
   `registry-events.py`. PostToolUse, PostToolUseFailure, PostToolBatch, and Stop audit every existing
   operational-memory file for tracked/unignored or unsafe state. Runtime memory is not encrypted;
   use an encrypted/private storage boundary when needed.

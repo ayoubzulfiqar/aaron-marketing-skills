@@ -48,15 +48,34 @@ else
   done
   catalog_bundle=$(sed -n 's/.*"bundle_version": "\([0-9][0-9.]*\)".*/\1/p' references/system-catalog.json | head -1)
   [ "$catalog_bundle" = "$BUNDLE" ] || err "references/system-catalog.json bundle_version $catalog_bundle != bundle $BUNDLE"
+  framework_catalog=$(sed -n 's/.*"catalog_version": "\([0-9][0-9.]*\)".*/\1/p' references/framework-catalog.json | head -1)
+  if [ -z "$framework_catalog" ]; then
+    err "references/framework-catalog.json has no readable \"catalog_version\" (bundle-sync cannot verify)"
+  else
+    [ "$framework_catalog" = "$BUNDLE" ] || err "references/framework-catalog.json catalog_version $framework_catalog != bundle $BUNDLE"
+  fi
   grep -q "version-$BUNDLE-orange" README.md || err "README.md badge != $BUNDLE"
   grep -q "version-$BUNDLE-orange" docs/README.zh.md || err "docs/README.zh.md badge != $BUNDLE"
   # Full version-lock over the localized README set (owner decision 2026-07-05):
-  # every translated README carries the machine-checkable version badge; the count
-  # words in prose are human-maintained per release.
+  # every translated README carries the machine-checkable version badge AND a
+  # current-bundle prose line — the [VERSIONS.md](…) link line must carry the
+  # backticked bundle version and nothing stale (the v17 review found
+  # translations whose badge was bumped while that line still claimed the
+  # previous bundle); the remaining count words in prose are human-maintained.
+  check_bundle_line() { # $1 file
+    if ! grep -E "VERSIONS\.md\]" "$1" | grep -q "\`$BUNDLE\`"; then
+      err "$1 VERSIONS.md current-bundle line != $BUNDLE"
+    elif grep -E "VERSIONS\.md\]" "$1" | grep -oE '`[0-9]+\.[0-9]+(\.[0-9]+)?`' | grep -v "\`$BUNDLE\`" | grep -q .; then
+      err "$1 VERSIONS.md line carries a non-current bundle version"
+    fi
+  }
+  check_bundle_line README.md
+  check_bundle_line docs/README.zh.md
   for lf in docs/README.de.md docs/README.es.md docs/README.fr.md docs/README.it.md \
             docs/README.ja.md docs/README.ko.md docs/README.pt.md docs/README.zh-Hant.md; do
     [ -f "$lf" ] || { err "$lf missing (localized README set is version-locked)"; continue; }
     grep -q "version-$BUNDLE-orange" "$lf" || err "$lf badge != $BUNDLE"
+    check_bundle_line "$lf"
   done
   grep -q "current bundle: \`$BUNDLE\`" README.md || err "README.md 'current bundle' line != $BUNDLE"
   grep -q "当前包：\`$BUNDLE\`" docs/README.zh.md || err "docs/README.zh.md 当前包 line != $BUNDLE"

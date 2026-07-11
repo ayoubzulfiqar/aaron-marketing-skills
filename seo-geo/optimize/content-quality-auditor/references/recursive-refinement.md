@@ -11,7 +11,7 @@ average away, or override that. A veto-failed page exits the loop immediately wi
 `status: DONE` + `verdict: BLOCK` regardless of how many rounds are left. Run the loop only on pages that
 pass all three veto checks. If a veto appears mid-loop (e.g. a revision introduces a
 mismatched claim), stop the loop and mark BLOCKED. See
-[auditor-runbook.md §2](../../../../references/auditor-runbook.md) for cap and
+[auditor-runbook.md §4](../../../../references/auditor-runbook.md) for cap and
 veto handling.
 
 ## Target band

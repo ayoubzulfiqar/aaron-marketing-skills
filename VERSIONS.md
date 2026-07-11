@@ -2,7 +2,7 @@
 
 Current versions for the plugin and all 120 skills. Agents can fetch this file from `https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/VERSIONS.md` once per session.
 
-**Current release**: `17.0.0` (2026-07-10). **Breaking methodology and architecture hardening.** This release secures shared network and memory defaults; makes all eight advisory frameworks typed and executable; replaces destructive registry queues with append-only event streams; separates execution status from gate verdicts; requires explicit Narrative/claims dependencies; and adds deterministic architecture, behavior, link, artifact, privacy, and state conformance. All 120 skills move together because the shared contract changed; no skills were added or removed.
+**Current release**: `17.0.0` (2026-07-11). **Breaking methodology and architecture hardening.** This release secures shared network and memory defaults; makes all eight advisory frameworks typed and executable; replaces destructive registry queues with append-only event streams; separates execution status from gate verdicts; requires explicit Narrative/claims dependencies; and adds deterministic architecture, behavior, link, artifact, privacy, and state conformance. All 120 skills move together because the shared contract changed; no skills were added or removed.
 
 ## Skills
 
@@ -131,9 +131,9 @@ Current versions for the plugin and all 120 skills. Agents can fetch this file f
 
 ## Changelog
 
-### v17.0.0 — Methodology, runtime, and architecture hardening (2026-07-10)
+### v17.0.0 — Methodology, runtime, and architecture hardening (2026-07-11)
 
-Breaking shared-contract release; 120 skills and 8 commands remain unchanged in count.
+Breaking shared-contract release; 120 skills and 8 commands remain unchanged in count. A pre-release full review (6 parallel audit streams) hardened the cut before tagging: the PreToolUse privacy preflight is scoped to the host project's memory/ namespace (destinations outside the project root and non-path uses of the word "memory" pass through; python3-missing degrades instead of refusing everything), canonical registry authority is documented as the owner-run terminal ritual with pending-proposal and post-canonical read semantics, the standalone auditor-runtime returns `verdict: UNDECIDED` + `score_state: NOT_SCORED` with run-schema item states, a low-confidence `SHIP` carries an explicit `confidence_caveat`, the ROAS worked example and stale runbook § pointers were corrected, all nine translated READMEs carry the v17 narrative, and sync-family/publishers gained empty-ID, pushed-state, and dry-run-default guards.
 
 - **Secure-by-default runtime.** Public-only, DNS-pinned direct HTTP transport rejects mixed/private answers and ambient proxy delegation; every redirect is revalidated, decompression and retry waits are bounded, error responses are closed, operational memory is ignored, and expanded PII checks fail closed.
 - **Typed advisory methodology.** One machine-readable catalog and deterministic scorer define strict profile/context identity, applicability, Unknown/N/A, evidence provenance, 100% comparable coverage, confidence, lifecycle units, a universal 59 veto ceiling, and orthogonal status/verdict semantics across all eight frameworks. C³ adds typed multi-ACE budget weighting, equal-weight ART aggregation, one ROI scope, and cross-component identity checks.

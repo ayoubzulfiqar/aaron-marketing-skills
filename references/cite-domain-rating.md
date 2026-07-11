@@ -151,7 +151,7 @@ Applicable but unobserved items are `unknown`; omitted items are also `unknown`.
 
 ### Veto Items
 
-Failing any veto item activates the Critical Fail Cap. The cap arithmetic and thresholds are defined in [auditor-runbook.md §2](auditor-runbook.md). Do not restate cap numbers here or elsewhere — this file owns the item definitions only.
+Failing any veto item activates the Critical Fail Cap. The cap arithmetic and thresholds are defined in [auditor-runbook.md §4](auditor-runbook.md). Do not restate cap numbers here or elsewhere — this file owns the item definitions only.
 
 | Veto ID | Dimension | Check |
 |---------|-----------|-------|
@@ -159,7 +159,7 @@ Failing any veto item activates the Critical Fail Cap. The cap arithmetic and th
 | **T05** | Trust | Verified backlink manipulation network after common-source and ecosystem adjustment |
 | **T09** | Trust | Verified active manual action or material deindexing |
 
-**Single veto fail**: cap applies per [Runbook §2 decision table](auditor-runbook.md). Also raises a **Manipulation Alert** in the handoff `open_loops` field.
+**Single veto fail**: cap applies per [Runbook §4 Scoring Semantics](auditor-runbook.md). Also raises a **Manipulation Alert** in the handoff `open_loops` field.
 
 **2+ verified veto fails**: the completed audit returns `status: DONE`, `verdict: BLOCK`, and no final score. One verified veto caps the final score at 59. Missing cohort/private-console evidence remains Unknown and does not trigger a veto.
 

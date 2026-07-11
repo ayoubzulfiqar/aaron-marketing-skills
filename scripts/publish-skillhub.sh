@@ -15,10 +15,10 @@
 #    required before publishing — a 403 means complete it in the browser first)
 #
 # Usage:
-#   bash scripts/publish-skillhub.sh --dry-run                # local pre-check, all manifest skills
-#   bash scripts/publish-skillhub.sh --skill keyword-research --dry-run
-#   bash scripts/publish-skillhub.sh                          # publish all (changelog 首次发布)
-#   bash scripts/publish-skillhub.sh --changelog "v16.0.3 更新说明"
+#   bash scripts/publish-skillhub.sh                          # dry-run (default): local pre-check, all manifest skills
+#   bash scripts/publish-skillhub.sh --skill keyword-research # dry-run one skill
+#   bash scripts/publish-skillhub.sh --live                   # publish all (changelog 首次发布)
+#   bash scripts/publish-skillhub.sh --live --changelog "v17.0.0 更新说明"
 #
 # Exit: 0 all requested skills processed, 1 on any failure.
 
@@ -26,13 +26,14 @@ set -u
 cd "$(cd "$(dirname "$0")/.." && pwd)"
 
 HOST="https://api.skillhub.cn"
-DRY_RUN=0
+DRY_RUN=1         # dry-run by default, like every other publisher; --live to upload
 ONLY_SKILL=""
 CHANGELOG="首次发布"
 THROTTLE=25       # seconds between real publishes (platform rate-limits bursts)
 RESUME_FROM=""    # skip manifest entries until this skill name (inclusive start)
 while [ $# -gt 0 ]; do
   case "$1" in
+    --live) DRY_RUN=0 ;;
     --dry-run) DRY_RUN=1 ;;
     --skill) shift; ONLY_SKILL="${1:-}" ;;
     --changelog) shift; CHANGELOG="${1:-}" ;;

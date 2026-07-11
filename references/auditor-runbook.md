@@ -151,6 +151,7 @@ Rules:
 - Two or more vetoes omit final score and use `cap_applied: false`.
 - `NOT_SCORED` omits both scores and uses `score_confidence: not_scored`.
 - `SHIP` requires `raw_overall_score >= 75`; a lower zero-veto score is `FIX`.
+- A `SHIP` with `score_confidence: low` carries the scorer's `confidence_caveat`; the handoff summary's first line leads with it and the verdict is provisional until stronger evidence lands.
 
 Validate before reporting success:
 

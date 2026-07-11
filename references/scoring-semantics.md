@@ -70,6 +70,8 @@ The common descriptive bands are Excellent 90–100, Good 75–89, Medium 60–7
 | Exactly one failed veto | `DONE_WITH_CONCERNS` | `FIX` | `min(raw, 59)` |
 | Two or more failed vetoes | `DONE` | `BLOCK` | Not emitted |
 | Two or more verified vetoes, with other applicable gaps | `DONE` | `BLOCK` | Not emitted (`NOT_SCORED`) |
+
+A `SHIP` whose `score_confidence` is `low` additionally carries a `confidence_caveat` string in the run output: the evidence mix is weak, the handoff summary's first line must lead with the caveat, and the verdict is treated as provisional until stronger evidence lands. The caveat is run-output and handoff text only — it is not an artifact-schema field.
 | Applicable evidence missing | `NEEDS_INPUT` | `UNDECIDED` | Not emitted |
 
 A completed blocked audit is not `BLOCKED` status. A veto is triggered only by verified failure, not by absent access or missing data. Unknown veto evidence keeps the run undecided unless two other verified vetoes independently determine `BLOCK`; remaining gaps still keep that result `NOT_SCORED`.

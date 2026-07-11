@@ -5,6 +5,11 @@ is **owner-run, dry-run by default, and driven by the repo's committed state** â
 no hardcoded queues, no guessing. The single source of truth for "are we fully
 distributed?" is `scripts/registry-status.sh`.
 
+> Note: `scripts/build-distribution.py`'s minimal *plugin* profile is a
+> forward-looking builder â€” no channel consumes it yet (the ClawHub package
+> ships the full git archive). Its manifest and link-closure are CI-checked so
+> the profile stays correct until a channel adopts it.
+
 ## Channels
 
 | Channel | What ships | Tool | Cadence |

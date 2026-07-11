@@ -19,7 +19,8 @@ IGNORED_SUFFIXES = {".pyc", ".pyo"}
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 RUNTIME_PATH = re.compile(
     r"(?<![A-Za-z0-9_.-])(?:\$\{CLAUDE_PLUGIN_ROOT\}/)?"
-    r"((?:references|scripts/connectors)/[A-Za-z0-9_./-]+\.(?:md|json|py))"
+    r"((?:references|scripts/connectors)/[A-Za-z0-9_./-]+\.(?:md|json|py)"
+    r"|scripts/[A-Za-z0-9_-]+\.py)"  # top-level runtimes referenced in prose ship too
 )
 
 

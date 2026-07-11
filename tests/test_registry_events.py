@@ -122,6 +122,51 @@ class RegistryEventTests(unittest.TestCase):
             env=environment,
         )
 
+    def test_stale_projection_temp_is_reclaimed_under_the_stream_lock(self):
+        proposal = event(
+            "entities", "proposal-stale-tmp-1", operation="propose",
+            proposed_operation="upsert", expected_revision=0,
+            actor={"type": "skill", "id": "content-writer"},
+            payload={"set": {"title": "Acme"}},
+        )
+        registry.append_event(self.root, "entities", proposal)
+        _, projection_path, _ = registry.memory_paths(self.root, "entities")
+        stale = projection_path.parent / (".%s.registry-tmp" % projection_path.name)
+        stale.write_text("{}", encoding="utf-8")
+        follow_up = event(
+            "entities", "proposal-stale-tmp-2", operation="propose",
+            proposed_operation="upsert", expected_revision=0,
+            actor={"type": "skill", "id": "content-writer"},
+            payload={"set": {"title": "Acme Two"}},
+        )
+        result = registry.append_event(self.root, "entities", follow_up)
+        self.assertFalse(result["deduplicated"])
+        self.assertFalse(stale.exists())
+
+    def test_projection_install_failure_names_the_committed_event(self):
+        proposal = event(
+            "entities", "proposal-committed-1", operation="propose",
+            proposed_operation="upsert", expected_revision=0,
+            actor={"type": "skill", "id": "content-writer"},
+            payload={"set": {"title": "Acme"}},
+        )
+        original = registry.write_projections
+
+        def broken(*args, **kwargs):
+            raise OSError("disk full")
+
+        registry.write_projections = broken
+        try:
+            with self.assertRaisesRegex(registry.RegistryError, "event_committed=true"):
+                registry.append_event(self.root, "entities", proposal)
+        finally:
+            registry.write_projections = original
+        stream_path, _, _ = registry.memory_paths(self.root, "entities")
+        lines = stream_path.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(len(lines), 1)
+        retry = registry.append_event(self.root, "entities", proposal)
+        self.assertTrue(retry["deduplicated"])
+
     def test_proposal_acceptance_and_idempotent_retry(self):
         proposal = event(
             "entities", "proposal-1", operation="propose",

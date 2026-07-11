@@ -1158,6 +1158,41 @@ class IndexpushSpecTests(unittest.TestCase):
         self.assertEqual(indexpush.collect_urls(["a", "b", "a", "c"], None),
                          ["a", "b", "c"])
 
+    def execute_with_response(self, spec_request, response):
+        original = indexpush._http.get_json
+        indexpush._http.get_json = lambda *args, **kwargs: response
+        try:
+            return indexpush.execute(spec_request)
+        finally:
+            indexpush._http.get_json = original
+
+    def test_baidu_html_block_page_behind_200_is_not_accepted(self):
+        spec = indexpush.build_spec("baidu", ["https://a.com/1"],
+                                    key="tok", site="www.a.com")
+        out = self.execute_with_response(
+            spec["request"], {"status": 200, "error": None, "json": None})
+        self.assertFalse(out["accepted"])
+        self.assertIn("unrecognized response", out["error"])
+
+    def test_baidu_zero_success_count_is_not_accepted(self):
+        spec = indexpush.build_spec("baidu", ["https://a.com/1"],
+                                    key="tok", site="www.a.com")
+        out = self.execute_with_response(
+            spec["request"],
+            {"status": 200, "error": None, "json": {"success": 0, "remain": 99}})
+        self.assertFalse(out["accepted"])
+        self.assertIn("success=0", out["error"])
+        accepted = self.execute_with_response(
+            spec["request"],
+            {"status": 200, "error": None, "json": {"success": 1, "remain": 98}})
+        self.assertTrue(accepted["accepted"])
+
+    def test_indexnow_empty_200_stays_accepted(self):
+        spec = indexpush.build_spec("indexnow", ["https://a.com/1"], key="abc123")
+        out = self.execute_with_response(
+            spec["request"], {"status": 200, "error": None, "json": None})
+        self.assertTrue(out["accepted"])
+
 
 class HnTests(unittest.TestCase):
     def test_numeric_filters_force_search_by_date_index(self):

@@ -631,7 +631,6 @@ def score_run(run, catalog):
         conditional = (
             policy.get("applicability") == "conditional"
             or bool(policy.get("applicable_when"))
-            or profile in policy.get("na_profiles", [])
         )
         raw_reason = item.get("reason", "")
         if not isinstance(raw_reason, str):
@@ -798,6 +797,12 @@ def score_run(run, catalog):
             "verdict": "SHIP" if raw >= 75 and not any_fail else "FIX",
             "final_overall_score": final,
         })
+    if result.get("verdict") == "SHIP" and result["score_confidence"] == "low":
+        result["confidence_caveat"] = (
+            "SHIP (low confidence): the evidence mix behind this score is weak; lead "
+            "the handoff summary with this caveat and treat the verdict as provisional "
+            "until stronger evidence lands."
+        )
     return result
 
 

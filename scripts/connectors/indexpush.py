@@ -118,8 +118,11 @@ def execute(spec_request):
                        data=data, method="POST", retries=1)
     out = {"status": r.get("status", 0), "error": r.get("error"),
            "data": r.get("json")}
-    # IndexNow answers 200/202 with an empty body on success.
-    if out["status"] in (200, 202) and out["data"] is None:
+    is_indexnow = spec_request["content_type"].startswith("application/json")
+    # IndexNow answers 200/202 with an empty body on success. Baidu success
+    # always carries a JSON body, so an empty/non-JSON 200 there (e.g. an HTML
+    # block page) is not proof of acceptance.
+    if is_indexnow and out["status"] in (200, 202) and out["data"] is None:
         out["error"] = None
         out["accepted"] = True
     # Baidu 普通收录 answers HTTP 200 even on FAILURE, carrying {"error":N,"message":...}
@@ -130,8 +133,19 @@ def execute(spec_request):
             out["data"].get("error"), out["data"].get("message", ""))
         out["accepted"] = False
     elif isinstance(out["data"], dict) and "success" in out["data"]:
-        out["error"] = None
-        out["accepted"] = True
+        # "success" is the accepted-URL count; pushing 0 URLs is not a success.
+        accepted_count = out["data"].get("success")
+        if isinstance(accepted_count, int) and accepted_count > 0:
+            out["error"] = None
+            out["accepted"] = True
+        else:
+            out["error"] = "Baidu accepted 0 URLs (success=%r)" % (accepted_count,)
+            out["accepted"] = False
+    else:
+        out["accepted"] = False
+        if out["error"] is None:
+            out["error"] = ("unrecognized response for %s (status %s, unexpected body)"
+                            % ("IndexNow" if is_indexnow else "Baidu", out["status"]))
     return out
 
 

@@ -45,7 +45,7 @@ Score one account or campaign portfolio for one currency, normalized attribution
 
 Per item: Pass = 10, Partial = 5, Fail = 0. The Paid Ads Index (`RQS`) is the floor-rounded profile-weighted mean after 100% applicable evidence coverage. `RQS` is not the literal ROAS ratio and profiles are not interchangeable.
 
-For `R=75 O=80 A=85 S=78`, direct response is `78`; prospecting is `80`; incremental profit is `80`. These are arithmetic fixtures, not outcome predictions.
+For `R=75 O=80 A=85 S=78`, direct response is `78`; prospecting is `80`; incremental profit is `77`. These are arithmetic fixtures, not outcome predictions.
 
 ## Vetoes and Unknowns
 

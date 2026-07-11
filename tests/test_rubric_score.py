@@ -575,6 +575,20 @@ class RubricScoreTests(unittest.TestCase):
         with self.assertRaisesRegex(score.RubricError, "after the audit"):
             score.score_run(run, CATALOG)
 
+    def test_low_confidence_ship_carries_confidence_caveat(self):
+        run = complete_run()
+        for item in run["items"]:
+            item["evidence"] = evidence(kind="estimated", confidence="low")
+        result = score.score_run(run, CATALOG)
+        self.assertEqual(result["verdict"], "SHIP")
+        self.assertEqual(result["score_confidence"], "low")
+        self.assertTrue(result["confidence_caveat"].startswith("SHIP (low confidence)"))
+
+    def test_high_confidence_ship_has_no_confidence_caveat(self):
+        result = score.score_run(complete_run(), CATALOG)
+        self.assertEqual(result["verdict"], "SHIP")
+        self.assertNotIn("confidence_caveat", result)
+
 
 if __name__ == "__main__":
     unittest.main()

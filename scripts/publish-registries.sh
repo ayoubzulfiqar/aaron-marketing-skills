@@ -45,6 +45,18 @@ SH="$( [ "$PLAT" != clawhub ] && behind skillhub_ok )"
 nch=$(printf '%s' "$CH" | grep -c . || true); nsh=$(printf '%s' "$SH" | grep -c . || true)
 echo "    behind -> ClawHub: $nch, SkillHub: $nsh   (mode: $([ $LIVE -eq 1 ] && echo LIVE || echo dry-run))"
 
+# Per-skill publishers upload the local working tree; a live run must ship
+# exactly what GitHub serves, so require a clean tree with HEAD on origin/main
+# (same guard as publish-package.sh).
+if [ "$LIVE" -eq 1 ]; then
+  [ -z "$(git status --porcelain)" ] || { echo "FAIL: working tree is dirty — commit/stash before a live registry publish" >&2; exit 1; }
+  git fetch -q origin 2>/dev/null || true
+  head_commit="$(git rev-parse HEAD)"
+  if ! git merge-base --is-ancestor "$head_commit" origin/main 2>/dev/null; then
+    echo "FAIL: HEAD $head_commit is not on origin/main — push first so registries match GitHub" >&2; exit 1
+  fi
+fi
+
 fail=0
 if [ "$PLAT" != skillhub ] && [ -n "$CH" ]; then
   echo "== ClawHub: publishing $nch behind skill(s) =="
@@ -64,7 +76,7 @@ if [ "$PLAT" != clawhub ] && [ -n "$SH" ]; then
     donep "sh:$s" && { echo "  skip $s (done)"; continue; }
     ok=0
     for try in 1 2 3 4; do
-      out=$(bash scripts/publish-skillhub.sh --skill "$s" 2>&1); rc=$?
+      out=$(bash scripts/publish-skillhub.sh --live --skill "$s" 2>&1); rc=$?
       if echo "$out" | grep -qE 'Published|skillId'; then echo "  OK $s"; markp "sh:$s"; ok=1; break; fi
       if echo "$out" | grep -q '已存在'; then echo "  CURRENT $s (already at repo version)"; markp "sh:$s"; ok=1; break; fi
       if echo "$out" | grep -qiE '频率过高|429|too many|rate'; then echo "  backoff $s (try $try, 5min)"; sleep 300; continue; fi

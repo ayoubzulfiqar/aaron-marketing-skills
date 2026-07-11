@@ -1113,6 +1113,10 @@ def locked_stream(path, exclusive=True):
     else:
         flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
         mode = "r"
+    stream_preexisting = _anchored_lstat(
+        parent_fd, path.parent, path.name, missing_ok=True,
+        parent_identity=parent_identity,
+    ) is not None
     try:
         fd = _open_anchored(
             parent_fd, path.parent, path.name, flags, 0o600,
@@ -1131,6 +1135,10 @@ def locked_stream(path, exclusive=True):
         if parent_fd is not None:
             os.close(parent_fd)
         raise
+    if exclusive and not stream_preexisting and parent_fd is not None:
+        # Make a freshly created stream's directory entry durable so a crash
+        # cannot lose the whole new stream file.
+        os.fsync(parent_fd)
     if exclusive:
         try:
             _secure_fd(fd, path, 0o600)
@@ -1485,12 +1493,31 @@ def atomic_write_json(path, value):
         raise RegistryError("projection path must be a regular single-link file")
     temp_name = ".%s.registry-tmp" % path.name
     temp_path = path.parent / temp_name
-    if _anchored_lstat(
-            parent_fd, path.parent, temp_name, missing_ok=True,
-            parent_identity=parent_identity) is not None:
-        if parent_fd is not None:
-            os.close(parent_fd)
-        raise RegistryError("stale or concurrent projection temporary file exists: %s" % temp_path)
+    leftover = _anchored_lstat(
+        parent_fd, path.parent, temp_name, missing_ok=True,
+        parent_identity=parent_identity)
+    if leftover is not None:
+        # Every caller holds the exclusive stream lock, so an existing
+        # temporary can only be dead-process residue; reclaim it instead of
+        # permanently wedging the registry. Anything but a plain single-link
+        # regular file is suspicious and still fails closed.
+        if (statmod.S_ISLNK(leftover.st_mode) or not statmod.S_ISREG(leftover.st_mode)
+                or leftover.st_nlink != 1):
+            if parent_fd is not None:
+                os.close(parent_fd)
+            raise RegistryError(
+                "projection temporary file is not a regular single-link file: %s" % temp_path)
+        try:
+            if parent_fd is not None and _dir_fd_supported(os.unlink):
+                os.unlink(temp_name, dir_fd=parent_fd)
+            else:
+                os.unlink(temp_path)
+        except OSError as exc:
+            if parent_fd is not None:
+                os.close(parent_fd)
+            raise RegistryError(
+                "cannot reclaim stale projection temporary file %s: %s" % (temp_path, exc)
+            ) from exc
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
     try:
         fd = _open_anchored(
@@ -1623,7 +1650,17 @@ def append_event(root, registry, request, capability_token=None):
         handle.write(line)
         handle.flush()
         os.fsync(handle.fileno())
-        write_projections(registry, state, projection_path, suppressions_path)
+        try:
+            write_projections(registry, state, projection_path, suppressions_path)
+        except Exception as exc:
+            # The canonical event is already durable; the caller must repair
+            # projections, never retry the append under a fresh idempotency key.
+            raise RegistryError(
+                "event_committed=true offset=%s event_id=%s: the canonical event is "
+                "durably appended but projection install failed (%s); run "
+                "`project %s` to repair — do not retry the append with a new "
+                "idempotency key" % (event["offset"], event["event_id"], exc, registry)
+            ) from exc
         return {"deduplicated": False, "event": event,
                 "record": state["records"].get(event["aggregate_id"])}
 

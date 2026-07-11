@@ -78,10 +78,13 @@ PY
 }
 
 extract_ids() { # $1 file → sorted unique item IDs (bold anywhere, or leading table cell)
+  # The trailing grep must not fail the pipeline under pipefail when a source
+  # legitimately contains zero IDs (e.g. an index page); emptiness is judged
+  # by the caller, which fails loudly on an empty umbrella ID set.
   {
     grep -oE '\*\*[A-Z][0-9]{1,2}\*\*' "$1" || true
     grep -oE '^\|[[:space:]]*\**[A-Z][0-9]{1,2}\**[[:space:]]*\|' "$1" || true
-  } | grep -oE '[A-Z][0-9]{1,2}' | sort -u
+  } | { grep -oE '[A-Z][0-9]{1,2}' || true; } | sort -u
 }
 
 # ---- checkers ---------------------------------------------------------------
@@ -123,7 +126,7 @@ push_marker_target() { # $1 repo, $2 source label, $3 generated-body file
   echo "  ↳ pushed sync: umbrella v$VERSION → $repo"
 }
 
-check_ids_target() { # $1 repo, $2 references file, $3… repo files to scan
+check_ids_target() { # $1 repo, $2 colon-separated references source file(s), $3… repo files to scan
   local repo="$1" src="$2"; shift 2
   local remote_all="$TMP/$repo.all.md"
   : > "$remote_all"
@@ -147,10 +150,22 @@ check_ids_target() { # $1 repo, $2 references file, $3… repo files to scan
     DRIFT=1
     return
   fi
-  extract_ids "$src" > "$TMP/$repo.want"
+  local want="$TMP/$repo.want" srcfile
+  : > "$want"
+  local -a src_files
+  IFS=':' read -r -a src_files <<< "$src"
+  for srcfile in "${src_files[@]}"; do
+    extract_ids "$srcfile" >> "$want"
+  done
+  sort -u -o "$want" "$want"
+  if [ ! -s "$want" ]; then
+    echo "✗ $repo — umbrella source(s) $src contain no item IDs; the ids policy for this target is misconfigured (fix the sync-family target list)"
+    DRIFT=1
+    return
+  fi
   extract_ids "$remote_all" > "$TMP/$repo.have"
   local missing
-  missing=$(comm -23 "$TMP/$repo.want" "$TMP/$repo.have")
+  missing=$(comm -23 "$want" "$TMP/$repo.have")
   if [ -z "$missing" ]; then
     echo "✓ $repo — all $(wc -l < "$TMP/$repo.want" | tr -d ' ') umbrella-referenced item IDs present"
   else
@@ -203,7 +218,10 @@ check_marker_target brand-narrative-agent-skills 'plugin.json#narrative' "$TMP/g
 
 check_ids_target core-eeat-content-benchmark references/core-eeat-benchmark.md README.md
 check_ids_target cite-domain-rating references/cite-domain-rating.md README.md
-check_ids_target influencer-marketing-c3-benchmark references/c3-benchmark.md \
+# v17 turned references/c3-benchmark.md into an index page; the item IDs live
+# in the references/c3/ split files, so the umbrella ID set aggregates those.
+check_ids_target influencer-marketing-c3-benchmark \
+  references/c3/ace-creator-benchmark.md:references/c3/art-content-benchmark.md:references/c3/roi-campaign-benchmark.md:references/c3/scoring-architecture.md \
   README.md ace-creator-benchmark.md art-content-benchmark.md roi-campaign-benchmark.md scoring-architecture.md
 
 echo

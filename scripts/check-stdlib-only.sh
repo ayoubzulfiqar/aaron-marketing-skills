@@ -21,13 +21,13 @@ STDLIB="$(python3 -c "import sys;print('\n'.join(sorted(sys.stdlib_module_names)
 
 # (b) The repo's own local modules: one name per .py file in the checked dirs.
 LOCAL=""
-for f in scripts/*.py scripts/connectors/*.py; do
+for f in scripts/*.py scripts/connectors/*.py tests/*.py; do
   [ -e "$f" ] || continue
   LOCAL="${LOCAL}$(basename "$f" .py)"$'\n'
 done
 
 violations=""
-for f in scripts/*.py scripts/connectors/*.py; do
+for f in scripts/*.py scripts/connectors/*.py tests/*.py; do
   [ -e "$f" ] || continue
   # Emit "lineno:module" for every import statement via the stdlib ast parser —
   # handles `import a, b`, `import a.b as c`, `from a.b import x`, and indented

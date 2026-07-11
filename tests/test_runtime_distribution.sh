@@ -48,7 +48,8 @@ for skill in "${registry_skills[@]}"; do
   grep -Fq 'AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"' \
     "$ROOT/protocol/$skill/SKILL.md"
 done
-if rg -n 'python3[[:space:]]+scripts/registry-events\.py' \
+# grep, not rg: a missing optional tool must not fail-open this negative guard.
+if grep -rEn 'python3[[:space:]]+scripts/registry-events\.py' \
     "$ROOT/protocol" "$ROOT/references" >/dev/null; then
   echo "found a working-directory-relative registry runtime example" >&2
   exit 1

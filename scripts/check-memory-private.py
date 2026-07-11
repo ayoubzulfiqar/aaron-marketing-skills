@@ -27,7 +27,18 @@ PATH_KEYS = {
     "outputpath", "path", "root", "sourcepath", "target", "targetpath",
 }
 COMMAND_KEYS = {"chars", "code", "command", "script"}
-MEMORY_MENTION = re.compile(r"(?:^|[^A-Za-z0-9_])memory(?=$|[^A-Za-z0-9_])", re.I)
+# Path-shaped references into the memory namespace: "memory/…" as a token
+# start, "/memory" as a path component, or a shell variable assignment of the
+# bare namespace name (the "d=memory; … $d/file" indirection). Deliberately
+# narrower than a bare word scan so pattern arguments ("grep memory README.md",
+# "--grep=memory") and prose ("in-memory") stay out of scope; renames of the
+# bare directory itself are caught by the post-state namespace audit instead.
+MEMORY_PATH_REFERENCE = re.compile(
+    r"(?:^|[\s\"'`=:;(|&<>])\.?[/\\]?memory[/\\]"
+    r"|[/\\]memory(?:[/\\]|[\s\"'`;|&<>)]|$)"
+    r"|(?:^|[\s;&|(])[A-Za-z_][A-Za-z0-9_]*=([\"']?)memory\1(?=[\s;&|)]|$)",
+    re.I,
+)
 
 
 def _has_git_marker(path: Path) -> bool:
@@ -101,8 +112,18 @@ def require_private_memory_path(root, raw_path):
     target_lexical = Path(os.path.abspath(target_lexical))
     try:
         project_relative = target_lexical.relative_to(root_lexical)
-    except ValueError as exc:
-        raise PrivacyError("write target escapes the project root") from exc
+    except ValueError:
+        # Outside the project root: not this plugin's namespace. Deny only a
+        # path that aliases back into memory/ through links; every other
+        # destination is out of jurisdiction for a memory-privacy preflight.
+        resolved_candidate = target_lexical.resolve(strict=False)
+        try:
+            outside_relative = resolved_candidate.relative_to(root_path)
+        except ValueError:
+            return
+        if outside_relative.parts and outside_relative.parts[0].casefold() == "memory":
+            raise PrivacyError("memory write target cannot use a symlink or alias path")
+        return
     resolved_candidate = target_lexical.resolve(strict=False)
     try:
         resolved_candidate_relative = resolved_candidate.relative_to(root_path)
@@ -291,6 +312,28 @@ def _string_leaves(value, key=""):
             stack.extend((child, current_key, depth + 1) for child in current)
 
 
+def _path_lands_in_memory(root, raw_path):
+    """Lexically decide whether a path field points into <root>/memory."""
+    if "\0" in str(raw_path):
+        raise PrivacyError("path field contains an unsupported control byte")
+    root_lexical, root_path = _project_root(root)
+    supplied = Path(raw_path)
+    target_lexical = supplied if supplied.is_absolute() else root_lexical / supplied
+    target_lexical = Path(os.path.abspath(target_lexical))
+    try:
+        relative = target_lexical.relative_to(root_lexical)
+    except ValueError:
+        relative = None
+    if relative is not None and relative.parts and relative.parts[0].casefold() == "memory":
+        return True
+    resolved = target_lexical.resolve(strict=False)
+    try:
+        resolved_relative = resolved.relative_to(root_path)
+    except ValueError:
+        return False
+    return bool(resolved_relative.parts and resolved_relative.parts[0].casefold() == "memory")
+
+
 def preflight_hook_input(root, hook_input):
     if not isinstance(hook_input, dict):
         raise PrivacyError("hook input must be a JSON object")
@@ -306,11 +349,10 @@ def preflight_hook_input(root, hook_input):
         for raw_path in path_values:
             require_private_memory_path(root, raw_path)
     else:
-        opaque_values = [
-            value for key, value in leaves
-            if key in PATH_KEYS or key in COMMAND_KEYS
-        ]
-        if any(MEMORY_MENTION.search(value) for value in opaque_values):
+        command_values = [value for key, value in leaves if key in COMMAND_KEYS]
+        if any(MEMORY_PATH_REFERENCE.search(value) for value in command_values) or any(
+            _path_lands_in_memory(root, value) for value in path_values
+        ):
             raise PrivacyError(
                 "opaque shell/MCP memory mutations are unsupported; use an exact-path direct "
                 "writer or the registry runtime"

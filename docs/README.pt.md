@@ -33,7 +33,9 @@ Uma biblioteca de skills Claude e comandos slash que transforma um agente de cha
 | **Launch** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
 | **Camada de protocolo** | 8 | — (maquinaria compartilhada, fora dos fluxos de fase) | 7 registros de verdade (entity · creator · offer/claims · consent · launch · channel · narrative) + memória HOT/WARM/COLD | — |
 
-`/aaron-marketing:auto` routes natural-language goals across the system. Skills and commands are Markdown; small zero-dependency Bash/Python-stdlib runtimes provide hooks, validation, typed scoring, registry events, connectors, and CI checks. See the [generated system architecture](system-architecture.md).
+`/aaron-marketing:auto` roteia qualquer objetivo em linguagem natural por todo o sistema. Skills e comandos são **Markdown puro**; pequenos runtimes de Bash/Python-stdlib fornecem hooks, validação, pontuação, eventos de registro, conectores e checagens de CI (sem `pip`, sem etapa de build). **Toda skill funciona no Tier 1 com os dados que você fornece**; os conectores só automatizam a obtenção de dados ou uma mutação explicitamente aprovada.
+
+A topologia tipada autoritativa é [`references/system-catalog.json`](../references/system-catalog.json); veja a [arquitetura do sistema gerada](system-architecture.md) para o mapa legível de quatro camadas, todos os 120 caminhos, os donos dos registros, os sinks de auditor e os perfis de distribuição.
 
 > Os repos antes autônomos, pré-fusão, agora são **repos-placa** apontando para cá — [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) (a linha final de 20 skills está preservada na tag `v9.9.12`) e [influencer-marketing-agent-skills](https://github.com/aaron-he-zhu/influencer-marketing-agent-skills) (a linha IMPACT final na tag `standalone-final`). Política de repos irmãos: [docs/repo-family.md](repo-family.md).
 
@@ -76,10 +78,10 @@ Uma biblioteca de skills Claude e comandos slash que transforma um agente de cha
 | Princípio | O que significa na prática |
 |-----------|---------------------------|
 | **Keyless por padrão** | Cada skill funciona no **Tier 1** com dados que você cola ou extrai de fontes gratuitas/primárias. Ferramentas pagas e servidores MCP são uma conveniência opcional, nunca um pré-requisito. As skills de paid ads pontuam a partir da sua **exportação manual da própria conta** — APIs de anúncios com chave nunca são exigidas. |
-| **Content-first, executable contracts** | Skills remain Markdown. Small Bash/Python-stdlib runtimes make scoring, state, safety, and conformance deterministic without package dependencies. |
+| **Content-first, contratos executáveis** | As skills continuam sendo Markdown. Pequenos runtimes de Bash/Python-stdlib tornam pontuação, estado, segurança e conformidade determinísticos sem adicionar dependências de pacotes. |
 | **Um contrato compartilhado** | As 120 skills expõem as mesmas sete seções e autodeclaram os metadados `discipline` + `phase`, então a biblioteca se comporta como um único sistema operacional: cada skill conhece suas entradas, saídas e a melhor próxima skill para passar o bastão. |
 | **Qualidade com gate** | Oito benchmarks emitem veredictos estruturados e verificáveis. Hooks limitados sinalizam escritas inválidas; pre-commit/CI protegem apenas conteúdo Git commitado contra PII e não validam artefatos runtime. |
-| **A verdade vive em registros** | Os fatos canônicos (entidades de marca, dossiês de criadores, comprovação de ofertas/claims, consentimento por sujeito) vivem em registros dedicados da camada de protocolo com regras de escritor único — os gates julgam contra eles em vez de rederivá-los. |
+| **A verdade vive em eventos** | Sete streams de registro append-only são canônicos; projeções controladas pelo dono expõem o estado de entidades, criadores, claims, consentimentos, launches, canais e narrativa sem filas destrutivas. |
 | **Memória entre turnos** | Um modelo de memória HOT/WARM/COLD carrega descobertas, pontuações e pendências entre skills e sessões, higienizados na entrada. |
 | **Voz natural** | As skills incluem um detector de jargão de IA e uma lista de frases banidas para que a saída soe como se uma pessoa a tivesse escrito. |
 
@@ -154,9 +156,9 @@ Uma voz de marca, expressa por cinco canais always-on, concentrada em momentos d
 | **L1 · Estratégia** — o que dizemos / quem somos | crawl | **Narrative** · TALE | always-on |
 | **L2 · Canais** — motores always-on que expressam a estratégia (owned → bought) | walk | **SEO/GEO** · CORE-EEAT + CITE · **Organic Social** · ECHO · **E-mail** · SEND · **Paid Ads** · ROAS · **Influenciadores** · C³ | always-on (influenciadores com viés episódico) |
 | **L3 · Orquestração** — o momento delimitado no tempo entre canais | run | **Product Launch** · RAMP | episódico |
-| **L4 · Protocol** | — | 7 truth registries + working memory · 8 auditor gates · one skill contract | — |
+| **L4 · Protocolo** — o sistema de registro compartilhado | — | 7 registros de verdade + memória de trabalho · 8 gates de auditor · um contrato de skill | — |
 
-A Narrative é a mensagem; os canais são os meios que a expressam — remova qualquer um dos canais e o registro permanece intacto; remova a Narrative e cada canal fala uma mensagem sem fonte e sem governança. Cada canal herda voz e claims de L1 do mesmo modo que todo builder de creative já lê o claims ledger hoje. O loop de 4 fases de cada disciplina vive dentro da sua camada (Narrative = Trace → Architect → Land → Evaluate).
+A Narrative é a mensagem; os canais são os meios que a expressam — cada builder central registra o ID/versão exatos do cânone e o offset de projeção de claims que usou, ou um fallback/bloqueio explicitamente aprovado. O loop de 4 fases de cada disciplina vive dentro da sua camada (Narrative = Trace → Architect → Land → Evaluate).
 
 As sete usam **diretórios** de fase (`narrative/trace/`…, `seo-geo/research/`…, `influencer/discover/`…, `ad/research/`…, `email/setup/`…, `launch/research/`…, `social/explore/`…). Nota: «activate» significa contato com criadores em influenciadores mas gating de conta em paid ads — mesma palavra, escopo específico de cada disciplina.
 
@@ -166,35 +168,35 @@ Oito benchmarks tornam «bom» mensurável. Cada um define dimensões, um métod
 
 | Framework | Pontua | Itens / dimensões | Agregação | Itens de veto |
 |-----------|--------|--------------------|--------|------------|
-| **[TALE](../references/tale-benchmark.md)** | Brand narrative truth / system / effectiveness | T / A / L / E | Separate `truth`, `system`, and `effectiveness` profile results; no overall composite | TALE `T1`/`A1`/`L1`/`E1` |
-| **[CORE-EEAT](../references/core-eeat-benchmark.md)** | Content quality with diagnostic CORE/GEO and EEAT/SEO views | 80 items / 8 dimensions | Complete profile-weighted result; diagnostic views are not separate totals | `T04`/`C01`/`R10` |
-| **[CITE](../references/cite-domain-rating.md)** | Domain authority and citation trust | 40 items / 4 dimensions | Arithmetic profile-weighted mean | `T03`/`T05`/`T09` |
-| **[C³](../references/c3-benchmark.md)** | Influencer Creator / Content / Campaign | ACE / ART / ROI; 9 dimensions | `CVI = floor((ACE x ART x ROI)^(1/3))` after three complete compatible scope results | ACE `A2`/`C1`/`E2`; ART `T1`/`T2` |
-| **[ROAS](../references/roas-benchmark.md)** | Paid ads incremental contribution and operating quality | R / O / A / S | `RQS = floor(profile-weighted mean)` | `R1`/`R2`/`O1`/`O2`/`A1` |
-| **[SEND](../references/send-benchmark.md)** | Email sender integrity / engagement / nurture / direct outcome | S / E / N / D | `EQS = floor(profile-weighted mean)` | `S1`/`S2`/`N1`/`D1` |
-| **[RAMP](../references/ramp-benchmark.md)** | Product launch readiness / assets / momentum / proof | R / A / M / P; 40 stable IDs | Separate `preflight`, `execution`, and `outcome` profile results; never average time horizons | RAMP `R1`/`A1`/`M1`/`P1` |
-| **[ECHO](../references/echo-benchmark.md)** | Organic social embeddedness / craft / hosting / observability | E / C / H / O; 40 stable IDs | One `asset-gate` or `program-maturity-*` profile per run; never combine unlike units | ECHO `E1`/`C1`/`C2`/`H1`/`H2`/`O1` |
+| **[TALE](../references/tale-benchmark.md)** | Verdade / sistema / eficácia da narrativa de marca | T / A / L / E | Resultados de perfil `truth`, `system` e `effectiveness` separados; sem composto geral | TALE `T1`/`A1`/`L1`/`E1` |
+| **[CORE-EEAT](../references/core-eeat-benchmark.md)** | Qualidade de conteúdo com vistas diagnósticas CORE/GEO e EEAT/SEO | 80 itens / 8 dimensões | Resultado completo ponderado por perfil; as vistas diagnósticas não são totais separados | `T04`/`C01`/`R10` |
+| **[CITE](../references/cite-domain-rating.md)** | Autoridade de domínio e confiança de citação | 40 itens / 4 dimensões | Média aritmética ponderada por perfil | `T03`/`T05`/`T09` |
+| **[C³](../references/c3-benchmark.md)** | Influenciadores Creator / Content / Campaign | ACE / ART / ROI; 9 dimensões | `CVI = floor((ACE x ART x ROI)^(1/3))` após três resultados completos de escopo compatível | ACE `A2`/`C1`/`E2`; ART `T1`/`T2` |
+| **[ROAS](../references/roas-benchmark.md)** | Contribuição incremental e qualidade operacional dos paid ads | R / O / A / S | `RQS = floor(profile-weighted mean)` | `R1`/`R2`/`O1`/`O2`/`A1` |
+| **[SEND](../references/send-benchmark.md)** | E-mail: integridade do remetente / engajamento / nutrição / resultado direto | S / E / N / D | `EQS = floor(profile-weighted mean)` | `S1`/`S2`/`N1`/`D1` |
+| **[RAMP](../references/ramp-benchmark.md)** | Product launch: prontidão / assets / momentum / prova | R / A / M / P; 40 IDs estáveis | Resultados de perfil `preflight`, `execution` e `outcome` separados; nunca tirar média entre horizontes de tempo | RAMP `R1`/`A1`/`M1`/`P1` |
+| **[ECHO](../references/echo-benchmark.md)** | Organic social: enraizamento / ofício / hosting / observabilidade | E / C / H / O; 40 IDs estáveis | Um perfil `asset-gate` ou `program-maturity-*` por execução; nunca combinar unidades distintas | ECHO `E1`/`C1`/`C2`/`H1`/`H2`/`O1` |
 
 Cada framework é imposto por um **gate de classe auditor** — uma skill cujo artefato tipado (`class: auditor-output`) é validado pelo validador determinístico e por hooks limitados de ciclo de vida. A CI do repositório testa por regressão o validador e o contrato; não inspeciona artefatos ignorados do runtime do host. Os gates são passos de workflow, então cada um vive na sua disciplina e é contado ali:
 
 | Gate | Framework | Vive em | Veredicto |
 |------|-----------|----------|---------|
-| [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md) | TALE profiles | `narrative/evaluate/` | Separate truth/system/effectiveness results; no composite |
+| [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md) | Perfis TALE | `narrative/evaluate/` | Resultados truth/system/effectiveness separados; sem composto |
 | [content-quality-auditor](../seo-geo/optimize/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/optimize/` | SHIP / FIX / BLOCK / UNDECIDED |
-| [domain-authority-auditor](../seo-geo/monitor/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/monitor/` | SHIP / FIX / BLOCK / UNDECIDED; trust labels are explanatory only |
-| [content-reviewer](../influencer/activate/content-reviewer/SKILL.md) | C3 ART | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED plus creator-facing translation |
+| [domain-authority-auditor](../seo-geo/monitor/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/monitor/` | SHIP / FIX / BLOCK / UNDECIDED; rótulos de confiança são apenas explicativos |
+| [content-reviewer](../influencer/activate/content-reviewer/SKILL.md) | C³ ART | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED mais uma tradução voltada ao criador |
 | [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md) | ROAS | `ad/activate/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [email-quality-auditor](../email/deliver/email-quality-auditor/SKILL.md) | SEND | `email/deliver/` | SHIP / FIX / BLOCK / UNDECIDED |
-| [launch-readiness-auditor](../launch/mobilize/launch-readiness-auditor/SKILL.md) | RAMP lifecycle profile | `launch/mobilize/` | SHIP / FIX / BLOCK / UNDECIDED for one declared lifecycle read |
-| [social-quality-auditor](../social/host/social-quality-auditor/SKILL.md) | ECHO asset/program profile | `social/host/` | SHIP / FIX / BLOCK / UNDECIDED for one declared unit/profile |
+| [launch-readiness-auditor](../launch/mobilize/launch-readiness-auditor/SKILL.md) | Perfil de ciclo de vida RAMP | `launch/mobilize/` | SHIP / FIX / BLOCK / UNDECIDED para uma leitura de ciclo de vida declarada |
+| [social-quality-auditor](../social/host/social-quality-auditor/SKILL.md) | Perfil ECHO de asset/programa | `social/host/` | SHIP / FIX / BLOCK / UNDECIDED para uma unidade/perfil declarados |
 
-**Shared veto policy:** one verified veto caps the final score at `min(raw, 59)`; two or more verified vetoes produce `status: DONE` + `verdict: BLOCK` and no final score. Missing evidence is `Unknown`, never an automatic failure. The typed rules live in [auditor-runbook.md](../references/auditor-runbook.md).
+**Política de veto compartilhada:** um veto verificado limita a pontuação final a `min(raw, 59)`; dois ou mais vetos verificados produzem `status: DONE` + `verdict: BLOCK` e nenhuma pontuação final. Evidência ausente é `Unknown`, nunca uma falha automática. As regras tipadas vivem em [auditor-runbook.md](../references/auditor-runbook.md).
 
 ### A camada de protocolo
 
 O diretório `protocol/` abriga a **maquinaria compartilhada de verdade & memória** que fica fora dos fluxos de fase das disciplinas — 8 skills, contadas à parte:
 
-| Skill | Função | Ancorada a | Canonical event stream / runtime role |
+| Skill | Função | Ancorada a | Stream de eventos canônico / papel runtime |
 |-------|-----|-------------|-----------------|
 | [entity-optimizer](../protocol/entity-optimizer/SKILL.md) | Perfil canônico de marca/entidade (Knowledge Graph, Wikidata, desambiguação por IA) | SEO/GEO | `memory/events/entities.ndjson` |
 | [creator-registry](../protocol/creator-registry/SKILL.md) | Roster/dossiê canônico de criadores — handles deduplicados, estatísticas de audiência com rótulo de proveniência, tarifas, histórico de compliance | influenciadores | `memory/events/creators.ndjson` |
@@ -203,7 +205,7 @@ O diretório `protocol/` abriga a **maquinaria compartilhada de verdade & memór
 | [launch-registry](../protocol/launch-registry/SKILL.md) | Dossiê/calendário canônico de launch — tier, etapa de ciclo de vida de mão única, datas/embargo autoritativos, livro de submissão por canal; o SSOT de verdade do launch contra o qual o veto R1 de verdade de etapa julga | launch | `memory/events/launches.ndjson` |
 | [channel-registry](../protocol/channel-registry/SKILL.md) | Registro canônico por canal — handles, propriedade/autorização, normas de plataforma, defaults de disclosure; o SSOT de verdade de canal contra o qual o veto ECHO E1 de verdade de canal julga | social | `memory/events/channels.ndjson` |
 | [narrative-registry](../protocol/narrative-registry/SKILL.md) | Cânone canônico de narrativa de marca — narrativa estratégica aprovada, sistema de mensagens, linguagem/léxico, proof points; o SSOT do brand-canon contra o qual o veto TALE T1 de verdade julga | narrative | `memory/events/narrative.ndjson` |
-| [memory-management](../protocol/memory-management/SKILL.md) | Ciclo de vida de memória HOT/WARM/COLD (capturar · promover · rebaixar · arquivar · consultar) | todas as disciplinas | non-canonical `memory/` runtime state |
+| [memory-management](../protocol/memory-management/SKILL.md) | Ciclo de vida de memória HOT/WARM/COLD (capturar · promover · rebaixar · arquivar · consultar) | todas as disciplinas | estado runtime não canônico de `memory/` |
 
 Os registros seguem uma **regra de escritor único** (outras skills submetem via `registry-events.py` proposal events), e eles *curam* — os gates *julgam*. A camada genuinamente horizontal sob tudo são os protocolos de `references/` ([auditor-runbook](../references/auditor-runbook.md), [state-model](../references/state-model.md), [skill-contract](../references/skill-contract.md), [humanizer-slop](../references/humanizer-slop.md), [measurement-protocol](../references/measurement-protocol.md)) — compartilhados por design como documentos, não como skills.
 
@@ -214,7 +216,7 @@ Os registros seguem uma **regra de escritor único** (outras skills submetem via
 | Nível | Local | Comportamento |
 |------|----------|----------|
 | **HOT** | `memory/hot-cache.md` | Carregado automaticamente a cada sessão; limitado a **80 linhas E 25 KB** (o que disparar primeiro). |
-| **WARM** | `memory/<subdir>/` | Rebuildable working projections and permissioned audit artifacts; canonical registry truth lives in `memory/events/*.ndjson`. |
+| **WARM** | `memory/<subdir>/` | Projeções de trabalho reconstruíveis e artefatos de auditoria com permissões; a verdade canônica dos registros vive em `memory/events/*.ndjson`. |
 | **COLD** | `memory/archive/` | Registros rebaixados/mais antigos, mantidos para recuperação. |
 
 **Os hooks** (`hooks/hooks.json`, runner `hooks/claude-hook.sh`) conectam sete eventos do Claude Code:
@@ -223,11 +225,11 @@ Os registros seguem uma **regra de escritor único** (outras skills submetem via
 |-------|---------|--------------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | Injeta o hot-cache **higienizado** + um ponteiro de pendências (as linhas de injeção de prompt são censuradas; caches em symlink são rejeitados). |
 | `UserPromptSubmit` | (todos) | Hook de contexto leve por prompt. |
-| `PreToolUse` | known write-capable tools | Verifies before supported `memory/**` writes that the exact host-project target is Git-ignored; otherwise the write is denied. |
-| `PostToolUse` | known write-capable tools | Post-state memory audit + bounded Artifact Gate validation after successful writes. |
-| `PostToolUseFailure` | known write-capable tools | Runs the same checks after failed tools that may already have written files. |
-| `PostToolBatch` | (todos) | Rechecks operational memory and the reserved audit sink after each parallel batch. |
-| `Stop` | (todos) | Performs one final bounded sweep; the active-stop guard then permits termination. Pre-commit/CI protect committed Git content from PII only, not ignored runtime artifacts. |
+| `PreToolUse` | ferramentas conhecidas com capacidade de escrita | Verifica antes das escritas suportadas em `memory/**` que o alvo exato do projeto host está ignorado pelo Git; caso contrário, a escrita é negada. |
+| `PostToolUse` | ferramentas conhecidas com capacidade de escrita | Auditoria de memória pós-estado + validação limitada do Artifact Gate após escritas bem-sucedidas. |
+| `PostToolUseFailure` | ferramentas conhecidas com capacidade de escrita | Executa as mesmas checagens após ferramentas com falha, que podem já ter escrito arquivos. |
+| `PostToolBatch` | (todos) | Reverifica a memória operacional e o sink de auditoria reservado após cada lote paralelo. |
+| `Stop` | (todos) | Realiza uma última varredura limitada; o guard de active-stop então permite o término. Pre-commit/CI protegem apenas conteúdo Git commitado contra PII, não artefatos runtime ignorados. |
 
 O Artifact Gate é **agnóstico ao framework** — o mesmo hook valida artefatos TALE, CORE-EEAT, CITE, C³, ROAS, SEND, RAMP e ECHO sem código específico por framework.
 
@@ -239,7 +241,7 @@ Os links de skill abrem cada `SKILL.md`. Expanda os **Detalhes** sob cada discip
 
 ### Narrative — TALE (16)
 
-Four phases under `narrative/` follow Trace → Architect → Land → Evaluate. `narrative-quality-auditor` runs truth, system, and effectiveness profiles separately; a full review links three results and never averages them. Narrative is the L1 strategy inherited by channel builders.
+Quatro fases sob `narrative/` seguem Trace → Architect → Land → Evaluate. `narrative-quality-auditor` executa separadamente os perfis truth, system e effectiveness; uma revisão completa vincula três resultados e nunca tira a média deles. A Narrative é a estratégia L1 que os builders de canal herdam.
 
 | Fase | Skills |
 |-------|--------|
@@ -264,7 +266,7 @@ Four phases under `narrative/` follow Trace → Architect → Land → Evaluate.
 | pitch-narrative-builder | L | Molda a narrativa em forma de pitch — espinha do deck, história de demo e enquadramento para investidores/imprensa. |
 | narrative-enablement-kit | L | Kit de enablement que permite a cada equipe contar a história de forma consistente — talk track, FAQ e mapa de mensagens. |
 | proof-point-packager | L | Empacota proof points em assets prontos para canal e cientes do claims-ledger. |
-| ⛩ narrative-quality-auditor | truth / system / effectiveness | Typed TALE gate; returns separate profile results and never averages them. Writes `memory/audits/narrative/`. |
+| ⛩ narrative-quality-auditor | truth / system / effectiveness | Gate TALE tipado; retorna resultados de perfil separados e nunca tira a média deles. Escreve `memory/audits/narrative/`. |
 | message-test-designer | E | Projeta testes de mensagem — matriz de variantes, células de audiência e leitura de ressonância para a narrativa estratégica. |
 | narrative-resonance-monitor | E | Acompanha como a narrativa está aterrissando entre canais a partir de fontes keyless (dados proxy rotulados). |
 | narrative-drift-monitor | E | Vigia o desvio de narrativa — onde os canais se afastaram do cânone aprovado — e sinaliza correções. |
@@ -309,7 +311,7 @@ Quatro diretórios de fase (4 skills cada) mais os dois gates de qualidade da di
 
 ### Social — ECHO (16)
 
-Four phases under `social/` follow Explore → Craft → Host → Observe. `social-quality-auditor` selects the `asset-gate` or one program-maturity profile; those constructs are never combined. The discipline contains no posting, engagement, or DM automation.
+Quatro fases sob `social/` seguem Explore → Craft → Host → Observe. `social-quality-auditor` seleciona o `asset-gate` ou um perfil de program-maturity; esses construtos nunca são combinados. A disciplina não contém nenhuma automação de postagem, engajamento ou DM.
 
 | Fase | Skills |
 |-------|--------|
@@ -330,7 +332,7 @@ Four phases under `social/` follow Explore → Craft → Host → Observe. `soci
 | social-creative-builder | C | Posts nativos de plataforma (hook/corpo/CTA), com message match e cientes do claims-ledger. |
 | short-video-scripter | C | Roteiros de vídeo curto — hook, beats, texto na tela, estrutura de retenção. |
 | advocacy-program-designer | C | Programa de advocacy de funcionários/comunidade — opt-in, defaults de disclosure, kit de assets compartilháveis. |
-| ⛩ social-quality-auditor | asset gate / program maturity | Typed ECHO gate for one unit/profile; never combines asset and operating constructs. Writes `memory/audits/social/`. |
+| ⛩ social-quality-auditor | asset gate / program maturity | Gate ECHO tipado para uma unidade/perfil; nunca combina construtos de asset e de operação. Escreve `memory/audits/social/`. |
 | engagement-inbox-manager | H | Playbook de triagem de respostas/comentários/DMs — tiers de resposta, escalonamento, disciplina de engajamento genuíno (sem engajamento fabricado/iscado). |
 | social-selling-planner | H | Motion de social selling de founder/equipe — outreach relationship-first, sem DMs automatizados. |
 | crisis-response-planner | H | Tiers de crise pré-redigidos, holding statements, escada de escalonamento e gatilhos de pause-the-queue. |
@@ -451,7 +453,7 @@ Quatro diretórios de fase (4 skills cada); o gate da disciplina (⛩ content-re
 
 ### Launch — RAMP (16)
 
-Four phases under `launch/` follow Research → Assemble → Mobilize → Prove. `launch-readiness-auditor` selects one `preflight`, `execution`, or `outcome` profile per run; lifecycle results are linked but never averaged.
+Quatro fases sob `launch/` seguem Research → Assemble → Mobilize → Prove. `launch-readiness-auditor` seleciona um perfil `preflight`, `execution` ou `outcome` por execução; resultados de ciclo de vida são vinculados, mas nunca têm a média tirada.
 
 | Fase | Skills |
 |-------|--------|
@@ -472,7 +474,7 @@ Four phases under `launch/` follow Research → Assemble → Mobilize → Prove.
 | launch-asset-packager | A | Manifesto de assets de launch com escopo por tier — spec de press kit, specs de demo/screenshot, FAQ de launch, metadados de store-listing, checklist técnica de go-live. |
 | pricing-packaging-planner | A | Pricing & packaging de launch — estrutura de tiers, mapa valor-preço, escada de ofertas de launch, pricing beta com caminho de graduação, termos de garantia. |
 | sales-enablement-kit | A | Enablement interno — battle cards, talk track de vendas, tabela de tratamento de objeções, FAQ interna + macros de CS, anúncio interno com disciplina de embargo. |
-| ⛩ launch-readiness-auditor | preflight / execution / outcome | Typed RAMP gate for one lifecycle read; never averages time horizons. Writes `memory/audits/launch/`. |
+| ⛩ launch-readiness-auditor | preflight / execution / outcome | Gate RAMP tipado para uma leitura de ciclo de vida; nunca tira média entre horizontes de tempo. Escreve `memory/audits/launch/`. |
 | launch-day-conductor | M | Runbook de dia de launch em blocos horários — check de gate de precondições, veredictos de janela de observação após pushes irreversíveis, escada de incidentes P0–P3 + playbooks de rollback. |
 | community-launch-runner | M | Pacotes de submissão por plataforma (Product Hunt, Show HN, subreddits, ondas de diretórios, canais regionais/chineses) sob um check de linha vermelha de plataforma. |
 | press-media-relations | M | Lista de mídia/analistas em três tiers, timing de pitch com embargo, rascunho de release em estrutura padrão, roteiro de briefing a analistas. |
@@ -640,7 +642,7 @@ Cada mudança roda contra um conjunto de guards fail-closed (todos em `scripts/`
 | `check-evals.py` | Lint estrutural de eval + `structure-manifest.json` (120/120 skills carregam casos de eval). |
 | `check-pii.py` | Bloqueia secrets / PII commitados (allowlist em nível de token, fail-closed). |
 | `check-stdlib-only.sh` | Guard de dependency-creep + a linha vermelha de API com chave de Paid Ads. |
-| `check-versions.sh` | Version-sync guard: system catalog, plugin/marketplace/OpenClaw manifests, root + localized README badges, AGENTS/CLAUDE/VERSIONS, GitHub About, and all 120 skill versions stay aligned. |
+| `check-versions.sh` | Guard de sincronização de versões: catálogo do sistema, manifests de plugin/marketplace/OpenClaw, badges do README raiz e localizados, AGENTS/CLAUDE/VERSIONS, About do GitHub e as 120 versões de skills permanecem alinhados. |
 | `tests/test_connectors_local.py` | Testes offline de construtores de request e parsers cobrindo todos os 29 módulos de conectores incluídos (sem rede no CI). |
 | `tests/test_hook_artifact_gate.sh` | Testes de comportamento do Artifact Gate do hook + higienização SessionStart. |
 
@@ -650,8 +652,8 @@ A deriva de endpoints ao vivo é amostrada separadamente pelo **manual** [`scrip
 
 ## Contribuir & documentos do projeto
 
-- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — regras de authoring, o checklist de contribuição e a lista autoritativa de tracking de 8 arquivos.
-- **[VERSIONS.md](../VERSIONS.md)** — versões por skill + changelog (bundle atual: `16.0.0`).
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — regras de authoring, o checklist de contribuição e a lista autoritativa das 10 superfícies de tracking.
+- **[VERSIONS.md](../VERSIONS.md)** — versões por skill + changelog (bundle atual: `17.0.0`).
 - **[SECURITY.md](../SECURITY.md)** · **[PRIVACY.md](../PRIVACY.md)** · **[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)** — política de segurança, privacidade e comunidade.
 - **[CLAUDE.md](../CLAUDE.md)** / **[AGENTS.md](../AGENTS.md)** — contexto voltado ao agente para este repo.
 
