@@ -29,13 +29,108 @@
       }
     },
     "logical_order": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string"}},
-    "layers": {"type": "array", "minItems": 4, "maxItems": 4},
+    "layers": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "prefixItems": [
+        {"$ref": "#/$defs/layerL1"},
+        {"$ref": "#/$defs/layerL2"},
+        {"$ref": "#/$defs/layerL3"},
+        {"$ref": "#/$defs/layerL4"}
+      ],
+      "items": false
+    },
     "commands": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string"}},
-    "disciplines": {"type": "object", "minProperties": 7, "maxProperties": 7},
-    "protocol": {"type": "object"},
+    "disciplines": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["narrative", "seo-geo", "social", "email", "ad", "influencer", "launch"],
+      "properties": {
+        "narrative": {"$ref": "#/$defs/discipline"},
+        "seo-geo": {"$ref": "#/$defs/discipline"},
+        "social": {"$ref": "#/$defs/discipline"},
+        "email": {"$ref": "#/$defs/discipline"},
+        "ad": {"$ref": "#/$defs/discipline"},
+        "influencer": {"$ref": "#/$defs/discipline"},
+        "launch": {"$ref": "#/$defs/discipline"}
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["display_name", "layer", "skills"],
+      "properties": {
+        "display_name": {"type": "string", "minLength": 1},
+        "layer": {"const": "L4"},
+        "skills": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
     "registries": {"type": "array", "minItems": 7, "maxItems": 7},
     "auditors": {"type": "array", "minItems": 8, "maxItems": 8},
     "l1_dependency": {"type": "object"},
     "distribution_profiles": {"type": "object"}
+  },
+  "$defs": {
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "purpose", "disciplines", "cadence"],
+      "properties": {
+        "id": {"enum": ["L1", "L2", "L3", "L4"]},
+        "name": {"type": "string", "minLength": 1},
+        "purpose": {"type": "string", "minLength": 1},
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "cadence": {"type": "string", "minLength": 1}
+      }
+    },
+    "layerL1": {
+      "allOf": [
+        {"$ref": "#/$defs/layer"},
+        {"properties": {"id": {"const": "L1"}, "disciplines": {"const": ["narrative"]}}}
+      ]
+    },
+    "layerL2": {
+      "allOf": [
+        {"$ref": "#/$defs/layer"},
+        {"properties": {"id": {"const": "L2"}, "disciplines": {"const": ["seo-geo", "social", "email", "ad", "influencer"]}}}
+      ]
+    },
+    "layerL3": {
+      "allOf": [
+        {"$ref": "#/$defs/layer"},
+        {"properties": {"id": {"const": "L3"}, "disciplines": {"const": ["launch"]}}}
+      ]
+    },
+    "layerL4": {
+      "allOf": [
+        {"$ref": "#/$defs/layer"},
+        {"properties": {"id": {"const": "L4"}, "disciplines": {"const": ["protocol"]}}}
+      ]
+    },
+    "discipline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["display_name", "layer", "frameworks", "loop", "phase_order", "phases"],
+      "properties": {
+        "display_name": {"type": "string", "minLength": 1},
+        "layer": {"enum": ["L1", "L2", "L3"]},
+        "frameworks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "loop": {"type": "string", "minLength": 1},
+        "phase_order": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+        "phases": {
+          "type": "object",
+          "minProperties": 4,
+          "maxProperties": 4,
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {"type": "string"}
+          }
+        }
+      }
+    }
   }
 }

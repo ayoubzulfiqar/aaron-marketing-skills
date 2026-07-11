@@ -38,6 +38,21 @@ assert_pass()  { # $1=label $2=output  -> expect NO block decision
 assert_block() { # $1=label $2=output  -> expect a block decision
   case "$2" in *'"decision":"block"'*) ok "$1";; *) bad "$1 (expected block, got pass)";; esac
 }
+assert_deny() { # $1=label $2=output -> expect a PreToolUse deny decision
+  case "$2" in *'"permissionDecision":"deny"'*) ok "$1";; *) bad "$1 (expected deny, got pass)";; esac
+}
+assert_single_block_json() { # $1=label $2=output -> exactly one valid JSON object
+  if printf '%s' "$2" | python3 -c 'import json,sys
+try:
+    value = json.load(sys.stdin)
+except Exception:
+    raise SystemExit(1)
+raise SystemExit(0 if value.get("decision") == "block" else 1)'; then
+    ok "$1"
+  else
+    bad "$1 (expected exactly one valid block JSON object)"
+  fi
+}
 assert_contains()    { case "$2" in *"$3"*) ok "$1";; *) bad "$1 (missing: $3)";; esac; }
 assert_notcontains() { case "$2" in *"$3"*) bad "$1 (should not contain: $3)";; *) ok "$1";; esac; }
 
@@ -49,6 +64,7 @@ cat > "$PROJ/memory/audits/content/good.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
+catalog_version: "17.0.0"
 framework: CORE-EEAT
 profile: product-review
 ---
@@ -59,6 +75,7 @@ score_state: SCORED
 objective: "audit homepage content quality"
 target: "https://example.com/"
 observed_at: 2026-07-10
+context: {"content_type":"product-review","market":"US","publication_state":"draft"}
 key_findings:
   - title: thin intro
     severity: medium
@@ -76,6 +93,9 @@ final_overall_score: 78
 EOF
 assert_pass "compliant artifact passes (regression guard for hb() blank-line bug)" "$(gate content/good.md)"
 
+sed '/^context:/d' "$PROJ/memory/audits/content/good.md" > "$PROJ/memory/audits/content/missing_context.md"
+assert_block "durable artifact missing typed context blocks" "$(gate content/missing_context.md)"
+
 # 2. Non-BLOCKED artifact missing final_overall_score -> BLOCK
 sed '/^final_overall_score:/d' "$PROJ/memory/audits/content/good.md" > "$PROJ/memory/audits/content/missing_final.md"
 assert_block "missing final_overall_score (non-BLOCKED) blocks" "$(gate content/missing_final.md)"
@@ -86,6 +106,7 @@ cat > "$PROJ/memory/audits/content/blocked_ok.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
+catalog_version: "17.0.0"
 framework: CORE-EEAT
 profile: product-review
 ---
@@ -96,6 +117,7 @@ score_state: SCORED
 objective: "audit homepage"
 target: "https://example.com/"
 observed_at: 2026-07-10
+context: {"content_type":"product-review","market":"US","publication_state":"draft"}
 key_findings:
   - title: unsubstantiated medical claim
     severity: veto
@@ -114,12 +136,26 @@ raw_overall_score: 70
 EOF
 assert_pass "completed multi-veto BLOCK verdict passes without conflating status" "$(gate content/blocked_ok.md)"
 
+sed -e 's/score_state: SCORED/score_state: NOT_SCORED/' \
+    -e 's/evidence_coverage: 100/evidence_coverage: 90/' \
+    -e 's/score_confidence: high/score_confidence: not_scored/' \
+    -e '/^raw_overall_score:/d' \
+    "$PROJ/memory/audits/content/blocked_ok.md" \
+    > "$PROJ/memory/audits/content/blocked_with_gap.md"
+assert_pass "multi-veto with other gaps is DONE/BLOCK/NOT_SCORED" "$(gate content/blocked_with_gap.md)"
+
+sed 's/score_confidence: not_scored/score_confidence: high/' \
+    "$PROJ/memory/audits/content/blocked_with_gap.md" \
+    > "$PROJ/memory/audits/content/blocked_with_gap_bad_confidence.md"
+assert_block "every NOT_SCORED artifact requires not_scored confidence" "$(gate content/blocked_with_gap_bad_confidence.md)"
+
 # 4. An execution failure is unscored/undecided and still requires typed control fields.
 cat > "$PROJ/memory/audits/content/blocked_nocap.md" <<'EOF'
 ---
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
+catalog_version: "17.0.0"
 framework: CORE-EEAT
 profile: product-review
 ---
@@ -130,6 +166,7 @@ score_state: NOT_SCORED
 objective: "audit homepage"
 target: "https://example.com/"
 observed_at: 2026-07-10
+context: {"content_type":"product-review","market":"US","publication_state":"draft"}
 key_findings: []
 evidence_summary: could not fetch page
 evidence_coverage: 0
@@ -147,6 +184,18 @@ no frontmatter class here
 EOF
 assert_block "unmarked file in audit sink is blocked" "$(gate not_auditor.md)"
 
+mkdir -p "$PROJ/memory/audits/content/unreadable"
+printf '# hidden invalid artifact\n' > "$PROJ/memory/audits/content/unreadable/bad.md"
+chmod 000 "$PROJ/memory/audits/content/unreadable"
+unreadable_out="$(printf '{"stop_hook_active":false,"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" stop)"
+assert_block "sink traversal errors and unreadable directories fail closed" "$unreadable_out"
+chmod 700 "$PROJ/memory/audits/content/unreadable"
+rm -rf "$PROJ/memory/audits/content/unreadable"
+
+printf 'not a typed Markdown artifact\n' > "$PROJ/memory/audits/content/bypass.txt"
+assert_block "non-Markdown files cannot bypass the reserved sink" "$(gate content/bypass.txt)"
+rm -f "$PROJ/memory/audits/content/bypass.txt"
+
 echo "Artifact Gate — C3 influencer (content-reviewer) artifacts"
 mkdir -p "$PROJ/memory/audits/influencer" "$PROJ/memory/audits/ad" "$PROJ/memory/influencer/content-reviewer"
 
@@ -156,6 +205,7 @@ cat > "$PROJ/memory/audits/influencer/cr_good.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
+catalog_version: "17.0.0"
 framework: C3
 profile: art-awareness
 ---
@@ -166,6 +216,7 @@ score_state: SCORED
 objective: "review sponsored Reel for brand + FTC compliance"
 target: "creator @example, IG Reel"
 observed_at: 2026-07-10
+context: {"scope":"art","goal":"awareness","assessment_time":"actual","rollup_id":"campaign-1"}
 key_findings:
   - title: disclosure present
     severity: low
@@ -188,6 +239,7 @@ cat > "$PROJ/memory/audits/influencer/cr_veto.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
+catalog_version: "17.0.0"
 framework: C3
 profile: art-awareness
 ---
@@ -198,6 +250,7 @@ score_state: SCORED
 objective: "review sponsored post"
 target: "creator @example, TikTok"
 observed_at: 2026-07-10
+context: {"scope":"art","goal":"awareness","assessment_time":"actual","rollup_id":"campaign-1"}
 key_findings:
   - title: disclosure absent
     severity: veto
@@ -235,6 +288,7 @@ cat > "$PROJ/memory/audits/ad/aa_good.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
+catalog_version: "17.0.0"
 framework: ROAS
 profile: direct-response
 ---
@@ -245,6 +299,7 @@ score_state: SCORED
 objective: "ROAS audit of the search campaign"
 target: "Google Ads acct 123, DR goal"
 observed_at: 2026-07-10
+context: {"currency":"USD","window":"2026-Q2","conversion_lag":"30d","business_constraint":"profitable-growth","goal":"direct-response"}
 key_findings:
   - title: negative keywords thin
     severity: medium
@@ -264,6 +319,110 @@ assert_pass "ROAS ad/ artifact passes the gate" "$(gate ad/aa_good.md)"
 # C3-6. Path ownership is enforced.
 sed 's/framework: ROAS/framework: SEND/' "$PROJ/memory/audits/ad/aa_good.md" > "$PROJ/memory/audits/ad/aa_wrong_framework.md"
 assert_block "audit sink rejects the wrong framework" "$(gate ad/aa_wrong_framework.md)"
+
+echo "Artifact Gate — complete writable-tool coverage"
+
+# P1-15. The matcher covers every built-in filesystem writer plus arbitrary MCP
+# tools; pathless writers and Stop get a full reserved-sink scan.
+matcher="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"]["PostToolUse"][0]["matcher"])' "$REPO/hooks/hooks.json")"
+for tool in Write Edit NotebookEdit Bash PowerShell Monitor mcp__; do
+  assert_contains "PostToolUse matcher covers $tool" "$matcher" "$tool"
+done
+failure_matcher="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"]["PostToolUseFailure"][0]["matcher"])' "$REPO/hooks/hooks.json")"
+for tool in Write Edit NotebookEdit Bash PowerShell Monitor mcp__; do
+  assert_contains "PostToolUseFailure matcher covers $tool" "$failure_matcher" "$tool"
+done
+python3 - "$REPO/hooks/hooks.json" <<'PY' && ok "PostToolBatch is configured without a misleading matcher" || bad "PostToolBatch configuration is missing or matched"
+import json, sys
+hooks = json.load(open(sys.argv[1], encoding="utf-8"))["hooks"]
+assert len(hooks["PostToolBatch"]) == 1
+assert "matcher" not in hooks["PostToolBatch"][0]
+PY
+pathless_out="$(printf '{"tool_name":"Bash","tool_input":{"command":"generate audit"},"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" post-tool-use)"
+assert_block "pathless Bash write scans and blocks an invalid audit sink" "$pathless_out"
+mcp_out="$(printf '{"tool_name":"mcp__filesystem__write_file","tool_input":{"destination":"opaque"},"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" post-tool-use)"
+assert_block "arbitrary MCP writer scans and blocks an invalid audit sink" "$mcp_out"
+stop_out="$(printf '{"stop_hook_active":false,"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" stop)"
+assert_block "Stop fallback catches an invalid audit sink" "$stop_out"
+batch_out="$(printf '{"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" post-tool-batch)"
+assert_block "PostToolBatch catches an invalid audit sink" "$batch_out"
+active_stop_out="$(printf '{"stop_hook_active":true,"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" stop)"
+assert_pass "active Stop hook is allowed to terminate without looping" "$active_stop_out"
+
+# P2-02. A missing validator must terminate after one structured decision. Two
+# concatenated JSON objects are invalid hook output even when both say block.
+missing_validator_out="$(printf '{"tool_name":"Write","tool_input":{"file_path":"memory/audits/content/good.md"},"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" CLAUDE_PLUGIN_ROOT="$PROJ/missing-plugin" bash "$HOOK" post-tool-use)"
+assert_single_block_json "missing validator emits one valid block JSON object" "$missing_validator_out"
+bad_root_pre="$(printf '{"tool_name":"Write","tool_input":{"file_path":"memory/x.md"}}' | CLAUDE_PROJECT_DIR="$PROJ/missing-root" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" pre-tool-use)"
+assert_deny "unresolvable project root denies pre-write validation" "$bad_root_pre"
+bad_root_post="$(printf '{"tool_name":"Write","tool_input":{"file_path":"memory/x.md"}}' | CLAUDE_PROJECT_DIR="$PROJ/missing-root" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" post-tool-use)"
+assert_block "unresolvable project root blocks post-state validation" "$bad_root_post"
+oversized_hook_out="$(python3 -c 'import sys; sys.stdout.write("x" * 4000001)' 2>/dev/null | CLAUDE_PROJECT_DIR="$PROJ" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" pre-tool-use)"
+assert_deny "oversized hook input is bounded before entering shell memory" "$oversized_hook_out"
+
+echo "Memory privacy — PreToolUse Git-ignore enforcement"
+
+PRIV="$PROJ/privacy-project"
+mkdir -p "$PRIV"
+git -C "$PRIV" init --quiet
+pre_path() {
+  printf '{"tool_name":"%s","tool_input":{"file_path":"%s"},"cwd":"%s"}' "$1" "$2" "$PRIV" \
+    | CLAUDE_PROJECT_DIR="$PRIV" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" pre-tool-use
+}
+pre_command() {
+  printf '{"tool_name":"Bash","tool_input":{"command":"%s"},"cwd":"%s"}' "$1" "$PRIV" \
+    | CLAUDE_PROJECT_DIR="$PRIV" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" pre-tool-use
+}
+pre_mcp() {
+  printf '{"tool_name":"mcp__filesystem__write_file","tool_input":{"destination":"%s","content":"x"},"cwd":"%s"}' "$1" "$PRIV" \
+    | CLAUDE_PROJECT_DIR="$PRIV" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" pre-tool-use
+}
+
+assert_deny "unignored host memory write is denied before Write" "$(pre_path Write memory/hot-cache.md)"
+[ ! -e "$PRIV/memory/hot-cache.md" ] && ok "denied preflight creates no memory file" || bad "denied preflight created memory file"
+assert_pass "non-memory Write remains available" "$(pre_path Write README.md)"
+assert_deny "Bash command naming unignored memory is denied" "$(pre_command 'printf x > memory/hot-cache.md')"
+assert_deny "Bash variable resolving to unignored memory is denied" "$(pre_command 'd=memory; printf x > "$d/hot-cache.md"')"
+assert_deny "MCP destination in unignored memory is denied" "$(pre_mcp memory/events/secret.ndjson)"
+
+mkdir -p "$PRIV/memory"
+printf 'private\n' > "$PRIV/memory/opaque-result.md"
+post_privacy_out="$(printf '{"tool_name":"Bash","tool_input":{"command":"opaque-writer"},"cwd":"%s"}' "$PRIV" | CLAUDE_PROJECT_DIR="$PRIV" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" post-tool-use)"
+assert_block "post-state audit catches an unignored opaque-writer result" "$post_privacy_out"
+rm -rf "$PRIV/memory"
+
+printf 'memory/**\n' > "$PRIV/.gitignore"
+assert_pass "ignored host memory write passes preflight" "$(pre_path Write memory/hot-cache.md)"
+pre_artifact() {
+  python3 - "$1" "$2" "$3" "$PRIV" <<'PY' \
+    | CLAUDE_PROJECT_DIR="$PRIV" CLAUDE_PLUGIN_ROOT="$REPO" bash "$HOOK" pre-tool-use
+import json, pathlib, sys
+tool, target, source, cwd = sys.argv[1:]
+content = pathlib.Path(source).read_text(encoding="utf-8")
+print(json.dumps({"tool_name": tool, "tool_input": {
+    "file_path": target, "content": content}, "cwd": cwd}))
+PY
+}
+assert_pass "clean full-content Write passes Artifact Gate preflight" "$(pre_artifact Write memory/audits/content/prevalid.md "$PROJ/memory/audits/content/good.md")"
+printf '# invalid untyped audit\n' > "$PROJ/invalid-prewrite.md"
+assert_deny "invalid full-content Write is denied before the artifact lands" "$(pre_artifact Write memory/audits/content/preinvalid.md "$PROJ/invalid-prewrite.md")"
+[ ! -e "$PRIV/memory/audits/content/preinvalid.md" ] && ok "denied invalid audit preflight leaves no target" || bad "denied invalid audit preflight created a target"
+assert_deny "Edit is unsupported in the reserved audit sink" "$(pre_artifact Edit memory/audits/content/preedit.md "$PROJ/memory/audits/content/good.md")"
+mkdir -p "$PRIV/memory"
+printf 'sensitive\n' > "$PRIV/memory/hot-cache.md"
+git -C "$PRIV" add -f memory/hot-cache.md
+assert_deny "force-tracked host memory remains denied" "$(pre_path Edit memory/hot-cache.md)"
+
+pre_matcher="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"]["PreToolUse"][0]["matcher"])' "$REPO/hooks/hooks.json")"
+for tool in Write Edit NotebookEdit Bash PowerShell Monitor mcp__; do
+  assert_contains "PreToolUse matcher covers $tool" "$pre_matcher" "$tool"
+done
+python3 - "$REPO/hooks/hooks.json" <<'PY' && ok "blocking hook timeouts exceed inner preflight/scan bounds" || bad "blocking hook timeout is too short"
+import json, sys
+hooks = json.load(open(sys.argv[1], encoding="utf-8"))["hooks"]
+assert all(hooks[event][0]["hooks"][0]["timeout"] >= 60
+           for event in ("PreToolUse", "PostToolUse", "PostToolUseFailure", "PostToolBatch", "Stop"))
+PY
 
 echo "SessionStart — sanitization & symlink rejection"
 

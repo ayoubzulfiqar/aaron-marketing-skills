@@ -38,6 +38,8 @@ After one complete ACE, ART, and ROI result exists, C³ may report:
 
 `CVI = floor((ACE × ART × ROI)^(1/3))`
 
+When a campaign has multiple creators or assets, keep the budget-weighted ACE mean and equal-weighted ART mean exact through the geometric product. Do not floor either component mean before the one final CVI floor.
+
 The three components must share one `rollup_id`, goal, `observed_at`, `assessment_time`, and catalog version. A forecast CVI contains forecast components only; an actual CVI contains actual components only. Never replace missing actual outcomes with forecast values or combine unrelated creators/assets/campaigns merely because their dates match. Always show the three scope scores beside CVI because the components diagnose what the index only summarizes.
 
 For one creator/asset/campaign triplet, `c3-rollup` accepts the legacy three-result `scopes` array. For a real multi-creator campaign, use the typed [`c3-rollup.schema.json`](c3-rollup.schema.json) `components` form: ACE is budget-weighted, ART is equal-weighted, and exactly one ROI result is used. Multiple ACE entries require explicit positive weights; ART/ROI reject weights so the aggregation rule cannot drift silently.

@@ -41,7 +41,7 @@ Use `offsite-signal-analyzer` for link diagnosis without a gate, `content-qualit
 
 ### Runtime Contract
 
-Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `cite-domain-rating.md`, and the `CITE` entry in `framework-catalog.json`. For standalone installs, use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main` or guess missing policy.
+Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `cite-domain-rating.md`, and the `CITE` entry in `framework-catalog.json`. For standalone installs, use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main` or guess missing policy. Before deterministic calls, follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, and require the scorer, validator, and typed catalogs. If unavailable, return `score_state: NOT_SCORED` / `score_confidence: not_scored` with no gate verdict or persistent artifact.
 
 ### Required Setup
 
@@ -78,7 +78,7 @@ Without peer cohort, market, stage, or domain type, return `NEEDS_INPUT/UNDECIDE
 
 Domain youth, privacy-protected WHOIS, low absolute volume, or missing private-console access cannot by themselves fail a veto.
 
-Create a typed `audit-run.schema.json` input and execute `python3 scripts/rubric-score.py score <run.json>` when available. Never renormalize weights around Unknown items.
+Create a typed `audit-run.schema.json` input and execute `python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" score <run.json>` when the verified runtime is available. Never renormalize weights around Unknown items.
 
 ## Report
 
@@ -121,10 +121,10 @@ Use plain descriptions by default. On a trace request, show `CITE-T03`, `CITE-T0
 
 ## Persistence
 
-Persist only after explicit authorization. Write to `memory/audits/domain/YYYY-MM-DD-<topic>.md` with the v3 schema, then run:
+Persist only after explicit authorization. Assemble the complete v3 draft, validate it against the intended `memory/audits/domain/YYYY-MM-DD-<topic>.md` relative path, persist only through one full-content Write, and revalidate the target. Edit/shell/MCP mutations of the reserved sink are unsupported. Use:
 
 ```bash
-python3 scripts/validate-audit-artifact.py <path> --relative-path <path>
+python3 "$AARON_SKILLS_ROOT/scripts/validate-audit-artifact.py" <draft> --relative-path <target>
 ```
 
 The audit request itself does not authorize hot-cache, candidate, or registry writes.

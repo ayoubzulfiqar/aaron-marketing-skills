@@ -55,7 +55,7 @@ Ordinary skills do not write Markdown or NDJSON directly. With explicit permissi
 }
 ```
 
-The owner accepts/rejects by proposal event ID and current revision. Resolution retains both events.
+The host-capability owner accepts/rejects by proposal event ID. The decision request omits `expected_revision`; acceptance inherits and checks the revision captured by the proposal. Resolution retains both events.
 
 ## Consumer Rules
 

@@ -103,9 +103,9 @@ When registry state was read or changed, add registry name, projection offset, a
 
 ### Auditor-class Extension
 
-The eight auditor-class skills use [`auditor-runbook.md`](auditor-runbook.md), [`audit-artifact.schema.json`](audit-artifact.schema.json), and the typed scorer. Their handoff additionally includes framework, profile, catalog version, target, observation date, coverage, confidence, score state, verdict, veto count, cap, and raw/final score fields when allowed.
+The eight auditor-class skills use [`auditor-runbook.md`](auditor-runbook.md), [`audit-artifact.schema.json`](audit-artifact.schema.json), and the typed scorer. Their handoff additionally includes framework, profile, catalog version, target, observation date, complete material typed context, coverage, confidence, score state, verdict, veto count, cap, and raw/final score fields when allowed. A durable artifact stores the scorer's exact `catalog_version` and non-empty strict-JSON `context`; a prose context summary is not sufficient run identity.
 
-Status and verdict are orthogonal. A completed audit with two verified vetoes is normally `status: DONE`, `verdict: BLOCK`; an audit missing applicable evidence is `status: NEEDS_INPUT`, `verdict: UNDECIDED`. Never map a business block to execution `BLOCKED`.
+Status and verdict are orthogonal. A completed audit with two verified vetoes is normally `status: DONE`, `verdict: BLOCK`; if other items remain Unknown, it stays `DONE/BLOCK` but is `NOT_SCORED`. An audit missing applicable evidence without an independently determined multi-veto block is `status: NEEDS_INPUT`, `verdict: UNDECIDED`. Never map a business block to execution `BLOCKED`.
 
 ## Evidence and Missingness
 
@@ -130,19 +130,20 @@ Permission is operation-specific:
 - a hook, veto, schedule, or prior session's consent is not write authority;
 - validation confirms shape, not permission.
 
-Use path-safe, non-symlink targets and report what changed. Runtime `memory/**` is Git-ignored by default.
+Use path-safe, non-symlink targets and report what changed. The registry runtime verifies operational `memory/**` targets are Git-ignored before writing and fails closed otherwise.
 
 ## Registry State and Promotion Rules
 
 The event protocol in [state-model.md](state-model.md) governs the seven truth registries.
 
 - Ordinary skills submit `operation: propose` to the correct `memory/events/<registry>.ndjson` through `scripts/registry-events.py`.
-- Only the owning registry accepts/rejects or performs canonical upserts/transitions.
+- Only the owning registry accepts/rejects or performs canonical upserts/transitions, through a single-request host capability at `owner-append`. The capability binds normalized request hash, aggregate, idempotency key, resolved project root, one-time ID, and expiry; it is rechecked under the append lock. Self-reported request actor/authorization fields never confer authority.
 - Proposals remain non-canonical until accepted and are never cleared or moved.
 - JSON projections and human Markdown views are read models, not independent truth.
 - HOT is a user-authorized retrieval index. No skill, including an auditor, writes HOT autonomously.
 - `memory/decisions.md` requires `approved_by: user`, approval reference, date, and scope.
-- Safety-critical consent suppression/erasure bypasses proposal delay and is checked by replay before send eligibility.
+- Safety-critical consent suppression/erasure bypasses proposal delay and is checked by fail-closed replay before send eligibility. Suppression is deliberately deny-only and open to any validated producer; it cannot authorize contact or clear state.
+- Data-subject erasure authority requires both the same pseudonymous actor/aggregate ID and a host-issued safety capability bound to that exact request; field equality alone is not authentication. Restore requires a newer trusted basis source and owner capability.
 
 ## Narrative Layer Dependency
 
@@ -200,6 +201,8 @@ All auditor classes normalize user-facing decisions to `SHIP`, `FIX`, `BLOCK`, o
 - Complete remediation need or one verified veto: `FIX`; one veto caps final score at 59.
 - Two or more verified vetoes: `BLOCK`; no final score.
 - Missing applicable evidence: `UNDECIDED`; no score.
+
+When two verified vetoes already determine `BLOCK` but other applicable evidence is missing, retain `status: DONE`, `verdict: BLOCK`, `score_state: NOT_SCORED`, `score_confidence: not_scored`, no raw/final score, and no cap. For every other `NOT_SCORED` artifact, confidence is also exactly `not_scored`.
 
 Framework/profile scores are advisory and never compared across unlike units. RAMP, ECHO, and TALE use separate construct-consistent profiles rather than retired cross-time composite claims.
 

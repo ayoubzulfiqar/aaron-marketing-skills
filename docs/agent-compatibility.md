@@ -79,7 +79,7 @@ Paths below are each host's **native** skill directories (docs verified 2026-07;
 
 | Agent | Project dir | Global dir | Notes |
 |-------|-------------|------------|-------|
-| **Claude Code** | `.claude/skills/` (+ plugin skills) | `~/.claude/skills/` | Prefer the plugin — it adds the 7 commands, hooks, memory, connectors. Does **not** read `.agents/skills/`; `npx skills` handles the mapping. |
+| **Claude Code** | `.claude/skills/` (+ plugin skills) | `~/.claude/skills/` | Prefer the plugin — it adds the 8 commands, hooks, memory, connectors. Does **not** read `.agents/skills/`; `npx skills` handles the mapping. |
 | **OpenAI Codex** ✦ | `.agents/skills/` (CWD → repo root) | `~/.agents/skills/`, `/etc/codex/skills` | `AGENTS.md` context file supported. Launch-era `~/.codex/skills` no longer in current docs. |
 | **Google Antigravity** ✦ | `.agents/skills/` | `~/.gemini/config/skills/` (CLI: `~/.gemini/antigravity-cli/skills/`) | `description` drives activation; global `~/.agents/skills` **not** read. |
 | **OpenCode** ✦ | `.opencode/skills/`, `.claude/skills/` | `~/.config/opencode/skills/`, `~/.claude/skills/`, `~/.agents/skills/` | Unknown frontmatter ignored; per-skill permissions in `opencode.json`. |
@@ -110,12 +110,13 @@ A standalone install bundles **only each skill's folder** (its `SKILL.md` + own 
 | Shared resource | Standalone behavior |
 |-----------------|---------------------|
 | Repo-root `references/` (auditor runbook, typed catalogs, benchmarks, skill contract, state model) | Relative root links are unavailable, but every auditor folder includes a generated immutable `references/auditor-runtime.md` containing its shared runbook, typed framework slice, schemas, and benchmark. It never fetches a mutable branch or guesses missing policy. Non-gate skills inline their essential rules. |
+| Deterministic repo-root runtimes (`rubric-score.py`, `validate-audit-artifact.py`, `registry-events.py`) | Not bundled. In a Claude Code plugin install, commands resolve them through `${CLAUDE_PLUGIN_ROOT}`; in a full clone they fall back to the Git repository root, following the [root runtime invocation contract](../references/runtime-invocation.md). A standalone one-folder install must fail closed: auditors return `NOT_SCORED` instead of hand-calculating or claiming a gate verdict, and registry skills may prepare a proposal but cannot append, project, or claim canonical truth. Install the plugin or use a full clone for those operations. |
 | `scripts/connectors/*.py` (keyless data helpers) | Not bundled. Every skill is designed Tier-1: it runs on user-provided data with no connector. Clone the repo to use the connectors. |
 | The 8 `/aaron-marketing:*` commands | Claude Code plugin only. On other hosts, describe the goal — skill descriptions carry the routing triggers. |
-| Hooks (bounded working-memory context, Artifact Gate) | Claude Code plugin only. Gates still emit the full handoff schema; it just is not machine-validated without the repository runtime. |
+| Hooks (bounded working-memory context, Artifact Gate) | Claude Code plugin only. A standalone host has no machine-enforced audit write interception; without the deterministic validator, an auditor may collect typed inputs but must return `NOT_SCORED` and must not claim `SHIP`, `FIX`, or a persisted valid artifact. |
 | Cross-skill handoffs (`../<skill>/SKILL.md` links) | Literal paths may break, but handoffs reference skills **by name** — any host with the sibling skill installed routes fine. Install the full bundle rather than single skills to keep chains intact. |
 
-**Positioning in one line**: Claude Code plugin = the operated product (gates enforced, memory persisted, connectors wired); any other host = the same 120 skill procedures, self-contained.
+**Positioning in one line**: Claude Code plugin = the operated product (gates checked by deterministic runtimes plus bounded lifecycle hooks, memory persisted, connectors wired); any other host = the same 120 authored procedures, with deterministic scoring, canonical registry mutation, hooks, and connectors degraded exactly as listed above.
 
 ## For contributors
 

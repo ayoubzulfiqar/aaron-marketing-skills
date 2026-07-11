@@ -12,11 +12,17 @@ model provider, connectors, MCP servers, and storage/sync configuration have the
 - Installing the bundle does not transmit project data or register an MCP server.
 - Skills work in Tier 1 from text/files the user supplies. That content is processed by the agent
   host/model under the user's host configuration; this repository does not control that provider.
-- Operational `memory/**` is ignored by Git by default. Only inert templates and documentation are
-  tracked. The repository does not encrypt runtime memory.
+- Operational `memory/**` must be outside Git tracking. A full clone ships the ignore rule. In a
+  plugin host project, PreToolUse checks exact-path direct writes; opaque shell/MCP memory mutations
+  are unsupported and denied when identifiable. The registry runtime independently checks every
+  final, temporary, and lock path immediately around its atomic write. Post-use/failure/batch and
+  first-Stop hooks audit existing operational files. Hooks do not edit ignore rules and are not an
+  OS sandbox; the staged pre-commit and all-tracked CI scans protect committed Git content from PII,
+  not the validity of ignored runtime artifacts. The repository does not encrypt runtime memory.
 - Hooks do not send network requests. Session hooks may read bounded, sanitized excerpts from local
-  `memory/hot-cache.md` and counts from `memory/open-loops.md`; the Artifact Gate validates local
-  audit files after a write.
+  `memory/hot-cache.md` and counts from `memory/open-loops.md`; post-success, post-failure, and batch
+  hooks run bounded local checks. The first Stop may block for repair; its required active-stop guard
+  then prevents a loop rather than claiming an unconditional completion barrier.
 - Registry and audit writes require an explicit authorization path. An audit request alone does not
   authorize persistence, hot-cache changes, or canonical registry mutations.
 
@@ -27,9 +33,12 @@ proof references, audit evidence, metrics, and open decisions. Seven registries 
 events under `memory/events/` and generated views under `memory/projections/`.
 
 Consent aggregate IDs must be pseudonymous tokens/hashes supplied by the user's system. The runtime
-rejects common raw contact-PII fields and email-bearing IDs/refs, but pseudonymization is not
-anonymization: whoever holds the lookup table can relink the record. Keep that lookup outside this
-repository and apply access controls appropriate to the data.
+NFKC-normalizes strings before contact-pattern checks, exempts only actual timestamp fields from
+date-like phone matching, and rejects free-form consent payloads. The closed consent shape permits
+only typed status/basis/time/jurisdiction/channel fields, opaque non-PII references, and subject-free
+reason codes; arbitrary names, postal addresses, notes, and unknown fields are refused. This is
+minimization, not anonymization: whoever holds the pseudonym lookup can relink the record. Keep that
+lookup outside this repository and apply access controls appropriate to the data.
 
 ## When data leaves the machine
 
@@ -59,7 +68,10 @@ count here.
 - Delete or archive local working memory according to the project's retention policy. Use
   `memory-management` for a permissioned inventory, export, consolidation, or erasure workflow.
 - Registry history is append-only for integrity. A registry `erase` event removes projected payload
-  and leaves a minimal audit/safety tombstone; it does not rewrite prior event bytes.
+  and leaves a minimal audit/safety tombstone; it does not rewrite prior event bytes. A data-subject
+  erasure is accepted only with a host-issued safety capability bound to that exact pseudonymous
+  request. Suppression is intentionally broader but deny-only: an untrusted producer can prevent
+  contact, never clear suppression or authorize contact.
 - Deleting a working-tree file does not erase Git history, backups, filesystem snapshots, cloud-sync
   copies, model-provider logs, connector-vendor logs, or prior exports. Those systems require their
   own deletion procedures and verification.
@@ -84,4 +96,4 @@ For privacy questions: **hello@zhuhe.io**
 
 Material changes are recorded in Git history and release notes.
 
-*Last updated: 2026-07-10*
+*Last updated: 2026-07-11*

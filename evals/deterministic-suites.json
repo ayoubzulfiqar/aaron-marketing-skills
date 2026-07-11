@@ -43,6 +43,26 @@
       "timeout_seconds": 60
     },
     {
+      "id": "architecture-regressions",
+      "command": ["{python}", "tests/test_architecture.py"],
+      "timeout_seconds": 60
+    },
+    {
+      "id": "staged-pii-adversarial",
+      "command": ["{python}", "tests/test_check_pii.py"],
+      "timeout_seconds": 60
+    },
+    {
+      "id": "memory-privacy-preflight",
+      "command": ["{python}", "tests/test_memory_privacy.py"],
+      "timeout_seconds": 60
+    },
+    {
+      "id": "root-runtime-distribution",
+      "command": ["bash", "tests/test_runtime_distribution.sh"],
+      "timeout_seconds": 120
+    },
+    {
       "id": "standalone-auditor-runtime",
       "command": ["{python}", "scripts/generate-auditor-runtime.py", "--check"],
       "timeout_seconds": 60

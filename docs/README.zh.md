@@ -78,7 +78,7 @@
 | **默认 keyless** | 每个技能都能在 **Tier 1** 仅凭粘贴的数据、或从免费/第一方来源拉取的数据运行。付费工具与 MCP 服务器是可选项，绝非前提。付费广告技能基于**自有账户手动导出**评分——带密钥的广告 API 永不必需。 |
 | **Content-first, executable contracts** | Skills remain Markdown. Small Bash/Python-stdlib runtimes make scoring, state, safety, and conformance deterministic without package dependencies. |
 | **一套共享契约** | 120 个技能暴露同样的七段结构，并自带 `discipline` + `phase` 元数据，整个库像一套操作系统：每个技能都知道自己的输入、输出，以及下一个该交棒的技能。 |
-| **带门的质量** | 八套基准驱动八个 auditor-class 门，产出结构化、可机器校验的判定——不是凭感觉。每个带门工件落盘前都经 PostToolUse hook 校验。 |
+| **带门的质量** | 八套基准驱动八个 auditor-class 门，产出结构化、可机器校验的判定——不是凭感觉。成功/失败/批次 hook 通过有界检查暴露无效写入；pre-commit/CI 只兜底已提交 Git 内容中的 PII，不校验 runtime 工件。 |
 | **真相住在注册表里** | 规范事实（品牌实体、创作者档案、offer/声明实证）住在协议层专职注册表中，唯一写入者规则——门对照注册表评判，而非各自重新推导。 |
 | **跨轮记忆** | HOT/WARM/COLD 记忆模型在技能与会话之间携带发现、分数与未决事项，并在写入时净化。 |
 | **人话** | 技能内置 AI 腔检测器与禁用词表，让输出读起来像人写的。 |
@@ -175,7 +175,7 @@
 | **[RAMP](../references/ramp-benchmark.md)** | Product launch readiness / assets / momentum / proof | R / A / M / P; 40 stable IDs | Separate `preflight`, `execution`, and `outcome` profile results; never average time horizons | RAMP `R1`/`A1`/`M1`/`P1` |
 | **[ECHO](../references/echo-benchmark.md)** | Organic social embeddedness / craft / hosting / observability | E / C / H / O; 40 stable IDs | One `asset-gate` or `program-maturity-*` profile per run; never combine unlike units | ECHO `E1`/`C1`/`C2`/`H1`/`H2`/`O1` |
 
-每套框架由一个 **auditor-class 门**执行——写出受 PostToolUse hook 校验的带门工件（`class: auditor-output`）。门是工作流步骤，所以驻留并计入各自学科：
+每套框架由一个 **auditor-class 门**执行——其类型化工件（`class: auditor-output`）由确定性 validator 与有界生命周期 hooks 校验。仓库 CI 只回归测试 validator 与契约，不会检查被忽略的主机运行时工件。门是工作流步骤，所以驻留并计入各自学科：
 
 | 门 | 框架 | 所在 | 判定 |
 |----|------|------|------|
@@ -217,14 +217,17 @@
 | **WARM** | `memory/<subdir>/` | Rebuildable working projections and permissioned audit artifacts; canonical registry truth lives in `memory/events/*.ndjson`. |
 | **COLD** | `memory/archive/` | 降级/较旧记录，留作召回。 |
 
-**Hooks**（`hooks/hooks.json`，runner `hooks/claude-hook.sh`）接入四个 Claude Code 事件：
+**Hooks**（`hooks/hooks.json`，runner `hooks/claude-hook.sh`）接入七个 Claude Code 事件：
 
 | 事件 | 匹配 | 作用 |
 |------|------|------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | 注入**净化后**的 hot-cache + 未决事项指针（提示注入行被涂掉；符号链接缓存被拒）。 |
 | `UserPromptSubmit` | （全部） | 轻量逐提示上下文 hook。 |
-| `PostToolUse` | `Write\|Edit` | Hot-cache warning + path-triggered fail-closed Artifact Gate: every Markdown write under `memory/audits/` must validate as a typed v3 `class: auditor-output`; a missing marker, invalid sink/status/verdict/score, or unavailable validator blocks completion. |
-| `Stop` | （全部） | 空操作（静默退出）。 |
+| `PreToolUse` | 已知可写工具 | 精确路径的直接 `memory/**` 写入必须被 Git 忽略；可识别的 opaque shell/MCP 内存变更不受支持并会被拒绝。Registry runtime 会再次检查最终/临时/锁路径。 |
+| `PostToolUse` | 已知可写工具 | 成功写入后复核整个 operational-memory 命名空间，并校验准确审计目标或执行有界保留区扫描。 |
+| `PostToolUseFailure` | 已知可写工具 | 工具失败后执行同样的写后隐私与 Artifact Gate 检查，因为失败命令仍可能已写文件。 |
+| `PostToolBatch` | （全部） | 每批并行工具结束后复核 operational memory 与完整审计保留区。 |
+| `Stop` | （全部） | 执行最后一次有界扫描并可阻止一次以便修复；`stop_hook_active` 会放行后续停止。pre-commit/CI 仅保护已提交 Git 内容中的 PII，不校验被忽略的 runtime 工件。 |
 
 Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE、C³、ROAS、SEND、RAMP、ECHO、TALE 工件，无任何针对单框架的代码。
 
@@ -637,17 +640,17 @@ docs/            # 本地化 README(zh)
 | `check-evals.py` | eval 结构 lint + `structure-manifest.json`（120/120 技能均带 eval 用例）。 |
 | `check-pii.py` | 拦截提交的密钥 / PII（token 级允许名单，fail-closed）。 |
 | `check-stdlib-only.sh` | 依赖蔓延守卫 + 付费广告带密钥 API 红线。 |
-| `check-versions.sh` | 版本同步守卫：束版本在 plugin.json / 两个 marketplace 镜像 / 双语 README 徽章 / CLAUDE.md / VERSIONS.md 发布行 + changelog 条目间完全一致，且每个 SKILL.md 版本与其 VERSIONS.md 行匹配。 |
-| `tests/test_connectors_local.py` | 全部连接器纯请求构建函数的离线单测（CI 不联网）。 |
+| `check-versions.sh` | 版本同步守卫：system catalog、plugin/marketplace/OpenClaw manifests、根与本地化 README 徽章、AGENTS/CLAUDE/VERSIONS、GitHub About 和 120 个 skill 版本保持一致。 |
+| `tests/test_connectors_local.py` | 覆盖全部 29 个内置连接器模块之请求构建器／解析器的离线测试（CI 不联网）。 |
 | `tests/test_hook_artifact_gate.sh` | hook 的 Artifact Gate + SessionStart 净化的行为测试。 |
 
-线上端点漂移由**手动**的 [`scripts/connectors/smoke-live.sh`](../scripts/connectors/smoke-live.sh) 单独覆盖——每个托管连接器一次最小真实调用 + 响应形状断言（限速应答记 SKIP）；发版前手动跑，绝不进 CI。
+线上端点漂移由**手动**的 [`scripts/connectors/smoke-live.sh`](../scripts/connectors/smoke-live.sh) 另行抽样——对脚本中列出的每个托管连接器做一次最小真实调用 + 响应形状断言（限速应答记 SKIP）；发版前手动跑，绝不进 CI。
 
 ---
 
 ## 贡献与文档
 
-- **[CONTRIBUTING.md](../CONTRIBUTING.md)** —— 撰写规则、贡献清单、权威的 8 文件追踪列表。
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** —— 撰写规则、贡献清单，以及权威的 10 个追踪面清单。
 - **[VERSIONS.md](../VERSIONS.md)** —— 各技能版本 + 变更日志（当前包：`17.0.0`）。
 - **[SECURITY.md](../SECURITY.md)** · **[PRIVACY.md](../PRIVACY.md)** · **[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)** —— 安全、隐私、社区政策。
 - **[CLAUDE.md](../CLAUDE.md)** / **[AGENTS.md](../AGENTS.md)** —— 面向 Agent 的本仓库上下文。
@@ -662,7 +665,7 @@ docs/            # 本地化 README(zh)
 
 Apache License 2.0 —— 见 [LICENSE](../LICENSE)。
 
-*最后同步英文 README：v16.1.0*
+*最后同步英文 README：v17.0.0*
 
 ## Star History
 

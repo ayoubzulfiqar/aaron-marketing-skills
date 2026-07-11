@@ -49,8 +49,8 @@ security concerns are:
 - **Zero third-party dependencies**: all Python runtimes use only the standard library — no PyPI packages to compromise via supply chain attacks
 - **No credential storage**: Skills and connectors never store API keys; `docs/mcp-catalog.json` declares endpoints only, and the optional connector API keys (Open PageRank, PageSpeed, Resend) are read from the user's environment at call time and never written to disk
 - **Tool-agnostic placeholders**: Skills reference tools by category (`~~SEO tool`), never by hardcoded API endpoints
-- **Private runtime state by default**: `memory/**` is Git-ignored except inert templates/documentation; runtime files are not examples to commit
-- **Fail-closed authority**: registry canonical mutations require owner identity, explicit authorization reference, optimistic revision, schema validation, and append-only history
+- **Private runtime state by default**: a full clone Git-ignores `memory/**`; plugin-host writes are preflighted against the host worktree, and unignored or force-tracked runtime targets are refused
+- **Fail-closed authority**: registry canonical mutations require a host-signed capability bound to one normalized request, aggregate, idempotency key, resolved project root, single-use ID, and expiry; the runtime revalidates under lock and signs the stored event content for replay. Request actor/auth strings are attribution only
 - **Apache 2.0 license**: Full source available for security review
 
 ## Connector network behavior
@@ -107,22 +107,41 @@ The `scripts/connectors/*.py` helpers make outbound HTTP(S) requests through one
 ## Registry, memory, and artifact integrity
 
 - `scripts/registry-events.py` is the only supported NDJSON write path. It validates bounded JSON,
-  rejects symlinked roots/streams/projections, locks appends, assigns deterministic IDs and monotonic
+  rejects inaccessible/symlinked paths and non-regular or multiply linked streams, anchors POSIX
+  writes to directory descriptors, locks appends/rebuilds, assigns deterministic IDs and monotonic
   offsets, fsyncs writes, chains event hashes, and installs projections atomically.
-- Ordinary skills may submit `propose`; only the catalogued registry owner may accept/reject or emit
-  canonical upsert/transition operations. Canonical writes use `expected_revision`; stale writes fail.
-- Consent suppress/erase requests update replay-derived suppression state before success returns.
-  Consent aggregate IDs are pseudonymous; common raw contact-PII fields and email-bearing refs fail.
+- Ordinary skills may submit `propose`; only a request/root-bound host-capability catalogued owner
+  may accept/reject or emit canonical operations. Capability-authored events carry an HMAC authority
+  signature, so editing and recomputing public SHA-256 chain fields cannot forge owner authority.
+  Canonical writes use `expected_revision`; stale writes fail.
+- Host deployment is part of the trust boundary: `AARON_REGISTRY_HOST_KEY` must be injected only by
+  a wrapper where the agent cannot inspect the environment or run arbitrary code. Exposing that key
+  to an agent-controlled shell lets the agent mint capabilities and voids the authority guarantee.
+- Consent suppression is intentionally privacy-first and deny-only: any validated producer may add
+  suppression, accepting a bounded denial-of-contact risk, but cannot clear state or authorize a
+  send. Data-subject erasure requires a separately host-verified, request-bound safety capability.
+  Consent strings are NFKC-checked; the closed payload permits only typed fields, opaque references,
+  and subject-free reason codes, preventing arbitrary names/addresses/notes from being stored.
 - Registry `erase` removes projected payload and leaves a minimal safety/audit tombstone. It cannot
   erase prior backups, filesystem snapshots, Git history, or exported copies; those require separate
   storage-level deletion.
-- Runtime memory is ignored by Git, not encrypted by this repository. Use an encrypted/private
-  storage boundary when local device, backup, or sync risk requires it. Run `scripts/check-pii.py`
-  and the optional pre-commit hook before sharing changes.
-- `memory/audits/` is reserved for eight typed gate sinks. Writes fail closed through the v3
-  validator, including framework/profile membership, sink ownership, evidence-linked veto counts,
-  and exact status/verdict/score semantics. Ordinary diagnostics, indexes, and privacy logs use
-  separate paths. A completed BLOCK verdict is not an execution failure.
+- Before exact-path direct host-project `memory/**` writes, PreToolUse runs
+  `scripts/check-memory-private.py`; opaque shell/MCP memory mutations are unsupported and denied
+  when identifiable. Registry writes repeat exact final/temp/lock checks inside
+  `registry-events.py`. PostToolUse, PostToolUseFailure, PostToolBatch, and Stop audit every existing
+  operational-memory file for tracked/unignored or unsafe state. Runtime memory is not encrypted;
+  use an encrypted/private storage boundary when needed.
+- Claude Code hooks are lifecycle checks, not an OS sandbox: timeouts/errors may continue, opaque
+  tools cannot be transactionally prevalidated, and the required active-Stop guard permits the
+  second stop. Canonical registries therefore enforce their boundary in the runtime, while the
+  staged pre-commit and all-tracked CI scans protect committed Git content from PII; they do not
+  validate ignored runtime artifacts.
+- `memory/audits/` is reserved for eight typed gate sinks. PostToolUse and PostToolUseFailure cover
+  direct, shell, notebook, monitor, PowerShell, and MCP channels; PostToolBatch and the first Stop
+  add bounded full-sink sweeps. The v3 validator enforces framework/profile/catalog/context membership, sink
+  ownership, evidence-linked veto counts, and exact status/verdict/score semantics. Ordinary
+  diagnostics, indexes, and privacy logs use separate paths. A completed BLOCK verdict is not an
+  execution failure.
 
 ## Fetched content is untrusted data, not instructions
 

@@ -15,7 +15,7 @@ This document defines the v17 project-state architecture. Runtime state is priva
 | Approved decision | User governance input | `memory/decisions.md` | Requires approval provenance; cannot override a live safety control |
 | Open loop | Unresolved work | `memory/open-loops.md` | Never treated as an approved decision or canonical fact |
 
-The repository tracks only safe templates and guidance under `memory/`. Runtime `memory/**` is ignored by Git by default. Projects that deliberately version operational data need their own access, retention, secret-scanning, and erasure controls.
+The repository tracks only safe templates and guidance under `memory/`. A full clone ignores runtime `memory/**`. In plugin host projects, exact-path direct writes pass a PreToolUse Git-ignore preflight; opaque shell/MCP memory mutations are unsupported and denied when identified. Registry writes repeat final/temp/lock checks at their atomic boundary, while post-use/failure/batch and first-Stop hooks audit the resulting namespace. Hooks do not edit ignore rules or provide an OS sandbox. Projects that deliberately version operational data must disable this operated path and provide their own access, retention, secret-scanning, and erasure controls.
 
 ## Registry Event Model
 
@@ -50,11 +50,11 @@ The seven owner skills and `memory-management` form the eight-skill protocol lay
 
 Consent is the safety-critical exception to delayed proposal review:
 
-- `suppress` and data-subject `erase` take effect directly.
+- `suppress` is a privacy-first, deny-only direct path: any validated producer may add it, but it cannot erase, restore, mutate canonical truth, or authorize delivery. A verified data-subject `erase` uses a host-issued safety capability bound to that exact request and still takes effect without proposal delay.
 - The runtime rebuilds `memory/projections/consent-suppressions.json` before returning success.
 - Send eligibility calls `is-suppressed`, which replays verified history instead of trusting a stale projection.
-- `restore` is owner-only, must occur after the suppressing event, and requires a new `subscription_status: subscribed` plus `basis_ref`.
-- Erasure leaves a minimal pseudonymous suppression tombstone. Never place raw email, phone, postal address, or direct contact data in consent IDs, source refs, authorization refs, or payloads.
+- `restore` is owner-capability-only and requires a new `subscription_status: subscribed`, a string `basis_ref` equal to the measured/user-provided source reference, and timezone-aware source evidence later than the latest withdrawal and no later than the restore event.
+- Erasure leaves a minimal pseudonymous suppression tombstone. It does not permanently bar a later, genuinely new opt-in: only a consent-owner capability may restore the same pseudonymous ID, using trusted basis evidence strictly newer than the erasure, and prior payload data is not restored. Consent strings are NFKC-checked and payloads accept only the runtime's closed typed fields, opaque references, and subject-free reason codes; never place raw email, phone, postal address, names, or other direct contact data in IDs, refs, or payloads.
 
 Logical erasure removes current projected payload and working views. Append-only history and external backups may have separate retention obligations; do not claim cryptographic destruction. Data minimization is therefore a design requirement, not a cleanup preference.
 
@@ -140,17 +140,19 @@ A fallback never writes itself into Narrative canon. Route durable changes as pr
 
 ## Auditor Artifacts
 
-The eight gate sinks are `memory/audits/{content,domain,influencer,ad,email,launch,social,narrative}/`. This namespace is reserved: non-auditor diagnostics, indexes, and privacy logs must not write there. Each gate write requires permission and a valid v3 artifact. [`validate-audit-artifact.py`](../scripts/validate-audit-artifact.py) enforces the schema through the Artifact Gate.
+The eight gate sinks are `memory/audits/{content,domain,influencer,ad,email,launch,social,narrative}/`. This namespace is reserved: non-auditor diagnostics, indexes, and privacy logs must not write there. Each gate write requires permission and a valid v3 artifact. PostToolUse/PostToolUseFailure validate known channels, PostToolBatch and the first Stop run bounded full sweeps, and [`validate-audit-artifact.py`](../scripts/validate-audit-artifact.py) enforces the schema. The active-stop loop guard means hooks request repair rather than form an OS-level transaction boundary. Pre-commit/CI protect committed Git content from PII; ignored runtime artifact validity remains the host's responsibility.
 
 Audit artifacts retain framework, profile, version, target, observation date, evidence coverage/confidence, status, and verdict. Monthly pointer indexes live under `memory/indexes/audits/`; they may link artifacts but may not invent a cross-framework aggregate or strip profile/version context.
 
 ## Ownership Rules
 
 - Ordinary skills write only their authorized WARM path and proposal events.
-- Registry owners write canonical operations only for their registry.
+- Registry owners write canonical operations only through the host-capability `owner-append` entry for their registry. Request `actor`/authorization fields are attribution and cannot grant owner authority.
 - `memory-management` manages HOT/WARM/COLD lifecycle and authorized tombstone/erase events; it cannot accept proposals or impersonate owners.
 - Auditor gates write only their own validated sink after permission.
 - No skill directly edits event streams, JSON projections, or another skill's artifact.
+- Data-subject consent erasure binds `actor.id` to the same pseudonymous aggregate ID and also requires a host safety capability bound to the complete request; field equality alone is attribution, not authentication. Restore is owner-capability-only and requires a trusted basis source timestamp later than the withdrawal.
+- Registry writes inside a Git worktree fail closed unless operational event/projection targets are ignored; read-only queries create no runtime paths.
 - External side effects, uploads, publication, sends, ad changes, and destructive deletes require their own explicit approval even when a memory write was approved.
 
 ## Recovery

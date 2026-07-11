@@ -49,7 +49,7 @@ At activation, read these repository files:
 3. `../../../references/core-eeat-benchmark.md`
 4. `../../../references/framework-catalog.json` (`CORE-EEAT` entry)
 
-For a standalone installation, read the bundled immutable `references/auditor-runtime.md` instead. Never fetch a mutable branch or continue with a guessed contract. Record `schema_version: 3.0`, `runbook_version: 3.0.0`, and catalog version in the report.
+For a standalone installation, read the bundled immutable `references/auditor-runtime.md` instead. Never fetch a mutable branch or continue with a guessed contract. Before deterministic calls, follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, and require the scorer, validator, and typed catalogs. If they are absent, return `score_state: NOT_SCORED` / `score_confidence: not_scored` with no gate verdict or persistent artifact. Record `schema_version: 3.0`, `runbook_version: 3.0.0`, and catalog version in the report.
 
 ### Required Setup
 
@@ -83,7 +83,7 @@ If content type cannot be inferred safely, ask one blocking question. Do not cho
    - `CORE-EEAT-C01`: material title/promise mismatch.
    - `CORE-EEAT-R10`: material internal factual contradiction; an isolated broken link is not this veto.
    - `CORE-EEAT-T04`: a material connection exists and required disclosure is absent/materially obscured; no relationship is N/A.
-6. Create a JSON run conforming to `audit-run.schema.json` and execute `python3 scripts/rubric-score.py score <run.json>` when the repository runtime is available. Preserve the typed input and output for reproducibility.
+6. Create a JSON run conforming to `audit-run.schema.json` and execute `python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" score <run.json>` when the verified runtime is available. Preserve the typed input and output for reproducibility.
 
 Missing evidence prevents a total. Report the scorer's interval, coverage, and exact gaps; do not invent a score or mark the artifact failed merely because access is missing.
 
@@ -138,10 +138,10 @@ Default to plain-language findings. When traceability is requested, qualify IDs 
 
 ## Persistence
 
-Do not write memory merely because an audit was requested. If the user explicitly authorizes persistence, write `memory/audits/content/YYYY-MM-DD-<topic>.md` using the exact v3 artifact shape and validate it with:
+Do not write memory merely because an audit was requested. If the user explicitly authorizes persistence, assemble the exact v3 draft, validate it against the intended `memory/audits/content/YYYY-MM-DD-<topic>.md` relative path, persist only through one full-content Write, and revalidate the target. Edit/shell/MCP mutations of the reserved sink are unsupported. Validate with:
 
 ```bash
-python3 scripts/validate-audit-artifact.py <path> --relative-path <path>
+python3 "$AARON_SKILLS_ROOT/scripts/validate-audit-artifact.py" <draft> --relative-path <target>
 ```
 
 Do not claim the artifact was saved if validation fails. Do not write veto markers, candidates, or hot-cache entries without the same permission.

@@ -5,15 +5,16 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "class", "schema_version", "runbook_version", "framework", "profile",
+    "class", "schema_version", "runbook_version", "catalog_version", "framework", "profile",
     "status", "verdict", "score_state", "objective", "target", "observed_at",
-    "key_findings", "evidence_summary", "evidence_coverage", "score_confidence",
+    "context", "key_findings", "evidence_summary", "evidence_coverage", "score_confidence",
     "open_loops", "recommended_next_skill", "veto_count", "cap_applied"
   ],
   "properties": {
     "class": {"const": "auditor-output"},
     "schema_version": {"const": "3.0"},
     "runbook_version": {"const": "3.0.0"},
+    "catalog_version": {"const": "17.0.0"},
     "framework": {"enum": ["CORE-EEAT", "CITE", "C3", "ROAS", "SEND", "RAMP", "ECHO", "TALE", "MULTI"]},
     "profile": {
       "type": "string",
@@ -26,6 +27,7 @@
     "objective": {"type": "string", "minLength": 1},
     "target": {"type": "string", "minLength": 1},
     "observed_at": {"type": "string", "format": "date"},
+    "context": {"type": "object", "minProperties": 1},
     "key_findings": {
       "type": "array",
       "items": {
@@ -48,5 +50,218 @@
     "cap_applied": {"type": "boolean"},
     "raw_overall_score": {"type": "integer", "minimum": 0, "maximum": 100},
     "final_overall_score": {"type": "integer", "minimum": 0, "maximum": 100}
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"framework": {"const": "C3"}},
+        "required": ["framework"]
+      },
+      "then": {
+        "properties": {
+          "context": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["scope", "goal", "assessment_time", "rollup_id"],
+            "properties": {
+              "scope": {"enum": ["ace", "art", "roi"]},
+              "goal": {"enum": ["awareness", "engagement", "conversion", "brand-building"]},
+              "assessment_time": {"enum": ["forecast", "actual"]},
+              "rollup_id": {"type": "string", "minLength": 1, "pattern": "\\S"}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"framework": {"const": "MULTI"}},
+        "required": ["framework"]
+      },
+      "then": {
+        "properties": {
+          "profile": {"const": "cross-framework-summary"},
+          "status": {"const": "DONE"},
+          "verdict": {"const": "UNDECIDED"},
+          "score_state": {"const": "NOT_SCORED"},
+          "score_confidence": {"const": "not_scored"},
+          "veto_count": {"const": 0},
+          "cap_applied": {"const": false}
+        },
+        "not": {
+          "anyOf": [
+            {"required": ["raw_overall_score"]},
+            {"required": ["final_overall_score"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"score_state": {"const": "NOT_SCORED"}},
+        "required": ["score_state"]
+      },
+      "then": {
+        "properties": {
+          "score_confidence": {"const": "not_scored"},
+          "cap_applied": {"const": false}
+        },
+        "not": {
+          "anyOf": [
+            {"required": ["raw_overall_score"]},
+            {"required": ["final_overall_score"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"score_state": {"const": "SCORED"}},
+        "required": ["score_state"]
+      },
+      "then": {
+        "properties": {
+          "evidence_coverage": {"const": 100},
+          "score_confidence": {"enum": ["high", "medium", "low"]}
+        },
+        "required": ["raw_overall_score"]
+      }
+    },
+    {
+      "if": {
+        "properties": {"verdict": {"const": "SHIP"}},
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "DONE"},
+          "score_state": {"const": "SCORED"},
+          "raw_overall_score": {"minimum": 75},
+          "veto_count": {"const": 0},
+          "cap_applied": {"const": false}
+        },
+        "required": ["raw_overall_score", "final_overall_score"]
+      }
+    },
+    {
+      "if": {
+        "properties": {"verdict": {"const": "FIX"}},
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "DONE_WITH_CONCERNS"},
+          "score_state": {"const": "SCORED"}
+        },
+        "required": ["raw_overall_score", "final_overall_score"]
+      }
+    },
+    {
+      "if": {
+        "properties": {"verdict": {"const": "BLOCK"}},
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "DONE"},
+          "veto_count": {"minimum": 2},
+          "cap_applied": {"const": false}
+        },
+        "not": {"required": ["final_overall_score"]}
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          {"properties": {"verdict": {"const": "UNDECIDED"}}, "required": ["verdict"]},
+          {"not": {"properties": {"framework": {"const": "MULTI"}}, "required": ["framework"]}}
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {"enum": ["BLOCKED", "NEEDS_INPUT"]},
+          "score_state": {"const": "NOT_SCORED"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "score_state": {"const": "SCORED"},
+          "veto_count": {"const": 0}
+        },
+        "required": ["score_state", "veto_count"]
+      },
+      "then": {
+        "properties": {
+          "verdict": {"enum": ["SHIP", "FIX"]},
+          "cap_applied": {"const": false}
+        },
+        "required": ["final_overall_score"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "score_state": {"const": "SCORED"},
+          "veto_count": {"const": 1}
+        },
+        "required": ["score_state", "veto_count"]
+      },
+      "then": {
+        "properties": {
+          "verdict": {"const": "FIX"},
+          "cap_applied": {"const": true},
+          "final_overall_score": {"maximum": 59}
+        },
+        "required": ["final_overall_score"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "score_state": {"const": "SCORED"},
+          "veto_count": {"minimum": 2}
+        },
+        "required": ["score_state", "veto_count"]
+      },
+      "then": {
+        "properties": {
+          "verdict": {"const": "BLOCK"},
+          "cap_applied": {"const": false}
+        },
+        "not": {"required": ["final_overall_score"]}
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          {"properties": {"score_state": {"const": "NOT_SCORED"}}, "required": ["score_state"]},
+          {"not": {"properties": {"framework": {"const": "MULTI"}}, "required": ["framework"]}},
+          {"properties": {"veto_count": {"minimum": 2}}, "required": ["veto_count"]}
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "DONE"},
+          "verdict": {"const": "BLOCK"}
+        }
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          {"properties": {"score_state": {"const": "NOT_SCORED"}}, "required": ["score_state"]},
+          {"not": {"properties": {"framework": {"const": "MULTI"}}, "required": ["framework"]}},
+          {"properties": {"veto_count": {"maximum": 1}}, "required": ["veto_count"]}
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {"enum": ["BLOCKED", "NEEDS_INPUT"]},
+          "verdict": {"const": "UNDECIDED"}
+        }
+      }
+    }
+  ]
 }

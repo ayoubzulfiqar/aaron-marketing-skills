@@ -78,7 +78,7 @@ Une bibliothèque de skills Claude et de commandes slash qui transforme un agent
 | **Keyless par défaut** | Chaque skill fonctionne en **Tier 1** avec des données que vous collez ou tirez de sources gratuites/de première partie. Les outils payants et les serveurs MCP sont un confort optionnel, jamais un prérequis. Les skills paid ads notent à partir de votre **export manuel de votre propre compte** — les API publicitaires à clé ne sont jamais requises. |
 | **Content-first, executable contracts** | Skills remain Markdown. Small Bash/Python-stdlib runtimes make scoring, state, safety, and conformance deterministic without package dependencies. |
 | **Un contrat partagé** | Les 120 skills exposent les mêmes sept sections et déclarent elles-mêmes les métadonnées `discipline` + `phase`, de sorte que la bibliothèque se comporte comme un unique système d'exploitation : chaque skill connaît ses entrées, ses sorties et le meilleur skill suivant auquel passer la main. |
-| **Qualité sous gate** | Huit benchmarks pilotent huit gates de classe auditeur qui émettent des verdicts structurés et vérifiables par machine — pas des impressions. Un hook PostToolUse valide chaque artefact sous gate avant qu'il n'atterrisse. |
+| **Qualité sous gate** | Huit benchmarks produisent des verdicts structurés et vérifiables. Les hooks bornés signalent les écritures invalides ; pre-commit/CI protègent seulement le contenu Git commité contre les PII et ne valident pas les artefacts runtime. |
 | **La vérité vit dans des registres** | Les faits canoniques (entités de marque, dossiers de créateurs, substantiation d'offres/claims, consentement par sujet) vivent dans des registres dédiés de la couche de protocole avec des règles d'écrivain unique — les gates jugent contre eux plutôt que de les redériver. |
 | **Mémoire entre les tours** | Un modèle de mémoire HOT/WARM/COLD transporte les découvertes, les scores et les boucles ouvertes entre skills et sessions, assainis à l'entrée. |
 | **Voix naturelle** | Les skills embarquent un détecteur de jargon d'IA et une liste de phrases bannies pour que la sortie se lise comme écrite par un humain. |
@@ -175,7 +175,7 @@ Huit benchmarks rendent « bon » mesurable. Chacun définit des dimensions, une
 | **[RAMP](../references/ramp-benchmark.md)** | Product launch readiness / assets / momentum / proof | R / A / M / P; 40 stable IDs | Separate `preflight`, `execution`, and `outcome` profile results; never average time horizons | RAMP `R1`/`A1`/`M1`/`P1` |
 | **[ECHO](../references/echo-benchmark.md)** | Organic social embeddedness / craft / hosting / observability | E / C / H / O; 40 stable IDs | One `asset-gate` or `program-maturity-*` profile per run; never combine unlike units | ECHO `E1`/`C1`/`C2`/`H1`/`H2`/`O1` |
 
-Chaque framework est appliqué par un **gate de classe auditeur** — un skill qui écrit un artefact sous gate (`class: auditor-output`) validé par le hook PostToolUse. Les gates sont des étapes de workflow, donc chacun vit dans sa discipline et y est compté :
+Chaque framework est appliqué par un **gate de classe auditeur** — un skill dont l'artefact typé (`class: auditor-output`) est validé par le validateur déterministe et des hooks bornés du cycle de vie. La CI du dépôt teste le validateur et le contrat en régression ; elle n'inspecte pas les artefacts runtime de l'hôte ignorés. Les gates sont des étapes de workflow, donc chacun vit dans sa discipline et y est compté :
 
 | Gate | Framework | Vit dans | Verdict |
 |------|-----------|----------|---------|
@@ -217,14 +217,17 @@ Les registres suivent une **règle d'écrivain unique** (les autres skills soume
 | **WARM** | `memory/<subdir>/` | Rebuildable working projections and permissioned audit artifacts; canonical registry truth lives in `memory/events/*.ndjson`. |
 | **COLD** | `memory/archive/` | Enregistrements rétrogradés/plus anciens, conservés pour rappel. |
 
-**Les hooks** (`hooks/hooks.json`, exécuteur `hooks/claude-hook.sh`) câblent quatre événements Claude Code :
+**Les hooks** (`hooks/hooks.json`, exécuteur `hooks/claude-hook.sh`) câblent sept événements Claude Code :
 
 | Événement | Matcher | Ce qu'il fait |
 |-------|---------|--------------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | Injecte le hot-cache **assaini** + un pointeur vers les boucles ouvertes (les lignes d'injection de prompt sont caviardées ; les caches en symlink sont rejetés). |
 | `UserPromptSubmit` | (tous) | Hook de contexte léger par prompt. |
-| `PostToolUse` | `Write\|Edit` | Hot-cache warning + path-triggered fail-closed Artifact Gate: every Markdown write under `memory/audits/` must validate as a typed v3 `class: auditor-output`; a missing marker, invalid sink/status/verdict/score, or unavailable validator blocks completion. |
-| `Stop` | (tous) | No-op (sort en silence). |
+| `PreToolUse` | known write-capable tools | Verifies before supported `memory/**` writes that the exact host-project target is Git-ignored; otherwise the write is denied. |
+| `PostToolUse` | known write-capable tools | Post-state memory audit + bounded Artifact Gate validation after successful writes. |
+| `PostToolUseFailure` | known write-capable tools | Runs the same checks after failed tools that may already have written files. |
+| `PostToolBatch` | (tous) | Rechecks operational memory and the reserved audit sink after each parallel batch. |
+| `Stop` | (tous) | Performs one final bounded sweep; the active-stop guard then permits termination. Pre-commit/CI protect committed Git content from PII only, not ignored runtime artifacts. |
 
 L'Artifact Gate est **agnostique au framework** — le même hook valide les artefacts TALE, CORE-EEAT, CITE, C³, ROAS, SEND, RAMP et ECHO sans code spécifique par framework.
 
@@ -637,11 +640,11 @@ Chaque changement est exécuté contre un ensemble de guards fail-closed (tous d
 | `check-evals.py` | Lint structurel d'eval + `structure-manifest.json` (120/120 skills portent des cas d'eval). |
 | `check-pii.py` | Bloque secrets / PII commités (allowlist au niveau token, fail-closed). |
 | `check-stdlib-only.sh` | Guard de dependency-creep + la ligne rouge API à clé de Paid Ads. |
-| `check-versions.sh` | Guard de sync de version : version de bundle identique sur plugin.json / les deux miroirs marketplace / les deux badges README / CLAUDE.md / ligne de release VERSIONS.md + entrée de changelog, et chaque version de SKILL.md correspond à sa ligne VERSIONS.md. |
-| `tests/test_connectors_local.py` | Tests unitaires offline des constructeurs de requête purs de chaque connecteur (pas de réseau en CI). |
+| `check-versions.sh` | Version-sync guard: system catalog, plugin/marketplace/OpenClaw manifests, root + localized README badges, AGENTS/CLAUDE/VERSIONS, GitHub About, and all 120 skill versions stay aligned. |
+| `tests/test_connectors_local.py` | Tests offline des constructeurs de requête et parseurs couvrant les 29 modules de connecteurs fournis (pas de réseau en CI). |
 | `tests/test_hook_artifact_gate.sh` | Tests de comportement de l'Artifact Gate du hook + assainissement SessionStart. |
 
-La dérive d'endpoints en live est couverte séparément par le **manuel** [`scripts/connectors/smoke-live.sh`](../scripts/connectors/smoke-live.sh) — un appel réel minimal par connecteur hébergé avec assertions de forme (les réponses de rate-limit comptent comme SKIP) ; exécutez-le avant un release, jamais en CI.
+La dérive d'endpoints en live est échantillonnée séparément par le **manuel** [`scripts/connectors/smoke-live.sh`](../scripts/connectors/smoke-live.sh) — un appel réel minimal par connecteur hébergé listé dans ce script, avec assertions de forme (les réponses de rate-limit comptent comme SKIP) ; exécutez-le avant un release, jamais en CI.
 
 ---
 

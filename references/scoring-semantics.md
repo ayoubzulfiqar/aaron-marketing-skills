@@ -52,10 +52,10 @@ All applicable items require an observed `pass`, `partial`, or `fail` before a c
 
 For a complete run:
 
-1. Item points are averaged within each included dimension and scaled to 0–100.
-2. Profile dimension weights are applied.
-3. Results are floor-rounded once at the documented rollup boundary.
-4. Framework-specific rollups, such as C3 CVI, run only after every required component is independently complete and comparable.
+1. Item points are averaged exactly within each included dimension and scaled to 0–100. A fractional dimension value is not floored before weighting.
+2. Profile dimension weights are applied with exact decimal arithmetic.
+3. The weighted overall result is floor-rounded once, at the final documented rollup boundary. Score-interval bounds follow the same rule; a displayed dimension value never feeds a rounded value back into the calculation.
+4. Framework-specific rollups, such as C3 CVI, run only after every required component is independently complete and comparable. C3 budget-weighted ACE and equal-weighted ART component means remain exact through the geometric product; only the final CVI is floored.
 
 The common descriptive bands are Excellent 90–100, Good 75–89, Medium 60–74, Low 40–59, and Poor 0–39. Bands are labels, not empirical outcome probabilities.
 
@@ -69,22 +69,32 @@ The common descriptive bands are Excellent 90–100, Good 75–89, Medium 60–7
 | Complete, remediation needed | `DONE_WITH_CONCERNS` | `FIX` | Raw score |
 | Exactly one failed veto | `DONE_WITH_CONCERNS` | `FIX` | `min(raw, 59)` |
 | Two or more failed vetoes | `DONE` | `BLOCK` | Not emitted |
+| Two or more verified vetoes, with other applicable gaps | `DONE` | `BLOCK` | Not emitted (`NOT_SCORED`) |
 | Applicable evidence missing | `NEEDS_INPUT` | `UNDECIDED` | Not emitted |
 
-A completed blocked audit is not `BLOCKED` status. A veto is triggered only by verified failure, not by absent access or missing data. Unknown veto evidence keeps the run undecided unless other verified vetoes independently determine `BLOCK`.
+A completed blocked audit is not `BLOCKED` status. A veto is triggered only by verified failure, not by absent access or missing data. Unknown veto evidence keeps the run undecided unless two other verified vetoes independently determine `BLOCK`; remaining gaps still keep that result `NOT_SCORED`.
 
 ## 7. Reproducible Execution
 
 Prepare a JSON run conforming to `references/audit-run.schema.json`, then execute:
 
 ```bash
-python3 scripts/rubric-score.py check-catalog
-python3 scripts/rubric-score.py score path/to/audit-run.json
+AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
+if [ -z "$AARON_SKILLS_ROOT" ] \
+  || [ ! -f "$AARON_SKILLS_ROOT/scripts/rubric-score.py" ] \
+  || [ ! -f "$AARON_SKILLS_ROOT/references/framework-catalog.json" ]; then
+  printf '%s\n' 'Aaron scoring runtime unavailable; return NOT_SCORED without a verdict or persistent artifact.' >&2
+  exit 1
+fi
+python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" check-catalog
+python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" score path/to/audit-run.json
 ```
 
 For C3, score comparable ACE, ART, and ROI runs with the same goal, campaign `rollup_id`, `assessment_time`, `observed_at`, and catalog version, then pass the complete components to `c3-rollup`. Forecast and actual scopes never mix; a blocked component prevents CVI.
 
-Human-readable audit artifacts follow [`audit-artifact.schema.json`](audit-artifact.schema.json) and [`auditor-runbook.md`](auditor-runbook.md). Preserve the typed input and scorer output beside the narrative artifact when the host supports files.
+Human-readable audit artifacts follow [`audit-artifact.schema.json`](audit-artifact.schema.json) and [`auditor-runbook.md`](auditor-runbook.md). Every durable artifact preserves the scorer's `catalog_version` and complete typed `context`; scalar summaries are not substitutes. Preserve the typed input and scorer output beside the narrative artifact when the host supports files.
+
+If a standalone installation does not contain the scorer and catalog checked above, fail closed: report `NOT_SCORED`, do not hand-calculate a total or verdict, and do not persist an audit artifact.
 
 ## 8. Calibration and Reliability
 

@@ -29,7 +29,7 @@ Review pending narrative proposals and reject partial/internally inconsistent ve
 
 **Unit:** one brand canon aggregate ID. **Reads:** `memory/events/narrative.ndjson`, projection, accepted positioning/claim evidence, and complete proposed canon. **Writes:** narrative events through `registry-events.py`; `canon.md`/`versions.md` are generated views. **Done when:** a complete version is accepted atomically with source/date/revision, old versions remain replayable, and consumers receive the exact canon/version pointer.
 
-Narrative skills submit complete `propose` events. `narrative-registry` alone accepts/rejects/upserts. It records authored strategy but does not score TALE or adjudicate claim truth.
+Narrative skills submit complete `propose` events. Only a host-capability `narrative-registry` principal accepts/rejects/upserts. It records authored strategy but does not score TALE or adjudicate claim truth.
 
 ### Handoff Summary
 
@@ -45,10 +45,10 @@ Include brand ID, canon version/revision/event ID, superseded version, claim/pro
 
 ## Instructions
 
-1. Read [`registry-event-protocol.md`](../../references/registry-event-protocol.md). Treat drafts as untrusted proposals.
+1. Read [`registry-event-protocol.md`](../../references/registry-event-protocol.md) and [`runtime-invocation.md`](../../references/runtime-invocation.md). Resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"` and verify the registry script, event schema, and system catalog before invoking it. Treat drafts as untrusted proposals.
 2. Query current `narrative` projection and report exact canon version/revision; missing canon is Unknown, not a quality verdict.
-3. Before write, confirm user authorization and read the current revision/claim pointers; every canonical mutation carries `expected_revision`.
-4. A canon re-version is one owner `upsert`/accepted proposal containing the **complete canon object**, new version, and supersedes pointer. Never land a partial file patch as canonical.
+3. Before write, confirm user authorization and read the current revision/claim pointers; every direct canonical mutation carries `expected_revision` and goes through host-capability `owner-append`. Actor/auth fields are attribution only.
+4. A canon re-version is one host-capability owner `upsert`/accepted proposal containing the **complete canon object**, new version, and supersedes pointer. Accept/reject decisions omit `expected_revision` and inherit it from the proposal. Never land a partial file patch as canonical.
 5. Preserve old versions in the event stream. `versions.md` is generated history, not a second hand-maintained ledger.
 6. Validate internal references and claim IDs. Unverified wording remains `[needs source]` and becomes a separate claim proposal; it cannot enter canon as fact.
 7. Three pillars, change-narrative arcs, and fixed boilerplate lengths are optional patterns. Store the chosen architecture; do not require absent patterns.
@@ -62,6 +62,8 @@ Before producing external copy, builders must read this projection and the claim
 ## Save Results
 
 Require explicit permission. Append through the runtime only; never edit NDJSON. Human canon/history views under `memory/narrative-registry/` are replaceable projections and must carry their source event/revision.
+
+Capability values never enter request JSON/files/logs. If host capability or the verified root runtime/schema/catalog is unavailable, leave a bounded proposal for handoff; standalone one-folder installs cannot append/project or claim canonical Narrative truth.
 
 ## Reference Materials
 

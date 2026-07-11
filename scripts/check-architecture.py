@@ -15,6 +15,7 @@ FRAMEWORK_PATH = ROOT / "references" / "framework-catalog.json"
 PLUGIN_PATH = ROOT / ".claude-plugin" / "plugin.json"
 GROUPINGS_PATH = ROOT / "skills.sh.json"
 MARKETPLACE_PATHS = [ROOT / "marketplace.json", ROOT / ".claude-plugin" / "marketplace.json"]
+HOOKS_PATH = ROOT / "hooks" / "hooks.json"
 REGISTRY_RUNTIME = ROOT / "scripts" / "registry-events.py"
 LEGACY_COMPOSITE = re.compile(r"\b(?:LQS|SQS|NQS)\b|goal-weight(?:ed)? column", re.I)
 LEGACY_SCORING = re.compile(r"min\s*\(\s*raw\s*,\s*60\s*\)|\bgoal[- /]?weight(?:s|ed)?\b|\bgoal column\b", re.I)
@@ -22,6 +23,9 @@ FAIL_OPEN_GATE = re.compile(r"unmarked.{0,80}(?:pass|allow|放行|通過|통과)
 MUTABLE_RUNTIME = re.compile(
     r"raw\.githubusercontent\.com/aaron-he-zhu/aaron-marketing-skills/(?:main|master)/references/",
     re.I,
+)
+BARE_ROOT_RUNTIME_COMMAND = re.compile(
+    r"\bpython3\s+(?:\./)?scripts/(?:rubric-score|validate-audit-artifact|registry-events)\.py\b"
 )
 AUDIT_WRITE_INTENT = re.compile(
     r"\b(?:write|writes|save|saves|persist|persists|store|stores|storable)\b|ready for",
@@ -132,9 +136,34 @@ def check_catalog_shape(catalog, expected_paths, failures):
     layers = catalog.get("layers", [])
     if [layer.get("id") for layer in layers] != ["L1", "L2", "L3", "L4"]:
         failures.append("layers must be ordered L1 through L4")
-    flattened = [discipline for layer in layers for discipline in layer.get("disciplines", [])]
+    layer_membership = {}
+    flattened = []
+    for layer in layers:
+        layer_id = layer.get("id")
+        for discipline in layer.get("disciplines", []):
+            flattened.append(discipline)
+            if discipline in layer_membership:
+                failures.append("discipline %s appears in more than one layer" % discipline)
+            else:
+                layer_membership[discipline] = layer_id
     if flattened != catalog.get("logical_order"):
         failures.append("layer discipline order must equal logical_order")
+    declared_layers = {
+        discipline: spec.get("layer")
+        for discipline, spec in catalog.get("disciplines", {}).items()
+        if isinstance(spec, dict)
+    }
+    protocol = catalog.get("protocol", {})
+    if isinstance(protocol, dict):
+        declared_layers["protocol"] = protocol.get("layer")
+    for discipline in catalog.get("logical_order", []):
+        membership = layer_membership.get(discipline)
+        declared = declared_layers.get(discipline)
+        if membership != declared:
+            failures.append(
+                "%s declares layer %r but layer membership is %r"
+                % (discipline, declared, membership)
+            )
 
 
 def check_skills(catalog, expected_paths, failures):
@@ -202,6 +231,41 @@ def check_distribution(catalog, expected_paths, failures):
             failures.append("%s plugin description differs from plugin.json" % marketplace_path.relative_to(ROOT))
     if MARKETPLACE_PATHS[0].read_bytes() != MARKETPLACE_PATHS[1].read_bytes():
         failures.append("marketplace mirrors are not byte-identical")
+    hooks = load_json(HOOKS_PATH).get("hooks", {})
+    expected_hook_events = {
+        "SessionStart", "UserPromptSubmit", "PreToolUse", "PostToolUse",
+        "PostToolUseFailure", "PostToolBatch", "Stop",
+    }
+    if set(hooks) != expected_hook_events:
+        failures.append("plugin hooks must declare the seven operated events")
+    for event in ("PreToolUse", "PostToolUse", "PostToolUseFailure"):
+        entries = hooks.get(event, [])
+        matcher = entries[0].get("matcher", "") if len(entries) == 1 else ""
+        for tool in ("Write", "Edit", "NotebookEdit", "Bash", "PowerShell", "Monitor", "mcp__"):
+            if tool not in matcher:
+                failures.append("%s hook matcher does not cover %s" % (event, tool))
+    for event in ("PreToolUse", "PostToolUse", "PostToolUseFailure", "PostToolBatch", "Stop"):
+        entries = hooks.get(event, [])
+        commands = entries[0].get("hooks", []) if len(entries) == 1 else []
+        timeout = commands[0].get("timeout") if len(commands) == 1 else None
+        if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or timeout < 60:
+            failures.append("%s operated guard must retain a timeout of at least 60 seconds" % event)
+    hook_runner = (ROOT / "hooks" / "claude-hook.sh").read_text(encoding="utf-8")
+    for token in (
+        "pre-tool-use", "check-memory-private.py", "--preflight-hook", "post-tool-use", "post-tool-batch",
+        "pma", "saa", "stop_hook_active",
+    ):
+        if token not in hook_runner:
+            failures.append("hook runner is missing operated guard %r" % token)
+    if "check-pii.py\" --staged" not in (ROOT / ".githooks" / "pre-commit").read_text(
+            encoding="utf-8"):
+        failures.append("pre-commit must scan staged index blobs")
+    if "check-pii.py --tracked" not in (
+            ROOT / ".github" / "workflows" / "validate-skill.yml").read_text(encoding="utf-8"):
+        failures.append("CI must scan every tracked index blob")
+    if "git config core.hooksPath .githooks" not in (
+            ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8"):
+        failures.append("CONTRIBUTING must document pre-commit hook activation")
 
 
 def check_frameworks(catalog, failures):
@@ -247,8 +311,12 @@ def check_registries(catalog, failures):
             failures.append("registry %s projection path is not canonical" % key)
         owner_path = ROOT / "protocol" / owner / "SKILL.md"
         text = owner_path.read_text(encoding="utf-8") if owner_path.is_file() else ""
-        for token in (entry["stream"], "registry-events.py", "accept", "reject", "expected_revision", "verify"):
-            if token not in text:
+        for token in (
+                entry["stream"], "registry-events.py", "accept", "reject", "expected_revision", "verify",
+                "AARON_SKILLS_ROOT", "CLAUDE_PLUGIN_ROOT", "standalone",
+        ):
+            present = token.lower() in text.lower() if token == "standalone" else token in text
+            if not present:
                 failures.append("%s owner contract is missing %r" % (owner, token))
         machine = entry.get("state_machine")
         runtime_graph = runtime.TRANSITION_GRAPHS.get(key)
@@ -280,7 +348,9 @@ def check_auditors(catalog, failures):
         runtime = path.parent / "references" / "auditor-runtime.md"
         for token in (
                 "class: auditor", "references/auditor-runtime.md", auditor["sink"],
-                "status", "verdict", "explicit", "validate-audit-artifact.py"):
+                "status", "verdict", "explicit", "validate-audit-artifact.py",
+                "runtime-invocation.md", "AARON_SKILLS_ROOT", "score_state: NOT_SCORED",
+                "full-content Write"):
             if token not in text:
                 failures.append("%s contract is missing %r" % (skill, token))
         if not runtime.is_file() or "GENERATED FILE" not in runtime.read_text(encoding="utf-8")[:200]:
@@ -330,6 +400,10 @@ def check_legacy_and_producers(catalog, failures):
     for path in markdown_files():
         text = path.read_text(encoding="utf-8")
         relative = str(path.relative_to(ROOT))
+        if BARE_ROOT_RUNTIME_COMMAND.search(text):
+            failures.append(
+                "root runtime command does not resolve AARON_SKILLS_ROOT in %s" % relative
+            )
         if relative != "VERSIONS.md" and "candidates.md" in text:
             failures.append("legacy destructive candidate path remains in %s" % relative)
         if relative != "VERSIONS.md" and re.search(
@@ -354,8 +428,18 @@ def check_legacy_and_producers(catalog, failures):
     for path in readmes:
         text = path.read_text(encoding="utf-8")
         relative = str(path.relative_to(ROOT))
-        if "path-triggered fail-closed Artifact Gate" not in text:
-            failures.append("%s does not document the path-triggered fail-closed Artifact Gate" % relative)
+        missing_hook_terms = [
+            term for term in (
+                "PreToolUse", "PostToolUse", "PostToolUseFailure", "PostToolBatch",
+                "Stop", "Artifact Gate",
+            )
+            if term not in text
+        ]
+        if missing_hook_terms:
+            failures.append(
+                "%s does not document the operated privacy/artifact hooks: %s"
+                % (relative, ", ".join(missing_hook_terms))
+            )
         if FAIL_OPEN_GATE.search(text):
             failures.append("%s still documents a fail-open unmarked audit path" % relative)
     experiment_contracts = [

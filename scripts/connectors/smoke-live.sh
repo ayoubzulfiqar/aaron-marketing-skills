@@ -4,7 +4,7 @@
 # NOT run in CI (CI stays offline: tests/test_connectors_local.py covers the
 # pure request-builders). Run this by hand before a release or when a vendor
 # announcement suggests an API change — it makes one minimal real call per
-# hosted connector and asserts the response *shape*, so endpoint drift
+# hosted connector listed below and asserts the response *shape*, so sampled endpoint drift
 # (renamed fields, retired routes, auth changes) surfaces here instead of in
 # a user's session.
 #

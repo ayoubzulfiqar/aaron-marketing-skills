@@ -52,7 +52,7 @@ Audit the last 90 days with program-maturity-community; report outcomes separate
 
 ### Runtime and Setup
 
-Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `echo-benchmark.md`, and the ECHO catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`.
+Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `echo-benchmark.md`, and the ECHO catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`. Before deterministic calls, follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, and require the scorer, validator, and typed catalogs. If unavailable, return `score_state: NOT_SCORED` / `score_confidence: not_scored` with no gate verdict or persistent artifact.
 
 Declare target, profile, `assessment_mode`, `program_archetype`, channels, market, window, and observation date. Use `assessment_mode: asset` plus `program_archetype: not-applicable` for `asset-gate`; use `assessment_mode: program` plus the exact `community|b2c|founder` archetype for a maturity profile. Profile and context must match.
 
@@ -100,7 +100,7 @@ Show verdict, unit/profile/context/date, score or coverage/interval, confidence,
 
 ## Persistence
 
-Persist only after explicit authorization to `memory/audits/social/YYYY-MM-DD-<topic>.md`. Preserve the scorer's orthogonal `status` and `verdict`, then run `python3 scripts/validate-audit-artifact.py <artifact>`; do not claim a save if validation fails. Do not autonomously write channel state, permissions, claims, queues, or hot cache.
+Persist only after explicit authorization to `memory/audits/social/YYYY-MM-DD-<topic>.md`. Preserve the scorer's orthogonal `status` and `verdict`; validate the complete v3 draft with `validate-audit-artifact.py` against the intended relative path, persist only through one full-content Write, and revalidate the target per the auditor runbook. Edit/shell/MCP mutations of the reserved sink are unsupported. Do not autonomously write channel state, permissions, claims, queues, or hot cache.
 
 ## Reference Materials
 

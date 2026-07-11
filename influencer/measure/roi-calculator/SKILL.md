@@ -81,11 +81,11 @@ When a user requests ROI calculation, work the steps below. Each step has a fill
 
 9. **Produce the typed C3 ROI scope and, when complete, CVI**
 
-   Declare goal, profile `roi-<goal>`, `scope: roi`, `assessment_time: forecast|actual`, campaign `rollup_id`, observation date, and the same catalog version used by ACE/ART. Score all 12 ROI items through `python3 scripts/rubric-score.py score <run.json>`. Actual-only R1/R2/I1/I2/I3 items are N/A with reasons in a forecast read; they require evidence in an actual read. **This 0–100 rubric result is not financial ROI %** from steps 1-8: the financial outputs are evidence consumed by ROI.R items, never the CVI input themselves.
+   Declare goal, profile `roi-<goal>`, `scope: roi`, `assessment_time: forecast|actual`, campaign `rollup_id`, observation date, and the same catalog version used by ACE/ART. Follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, verify the scorer and typed catalog, then score all 12 ROI items through `python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" score <run.json>`. If the standalone install lacks them, return `score_state: NOT_SCORED` / `score_confidence: not_scored` and do not hand-calculate or persist a typed result. Actual-only R1/R2/I1/I2/I3 items are N/A with reasons in a forecast read; they require evidence in an actual read. **This 0–100 rubric result is not financial ROI %** from steps 1-8: the financial outputs are evidence consumed by ROI.R items, never the CVI input themselves.
 
    ROI.I3 Fail emits `results-unverified`; report I1/I2/R1/R2 as low-confidence and do not make attributable-return claims. Preserve the scorer result rather than recomputing it in prose.
 
-   For CVI, combine complete typed ACE results from [fit-scorer](../../discover/fit-scorer/SKILL.md), complete ART results from [content-reviewer](../../activate/content-reviewer/SKILL.md), and exactly one ROI result through `python3 scripts/rubric-score.py c3-rollup <results.json>`:
+   For CVI, combine complete typed ACE results from [fit-scorer](../../discover/fit-scorer/SKILL.md), complete ART results from [content-reviewer](../../activate/content-reviewer/SKILL.md), and exactly one ROI result through `python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" c3-rollup <results.json>`:
 
    ```
    CVI = ( ACE_avg × ART_avg × ROI )^(1/3)

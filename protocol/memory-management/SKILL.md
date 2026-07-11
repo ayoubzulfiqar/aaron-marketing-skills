@@ -65,13 +65,13 @@ Proceed without a new question only for read-only lookup, verification, dry-run 
 ### 1. Initialize
 
 1. Copy the minimal safe starters from `memory/templates/` into runtime `memory/` only after authorization.
-2. Run `python3 scripts/registry-events.py init` to create private event/projection directories with restrictive permissions.
+2. Read [`runtime-invocation.md`](../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, verify the registry script/event schema/system catalog, then run `python3 "$AARON_SKILLS_ROOT/scripts/registry-events.py" init` to create private event/projection directories with restrictive permissions. A standalone one-folder install cannot initialize or claim registry state.
 3. Confirm `.gitignore` excludes runtime memory and `git status --ignored` shows it as ignored.
 4. Do not seed real names, contact data, credentials, or production exports into templates.
 
 ### 2. Query
 
-1. Check live consent with `registry-events.py is-suppressed <aggregate-id>` before any send-eligibility answer.
+1. Check live consent with `python3 "$AARON_SKILLS_ROOT/scripts/registry-events.py" is-suppressed <aggregate-id>` before any send-eligibility answer.
 2. Query the relevant registry projection and record its `last_offset`/revision.
 3. Read HOT as an index, then follow its evidence pointer into WARM or an accepted registry record.
 4. Search COLD only when the user asks for historical context or active evidence is insufficient.
@@ -84,7 +84,7 @@ Absence is Unknown. A missing note, profile, tool result, or projection field is
 - Save a dated WARM artifact only after permission. Include source refs, observation dates, assumptions, open loops, and the registry offsets read.
 - Promote at most three lines to HOT when the user explicitly pins the conclusion. HOT contains a pointer and current summary, not raw evidence.
 - Non-owner skills submit durable truth as `operation: propose` to the relevant event stream. They do not append free-form lines or edit projections.
-- Only a registry owner may accept/reject a proposal or issue an owner `upsert`/`transition`.
+- Only a host-capability registry-owner principal may accept/reject a proposal or issue an owner `upsert`/`transition`.
 - `memory/decisions.md` entries require `approved_by: user`, an approval reference, and date. Inferred options belong in open loops, not approved decisions.
 
 ### 4. Demote and Archive
@@ -104,7 +104,7 @@ Absence is Unknown. A missing note, profile, tool result, or projection field is
 
 ### 6. Audit Artifacts
 
-Auditor outputs are written only after explicit authorization and must pass `scripts/validate-audit-artifact.py`. `memory/audits/` is reserved for the eight typed gate sinks. `memory-management` may build a pointer-only monthly index at `memory/indexes/audits/YYYY-MM.md`; it must not copy or reinterpret scores into a new aggregate. Status describes execution, verdict describes gate findings, and the original framework/profile/version remain attached.
+Auditor outputs are written only after explicit authorization and must pass `python3 "$AARON_SKILLS_ROOT/scripts/validate-audit-artifact.py" <artifact> --relative-path <artifact>` after the verified runtime-root preflight. `memory/audits/` is reserved for the eight typed gate sinks. `memory-management` may build a pointer-only monthly index at `memory/indexes/audits/YYYY-MM.md`; it must not copy or reinterpret scores into a new aggregate. Status describes execution, verdict describes gate findings, and the original framework/profile/version remain attached.
 
 ### 7. Privacy and Erasure
 
@@ -112,7 +112,7 @@ Use `memory-management purge <pseudonymous-aggregate-id>` only with explicit use
 
 1. Run a dry search across HOT/WARM/COLD notes, rendered registry views, projections, exports, and indexes. Present exact matches without echoing unnecessary personal data.
 2. Apply an immediate consent `suppress` event first when communications may be involved. Confirm suppression by replay, not by a cached view.
-3. Delete or anonymize authorized working notes and rendered views. For each affected registry, append an `erase` event as `memory-management` with a subject-free reason and authorization reference; never edit prior NDJSON lines.
+3. Delete or anonymize authorized working notes and rendered views. For each affected registry, a host-capability `memory-management` principal invokes `owner-append` with an `erase` event, subject-free reason, and authorization reference; actor fields alone cannot grant this authority. Never place capability values in request files/logs or edit prior NDJSON lines.
 4. Rebuild and verify projections. Preserve only the minimal pseudonymous suppression/erasure tombstone needed to prevent re-ingestion or future contact.
 5. Append a subject-minimized operation record to `memory/privacy/erasure-log.md`; this operational log is not an auditor artifact and never belongs under `memory/audits/`.
 6. Report scope precisely. Logical erasure removes live projections and working copies; because append-only history may retain previously supplied payloads and backups may exist, do not claim cryptographic or Git-history erasure. Raw contact data must never be stored in event payloads in the first place. Escalate full history/backup destruction to the controller's approved data-retention procedure.

@@ -3,7 +3,7 @@
 #
 # CONTRIBUTING.md §6 requires the bundle version and every skill version to
 # stay in sync across the typed system catalog, VERSIONS.md, plugin.json, both
-# marketplace mirrors, root/localized README badges, and CLAUDE.md. Keeping
+# marketplace mirrors, root/localized README badges, AGENTS.md, and CLAUDE.md. Keeping
 # these release surfaces aligned by
 # hand is exactly the kind of mechanical step that drifts, so CI enforces it:
 #
@@ -20,7 +20,7 @@
 #      on the v13/v14 discipline bumps; this keeps its count honest offline, and
 #      scripts/sync-about.sh + about-drift.yml handle projecting/verifying it on GitHub.
 #
-# Bash + grep/sed/awk only (repo dependency policy). Exit 0 clean, 1 on any
+# Bash plus Python stdlib JSON parsing (repo dependency policy). Exit 0 clean, 1 on any
 # mismatch, with one FAIL line per finding.
 
 set -u
@@ -61,6 +61,21 @@ else
   grep -q "current bundle: \`$BUNDLE\`" README.md || err "README.md 'current bundle' line != $BUNDLE"
   grep -q "当前包：\`$BUNDLE\`" docs/README.zh.md || err "docs/README.zh.md 当前包 line != $BUNDLE"
   grep -q "Current bundle version: \`$BUNDLE\`" CLAUDE.md || err "CLAUDE.md bundle declaration != $BUNDLE"
+  grep -Fq -- "- **Current bundle**: $BUNDLE" AGENTS.md || err "AGENTS.md bundle declaration != $BUNDLE"
+  grep -Fq -- "120 skills (16 × 7 disciplines + 8 protocol)" AGENTS.md || err "AGENTS.md skill shape is not 120 = 16 × 7 + 8"
+  grep -Fq -- "8 commands" AGENTS.md || err "AGENTS.md command count is not 8"
+  while IFS= read -r framework_contract; do
+    grep -Fq -- "$framework_contract" AGENTS.md || err "AGENTS.md framework contract drift: $framework_contract"
+  done <<'FRAMEWORKS'
+**CORE-EEAT** (80 items, 8 dimensions)
+**CITE** (40 items, 4 dimensions)
+**C³** (9 dimensions, Creator/Content/Campaign on ACE/ART/ROI
+**ROAS** (R Return / O Offer / A Audience / S Spend-efficiency
+**SEND** (S Sender-integrity/deliverability / E Engagement / N Nurture-lifecycle / D Direct-response
+**RAMP** (40 stable IDs across R Readiness / A Assets / M Momentum / P Proof
+**ECHO** (40 stable IDs across E Embeddedness / C Craft / H Hosting / O Observability
+**TALE** (T Truth / A Architecture / L Landing / E Evidence
+FRAMEWORKS
   grep -q "^\*\*Current release\*\*: \`$BUNDLE\`" VERSIONS.md || err "VERSIONS.md 'Current release' line != $BUNDLE"
   grep -q "^### v$BUNDLE " VERSIONS.md || err "VERSIONS.md changelog entry '### v$BUNDLE …' missing"
   # openclaw.plugin.json is the OpenClaw bundle-plugin manifest (ClawHub package publish).
@@ -98,7 +113,93 @@ rows=$(grep -cE '^\| [a-z0-9-]+ \| [a-z-]+ \| [0-9][0-9.]* \| ' VERSIONS.md)
 [ "$rows" -eq "$skill_count" ] || \
   err "VERSIONS.md has $rows skill rows but the tree has $skill_count skills"
 
-# ---- 4. GitHub About SSOT tracks the skill count ----------------------------
+# ---- 4. root + Chinese README topology/command surfaces --------------------
+# CONTRIBUTING.md makes these overview tables and command inventories part of
+# the authoritative tracking contract. Derive their expected shape from the
+# typed catalog so a stale 16/8/120 count or missing command cannot hide behind
+# a current version badge.
+readme_contract_output=$(python3 - <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+catalog = json.loads(Path("references/system-catalog.json").read_text(encoding="utf-8"))
+commands = catalog["commands"]
+discipline_commands = [command for command in commands if command != "auto"]
+discipline_counts = {
+    name: sum(len(skills) for skills in catalog["disciplines"][name]["phases"].values())
+    for name in discipline_commands
+}
+protocol_count = len(catalog["protocol"]["skills"])
+total_count = sum(discipline_counts.values()) + protocol_count
+errors = []
+
+def table_after(lines, header_fragment):
+    try:
+        start = next(index for index, line in enumerate(lines) if header_fragment in line)
+    except StopIteration:
+        return []
+    rows = []
+    for line in lines[start + 2:]:
+        if not line.startswith("|"):
+            break
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) >= 5:
+            rows.append(cells)
+    return rows
+
+for filename, header, headline in (
+    ("README.md", "| Layer | Skills |", "**%d marketing skills" % total_count),
+    ("docs/README.zh.md", "| 层 | 技能 |", "**%d 个营销技能" % total_count),
+):
+    text = Path(filename).read_text(encoding="utf-8")
+    lines = text.splitlines()
+    if headline not in text:
+        errors.append("%s headline does not declare %d skills" % (filename, total_count))
+    overview = table_after(lines, header)
+    if len(overview) != len(discipline_commands) + 1:
+        errors.append(
+            "%s overview has %d rows; expected %d discipline/protocol rows"
+            % (filename, len(overview), len(discipline_commands) + 1)
+        )
+    else:
+        for position, command in enumerate(discipline_commands):
+            cells = overview[position]
+            expected_count = str(discipline_counts[command])
+            expected_entry = chr(96) + "/aaron-marketing:%s" % command + chr(96)
+            if cells[1] != expected_count or cells[4] != expected_entry:
+                errors.append(
+                    "%s overview row %d must carry %s skills and entrypoint %s"
+                    % (filename, position + 1, expected_count, expected_entry)
+                )
+        protocol = overview[-1]
+        if protocol[1] != str(protocol_count) or "/aaron-marketing:" in protocol[4]:
+            errors.append(
+                "%s protocol overview row must carry %d skills and no command"
+                % (filename, protocol_count)
+            )
+    command_rows = re.findall(
+        r"^\| \x60/aaron-marketing:([^\x60]+)\x60 \|", text, flags=re.MULTILINE
+    )
+    if len(command_rows) != len(commands) or set(command_rows) != set(commands):
+        errors.append(
+            "%s command table is %r; expected %r" % (filename, command_rows, commands)
+        )
+
+if errors:
+    print("\n".join(errors))
+    sys.exit(1)
+PY
+)
+readme_contract_status=$?
+if [ "$readme_contract_status" -ne 0 ]; then
+  while IFS= read -r message; do
+    [ -n "$message" ] && err "$message"
+  done <<< "$readme_contract_output"
+fi
+
+# ---- 5. GitHub About SSOT tracks the skill count ----------------------------
 # The repo About (sidebar description + topics) is not a versioned file, so it is
 # invisible to the checks above and drifted on the v13/v14 bumps. Its SSOT is
 # .github/repo-about.json; its description MUST lead with the current skill count.
@@ -108,7 +209,16 @@ ABOUT=".github/repo-about.json"
 if [ ! -f "$ABOUT" ]; then
   err "$ABOUT missing — the GitHub About SSOT (see scripts/sync-about.sh)"
 else
-  about_n=$(sed -n 's/.*"description":[[:space:]]*"\([0-9][0-9]*\).*/\1/p' "$ABOUT" | head -1)
+  about_n=$(python3 - "$ABOUT" <<'PY' 2>/dev/null
+import json, re, sys
+with open(sys.argv[1], encoding="utf-8") as handle:
+    value = json.load(handle)
+description = value.get("description")
+match = re.match(r"([0-9]+)\b", description) if isinstance(description, str) else None
+if match:
+    print(match.group(1))
+PY
+)
   if [ -z "$about_n" ]; then
     err "$ABOUT: description must lead with the skill count (so this check can read it)"
   elif [ "$about_n" != "$skill_count" ]; then
@@ -116,7 +226,7 @@ else
   fi
 fi
 
-# ---- 5. auto-routing scenarios cover every command discipline ---------------
+# ---- 6. auto-routing scenarios cover every command discipline ---------------
 # references/auto-routing-scenarios.md is the runtime routing data commands/auto.md
 # consults. It silently froze at the v12 four-discipline era (launch/social/narrative
 # shipped with ZERO expected_route scenarios) — assert every command discipline keeps
@@ -131,7 +241,7 @@ else
   done
 fi
 
-# ---- 6. every discipline command Route names all its own skills -------------
+# ---- 7. every discipline command Route names all its own skills -------------
 # commands/<disc>.md is the human-facing skill catalog for its discipline. ad.md
 # and email.md once listed only 2 of 4 skills per phase (and ad.md's Rules even
 # claimed 3 real skills were "not separate skills"). Assert every skill physically
@@ -148,6 +258,6 @@ for disc in seo-geo influencer ad email launch social narrative; do
 done
 
 if [ $fail -eq 0 ]; then
-  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 10 tracking surfaces + localized badges + OpenClaw manifest + About SSOT; auto-routing covers all 7 disciplines; every discipline command lists its full skill set"
+  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 10 tracking surfaces + README topology/commands + localized badges + OpenClaw manifest + About SSOT; auto-routing covers all 7 disciplines; every discipline command lists its full skill set"
 fi
 exit $fail

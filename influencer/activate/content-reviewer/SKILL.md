@@ -52,7 +52,7 @@ Use `brief-generator` to create criteria, `fit-scorer` for creator ACE, `contrac
 
 ### Runtime and Setup
 
-Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `c3-benchmark.md`, `c3/art-content-benchmark.md`, and the C3 catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`.
+Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `c3-benchmark.md`, `c3/art-content-benchmark.md`, and the C3 catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`. Before deterministic calls, follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, and require the scorer, validator, and typed catalogs. If unavailable, return `score_state: NOT_SCORED` / `score_confidence: not_scored` with no gate verdict or persistent artifact.
 
 Declare target/version, platform, market, goal (`awareness|engagement|conversion|brand-building`), `scope: art`, `assessment_time: actual`, the shared campaign `rollup_id`, and observation date. Select profile `art-<goal>`; profile scope/goal must equal the typed context.
 
@@ -64,7 +64,7 @@ Declare target/version, platform, market, goal (`awareness|engagement|conversion
 4. Verify:
    - `C3-ART.T1`: a material connection exists and required disclosure is absent/materially inadequate.
    - `C3-ART.T2`: a material factual/product claim is false or unsubstantiated.
-5. Create the typed audit run and execute `python3 scripts/rubric-score.py score <run.json>` when available.
+5. Create the typed audit run and execute `python3 "$AARON_SKILLS_ROOT/scripts/rubric-score.py" score <run.json>` when the verified runtime is available.
 
 Do not let strong production quality compensate for a disclosure or claim failure. Humanizer style findings are non-veto ART evidence only.
 
@@ -100,7 +100,7 @@ Use creator-facing decisions as translations only: SHIP → Approved, FIX → Re
 
 ## Persistence
 
-Ask before writing. On approval, write `memory/audits/influencer/YYYY-MM-DD-<topic>.md` using artifact schema v3 and validate with `scripts/validate-audit-artifact.py`. Do not autonomously modify claims, contracts, registry records, candidates, or hot cache.
+Ask before writing. On approval, validate the complete v3 draft with `validate-audit-artifact.py` against the intended `memory/audits/influencer/YYYY-MM-DD-<topic>.md` relative path, persist only through one full-content Write, and revalidate the target per the auditor runbook. Edit/shell/MCP mutations of the reserved sink are unsupported. Do not autonomously modify claims, contracts, registry records, candidates, or hot cache.
 
 ## Reference Materials
 

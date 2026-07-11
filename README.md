@@ -80,7 +80,7 @@ The authoritative typed topology is [`references/system-catalog.json`](reference
 | **Keyless by default** | Every skill works at **Tier 1** with data you paste or pull from free/first-party sources. Paid tools and MCP servers are an opt-in convenience, never a precondition. Paid-ads skills score from your **own-account manual export** — keyed ad APIs are never required. |
 | **Content-first, executable contracts** | Skills remain Markdown. Small Bash/Python-stdlib runtimes make scoring, state, safety, and conformance deterministic without adding package dependencies. |
 | **One shared contract** | All 120 skills expose the same seven sections and self-declare `discipline` + `phase` metadata, so the library behaves like one operating system: each skill knows its inputs, outputs, and the next best skill to hand off to. |
-| **Gated quality** | Eight benchmarks drive eight auditor-class gates that emit structured, machine-checkable verdicts — not vibes. A PostToolUse hook validates every gated artifact before it lands. |
+| **Gated quality** | Eight benchmarks drive eight auditor-class gates that emit structured, machine-checkable verdicts — not vibes. Success/failure/batch hooks surface invalid writes through bounded checks. Pre-commit/CI protect committed Git content from PII; they do not validate ignored runtime artifacts. |
 | **Truth lives in events** | Seven append-only registry streams are canonical; owner-controlled projections expose entity, creator, claims, consent, launch, channel, and narrative state without destructive queues. |
 | **Memory across turns** | A HOT/WARM/COLD memory model carries findings, scores, and open loops between skills and sessions, sanitized on the way in. |
 | **Plain voice** | Skills ship an AI-slop detector and a banned-phrase list so output reads like a human wrote it. |
@@ -177,7 +177,7 @@ Eight benchmarks make "good" measurable. Each defines dimensions, a rollup metho
 | **[RAMP](references/ramp-benchmark.md)** | Product launch Readiness / Assets / Momentum / Proof | R / A / M / P · 40 stable IDs | Separate **preflight**, **execution**, and **outcome** profile results; never average time horizons | `R1`/`A1`/`M1`/`P1` (framework-qualified — distinct from ROAS `R1`/`A1`) |
 | **[ECHO](references/echo-benchmark.md)** | Organic social Embeddedness / Craft / Hosting / Observability | E / C / H / O · 40 stable IDs | One **asset-gate** or **program-maturity** profile per run; never combine asset and operating constructs | `E1`/`C1`/`C2`/`H1`/`H2`/`O1` (framework-qualified — distinct from ROAS `O1`/`O2`) |
 
-Each framework is enforced by an **auditor-class gate** — a skill that writes a gated artifact (`class: auditor-output`) validated by the PostToolUse hook. Gates are workflow steps, so each lives in its discipline and is counted there:
+Each framework is enforced by an **auditor-class gate** — a skill that emits a typed artifact (`class: auditor-output`) checked by the deterministic validator and bounded lifecycle hooks. Repository CI regression-tests the validator and contract; it does not inspect ignored host-runtime artifacts. Gates are workflow steps, so each lives in its discipline and is counted there:
 
 | Gate | Framework | Lives in | Verdict |
 |------|-----------|----------|---------|
@@ -219,14 +219,17 @@ The registries follow a **sole-writer rule** (other skills submit via `registry-
 | **WARM** | `memory/<subdir>/` | Per-skill working state and permissioned audit artifacts; registry projections are separate rebuildable views. |
 | **COLD** | `memory/archive/` | Demoted/older records, kept for recall. |
 
-**Hooks** (`hooks/hooks.json`, runner `hooks/claude-hook.sh`) wire four Claude Code events:
+**Hooks** (`hooks/hooks.json`, runner `hooks/claude-hook.sh`) wire seven Claude Code events:
 
 | Event | Matcher | What it does |
 |-------|---------|--------------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | Injects the **sanitized** hot-cache + load-time over-limit & oldest-dated-entry staleness signals + an open-loops pointer (prompt-injection lines are redacted; symlinked caches are rejected). |
 | `UserPromptSubmit` | (all) | Lightweight per-prompt context hook. |
-| `PostToolUse` | `Write\|Edit` | Hot-cache size warning **+ path-triggered fail-closed Artifact Gate**: every Markdown write under `memory/audits/` must validate as a typed v3 `class: auditor-output` artifact with correct sink/status/verdict/score semantics. Missing markers or an unavailable validator block completion. |
-| `Stop` | (all) | No-op (exits silently). |
+| `PreToolUse` | known write-capable tools | Exact-path direct `memory/**` writes must be Git-ignored; opaque shell/MCP memory mutations are unsupported and denied when identified. Registry writes repeat exact final/temp/lock checks inside their runtime. |
+| `PostToolUse` | known write-capable tools | After successful writes, audits the full operational-memory namespace and validates the exact audit target or bounded reserved-sink sweep. |
+| `PostToolUseFailure` | known write-capable tools | Runs the same post-state privacy and Artifact Gate checks after a tool reports failure, because a failed command may still have written files. |
+| `PostToolBatch` | (all) | Rechecks operational memory and the complete reserved sink after each parallel tool batch. |
+| `Stop` | (all) | Performs a final bounded sweep and can block once for repair. The required `stop_hook_active` loop guard permits the subsequent stop. Pre-commit/CI remain Git/PII backstops only; they do not validate ignored runtime artifacts. |
 
 The Artifact Gate is **framework-agnostic** — the same hook validates TALE, CORE-EEAT, CITE, C³, ROAS, SEND, RAMP, and ECHO artifacts with no per-framework code.
 
@@ -616,6 +619,8 @@ docs/            # localized README (zh)
 .claude-plugin/  # plugin.json + marketplace.json mirror
 ```
 
+This source repository contains both runtime and maintenance assets. User distributions are allowlisted by [`references/distribution-files.json`](references/distribution-files.json) and built with `python3 scripts/build-distribution.py --output <dir> --plugin`; tests, evals, CI, generators, and contributor-only documentation are intentionally excluded. A standalone skill build uses `--skill <catalog-path>` and contains only that skill directory.
+
 ---
 
 ## Design philosophy
@@ -639,17 +644,17 @@ Every change runs against a set of fail-closed guards (all in `scripts/` and `te
 | `check-evals.py` | Eval structural lint + `structure-manifest.json` (120/120 skills carry eval cases). |
 | `check-pii.py` | Blocks committed secrets / PII (token-level allowlist, fail-closed). |
 | `check-stdlib-only.sh` | Dependency-creep guard + the Paid-Ads keyed-API red line. |
-| `check-versions.sh` | Version-sync guard: system catalog, plugin/marketplace/OpenClaw manifests, root + localized README badges, CLAUDE.md, VERSIONS.md, and all 120 skill versions stay aligned. |
-| `tests/test_connectors_local.py` | Offline unit tests for every connector's pure request-builders (no network in CI). |
+| `check-versions.sh` | Version-sync guard: system catalog, plugin/marketplace/OpenClaw manifests, root + localized README badges, AGENTS/CLAUDE/VERSIONS, GitHub About, and all 120 skill versions stay aligned. |
+| `tests/test_connectors_local.py` | Offline request-builder/parser tests spanning all 29 bundled connector modules (no network in CI). |
 | `tests/test_hook_artifact_gate.sh` | Behavior tests for the hook's Artifact Gate + SessionStart sanitization. |
 
-Live endpoint drift is covered separately by the **manual** [`scripts/connectors/smoke-live.sh`](scripts/connectors/smoke-live.sh) — one minimal real call per hosted connector with shape assertions (rate-limit answers count as SKIP); run it before a release, never in CI.
+Live endpoint drift is sampled separately by the **manual** [`scripts/connectors/smoke-live.sh`](scripts/connectors/smoke-live.sh) — one minimal real call per hosted connector listed in that script, with shape assertions (rate-limit answers count as SKIP); run it before a release, never in CI.
 
 ---
 
 ## Contributing & project docs
 
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** — authoring rules, the contribution checklist, and the authoritative 8-file tracking list.
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — authoring rules, the contribution checklist, and the authoritative 10-surface tracking list.
 - **[VERSIONS.md](VERSIONS.md)** — per-skill versions + changelog (current bundle: `17.0.0`).
 - **[SECURITY.md](SECURITY.md)** · **[PRIVACY.md](PRIVACY.md)** · **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** — security, privacy, and community policy.
 - **[CLAUDE.md](CLAUDE.md)** / **[AGENTS.md](AGENTS.md)** — agent-facing context for this repo.

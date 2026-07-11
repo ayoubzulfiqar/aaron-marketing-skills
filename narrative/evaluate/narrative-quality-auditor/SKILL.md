@@ -53,7 +53,7 @@ Run a full review as three linked profile results; do not compute an overall sco
 
 ### Runtime and Setup
 
-Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `tale-benchmark.md`, and the TALE catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`.
+Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `tale-benchmark.md`, and the TALE catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`. Before deterministic calls, follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, and require the scorer, validator, and typed catalogs. If unavailable, return `score_state: NOT_SCORED` / `score_confidence: not_scored` with no gate verdict or persistent artifact.
 
 Declare target, profile/mode, brand scope, market, audience, canon version, observation date, and evidence window.
 
@@ -103,7 +103,7 @@ For each profile show verdict, target/canon/context/date, score or coverage/inte
 
 ## Persistence
 
-Persist only after explicit authorization to `memory/audits/narrative/YYYY-MM-DD-<topic>-<profile>.md`. Preserve the scorer's orthogonal `status` and `verdict`, then run `python3 scripts/validate-audit-artifact.py <artifact>`; do not claim a save if validation fails. Never overwrite another profile or update canon/claims/hot cache autonomously.
+Persist only after explicit authorization to `memory/audits/narrative/YYYY-MM-DD-<topic>-<profile>.md`. Preserve the scorer's orthogonal `status` and `verdict`; validate the complete v3 draft with `validate-audit-artifact.py` against the intended relative path, persist only through one full-content Write, and revalidate the target per the auditor runbook. Edit/shell/MCP mutations of the reserved sink are unsupported. Never overwrite another profile or update canon/claims/hot cache autonomously.
 
 ## Reference Materials
 

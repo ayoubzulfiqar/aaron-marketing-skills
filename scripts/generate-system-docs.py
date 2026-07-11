@@ -37,10 +37,11 @@ def render(catalog):
         "- Architecture contract: `%s`" % catalog["architecture_version"],
         "- Bundle version: `%s`" % catalog["bundle_version"],
         "- Catalog digest: `sha256:%s`" % digest,
-        "- Shape: **%d disciplines + %d protocol skills = %d skills; %d commands**"
+        "- Shape: **%d discipline skills across %d disciplines + %d protocol skills = %d skills; %d commands**"
         % (
-            catalog["counts"]["disciplines"], catalog["counts"]["protocol_skills"],
-            catalog["counts"]["total_skills"], catalog["counts"]["commands"],
+            catalog["counts"]["discipline_skills"], catalog["counts"]["disciplines"],
+            catalog["counts"]["protocol_skills"], catalog["counts"]["total_skills"],
+            catalog["counts"]["commands"],
         ),
         "",
         "## Four Layers",

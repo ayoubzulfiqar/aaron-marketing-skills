@@ -2,11 +2,5 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-files=()
-while IFS= read -r file; do
-  [ -n "$file" ] && files+=("$ROOT/$file")
-done < <(git diff --cached --name-only --diff-filter=ACMR)
-
-if [ "${#files[@]}" -gt 0 ]; then
-  python3 "$ROOT/scripts/check-pii.py" "${files[@]}"
-fi
+cd "$ROOT"
+python3 "$ROOT/scripts/check-pii.py" --staged

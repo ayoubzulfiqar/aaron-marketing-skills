@@ -16,7 +16,7 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 | Build | `seo-geo/build/` | Creates new content or markup (SEO/GEO) |
 | Optimize | `seo-geo/optimize/` | Improves existing content or site health (SEO/GEO) |
 | Monitor | `seo-geo/monitor/` | Tracks performance over time (SEO/GEO) |
-| Protocol | `protocol/` | Cross-cutting layer (truth registries: entity/creator/claims/consent/launch + memory) — shared across disciplines |
+| Protocol | `protocol/` | Cross-cutting layer (7 truth registries: entity/creator/claims/consent/launch/channel/narrative + memory) — shared across disciplines |
 | Discover | `influencer/discover/` | Audience/niche mapping + influencer discovery & fit (influencer) |
 | Plan | `influencer/plan/` | Competitor tracking, campaigns, briefs, budgets (influencer) |
 | Activate | `influencer/activate/` | Outreach, content review (C³ ART gate), contracts, amplification (influencer) |
@@ -82,8 +82,19 @@ CI runs additional guards beyond the per-skill validator:
 - **golden behavior** — runs every typed profile through the real catalog/scorer, including Unknown, one-veto, multi-veto, cap, and C³ rollup boundaries; it never regex-scrapes Markdown formulas.
 - **behavior conformance** — orchestrates rubric, registry, HTTP, hook, permission, and routing suites offline; an optional NDJSON adapter can evaluate semantic cases without becoming a CI dependency.
 - **architecture conformance** — checks `references/system-catalog.json` against all 120 paths/frontmatters, plugin order, framework/auditor/registry ownership, transition graphs, L1 dependencies, and distribution contracts.
+
+Build the same minimal payload users receive and run its boundary tests:
+
+```bash
+python3 scripts/build-distribution.py --output /tmp/aaron-marketing-dist --plugin
+python3 -m unittest tests.test_distribution_builder
+```
+
+The allowlist in `references/distribution-files.json` is authoritative. Runtime additions must be declared there; tests, evals, CI, generators, and repository-maintenance documentation must not leak into the plugin payload. Standalone one-folder auditor bundles stay compact and fail closed; regenerate them with `python3 scripts/generate-auditor-runtime.py --write` after changing any bound source.
 - **check-evals** — structural lint over all eval fixtures and auto-routing targets.
-- **check-pii** — scans for committed PII.
+- **check-pii** — scans for committed PII. Enable the repository pre-commit hook once
+  per clone with `git config core.hooksPath .githooks`; CI independently scans every
+  tracked index blob with `python3 scripts/check-pii.py --tracked`.
 - **check-stdlib-only** — enforces the zero-dependency Python-stdlib rule for connector helpers, including the Paid-Ads keyed-API red line (no keyed paid-ad API calls baked into skills).
 
 ### 6. Update tracking files
@@ -106,7 +117,7 @@ For release bumps, also sync README badges and localized README badges.
 
 **Cutting a release?** Also (a) sync the downstream repo family: `bash scripts/sync-family.sh` (dry-run drift report), then `bash scripts/sync-family.sh --live` to push the live mirrors — registry, tiers, and banner templates in [docs/repo-family.md](docs/repo-family.md); (b) project the GitHub About: `bash scripts/sync-about.sh` (dry-run), then `bash scripts/sync-about.sh --live`; and (c) distribute to the registries — `bash scripts/registry-status.sh` to see per-skill drift across ClawHub + SkillHub, then `bash scripts/publish-registries.sh --live` (publishes only the behind-set) and `bash scripts/publish-package.sh --live` (the OpenClaw bundle-plugin). Full runbook: [docs/distribution.md](docs/distribution.md). All owner-run (editing external/GitHub/registry state needs auth the CI token lacks). Between releases, the weekly `family-drift.yml` and `about-drift.yml` sentinels fail red if either surface drifts.
 
-**CI enforces this list**: `scripts/check-versions.sh` fails when the bundle version drifts across the system catalog, plugin/marketplace/OpenClaw manifests, root/localized README badges, CLAUDE.md, or VERSIONS.md; when any SKILL.md version disagrees with its row; or when `.github/repo-about.json`'s skill count disagrees with the tree. Run it locally before pushing: `bash scripts/check-versions.sh`.
+**CI enforces this list**: `scripts/check-versions.sh` fails when the bundle version drifts across the system catalog, plugin/marketplace/OpenClaw manifests, root/localized README badges, AGENTS.md, CLAUDE.md, or VERSIONS.md; when any SKILL.md version disagrees with its row; or when `.github/repo-about.json`'s skill count disagrees with the tree. Run it locally before pushing: `bash scripts/check-versions.sh`.
 
 **Adding a connector?** Follow [docs/connector-playbook.md](docs/connector-playbook.md) — the end-to-end pipeline (qualify → verify → implement → test → wire → document → track → regress → record) with the safety-class gate table and the connector-vs-recipe decision rule.
 

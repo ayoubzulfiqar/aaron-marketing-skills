@@ -31,6 +31,7 @@ import argparse
 import json
 import re
 import sys
+import time
 import xml.etree.ElementTree as ET
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
@@ -40,9 +41,17 @@ DEFAULT_LIMIT = 5000
 MAX_DEPTH = 8            # guard against pathological sitemap-index nesting
 MAX_CHILD_SITEMAPS = 200  # guard against huge indexes
 MAX_REDIRECTS = 5         # 308s are common for llms.txt / sitemaps
+MAX_FETCHES = 200          # global document/robots fetch budget
+MAX_QUEUED_SITEMAPS = 500  # global unique queue-entry budget
+MAX_TOTAL_BYTES = 25_000_000  # global post-decompression body budget
+MAX_TOTAL_GZIP_WORK = 25_000_000  # global expanded gzip validation budget
+MAX_TOTAL_SECONDS = 60.0   # global wall-clock crawl budget
+_ORIGINAL_HTTP_GET = _http.get
 
 
-def _get_following(url, allow_private=False):
+def _get_following(url, allow_private=False, *, timeout=_http.DEFAULT_TIMEOUT,
+                   max_bytes=_http.DEFAULT_MAX_BYTES, request=None,
+                   deadline=None):
     """_http.get(url) but also follow 301/302/307/308 ourselves.
 
     Python's urllib does not reliably auto-follow 308 (and some 307) for GET,
@@ -50,11 +59,39 @@ def _get_following(url, allow_private=False):
     the Location header up to MAX_REDIRECTS hops, resolving relative targets.
     Returns the final _http response dict with an added 'final_url' key.
     """
+    if request is None:
+        def request(target, **kwargs):
+            return _http.get(target, follow_redirects=False, retries=1, **kwargs)
     seen = set()
     current = url
     for _ in range(MAX_REDIRECTS + 1):
-        r = _http.get(current, allow_private=allow_private)
+        hop_timeout = timeout
+        if deadline is not None:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return None
+            hop_timeout = min(hop_timeout, max(0.001, remaining))
+        r = request(current, allow_private=allow_private, timeout=hop_timeout,
+                    max_bytes=max_bytes)
+        if r is None:
+            return None
         status = r.get("status", 0)
+        transport_url = r.get("url") or current
+        if transport_url != current:
+            # The child already pinned/validated the endpoint it actually
+            # contacted. Keep this parent-side check non-resolving so a hostile
+            # resolver cannot escape the wall-clock boundary.
+            transport_error = _http.redirect_safety_error(
+                current,
+                transport_url,
+                allow_private=allow_private,
+                resolve_target=False,
+            )
+            if transport_error:
+                r["status"] = 0
+                r["error"] = "blocked transport final URL: %s" % transport_error
+                r["final_url"] = current
+                return r
         if status in (301, 302, 303, 307, 308) and not r.get("body"):
             loc = None
             for k, v in (r.get("headers") or {}).items():
@@ -62,24 +99,37 @@ def _get_following(url, allow_private=False):
                     loc = v
                     break
             if not loc:
-                r["final_url"] = current
+                r["final_url"] = transport_url
                 return r
-            nxt = urljoin(current, loc.strip())
-            safety_error = _http.url_safety_error(nxt, allow_private=allow_private)
+            nxt = urljoin(transport_url, loc.strip())
+            # Validate syntax/credentials/downgrade now. The next request_hop
+            # resolves and validates every A/AAAA answer inside the terminable
+            # child before opening a socket.
+            safety_error = _http.redirect_safety_error(
+                transport_url,
+                nxt,
+                allow_private=allow_private,
+                resolve_target=False,
+            )
             if safety_error:
                 r["status"] = 0
                 r["error"] = "blocked redirect: %s" % safety_error
-                r["final_url"] = current
+                r["final_url"] = transport_url
                 return r
             if nxt in seen or nxt == current:
-                r["final_url"] = current
+                r["final_url"] = transport_url
                 return r
             seen.add(current)
             current = nxt
             continue
-        r["final_url"] = current
+        # _http normally follows redirects itself.  Its response URL is the
+        # authoritative transport endpoint; do not overwrite it with the
+        # originally requested URL when classifying .gz or llms.txt content.
+        r["final_url"] = transport_url
         return r
-    r["final_url"] = current
+    r["status"] = 0
+    r["error"] = "maximum redirect hops exceeded"
+    r["final_url"] = r.get("url") or current
     return r
 
 
@@ -88,15 +138,22 @@ def _localname(tag):
     return tag.rsplit("}", 1)[-1].lower() if "}" in tag else tag.lower()
 
 
-def _maybe_gunzip(body, url):
-    """Decompress a body that is gzip either by URL suffix or magic bytes."""
+def _maybe_gunzip(body, url, max_bytes=_http.DEFAULT_MAX_BYTES,
+                   max_validation_bytes=_http.DEFAULT_MAX_GZIP_VALIDATION_BYTES):
+    """Return ``(body, truncated, error, expanded_work)`` for literal gzip."""
     if not body:
-        return body
-    looks_gz = url.lower().endswith(".gz") or body[:2] == b"\x1f\x8b"
-    if looks_gz:
-        decoded, _, error = _http.decompress_gzip(body, _http.DEFAULT_MAX_BYTES)
-        return body if error else decoded
-    return body
+        return body, False, None, 0
+    # Content-Encoding gzip has already been decoded by _http even when the URL
+    # still ends in .gz. Only the magic bytes prove a second, literal gzip layer
+    # remains; suffix-only detection would double-decode transport gzip.
+    if body[:2] == b"\x1f\x8b":
+        return _http.decompress_gzip(
+            body,
+            max_bytes,
+            max_validation_bytes=max_validation_bytes,
+            return_work=True,
+        )
+    return body, False, None, 0
 
 
 def _normalize_input_url(arg):
@@ -181,29 +238,46 @@ def _parse_xml(body):
 
 
 # ---- crawl orchestration --------------------------------------------------
-def _discover_from_robots(base_url):
-    """Return Sitemap: URLs declared in the site's robots.txt (best-effort)."""
-    parts = urlsplit(base_url)
-    robots_url = urlunsplit((parts.scheme, parts.netloc, "/robots.txt", "", ""))
-    r = _http.get_text(robots_url)
+def _robots_sitemaps(text, robots_url):
+    """Extract and resolve Sitemap directives from robots.txt text."""
     out = []
-    for line in (r.get("text") or "").splitlines():
+    for line in text.splitlines():
         line = line.split("#", 1)[0].strip()
         if ":" not in line:
             continue
         field, _, value = line.partition(":")
         if field.strip().lower() == "sitemap" and value.strip():
             out.append(urljoin(robots_url, value.strip()))
-    return out, robots_url
+    return out
 
 
-def collect(start_url, limit=DEFAULT_LIMIT):
+def _discover_from_robots(base_url):
+    """Return Sitemap: URLs declared in the site's robots.txt (best-effort)."""
+    parts = urlsplit(base_url)
+    robots_url = urlunsplit((parts.scheme, parts.netloc, "/robots.txt", "", ""))
+    r = _http.get_text(robots_url)
+    return _robots_sitemaps(r.get("text") or "", robots_url), robots_url
+
+
+def collect(start_url, limit=DEFAULT_LIMIT, *, max_fetches=MAX_FETCHES,
+            max_queue=MAX_QUEUED_SITEMAPS, max_total_bytes=MAX_TOTAL_BYTES,
+            max_gzip_work=MAX_TOTAL_GZIP_WORK,
+            max_seconds=MAX_TOTAL_SECONDS):
     """Fetch `start_url` and gather URLs, recursing into sitemap indexes.
 
     Returns a result dict (JSON-serializable). Never raises for HTTP/parse
-    issues — they are recorded under `sources` and `errors`.
+    issues — they are recorded under `sources` and `errors`.  All nested work
+    shares hard fetch, queue, post-decompression byte, and wall-clock budgets;
+    per-call values may lower but never raise the module security ceilings.
     """
+    max_fetches = min(MAX_FETCHES, max(1, int(max_fetches)))
+    max_queue = min(MAX_QUEUED_SITEMAPS, max(1, int(max_queue)))
+    max_total_bytes = min(MAX_TOTAL_BYTES, max(1, int(max_total_bytes)))
+    max_gzip_work = min(MAX_TOTAL_GZIP_WORK, max(1, int(max_gzip_work)))
+    max_seconds = min(MAX_TOTAL_SECONDS, max(0.001, float(max_seconds)))
+    started = time.monotonic()
     full_url, has_path = _normalize_input_url(start_url)
+    deadline = started + max_seconds
     result = {
         "input": start_url,
         "resolved_url": full_url,
@@ -215,27 +289,189 @@ def collect(start_url, limit=DEFAULT_LIMIT):
         "child_sitemaps_fetched": 0,
         "sources": [],
         "errors": [],
+        "budget": {
+            "max_fetches": max_fetches,
+            "max_queue": max_queue,
+            "max_total_bytes": max_total_bytes,
+            "max_gzip_work": max_gzip_work,
+            "max_seconds": max_seconds,
+            "fetches_used": 0,
+            "queue_entries_used": 0,
+            "bytes_used": 0,
+            "gzip_work_used": 0,
+            "elapsed_seconds": 0.0,
+        },
     }
 
     queue = []          # list of (url, depth)
     visited = set()
+    enqueued = set()
     seen_locs = set()
+    budget_errors = set()
+
+    def budget_error(kind, url=None):
+        """Record one deterministic error per exhausted global budget."""
+        if kind in budget_errors:
+            return
+        budget_errors.add(kind)
+        message = "global %s budget exhausted" % kind
+        entry = {"error": message}
+        if url:
+            entry["url"] = url
+        result["errors"].append(entry)
+        result["truncated"] = True
+
+    def enqueue(url, depth):
+        if url in enqueued or url in visited:
+            return True
+        if len(enqueued) >= max_queue:
+            budget_error("queue", url)
+            return False
+        enqueued.add(url)
+        queue.append((url, depth))
+        result["budget"]["queue_entries_used"] = len(enqueued)
+        return True
+
+    def request_hop(url, **kwargs):
+        """Perform one real HTTP hop under the shared fetch/deadline budget."""
+        remaining_time = deadline - time.monotonic()
+        if remaining_time <= 0:
+            budget_error("time", url)
+            return None
+        if result["budget"]["fetches_used"] >= max_fetches:
+            budget_error("fetch", url)
+            return None
+        if result["budget"]["bytes_used"] >= max_total_bytes:
+            budget_error("byte", url)
+            return None
+        remaining_work = max_gzip_work - result["budget"]["gzip_work_used"]
+        if remaining_work <= 0:
+            budget_error("gzip work", url)
+            return None
+        result["budget"]["fetches_used"] += 1
+        request_kwargs = {
+            "url": url,
+            "allow_private": kwargs.get("allow_private", False),
+            "timeout": min(kwargs.get("timeout", _http.DEFAULT_TIMEOUT),
+                           max(0.001, remaining_time)),
+            "max_bytes": kwargs.get("max_bytes", _http.DEFAULT_MAX_BYTES),
+            "retries": 1,
+            "follow_redirects": False,
+            "max_gzip_validation_bytes": remaining_work,
+        }
+        # Tests and embedding hosts may intentionally inject a transport by
+        # replacing _http.get. The shipped transport uses an isolated process;
+        # the injected callable remains directly observable to its owner.
+        if _http.get is not _ORIGINAL_HTTP_GET:
+            return _http.get(**request_kwargs)
+        response = _http.get_hard_deadline(deadline=deadline, **request_kwargs)
+        if response.get("deadline_exceeded"):
+            budget_error("time", url)
+            return None
+        return response
+
+    def fetch(url):
+        """Perform one budgeted document fetch and decode its body."""
+        remaining_bytes = max_total_bytes - result["budget"]["bytes_used"]
+        if remaining_bytes <= 0:
+            budget_error("byte", url)
+            return None
+        request_bytes = min(_http.DEFAULT_MAX_BYTES, remaining_bytes)
+        response = _get_following(
+            url,
+            timeout=_http.DEFAULT_TIMEOUT,
+            max_bytes=request_bytes,
+            request=request_hop,
+            deadline=deadline,
+        )
+        if response is None:
+            if time.monotonic() >= deadline:
+                budget_error("time", url)
+            return None
+        final_url = response.get("final_url") or response.get("url") or url
+        transport_body = response.get("body") or b""
+        transport_gzip_work = max(0, int(response.get("gzip_expanded_bytes", 0)))
+        remaining_work = max_gzip_work - result["budget"]["gzip_work_used"]
+        charged_transport_work = min(remaining_work, transport_gzip_work)
+        result["budget"]["gzip_work_used"] += charged_transport_work
+        remaining_work -= charged_transport_work
+        if transport_gzip_work > charged_transport_work:
+            response["truncated"] = True
+            budget_error("gzip work", url)
+
+        transport_error = str(response.get("error") or "")
+        if "validation work limit exceeded" in transport_error:
+            response["truncated"] = True
+            budget_error("gzip work", url)
+
+        if transport_body[:2] == b"\x1f\x8b" and remaining_work <= 0:
+            body, gzip_truncated, gzip_error, literal_gzip_work = (
+                b"", True,
+                "invalid gzip response: validation work limit exceeded", 0,
+            )
+            budget_error("gzip work", url)
+        else:
+            body, gzip_truncated, gzip_error, literal_gzip_work = _maybe_gunzip(
+                transport_body,
+                final_url,
+                max_bytes=request_bytes,
+                max_validation_bytes=max(1, remaining_work),
+            )
+        charged_literal_work = min(remaining_work, max(0, literal_gzip_work))
+        result["budget"]["gzip_work_used"] += charged_literal_work
+        if literal_gzip_work >= remaining_work and gzip_error and "work limit" in gzip_error:
+            gzip_truncated = True
+            budget_error("gzip work", url)
+        response["body"] = body
+        response["truncated"] = bool(response.get("truncated") or gzip_truncated)
+        if gzip_error:
+            response["error"] = response.get("error") or gzip_error
+        # Charge the larger of transport bytes and retained decoded bytes. This
+        # bounds invalid/compressed responses as well as expanded sitemap data
+        # without double-counting the same payload representation.
+        charged_bytes = max(
+            int(response.get("transport_bytes", len(transport_body))),
+            len(body),
+        )
+        result["budget"]["bytes_used"] += charged_bytes
+        if response.get("truncated"):
+            result["truncated"] = True
+            # A response may be truncated solely because the independent gzip
+            # validation-work budget was exhausted. Attribute byte exhaustion
+            # only when this document actually consumed the remaining byte
+            # allowance; request_bytes is merely a cap and may equal the
+            # allowance even when very few bytes were charged.
+            if charged_bytes >= remaining_bytes:
+                budget_error("byte", url)
+        if time.monotonic() >= deadline:
+            budget_error("time", url)
+            return None
+        return response
 
     # ---- entry-point resolution ---------------------------------------
     if not has_path:
         # Bare host: try /sitemap.xml, then robots.txt Sitemap: discovery.
         parts = urlsplit(full_url)
         guess = urlunsplit((parts.scheme, parts.netloc, "/sitemap.xml", "", ""))
-        queue.append((guess, 0))
-        sm_urls, robots_url = _discover_from_robots(full_url)
+        enqueue(guess, 0)
+        robots_url = urlunsplit((parts.scheme, parts.netloc, "/robots.txt", "", ""))
+        robots_response = fetch(robots_url)
+        sm_urls = []
+        if robots_response is not None:
+            robots_body = robots_response.get("body") or b""
+            sm_urls = _robots_sitemaps(
+                robots_body.decode("utf-8", "replace"),
+                robots_response.get("final_url") or robots_url,
+            )
         result["sources"].append({"discovery": "robots.txt", "url": robots_url,
                                    "found": sm_urls})
         for u in sm_urls:
-            queue.append((u, 0))
-    elif full_url.rstrip("/").lower().endswith("llms.txt"):
-        queue.append((full_url, 0))
+            if not enqueue(u, 0):
+                break
+    elif urlsplit(full_url).path.rstrip("/").lower().endswith("llms.txt"):
+        enqueue(full_url, 0)
     else:
-        queue.append((full_url, 0))
+        enqueue(full_url, 0)
 
     while queue:
         if len(result["urls"]) >= limit:
@@ -246,15 +482,18 @@ def collect(start_url, limit=DEFAULT_LIMIT):
             continue
         visited.add(url)
 
-        r = _get_following(url)
+        r = fetch(url)
+        if r is None:
+            break
         status = r.get("status", 0)
-        final_url = r.get("final_url", url)
+        final_url = r.get("final_url") or r.get("url") or url
+        visited.add(final_url)
         src = {"url": url, "status": status, "depth": depth}
         if final_url != url:
             src["final_url"] = final_url
         # Classify by the post-redirect URL so a 308 to a .gz / llms.txt still
         # routes correctly.
-        is_llms = final_url.rstrip("/").lower().endswith("llms.txt")
+        is_llms = urlsplit(final_url).path.rstrip("/").lower().endswith("llms.txt")
         if status != 200 or not r.get("body"):
             src["note"] = r.get("error") or ("HTTP %s" % status)
             result["sources"].append(src)
@@ -262,7 +501,7 @@ def collect(start_url, limit=DEFAULT_LIMIT):
                 result["errors"].append({"url": url, "error": r["error"]})
             continue
 
-        body = _maybe_gunzip(r["body"], final_url)
+        body = r["body"]
 
         if is_llms:
             text = body.decode("utf-8", "replace")
@@ -291,14 +530,23 @@ def collect(start_url, limit=DEFAULT_LIMIT):
             continue
 
         if kind == "index":
-            child = [c for c in items if c not in visited][:MAX_CHILD_SITEMAPS]
+            resolved_children = [urljoin(final_url, c) for c in items]
+            child = [c for c in resolved_children if c not in visited]
+            if len(child) > MAX_CHILD_SITEMAPS:
+                child = child[:MAX_CHILD_SITEMAPS]
+                result["truncated"] = True
+                result["errors"].append({
+                    "url": url,
+                    "error": "per-index child sitemap limit reached",
+                })
             src["children"] = len(child)
             result["sources"].append(src)
             if result["type"] is None:
                 result["type"] = "sitemapindex"
             if depth < MAX_DEPTH:
                 for c in child:
-                    queue.append((c, depth + 1))
+                    if not enqueue(c, depth + 1):
+                        break
             else:
                 result["errors"].append({"url": url,
                                          "error": "max sitemap depth reached"})
@@ -326,6 +574,7 @@ def collect(start_url, limit=DEFAULT_LIMIT):
     result["url_count"] = len(result["urls"])
     if result["type"] is None:
         result["type"] = "unknown"
+    result["budget"]["elapsed_seconds"] = round(time.monotonic() - started, 6)
     return result
 
 

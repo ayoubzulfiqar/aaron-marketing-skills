@@ -7,7 +7,7 @@ This is the generated human view of [`references/system-catalog.json`](../refere
 - Architecture contract: `17.0.0`
 - Bundle version: `17.0.0`
 - Catalog digest: `sha256:540d9983582500efeead062fa1ef64ca3f05abeb271662d7b30f6aee4a83da97`
-- Shape: **7 disciplines + 8 protocol skills = 120 skills; 8 commands**
+- Shape: **112 discipline skills across 7 disciplines + 8 protocol skills = 120 skills; 8 commands**
 
 ## Four Layers
 

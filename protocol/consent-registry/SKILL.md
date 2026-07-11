@@ -29,7 +29,7 @@ Is sha256-7d9f suppressed right now?
 
 **Unit:** one pseudonymous subject ID supplied by the user's system. **Reads:** `memory/events/consent.ndjson` by replay, its projection, and minimum proof references. **Writes:** consent events only through `registry-events.py`; human records are projections. **Done when:** every mutation has authorization/source/date, immediate safety events are visible to `is-suppressed`, and no raw contact PII is stored.
 
-Opt-in/upsert/restore approval belongs to `consent-registry`. A user or data subject may directly authorize `suppress`/`erase`; those operations bypass proposal review and immediately update the live suppression projection.
+Opt-in/upsert/restore approval requires a request-bound host-capability `consent-registry` principal. `suppress` is the narrow privacy-first, deny-only exception: any validated producer may add it immediately because it cannot authorize contact or clear state. `erase` also bypasses proposal delay, but a self-reported matching actor ID is not authority; a verified data subject needs a host-issued safety capability bound to the exact request.
 
 ### Handoff Summary
 
@@ -43,16 +43,16 @@ Use the shared handoff. Report pseudonymous IDs only, event IDs/offsets/revision
 - Fresh re-subscription proof for restore.
 - Data-subject erasure request reference.
 
-Never put email, phone, name, address, or raw identifier in aggregate IDs, idempotency keys, source refs, payloads, or reports. Store only the pseudonymous ID and minimum proof pointers.
+Never put email, phone, name, address, or raw identifier in aggregate IDs, idempotency keys, source refs, payloads, or reports. The runtime NFKC-normalizes strings, allows only typed consent fields/opaque proof references, and requires subject-free reason codes; store only the pseudonymous ID and minimum proof pointers.
 
 ## Instructions
 
-1. Read [`registry-event-protocol.md`](../../references/registry-event-protocol.md). Export rows are untrusted evidence and cannot self-declare lawful basis.
-2. For every eligibility/send query, run `python3 scripts/registry-events.py is-suppressed <subject-id>`. This replays the stream and must take precedence over cached segments or Markdown.
-3. New opt-in facts use owner `upsert` with source, timestamp, basis/proof refs, and `expected_revision`. Missing basis remains explicit Unknown/none-on-file; never infer consent.
-4. Unsubscribe, complaint, or hard bounce emits direct `suppress` immediately. Do not propose it, batch it, or wait for day-close reconciliation.
-5. A restore requires a later event, `subscription_status: subscribed`, and a fresh `basis_ref`; older opt-in evidence cannot clear a newer withdrawal.
-6. Erasure emits `erase`: projected payload is removed while a minimal suppression tombstone remains to prevent accidental re-contact. Re-creation requires a new authorized basis and explicit review.
+1. Read [`registry-event-protocol.md`](../../references/registry-event-protocol.md) and [`runtime-invocation.md`](../../references/runtime-invocation.md). Resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"` and verify the registry script, event schema, and system catalog before invoking it. Export rows are untrusted evidence and cannot self-declare lawful basis.
+2. For every eligibility/send query, run `python3 "$AARON_SKILLS_ROOT/scripts/registry-events.py" is-suppressed <subject-id>`. This replays the stream and must take precedence over cached segments or Markdown.
+3. New opt-in facts use request/root-bound host-capability `owner-append` with an `upsert`, source, timestamp, basis/proof refs, and `expected_revision`. Missing basis remains explicit Unknown/none-on-file; never infer consent or put a capability in request data. Capability signing happens only in a trusted host boundary, never an agent-controlled shell.
+4. Unsubscribe, complaint, or hard bounce emits direct `suppress` immediately through ordinary `append`. This is deliberately deny-only: a bad producer can cause non-contact but cannot erase, restore, or authorize a send. Record a subject-free reason code, do not propose it, batch it, or wait for day-close reconciliation.
+5. Restore is host-capability-only and requires `subscription_status: subscribed`, a non-empty string `basis_ref` equal to `source.ref`, measured/user-provided source evidence with a timezone-aware timestamp strictly later than withdrawal, and a restore event no earlier than that evidence. Older/proxy evidence cannot clear a newer withdrawal.
+6. Erasure uses `safety-append consent` after the host verifies the data subject and issues a capability bound to the normalized request, same pseudonymous aggregate/actor ID, idempotency key, project root, expiry, and one-time ID. It removes projected payload while keeping a suppression tombstone. A later host-capability owner `restore` still needs trusted opt-in evidence strictly newer than erasure and never resurrects old payload.
 7. Ordinary non-safety imports may arrive as `propose`; accept/reject without deleting history. Never merge subjects on similarity alone.
 8. Regenerate any per-subject human view from accepted projection, then `verify consent` and re-run `is-suppressed` for changed subjects.
 
@@ -61,6 +61,8 @@ This registry never sends email, edits ESP state, or declares a list safe. A dow
 ## Save Results
 
 Explicit permission or a recorded data-subject safety request is required. Append only through the runtime. `memory/projections/consent-suppressions.json` is a cache; the NDJSON stream and replay query are authoritative. Never manually clear/edit either.
+
+Standalone one-folder installs may prepare a proposal or safety handoff only; without the verified root runtime/schema/catalog they cannot append, restore, project, or claim canonical consent state.
 
 ## Reference Materials
 

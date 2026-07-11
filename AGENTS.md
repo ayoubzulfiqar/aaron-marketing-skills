@@ -5,6 +5,7 @@ Guidelines for AI agents working in this repository. For full runtime context, s
 ## Repository Overview
 
 - **Name**: aaron-marketing-skills — 120 skills (16 × 7 disciplines + 8 protocol), 7 disciplines + a protocol layer, 8 commands, shared references
+- **Current bundle**: 17.0.0
 - **Repository**: https://github.com/aaron-he-zhu/aaron-marketing-skills
 - **Author**: Aaron He Zhu | **License**: Apache 2.0
 - **Specs**: [Agent Skills](https://agentskills.io/specification.md)
@@ -86,7 +87,7 @@ Auditor-class gates: `content-quality-auditor` (CORE-EEAT publish gate), `domain
 
 - **Branch naming**: `feature/skill-name`, `fix/skill-name`, `docs/description`
 - **Conventional Commits**: `feat:`, `fix:`, `docs:`
-- **After skill changes**: update the tracking files — the authoritative 8-file list is in [CONTRIBUTING.md §6](CONTRIBUTING.md) (VERSIONS.md, `.claude-plugin/plugin.json`, root `marketplace.json` + its `.claude-plugin/marketplace.json` mirror, README.md, CLAUDE.md, AGENTS.md, docs/README.zh.md). For release bumps, also sync localized README badges. `scripts/check-versions.sh` (CI) fails on any drift — run it locally after syncing.
+- **After skill changes**: update the authoritative **10 tracking surfaces** in [CONTRIBUTING.md §6](CONTRIBUTING.md). For release bumps, also sync localized README badges. `scripts/check-versions.sh` (CI) fails on any drift — run it locally after syncing.
 - **Adding a connector**: follow [docs/connector-playbook.md](docs/connector-playbook.md) end to end — qualify (category / connector-vs-recipe / safety class), verify against primary docs + a live call, implement to house style, offline-test the pure builders, wire skills by the differentiation rule, hit the six doc touchpoints, track, regress, record.
 - **Use `references/` for detail** — keep `SKILL.md` focused. Auditor-class skills `Read references/auditor-runbook.md` at activation (the framework-agnostic SSOT) and keep only their framework-specific §2 worked examples, §3 guardrails, and §5 veto-ID rows inline.
 - **Validate**: `./scripts/validate-skill.sh <category>/<skill-name>` before release PRs. CI guards: `golden-math` (8 frameworks), `check-evals`, `check-pii`, `check-stdlib-only` (incl. the Paid-Ads keyed-API red line).

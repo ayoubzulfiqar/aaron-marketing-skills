@@ -116,7 +116,7 @@ The scopes link — **ACE** per creator baseline, **ART** per content piece, **R
 Campaign Value Index (CVI) = ( ACE_avg × ART_avg × ROI )^(1/3) = ∛( C × C × C )
 ```
 
-ACE_avg = budget-weighted mean of the campaign's creators · ART_avg = mean of its contents. Every component must be complete and share one campaign `rollup_id`, goal, observation date, `assessment_time`, and catalog version. Forecast and actual components never mix. A blocked component prevents CVI.
+ACE_avg = budget-weighted mean of the campaign's creators · ART_avg = mean of its contents. Preserve both means exactly through the geometric product and floor only the final CVI. Every component must be complete and share one campaign `rollup_id`, goal, observation date, `assessment_time`, and catalog version. Forecast and actual components never mix. A blocked component prevents CVI.
 
 Use the `components` input in [`c3-rollup.schema.json`](../c3-rollup.schema.json) for multi-creator/multi-asset campaigns. The deterministic runtime requires a positive budget weight for every ACE component when more than one creator is present, applies equal weight to ART, and requires exactly one ROI component.
 

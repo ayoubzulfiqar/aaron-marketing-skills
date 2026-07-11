@@ -53,7 +53,7 @@ This skill judges. `conversion-signal-qa`, `attribution-reconciler`, `campaign-a
 
 ### Runtime and Setup
 
-Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `roas-benchmark.md`, and the ROAS catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`.
+Read `../../../references/auditor-runbook.md`, `scoring-semantics.md`, `roas-benchmark.md`, and the ROAS catalog entry. Standalone installs use bundled immutable `references/auditor-runtime.md`; never fetch mutable `main`. Before deterministic calls, follow [`runtime-invocation.md`](../../../references/runtime-invocation.md), resolve `AARON_SKILLS_ROOT="${CLAUDE_PLUGIN_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"`, and require the scorer, validator, and typed catalogs. If unavailable, return `score_state: NOT_SCORED` / `score_confidence: not_scored` with no gate verdict or persistent artifact.
 
 Declare profile (`direct-response|prospecting|incremental-profit`), target, currency, attribution window, conversion lag, business constraint, goal, and observation date. If any required context is missing, return `NEEDS_INPUT/UNDECIDED`.
 
@@ -103,7 +103,7 @@ Show verdict, profile/context, score or coverage/interval, confidence, R/O/A/S d
 
 ## Persistence
 
-Persist only after explicit authorization to `memory/audits/ad/YYYY-MM-DD-<topic>.md`; use artifact schema v3 and run `scripts/validate-audit-artifact.py`. Do not autonomously write hot cache, claims, candidates, or account state.
+Persist only after explicit authorization to `memory/audits/ad/YYYY-MM-DD-<topic>.md`. Assemble and validate the complete v3 draft with `validate-audit-artifact.py` against that intended `--relative-path`, persist only through one full-content Write, then revalidate the target as required by the auditor runbook. Edit/shell/MCP mutations of the reserved sink are unsupported. Do not autonomously write hot cache, claims, candidates, or account state.
 
 ## Reference Materials
 

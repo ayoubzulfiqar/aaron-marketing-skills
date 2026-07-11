@@ -22,8 +22,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SYSTEM_CATALOG = ROOT / "references" / "system-catalog.json"
 FRAMEWORK_CATALOG = ROOT / "references" / "framework-catalog.json"
 OUTPUT_NAME = "auditor-runtime.md"
-MARKDOWN_LINK = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
-BACKTICK_REPOSITORY_PATH = re.compile(r"`(?:\.\.?/)+([^`/]+\.md(?:#[^`]*)?)`")
 
 
 class GenerationError(ValueError):
@@ -47,20 +45,6 @@ def safe_source(relative):
     if not path.is_file():
         raise GenerationError("runtime source is missing: %s" % relative)
     return path
-
-
-def flatten_repository_links(content):
-    """Keep embedded prose self-contained instead of shipping broken repo links."""
-    def replace(match):
-        label, target = match.groups()
-        normalized = target.strip().lstrip("<").rstrip(">")
-        if normalized.startswith(("#", "/")) or re.match(
-                r"^[A-Za-z][A-Za-z0-9+.-]*:", normalized):
-            return match.group(0)
-        return label
-
-    content = MARKDOWN_LINK.sub(replace, content)
-    return BACKTICK_REPOSITORY_PATH.sub(lambda match: "`%s`" % match.group(1), content)
 
 
 def build_bundle(auditor, framework_catalog):
@@ -92,7 +76,7 @@ def build_bundle(auditor, framework_catalog):
         "- **Auditor:** %s" % auditor["skill"],
         "- **Source digest:** `sha256:%s`" % digest.hexdigest(),
         "",
-        "This immutable bundle is the standalone fallback for this auditor. It contains the shared execution policy, the exact framework slice, and the framework-specific benchmark. Repository installs should use the root typed runtime and scorer; standalone installs must use this file and must not fetch a mutable branch or guess omitted rules. Repository-relative links in embedded prose are flattened to plain labels so the bundle remains self-contained.",
+        "This immutable bundle is the fail-closed standalone fallback for this auditor. It contains the exact typed framework slice needed to collect observations without inventing rules. Repository/plugin installs use the root policy, schemas, and deterministic scorer. A standalone one-folder install must not fetch mutable sources, compute a score, claim a gate verdict, or persist an audit artifact.",
         "",
         "## Typed Framework Snapshot",
         "",
@@ -100,13 +84,19 @@ def build_bundle(auditor, framework_catalog):
         snapshot_text.rstrip("\n"),
         "```",
     ]
-    for relative, path in source_paths:
-        lines.extend(["", "## Embedded Source: `%s`" % relative, ""])
-        content = path.read_text(encoding="utf-8").rstrip("\n")
-        if path.suffix == ".json":
-            lines.extend(["```json", content, "```"])
-        else:
-            lines.append(flatten_repository_links(content))
+    lines.extend([
+        "",
+        "## Standalone Execution Policy",
+        "",
+        "1. Select exactly one declared profile from the typed snapshot and record it with the catalog version and source digest above.",
+        "2. Collect one state per applicable item: `met`, `partial`, `not_met`, `not_applicable`, or `unknown`. Every non-unknown state needs evidence; never convert missing evidence into a pass.",
+        "3. Record veto observations by their qualified framework item IDs, but do not calculate dimension, raw, capped, or final scores without the root deterministic scorer.",
+        "4. Return `status: NEEDS_INPUT` or `status: BLOCKED`, `verdict: NOT_SCORED`, and `score_confidence: not_scored`. Clearly identify the unavailable root runtime as the reason.",
+        "5. Do not write under `memory/audits/`, mutate registries, or claim a publish/ship decision. Offer the observation set for later execution in a full plugin or repository install.",
+        "6. Do not search parent directories, accept an unverified runtime root, download repository files, or hand-calculate a substitute score.",
+        "",
+        "The source digest binds this compact fallback to the authoritative runbook, scoring semantics, framework benchmark, run schema, and artifact schema without copying those maintenance sources into every standalone bundle.",
+    ])
     lines.extend(["", "---", "", "End of generated standalone runtime.", ""])
     return "\n".join(lines).encode("utf-8")
 
