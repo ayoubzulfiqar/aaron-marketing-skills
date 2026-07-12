@@ -14,8 +14,9 @@ an optional `FIRECRAWL_API_KEY` raises limits and covers the full surface
 
 This gives the SEO/GEO research skills their first keyless live-SERP source
 (`search`) and gives every page-reading skill a JS-rendering fallback
-(`scrape`). All subcommands are READ-ONLY — nothing here mutates external
-state, so there is no --live gate (unlike resend.py).
+(`scrape`). Subcommands are read-only against third-party marketing state;
+`crawl`/`crawl-cancel` create and cancel only *your own* hosted Firecrawl
+jobs, which is why there is no --live gate (unlike resend.py).
 
 ROBOTS PRE-FLIGHT — per ../../SECURITY.md §Scraping Boundaries, `scrape`,
 `crawl`, and `map` first evaluate the target's robots.txt locally (sibling

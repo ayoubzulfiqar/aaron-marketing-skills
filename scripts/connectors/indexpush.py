@@ -43,6 +43,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from urllib.parse import urlencode, urlsplit
 
@@ -200,6 +201,10 @@ def main(argv=None):
 
     if not args.live:
         preview = dict(spec["request"])
+        # Never echo the Baidu push token in the dry-run preview — it would
+        # land in transcripts/CI logs (":32 never persisted" covers env use).
+        if "token=" in preview.get("url", ""):
+            preview["url"] = re.sub(r"(token=)[^&]+", r"\1***", preview["url"])
         print(json.dumps({
             "dry_run": True,
             "url_count": len(urls),

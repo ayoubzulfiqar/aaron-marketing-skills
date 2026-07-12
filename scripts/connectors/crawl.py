@@ -232,8 +232,10 @@ def build_parser():
                    help="hard cap on pages fetched (default: 50)")
     p.add_argument("--max-depth", type=int, default=5,
                    help="max click-depth from the start URL (default: 5)")
-    p.add_argument("--no-robots", action="store_true",
-                   help="skip the inline robots.txt pre-flight (use with care)")
+    p.add_argument("--no-robots", "--own-site", dest="no_robots",
+                   action="store_true",
+                   help="owner assertion — skip the inline robots.txt "
+                        "pre-flight (use with care)")
     p.add_argument("--delay", type=float, default=CRAWL_DELAY_SECONDS,
                    help="seconds to sleep between fetches (default: 1.0)")
     p.add_argument("--quiet", action="store_true",

@@ -294,10 +294,23 @@ def _now_iso():
 def preflight(base, paths=("/latest.json",)):
     """Evaluate the forum's robots.txt locally before the first API call.
     Returns {allowed, robots_url, status, rule} — allowed is True when
-    robots.txt is absent/unreachable (4xx/no-answer = no restrictions),
-    False on an applicable Disallow of ANY path the subcommand will fetch.
+    robots.txt is absent (4xx = no restrictions), False on an applicable
+    Disallow of ANY path the subcommand will fetch. FAIL-CLOSED like the
+    other pre-flighting fetchers: an unverifiable robots.txt (5xx/network)
+    refuses, and --own-site is the explicit owner-assertion override.
     `paths` are the concrete endpoints (each subcommand passes its own)."""
     parsed = robots.fetch(base)
+    if robots.status_unreliable(parsed.status):
+        return {
+            "allowed": False,
+            "ua": ROBOTS_UA,
+            "robots_url": parsed.url,
+            "status": parsed.status,
+            "rule": None,
+            "reason": "robots.txt could not be verified (status %s) — "
+                      "fail-closed; re-run with --own-site to override"
+                      % parsed.status,
+        }
     allowed = True
     rule = None
     for path in paths:
@@ -430,6 +443,8 @@ def build_parser():
                                       "posters.")
     s.add_argument("base", metavar="forum-base-url",
                    help="Forum origin, e.g. https://meta.discourse.org.")
+    s.add_argument("--own-site", action="store_true",
+                   help="Owner assertion — skip the robots.txt pre-flight.")
     s.add_argument("--max", type=int, default=20, dest="max_items",
                    help="Max topics (<=%d, default 20)." % MAX_TOPICS)
 
@@ -437,6 +452,8 @@ def build_parser():
                                      "signal.")
     s.add_argument("base", metavar="forum-base-url",
                    help="Forum origin, e.g. https://meta.discourse.org.")
+    s.add_argument("--own-site", action="store_true",
+                   help="Owner assertion — skip the robots.txt pre-flight.")
     s.add_argument("topic_id", help="Numeric topic id (from a topic URL).")
 
     s = sub.add_parser("health", help="Forum-health snapshot: stats + "
@@ -444,6 +461,8 @@ def build_parser():
                                       "distribution.")
     s.add_argument("base", metavar="forum-base-url",
                    help="Forum origin, e.g. https://meta.discourse.org.")
+    s.add_argument("--own-site", action="store_true",
+                   help="Owner assertion — skip the robots.txt pre-flight.")
     s.add_argument("--max", type=int, default=MAX_DIRECTORY, dest="max_items",
                    help="Max directory rows to tally (<=%d — the forum serves "
                         "one fixed %d-row directory page; not paginated)."
@@ -476,7 +495,10 @@ def main(argv=None):
         # the whole snapshot when only the member-directory is robots-disallowed.
         "health": ("/about.json",),
     }[args.command]
-    guard = preflight(base, preflight_paths)
+    if args.own_site:
+        guard = {"allowed": True, "skipped": "own-site assertion"}
+    else:
+        guard = preflight(base, preflight_paths)
     if not guard["allowed"]:
         result = {"error": "robots_disallowed", "robots": guard, "forum": base,
                   "note": "The forum's robots.txt disallows this path; "

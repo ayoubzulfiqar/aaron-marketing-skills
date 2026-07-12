@@ -229,6 +229,9 @@ def videos(key, ref, limit=10):
         return out
     rv = _call(key, "videos", {"part": "snippet,statistics",
                                "id": ",".join(ids)})
+    if rv.get("error"):
+        out["error"] = rv["error"]
+        return out
     for v in ((rv.get("json") or {}).get("items")) or []:
         s = v.get("statistics", {})
         out["videos"].append({

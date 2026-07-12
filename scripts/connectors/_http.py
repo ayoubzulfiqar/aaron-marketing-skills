@@ -378,7 +378,9 @@ def _read_response(resp, max_bytes, max_gzip_validation_bytes):
     transport_bytes = min(len(raw), max_bytes)
     input_truncated = len(raw) > max_bytes
     raw = raw[:max_bytes]
-    if (resp.headers.get("Content-Encoding") or "").lower() == "gzip":
+    enc_tokens = [t.strip() for t in
+                  (resp.headers.get("Content-Encoding") or "").lower().split(",")]
+    if any(t in ("gzip", "x-gzip") for t in enc_tokens):
         body, output_truncated, error, expanded = decompress_gzip(
             raw,
             max_bytes,
@@ -456,6 +458,15 @@ def get(url, *, headers=None, timeout=DEFAULT_TIMEOUT, max_bytes=DEFAULT_MAX_BYT
                 status = e.code
                 response_url = e.geturl()
                 response_headers = dict(getattr(e, "headers", {}) or {})
+                # Read the error body before close — 4xx/5xx payloads carry the
+                # API's actual diagnostic (validation JSON, quota detail), which
+                # callers surface alongside the status-line error.
+                err_body, err_truncated = b"", False
+                try:
+                    (err_body, err_truncated, _decode_err, _tb,
+                     _exp) = _read_response(e, max_bytes, max_gzip_validation_bytes)
+                except (OSError, ValueError):
+                    pass  # best-effort: the status line remains the error
             finally:
                 e.close()
             if status in (429, 503) and attempt < retries - 1:
@@ -482,9 +493,9 @@ def get(url, *, headers=None, timeout=DEFAULT_TIMEOUT, max_bytes=DEFAULT_MAX_BYT
                 "status": status,
                 "url": response_url or url,
                 "headers": response_headers,
-                "body": b"",
+                "body": err_body,
                 "error": "HTTP %s" % status,
-                "truncated": False,
+                "truncated": err_truncated,
             }
         except (urllib.error.URLError, TimeoutError, OSError) as e:
             last = str(getattr(e, "reason", e))

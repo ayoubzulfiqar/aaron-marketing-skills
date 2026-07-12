@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from urllib.parse import urlencode
 
 import _http
@@ -78,8 +79,24 @@ def parse_response(payload, mode):
     return {"timeline": timeline, "count": len(timeline)}
 
 
+MIN_INTERVAL = 5.0  # documented GDELT ask: keep >=5s between calls
+_last_request = None
+
+
+def _throttle():
+    """Enforce the documented spacing in-process (import-path safety: the CLI
+    makes one call per invocation, but search() in a loop must also honor it)."""
+    global _last_request
+    if _last_request is not None:
+        wait = MIN_INTERVAL - (time.monotonic() - _last_request)
+        if wait > 0:
+            time.sleep(wait)
+    _last_request = time.monotonic()
+
+
 def search(query, mode="artlist", days=7, maxrecords=25):
     """One GDELT query. Detects the plain-text throttle notice."""
+    _throttle()
     url = build_url(query, mode, days, maxrecords)
     r = _http.get_text(url, retries=1)  # no auto-retry: respect the 5s ask
     text = (r.get("text") or "").strip()
