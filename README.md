@@ -239,7 +239,7 @@ The Artifact Gate is **framework-agnostic** — the same hook validates TALE, CO
 
 Skill links open each `SKILL.md`. Expand the **Details** under each discipline for a one-line purpose per skill. Catalog order follows the [four-layer strata](#the-system-a-four-layer-marketing-operating-system) — Narrative (L1 · Strategy) first, the five always-on channels next, Launch (L3 · Orchestration), then the Protocol layer.
 
-### Narrative — TALE (16)
+### Narrative — TALE (16)  ·  📖 [Discipline guide](narrative/README.md)
 
 Four phase directories under `narrative/` (4 skills each) follow the TALE loop (Trace → Architect → Land → Evaluate); the gate (⛩ narrative-quality-auditor) sits in Evaluate. It runs truth, system, and effectiveness profiles separately; a full review links three results and never averages them. Narrative is the L1 · Strategy layer: one brand voice the five always-on channels inherit. It absorbs positioning — `positioning-mapper` stays physically in `launch/` but reads logically as the front of TALE Trace.
 
@@ -275,7 +275,7 @@ Four phase directories under `narrative/` (4 skills each) follow the TALE loop (
 
 </details>
 
-### SEO/GEO — SITE (16)
+### SEO/GEO — SITE (16)  ·  📖 [Discipline guide](seo-geo/README.md)
 
 Four phase directories (4 skills each) plus the discipline's two quality gates (marked ⛩).
 
@@ -294,22 +294,22 @@ Four phase directories (4 skills each) plus the discipline's two quality gates (
 | competitor-analysis | Analyze a competitor's SEO strategy, compare domains, surface their keywords and gaps. |
 | serp-analysis | Read a SERP — features, snippets, People Also Ask, ranking patterns for a query. |
 | content-gap-analysis | Find missing topics and coverage holes versus competitors. |
-| content-writer | *(merge: seo-content-writer + content-refresher)* Write and refresh SEO-optimized articles, landing pages, and product copy. |
+| content-writer | Write and refresh SEO-optimized articles, landing pages, and product copy. |
 | geo-content-optimizer | Optimize content for AI engines (ChatGPT, Perplexity, AI Overviews, Gemini, Claude, Copilot). |
-| serp-markup-builder | *(merge: meta-tags-optimizer + schema-markup-generator)* Title/meta/OG/Twitter tags plus JSON-LD / Schema.org structured data. |
-| page-play-builder | *(merge: programmatic + parasite + comparison + local SEO, 4 modes)* Template-driven page plays — programmatic pages, parasite platforms, comparison pages, local/GBP. |
+| serp-markup-builder | Title/meta/OG/Twitter tags plus JSON-LD / Schema.org structured data. |
+| page-play-builder | Template-driven page plays — programmatic pages, parasite platforms, comparison pages, local/GBP. |
 | ⛩ content-quality-auditor | 80-item CORE-EEAT publish-readiness gate (SHIP/FIX/BLOCK). |
 | technical-seo-checker | Site speed, Core Web Vitals, indexing, crawlability, robots. |
 | on-page-seo-checker | Audit page-level on-page health — headings, keyword placement, images, quality signals. |
-| site-structure-optimizer | *(merge: internal-linking-optimizer + site-architecture)* Internal links, anchor-text, orphan pages, page hierarchy, URL taxonomy, hub/spoke clusters. |
+| site-structure-optimizer | Internal links, anchor-text, orphan pages, page hierarchy, URL taxonomy, hub/spoke clusters. |
 | ⛩ domain-authority-auditor | 40-item CITE domain-trust gate (TRUSTED/CAUTIOUS/UNTRUSTED). |
 | rank-tracker | Track keyword rankings, position changes, and drops. |
-| performance-monitor | *(merge: performance-reporter + alert-manager)* Multi-metric SEO/GEO reports, dashboards, and threshold alerts. |
-| offsite-signal-analyzer | *(merge: backlink-analyzer + ai-traffic)* Backlink profile + link quality, plus referral traffic from AI assistants in your own GA4/GSC/logs. |
+| performance-monitor | Multi-metric SEO/GEO reports, dashboards, and threshold alerts. |
+| offsite-signal-analyzer | Backlink profile + link quality, plus referral traffic from AI assistants in your own GA4/GSC/logs. |
 
 </details>
 
-### Social — ECHO (16)
+### Social — ECHO (16)  ·  📖 [Discipline guide](social/README.md)
 
 Four phase directories under `social/` (4 skills each) follow the ECHO loop; the gate (⛩ social-quality-auditor) sits in Host. Each run selects the asset gate or one program-maturity profile; those constructs are never combined. The discipline ships **no** posting, engagement, or DM automation of any kind.
 
@@ -345,7 +345,7 @@ Four phase directories under `social/` (4 skills each) follow the ECHO loop; the
 
 </details>
 
-### Email — SEND (16)
+### Email — SEND (16)  ·  📖 [Discipline guide](email/README.md)
 
 Four phase directories under `email/` (4 skills each) follow the SEND loop; the gate (⛩ email-quality-auditor) sits in Deliver. Only the gate computes EQS from the declared promotional, retention, cold-outbound, or newsletter profile — every other skill works one lever and hands off.
 
@@ -363,25 +363,25 @@ Four phase directories under `email/` (4 skills each) follow the SEND loop; the 
 | deliverability-qa | S | Pre-flight SPF/DKIM/DMARC/BIMI auth, reputation, inbox-placement, spam-content, and list hygiene (the S1 check). |
 | list-segment-builder | E | Behavioral + lifecycle-stage segments and suppression rules from your own list/CRM/GA4 export. |
 | list-growth-designer | S (+N) | List-growth strategy — acquisition channels, lead-magnet concepts, a compliant opt-in capture-flow spec, and referral-loop mechanics; feeds S consent-quality captured at acquisition. |
-| list-hygiene-monitor | S | *(NEW)* Ongoing list health — bounce/complaint pruning, sunset policies, re-permission, and inactive-segment suppression. |
+| list-hygiene-monitor | S | Ongoing list health — bounce/complaint pruning, sunset policies, re-permission, and inactive-segment suppression. |
 | email-creative-builder | E (+D) | Subject/preheader/body/CTA, message-matched to the landing page, claims-ledger-aware. |
-| subject-line-lab | E | *(NEW)* Subject/preheader ideation and scoring — length, spam-trigger, curiosity/clarity balance, variant sets for testing. |
-| email-render-builder | E | *(NEW)* HTML email build/QA — client compatibility, dark-mode, accessibility, plain-text alt, and render-test checklist. |
-| dynamic-content-personalizer | E | *(NEW)* Merge-tag/liquid personalization blocks, conditional content rules, and fallback-value safety. |
+| subject-line-lab | E | Subject/preheader ideation and scoring — length, spam-trigger, curiosity/clarity balance, variant sets for testing. |
+| email-render-builder | E | HTML email build/QA — client compatibility, dark-mode, accessibility, plain-text alt, and render-test checklist. |
+| dynamic-content-personalizer | E | Merge-tag/liquid personalization blocks, conditional content rules, and fallback-value safety. |
 | email-sequence-designer | N | Lifecycle/automation flows (welcome, cart, post-purchase, win-back) + frequency governance. |
 | newsletter-monetization-planner | D | Paid-sub, sponsorship inventory + rate card, and referral growth-loop economics. |
-| preference-frequency-manager | N | *(NEW)* Preference-center design and send-frequency governance to cut fatigue and unsubscribes. |
-| reactivation-specialist | N | *(NEW)* Win-back / re-engagement flows for dormant subscribers with sunset-or-recover decision rules. |
+| preference-frequency-manager | N | Preference-center design and send-frequency governance to cut fatigue and unsubscribes. |
+| reactivation-specialist | N | Win-back / re-engagement flows for dormant subscribers with sunset-or-recover decision rules. |
 | ⛩ email-quality-auditor | S+E+N+D (EQS) | Auditor-class SEND gate: scores EQS, enforces S1/S2/N1/D1, emits SHIP/FIX/BLOCK; carries a **pre-send go/no-go** mode. |
 | send-experiment-designer | E | A/B / send-time / hold-out design with sample-size + significance read (promote/kill). |
-| inbox-placement-monitor | S | *(NEW)* Ongoing inbox-vs-spam placement tracking via seed lists and provider signals, with reputation-drift alerts. |
-| cold-outbound-sequencer | D | *(NEW)* Compliant B2B cold-outbound cadences — deliverability-safe ramp, personalization tokens, and reply-handling steps. |
+| inbox-placement-monitor | S | Ongoing inbox-vs-spam placement tracking via seed lists and provider signals, with reputation-drift alerts. |
+| cold-outbound-sequencer | D | Compliant B2B cold-outbound cadences — deliverability-safe ramp, personalization tokens, and reply-handling steps. |
 
 **Reused cross-discipline** (counted in their home phases, not duplicated): [audience-mapper](influencer/scout/audience-mapper/SKILL.md), [landing-optimizer](influencer/report/landing-optimizer/SKILL.md), [roi-calculator](influencer/report/roi-calculator/SKILL.md), [report-generator](influencer/report/report-generator/SKILL.md), [performance-analyzer](influencer/report/performance-analyzer/SKILL.md), [offer-claims-registry](protocol/offer-claims-registry/SKILL.md).
 
 </details>
 
-### Paid Ads — ROAS (16)
+### Paid Ads — ROAS (16)  ·  📖 [Discipline guide](ad/README.md)
 
 Four phase directories under `ad/` (4 skills each) follow the ROAS loop; the gate (⛩ ad-account-auditor) sits in Activate. Only the gate computes the profile-weighted RQS — every other skill works one lever and hands off.
 
@@ -398,26 +398,26 @@ Four phase directories under `ad/` (4 skills each) follow the ROAS loop; the gat
 |-------|-----------|--------------|
 | campaign-architect | A + structure | Account/campaign structure, campaign-type fit, match types, negatives/exclusions, paid↔organic cannibalization; carries a recurring **search-term-mining** mode. |
 | audience-segment-builder | A | Turns your own customer/CRM/GA4 export into seed audiences, lookalike seeds, exclusion segments, and a funnel-stage targeting map. |
-| search-term-miner | A | *(NEW)* Mine the search-terms report for negatives, new keyword candidates, and match-type refinements. |
-| product-feed-optimizer | O | *(NEW)* Shopping/PMax feed hygiene — titles, attributes, GTINs, category mapping, and disapproval fixes. |
+| search-term-miner | A | Mine the search-terms report for negatives, new keyword candidates, and match-type refinements. |
+| product-feed-optimizer | O | Shopping/PMax feed hygiene — titles, attributes, GTINs, category mapping, and disapproval fixes. |
 | ad-creative-builder | O | RSA headlines/descriptions, hooks, and an angle matrix, message-matched to the destination page. |
 | ad-test-designer | O (+S) | Design A/B/n & incrementality tests (hypothesis, variant matrix, sample size/power) and read out significance → promote/kill. |
-| bid-strategy-planner | S | *(NEW)* Pick and configure bid strategy vs goal (tCPA/tROAS/max-conversions), seed targets, and plan learning-phase transitions. |
-| landing-experience-checker | O | *(NEW)* Post-click page QA for ad relevance, load speed, mobile, and policy — the ad↔page message-match check. |
+| bid-strategy-planner | S | Pick and configure bid strategy vs goal (tCPA/tROAS/max-conversions), seed targets, and plan learning-phase transitions. |
+| landing-experience-checker | O | Post-click page QA for ad relevance, load speed, mobile, and policy — the ad↔page message-match check. |
 | ⛩ ad-account-auditor | R+O+A+S (RQS) | Auditor-class ROAS gate: scores RQS, enforces R1/R2/O1/O2/A1, emits SHIP/FIX/BLOCK; carries a **launch go/no-go** mode. |
 | conversion-signal-qa | R | Pre-launch tracking QA (event firing, UTM hygiene, dedup gate, window alignment, iOS-ATT flags) — the R1/R2 prerequisite (builds the signal; the gate scores it). |
-| placement-exclusion-manager | A | *(NEW)* Placement/audience exclusion lists — brand-safety blocks, junk-placement pruning, wasted-spend suppression. |
-| conversion-value-mapper | R | *(NEW)* Map conversion actions to values/weights and value rules so tROAS bids on true margin, not raw counts. |
+| placement-exclusion-manager | A | Placement/audience exclusion lists — brand-safety blocks, junk-placement pruning, wasted-spend suppression. |
+| conversion-value-mapper | R | Map conversion actions to values/weights and value rules so tROAS bids on true margin, not raw counts. |
 | paid-measurement-loop | R (+S) | Read one shipped change back against a control over a window → Promote / Keep-testing / Rollback / Unproven. |
 | attribution-reconciler | R | Standing order-ID de-dup against the GA4/ecommerce truth set, window/currency normalization, model comparison, incrementality. |
-| budget-pacing-monitor | S | *(NEW)* Track spend pace against budget over the flight, flag under/over-delivery, and recommend pacing corrections. |
-| fatigue-frequency-manager | O | *(NEW)* Watch frequency and creative-decay signals, flag fatigued ads, and schedule refresh/rotation. |
+| budget-pacing-monitor | S | Track spend pace against budget over the flight, flag under/over-delivery, and recommend pacing corrections. |
+| fatigue-frequency-manager | O | Watch frequency and creative-decay signals, flag fatigued ads, and schedule refresh/rotation. |
 
 **Reused cross-discipline** (counted in their home phases, not duplicated): [budget-optimizer](influencer/target/budget-optimizer/SKILL.md) (spend + bid-pacing/learning-phase mode), [landing-optimizer](influencer/report/landing-optimizer/SKILL.md) (post-click), [roi-calculator](influencer/report/roi-calculator/SKILL.md) (return math), [report-generator](influencer/report/report-generator/SKILL.md), [performance-analyzer](influencer/report/performance-analyzer/SKILL.md).
 
 </details>
 
-### Influencer — STAR (16)
+### Influencer — STAR (16)  ·  📖 [Discipline guide](influencer/README.md)
 
 Four phase directories (4 skills each); the discipline's gate (⛩ creator-content-auditor) sits in Activate.
 
@@ -432,7 +432,7 @@ Four phase directories (4 skills each); the discipline's gate (⛩ creator-conte
 
 | Skill | What it does |
 |-------|--------------|
-| audience-mapper | *(merge: audience-analyzer + niche-researcher)* Profile the target audience and map its subculture / micro-community before partnering with creators. |
+| audience-mapper | Profile the target audience and map its subculture / micro-community before partnering with creators. |
 | trend-spotter | Campaign timing and themes — trending hashtags, sounds, formats, cultural moments. |
 | influencer-discovery | Build a creator roster from scratch, expand to a new platform, source nano/micro at scale. |
 | fit-scorer | Objective, weighted fit score for a shortlist (produces the STAR Suitability (S) read). |
@@ -443,7 +443,7 @@ Four phase directories (4 skills each); the discipline's gate (⛩ creator-conte
 | outreach-manager | Pitch, follow-up cadence, re-engagement, rate negotiation, status tracking. |
 | ⛩ creator-content-auditor | Pre-publish gate decision on a creator submission (STAR Trust: FTC disclosure STAR-T1, claim integrity STAR-T2). |
 | contract-helper | Draft/review creator agreements — usage rights, exclusivity, standard clauses. |
-| content-amplifier | *(merge: content-amplifier + ugc-repurposer)* Extend organic creator content with paid spend and repurpose UGC across paid, web, email, and organic. |
+| content-amplifier | Extend organic creator content with paid spend and repurpose UGC across paid, web, email, and organic. |
 | landing-optimizer | Landing pages for creator/paid traffic — message match, mobile, A/B (also serves paid post-click). |
 | performance-analyzer | Evaluate creator results, compare creators, sentiment, conversions (also the paid cross-channel scorecard). |
 | roi-calculator | Measure/project ROI, defend budgets, value creators/tiers (shared return-math engine, incl. paid). |
@@ -451,7 +451,7 @@ Four phase directories (4 skills each); the discipline's gate (⛩ creator-conte
 
 </details>
 
-### Launch — RAMP (16)
+### Launch — RAMP (16)  ·  📖 [Discipline guide](launch/README.md)
 
 Four phase directories under `launch/` (4 skills each) follow the RAMP loop; the gate (⛩ launch-readiness-auditor) sits in Mobilize. Each run selects one preflight, execution, or outcome profile; scores from different lifecycle reads are linked but never averaged.
 
@@ -520,7 +520,7 @@ Eight commands: `/aaron-marketing:auto` routes any goal across all seven discipl
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | Describe any goal — infers intent and runs the smallest useful workflow | `--deep` (exhaustive / stress-test) |
 | `/aaron-marketing:narrative` | Brand narrative (TALE loop): trace the current story & category, architect the strategic narrative & message system, land it across channels, the quality gate, resonance & drift | `--phase trace\|architect\|land\|evaluate` |
-| `/aaron-marketing:seo-geo` | SEO/GEO end-to-end (SITE loop): survey demand/competitors, implement content, tune quality/tech/on-page, evaluate authority/rankings/reports/memory | `--phase survey\|implement\|tune\|evaluate` + per-phase flags (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) · deprecated alias `--mode research\|create\|audit\|track` |
+| `/aaron-marketing:seo-geo` | SEO/GEO end-to-end (SITE loop): survey demand/competitors, implement content, tune quality/tech/on-page, evaluate authority/rankings/reports/memory | `--phase survey\|implement\|tune\|evaluate` + per-phase flags (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) |
 | `/aaron-marketing:influencer` | Influencer (STAR loop): audience insight, scouting & fit, targeting, outreach, amplification, ROI reporting | `--phase scout\|target\|activate\|report` |
 | `/aaron-marketing:ad` | Paid ads (ROAS loop): segments, structure, creative, experiment design, the audit gate, measurement | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | Email (SEND loop): deliverability/consent, segmentation, creative, lifecycle flows, monetization, send-testing, the audit gate | `--phase setup\|engage\|nurture\|deliver` |
@@ -528,8 +528,6 @@ Eight commands: `/aaron-marketing:auto` routes any goal across all seven discipl
 | `/aaron-marketing:social` | Organic social (ECHO loop): channel portfolio & voice, calendar & creative, the quality gate, engagement/crisis hosting, pulse & measurement | `--phase explore\|craft\|host\|observe` |
 
 Daily work normally starts with `/aaron-marketing:auto`; the other seven are explicit discipline entrypoints, with `--phase` to narrow the stage.
-
-**Rename note:** commands use the `/aaron-marketing:` prefix. The former `research` / `create` / `audit` / `track` commands map onto the SITE loop of `/aaron-marketing:seo-geo` (`--mode` remains a deprecated alias until v19; every flag unchanged). Older `/seo:*` and `/aaron-seo-geo:*` names recover via `auto` — e.g. `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` returns `/aaron-marketing:seo-geo https://example.com/blog/post --phase tune`.
 
 ---
 
@@ -570,17 +568,37 @@ Paid-ads skills score from your **own-account manual export** (native ad-manager
 
 ## Recommended workflows
 
-**SEO/GEO**
+Most real goals span disciplines. `/aaron-marketing:auto` routes a natural-language goal to the smallest useful chain across all seven — a product launch, for instance, pulls Launch, Email, Social, and Paid at once:
+
+```text
+/aaron-marketing:auto launch our v2 on Product Hunt in 3 weeks — 1,200 on the waitlist; we need the page, the emails, and a launch-day plan
+```
+
+Or drive one discipline's loop end to end — each discipline's **📖 Discipline guide** (linked from the [skill catalog](#skill-catalog)) adds scenario-level plays:
+
+**Narrative (TALE loop)**
+1. **Trace** — `narrative-baseline-mapper` → `category-narrative-mapper` → `audience-belief-mapper` → `positioning-truth-tracer`
+2. **Architect** — `strategic-narrative-designer` → `message-system-architect` → `brand-language-codifier` → `story-bank-builder`
+3. **Land** — `narrative-cascade-planner` → `pitch-narrative-builder` → `narrative-enablement-kit` → `proof-point-packager`
+4. **Evaluate** — `narrative-quality-auditor` (⛩ TALE gate) → `message-test-designer` → `narrative-resonance-monitor` → `narrative-drift-monitor`
+
+**SEO/GEO (SITE loop)**
 1. **Survey** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
 2. **Implement** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
 3. **Tune** — `content-quality-auditor` (⛩ publish gate) → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
 4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; `domain-authority-auditor` (⛩) for the trust review
 
-**Influencer**
-1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
-2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ STAR gate) → `contract-helper` → `content-amplifier`
-4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+**Social (ECHO loop)**
+1. **Explore** — `channel-portfolio-planner` → `voice-dossier-builder` → `platform-norm-profiler` → `participation-warmup-planner`
+2. **Craft** — `social-calendar-builder` → `social-creative-builder` → `short-video-scripter` → `advocacy-program-designer`
+3. **Host** — `social-quality-auditor` (⛩ ECHO gate) → `engagement-inbox-manager` → `social-selling-planner` → `crisis-response-planner`
+4. **Observe** — `social-pulse-monitor` → `share-of-voice-tracker` → `dark-social-attributor` → `social-measurement-loop`
+
+**Email (SEND loop)**
+1. **Setup** — `deliverability-qa` → `list-segment-builder`
+2. **Engage** — `email-creative-builder`
+3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
+4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ EQS gate) before send
 
 **Paid Ads (ROAS loop)**
 1. **Research** — `audience-segment-builder` → `campaign-architect`
@@ -588,11 +606,17 @@ Paid-ads skills score from your **own-account manual export** (native ad-manager
 3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` (⛩ RQS gate) before any budget goes live
 4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
 
-**Email (SEND loop)**
-1. **Setup** — `deliverability-qa` → `list-segment-builder`
-2. **Engage** — `email-creative-builder`
-3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
-4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ EQS gate) before send
+**Influencer (STAR loop)**
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
+2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
+3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ STAR gate) → `contract-helper` → `content-amplifier`
+4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+
+**Launch (RAMP loop)**
+1. **Research** — `positioning-mapper` → `launch-tier-planner` → `launch-window-planner` → `early-access-designer`
+2. **Assemble** — `message-house-builder` → `launch-asset-packager` → `pricing-packaging-planner` → `sales-enablement-kit`
+3. **Mobilize** — `launch-readiness-auditor` (⛩ RAMP gate) → `launch-day-conductor` → `community-launch-runner` → `press-media-relations`
+4. **Prove** — `launch-monitor` → `launch-feedback-synthesizer` → `launch-retro-analyzer` → `momentum-planner`
 
 For a full trust review, pair `content-quality-auditor` with `domain-authority-auditor` for a combined 120-item assessment. With `memory-management` active, handoffs and open loops persist in HOT/WARM/COLD memory automatically.
 

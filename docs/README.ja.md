@@ -363,19 +363,19 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 | deliverability-qa | S | 送信前の SPF/DKIM/DMARC/BIMI 認証、レピュテーション、inbox-placement、スパムコンテンツ、リスト衛生（S1 チェック）。 |
 | list-segment-builder | E | 自社のリスト/CRM/GA4 エクスポートから、行動 + ライフサイクル段階のセグメントと抑制ルール。 |
 | list-growth-designer | S (+N) | リスト成長戦略 —— 獲得チャネル、リードマグネット構想、準拠したオプトインキャプチャフロー spec、リファラルループの仕組み；獲得時に捕捉される S 同意品質に寄与。 |
-| list-hygiene-monitor | S | *(NEW)* 継続的なリスト健全性 —— バウンス/苦情の剪定、サンセットポリシー、再許諾、非アクティブセグメントの抑制。 |
+| list-hygiene-monitor | S | 継続的なリスト健全性 —— バウンス/苦情の剪定、サンセットポリシー、再許諾、非アクティブセグメントの抑制。 |
 | email-creative-builder | E (+D) | 件名/プリヘッダー/本文/CTA。ランディングページとメッセージ整合、claims-ledger を認識。 |
-| subject-line-lab | E | *(NEW)* 件名/プリヘッダーの発想とスコアリング —— 長さ、スパムトリガー、好奇心/明確性のバランス、テスト用バリアントセット。 |
-| email-render-builder | E | *(NEW)* HTML メールのビルド/QA —— クライアント互換性、ダークモード、アクセシビリティ、プレーンテキスト代替、レンダーテストチェックリスト。 |
-| dynamic-content-personalizer | E | *(NEW)* マージタグ/liquid のパーソナライズブロック、条件付きコンテンツルール、フォールバック値の安全性。 |
+| subject-line-lab | E | 件名/プリヘッダーの発想とスコアリング —— 長さ、スパムトリガー、好奇心/明確性のバランス、テスト用バリアントセット。 |
+| email-render-builder | E | HTML メールのビルド/QA —— クライアント互換性、ダークモード、アクセシビリティ、プレーンテキスト代替、レンダーテストチェックリスト。 |
+| dynamic-content-personalizer | E | マージタグ/liquid のパーソナライズブロック、条件付きコンテンツルール、フォールバック値の安全性。 |
 | email-sequence-designer | N | ライフサイクル/自動化フロー（welcome、cart、post-purchase、win-back）+ 頻度ガバナンス。 |
 | newsletter-monetization-planner | D | 有料購読、スポンサーシップ在庫 + レートカード、リファラル成長ループの経済性。 |
-| preference-frequency-manager | N | *(NEW)* プリファレンスセンター設計と送信頻度ガバナンスで疲弊と解除を削減。 |
-| reactivation-specialist | N | *(NEW)* 休眠購読者向けの win-back / 再エンゲージフロー、サンセット-or-回復の判断ルール付き。 |
+| preference-frequency-manager | N | プリファレンスセンター設計と送信頻度ガバナンスで疲弊と解除を削減。 |
+| reactivation-specialist | N | 休眠購読者向けの win-back / 再エンゲージフロー、サンセット-or-回復の判断ルール付き。 |
 | ⛩ email-quality-auditor | S+E+N+D (EQS) | auditor クラスの SEND ゲート：EQS を採点、S1/S2/N1/D1 を強制、SHIP/FIX/BLOCK を出力；**送信前 go/no-go** モードを内蔵。 |
 | send-experiment-designer | E | A/B / 送信時刻 / ホールドアウト設計、サンプルサイズ + 有意性の判読（promote/kill）。 |
-| inbox-placement-monitor | S | *(NEW)* シードリストとプロバイダーシグナル経由の inbox-vs-spam プレースメント継続追跡、レピュテーション変動アラート付き。 |
-| cold-outbound-sequencer | D | *(NEW)* 準拠した B2B コールドアウトバウンドの頻度 —— deliverability に安全なランプ、パーソナライズトークン、返信処理ステップ。 |
+| inbox-placement-monitor | S | シードリストとプロバイダーシグナル経由の inbox-vs-spam プレースメント継続追跡、レピュテーション変動アラート付き。 |
+| cold-outbound-sequencer | D | 準拠した B2B コールドアウトバウンドの頻度 —— deliverability に安全なランプ、パーソナライズトークン、返信処理ステップ。 |
 
 **領域横断で再利用**（元フェーズで計上、重複なし）：[audience-mapper](../influencer/scout/audience-mapper/SKILL.md)、[landing-optimizer](../influencer/report/landing-optimizer/SKILL.md)、[roi-calculator](../influencer/report/roi-calculator/SKILL.md)、[report-generator](../influencer/report/report-generator/SKILL.md)、[performance-analyzer](../influencer/report/performance-analyzer/SKILL.md)、[offer-claims-registry](../protocol/offer-claims-registry/SKILL.md)。
 
@@ -398,20 +398,20 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 |-------|-----------|--------------|
 | campaign-architect | A + 構造 | アカウント/キャンペーン構造、キャンペーンタイプの適合、マッチタイプ、除外キーワード/除外、Paid↔オーガニックのカニバリゼーション；再帰的な **search-term-mining** モードを内蔵。 |
 | audience-segment-builder | A | 自社の顧客/CRM/GA4 エクスポートをシードオーディエンス、類似シード、除外セグメント、ファネル段階別ターゲティングマップに変換。 |
-| search-term-miner | A | *(NEW)* 検索語句レポートから除外語、新規キーワード候補、マッチタイプの精緻化を採掘。 |
-| product-feed-optimizer | O | *(NEW)* Shopping/PMax フィード衛生 —— タイトル、属性、GTIN、カテゴリマッピング、不承認の修正。 |
+| search-term-miner | A | 検索語句レポートから除外語、新規キーワード候補、マッチタイプの精緻化を採掘。 |
+| product-feed-optimizer | O | Shopping/PMax フィード衛生 —— タイトル、属性、GTIN、カテゴリマッピング、不承認の修正。 |
 | ad-creative-builder | O | RSA の見出し/説明文、フック、角度マトリクス。遷移先ページとメッセージ整合。 |
 | ad-test-designer | O (+S) | A/B/n & 増分テストを設計（仮説、バリアントマトリクス、サンプルサイズ/検出力）し、有意性を判読 → promote/kill。 |
-| bid-strategy-planner | S | *(NEW)* 目標別（tCPA/tROAS/max-conversions）に入札戦略を選定・設定し、ターゲットをシード、学習期の移行を計画。 |
-| landing-experience-checker | O | *(NEW)* クリック後ページの QA —— 広告関連性、読み込み速度、モバイル、ポリシー —— 広告↔ページのメッセージ整合チェック。 |
+| bid-strategy-planner | S | 目標別（tCPA/tROAS/max-conversions）に入札戦略を選定・設定し、ターゲットをシード、学習期の移行を計画。 |
+| landing-experience-checker | O | クリック後ページの QA —— 広告関連性、読み込み速度、モバイル、ポリシー —— 広告↔ページのメッセージ整合チェック。 |
 | ⛩ ad-account-auditor | R+O+A+S (RQS) | auditor クラスの ROAS ゲート：RQS を採点、R1/R2/O1/O2/A1 を強制、SHIP/FIX/BLOCK を出力；**Launch go/no-go** モードを内蔵。 |
 | conversion-signal-qa | R | ローンチ前のトラッキング QA（イベント発火、UTM 衛生、重複排除ゲート、ウィンドウ整合、iOS-ATT フラグ）—— R1/R2 の前提（シグナルを構築；ゲートが採点）。 |
-| placement-exclusion-manager | A | *(NEW)* プレースメント/オーディエンス除外リスト —— ブランドセーフティのブロック、ジャンクプレースメントの剪定、無駄支出の抑制。 |
-| conversion-value-mapper | R | *(NEW)* コンバージョンアクションを値/重みと値ルールにマッピングし、tROAS が生の件数でなく真のマージンに入札するように。 |
+| placement-exclusion-manager | A | プレースメント/オーディエンス除外リスト —— ブランドセーフティのブロック、ジャンクプレースメントの剪定、無駄支出の抑制。 |
+| conversion-value-mapper | R | コンバージョンアクションを値/重みと値ルールにマッピングし、tROAS が生の件数でなく真のマージンに入札するように。 |
 | paid-measurement-loop | R (+S) | 出荷済みの変更を、あるウィンドウで対照に照らして読み戻す → Promote / Keep-testing / Rollback / Unproven。 |
 | attribution-reconciler | R | GA4/ecommerce 真値集合に対する常時 order-ID 重複排除、ウィンドウ/通貨の正規化、モデル比較、増分。 |
-| budget-pacing-monitor | S | *(NEW)* フライト全体で予算に対する消化ペースを追跡、過少/過剰配信を検知、ペーシング修正を推奨。 |
-| fatigue-frequency-manager | O | *(NEW)* フリークエンシーとクリエイティブ劣化のシグナルを監視、疲弊した広告を検知、リフレッシュ/ローテーションを計画。 |
+| budget-pacing-monitor | S | フライト全体で予算に対する消化ペースを追跡、過少/過剰配信を検知、ペーシング修正を推奨。 |
+| fatigue-frequency-manager | O | フリークエンシーとクリエイティブ劣化のシグナルを監視、疲弊した広告を検知、リフレッシュ/ローテーションを計画。 |
 
 **領域横断で再利用**（元フェーズで計上、重複なし）：[budget-optimizer](../influencer/target/budget-optimizer/SKILL.md)（支出 + bid-pacing/学習期モード）、[landing-optimizer](../influencer/report/landing-optimizer/SKILL.md)（クリック後）、[roi-calculator](../influencer/report/roi-calculator/SKILL.md)（リターン計算）、[report-generator](../influencer/report/report-generator/SKILL.md)、[performance-analyzer](../influencer/report/performance-analyzer/SKILL.md)。
 

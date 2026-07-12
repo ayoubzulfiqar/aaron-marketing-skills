@@ -294,18 +294,18 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 | competitor-analysis | 分析競品 SEO 策略，對比網域，挖出其關鍵字與缺口。 |
 | serp-analysis | 讀懂 SERP——特性、摘要、People Also Ask、某查詢的排名規律。 |
 | content-gap-analysis | 找出相對競品缺失的主題與覆蓋空洞。 |
-| content-writer | *（合併 seo-content-writer + content-refresher）* 撰寫並刷新 SEO 最佳化的文章、著陸頁、產品文案。 |
+| content-writer | 撰寫並刷新 SEO 最佳化的文章、著陸頁、產品文案。 |
 | geo-content-optimizer | 為 AI 引擎（ChatGPT、Perplexity、AI Overviews、Gemini、Claude、Copilot）最佳化內容。 |
-| serp-markup-builder | *（合併 meta-tags-optimizer + schema-markup-generator）* 標題/meta/OG/Twitter 標籤 + JSON-LD / Schema.org 結構化資料。 |
-| page-play-builder | *（合併 programmatic + parasite + comparison + local，4 模式）* 範本驅動頁面打法——批量頁、第三方平台發布、對比頁、本地/GBP。 |
+| serp-markup-builder | 標題/meta/OG/Twitter 標籤 + JSON-LD / Schema.org 結構化資料。 |
+| page-play-builder | 範本驅動頁面打法——批量頁、第三方平台發布、對比頁、本地/GBP。 |
 | ⛩ content-quality-auditor | 80 項 CORE-EEAT 發布就緒門（SHIP/FIX/BLOCK）。 |
 | technical-seo-checker | 網站速度、Core Web Vitals、索引、可抓取性、robots。 |
 | on-page-seo-checker | 稽核頁面級 on-page 健康度——標題層級、關鍵字佈局、圖片、品質訊號。 |
-| site-structure-optimizer | *（合併 internal-linking-optimizer + site-architecture）* 內部連結、錨文字、孤立頁、頁面層級、URL 分類、hub/spoke 主題叢集。 |
+| site-structure-optimizer | 內部連結、錨文字、孤立頁、頁面層級、URL 分類、hub/spoke 主題叢集。 |
 | ⛩ domain-authority-auditor | 40 項 CITE 網域信任門（TRUSTED/CAUTIOUS/UNTRUSTED）。 |
 | rank-tracker | 追蹤關鍵字排名、位次變化與跌幅。 |
-| performance-monitor | *（合併 performance-reporter + alert-manager）* 多指標 SEO/GEO 報告、看板與閾值告警。 |
-| offsite-signal-analyzer | *（合併 backlink-analyzer + ai-traffic）* 外連檔案 + 連結品質，加上在你自己的 GA4/GSC/日誌中度量 AI 助手引薦流量。 |
+| performance-monitor | 多指標 SEO/GEO 報告、看板與閾值告警。 |
+| offsite-signal-analyzer | 外連檔案 + 連結品質，加上在你自己的 GA4/GSC/日誌中度量 AI 助手引薦流量。 |
 
 </details>
 
@@ -363,19 +363,19 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 | deliverability-qa | S | 發送前 SPF/DKIM/DMARC/BIMI 認證、聲譽、收件匣落位、垃圾內容、清單衛生（S1 檢查）。 |
 | list-segment-builder | E | 從自有清單/CRM/GA4 匯出建構行為 + 生命週期階段分群與抑制規則。 |
 | list-growth-designer | S（+N） | 清單成長策略——獲取通路、lead magnet 構思、合規的雙重確認擷取流程 spec、推薦環機制；在獲取點餵入 S 同意品質。 |
-| list-hygiene-monitor | S | *（NEW）* 持續的清單健康度——退信/投訴清理、sunset 政策、再確認、非活躍分群抑制。 |
+| list-hygiene-monitor | S | ** 持續的清單健康度——退信/投訴清理、sunset 政策、再確認、非活躍分群抑制。 |
 | email-creative-builder | E（+D） | 主旨/預覽文字/內文/CTA，與著陸頁訊息一致，感知聲明台帳。 |
-| subject-line-lab | S | *（NEW）* 主旨/預覽文字構思與評分——長度、垃圾觸發詞、好奇/清晰平衡、測試用變體集。 |
-| email-render-builder | E | *（NEW）* HTML 郵件建置/QA——用戶端相容、暗色模式、可存取性、純文字替代、渲染測試清單。 |
-| dynamic-content-personalizer | E | *（NEW）* 合併標籤/liquid 個人化塊、條件內容規則、回退值安全。 |
+| subject-line-lab | S | ** 主旨/預覽文字構思與評分——長度、垃圾觸發詞、好奇/清晰平衡、測試用變體集。 |
+| email-render-builder | E | ** HTML 郵件建置/QA——用戶端相容、暗色模式、可存取性、純文字替代、渲染測試清單。 |
+| dynamic-content-personalizer | E | ** 合併標籤/liquid 個人化塊、條件內容規則、回退值安全。 |
 | email-sequence-designer | N | 生命週期/自動化流程（歡迎、棄購、購後、召回）+ 頻次治理。 |
 | newsletter-monetization-planner | D | 付費訂閱、贊助位庫存 + 刊例、推薦成長循環經濟。 |
-| preference-frequency-manager | N | *（NEW）* 偏好中心設計與發送頻次治理，以削減疲勞與退訂。 |
-| reactivation-specialist | N | *（NEW）* 沉睡訂閱者的 win-back / 再互動流程，含 sunset-or-recover 決策規則。 |
+| preference-frequency-manager | N | ** 偏好中心設計與發送頻次治理，以削減疲勞與退訂。 |
+| reactivation-specialist | N | ** 沉睡訂閱者的 win-back / 再互動流程，含 sunset-or-recover 決策規則。 |
 | ⛩ email-quality-auditor | S+E+N+D（EQS） | auditor-class SEND 門：算 EQS、跑 S1/S2/N1/D1、產出 SHIP/FIX/BLOCK；含**發送前 go/no-go**模式。 |
 | send-experiment-designer | E | A/B / 發送時間 / hold-out 設計，含樣本量 + 顯著性判讀（promote/kill）。 |
-| inbox-placement-monitor | S | *（NEW）* 透過 seed 清單與供應商訊號持續追蹤收件匣 vs 垃圾落位，並帶聲譽漂移告警。 |
-| cold-outbound-sequencer | D | *（NEW）* 合規 B2B 冷觸達節奏——送達安全的爬坡、個人化 token、回覆處理步驟。 |
+| inbox-placement-monitor | S | ** 透過 seed 清單與供應商訊號持續追蹤收件匣 vs 垃圾落位，並帶聲譽漂移告警。 |
+| cold-outbound-sequencer | D | ** 合規 B2B 冷觸達節奏——送達安全的爬坡、個人化 token、回覆處理步驟。 |
 
 **跨學科複用**（計入原階段，不重複造輪子）：[audience-mapper](../influencer/scout/audience-mapper/SKILL.md)、[landing-optimizer](../influencer/report/landing-optimizer/SKILL.md)、[roi-calculator](../influencer/report/roi-calculator/SKILL.md)、[report-generator](../influencer/report/report-generator/SKILL.md)、[performance-analyzer](../influencer/report/performance-analyzer/SKILL.md)、[offer-claims-registry](../protocol/offer-claims-registry/SKILL.md)。
 
@@ -398,20 +398,20 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 |------|-----------|------|
 | campaign-architect | A + 結構 | 帳戶/活動結構、campaign 類型選型、比對類型、否定詞/排除、付費↔自然蠶食；含常態化**搜尋詞挖掘**模式。 |
 | audience-segment-builder | A | 把自有客戶/CRM/GA4 匯出轉為種子受眾、相似種子、排除人群、漏斗分層鎖定地圖。 |
-| search-term-miner | A | *（NEW）* 從搜尋詞報告挖掘否定詞、新增關鍵字候選與比對類型收斂。 |
-| product-feed-optimizer | O | *（NEW）* Shopping/PMax feed 品質——標題、屬性、GTIN、品類對應與拒登修復。 |
+| search-term-miner | A | ** 從搜尋詞報告挖掘否定詞、新增關鍵字候選與比對類型收斂。 |
+| product-feed-optimizer | O | ** Shopping/PMax feed 品質——標題、屬性、GTIN、品類對應與拒登修復。 |
 | ad-creative-builder | O | RSA 標題/描述、hook、角度矩陣，並與目標頁訊息一致。 |
 | ad-test-designer | O（+S） | 設計 A/B/n 與增量實驗（假設、變體矩陣、樣本量/檢定力），判讀顯著性 → promote/kill。 |
-| bid-strategy-planner | S | *（NEW）* 選型並配置出價策略（tCPA/tROAS/max-conversions）、設定目標種子、規劃學習期過渡。 |
-| landing-experience-checker | O | *（NEW）* 點擊後頁面 QA——廣告相關性、載入速度、行動裝置、政策——即廣告↔頁面訊息一致檢查。 |
+| bid-strategy-planner | S | ** 選型並配置出價策略（tCPA/tROAS/max-conversions）、設定目標種子、規劃學習期過渡。 |
+| landing-experience-checker | O | ** 點擊後頁面 QA——廣告相關性、載入速度、行動裝置、政策——即廣告↔頁面訊息一致檢查。 |
 | ⛩ ad-account-auditor | R+O+A+S（RQS） | auditor-class ROAS 門：算 RQS、跑 R1/R2/O1/O2/A1、產出 SHIP/FIX/BLOCK；含**上線 go/no-go**模式。 |
 | conversion-signal-qa | R | 上線前追蹤 QA（事件觸發、UTM 規範、去重門控、視窗對齊、iOS-ATT 標記）——R1/R2 的前置（建訊號，門打分）。 |
-| placement-exclusion-manager | A | *（NEW）* 版位/受眾排除名單——品牌安全封鎖、垃圾版位剪除、浪費花費抑制。 |
-| conversion-value-mapper | R | *（NEW）* 把轉換動作對應到價值/權重與價值規則，讓 tROAS 依真實毛利而非原始次數出價。 |
+| placement-exclusion-manager | A | ** 版位/受眾排除名單——品牌安全封鎖、垃圾版位剪除、浪費花費抑制。 |
+| conversion-value-mapper | R | ** 把轉換動作對應到價值/權重與價值規則，讓 tROAS 依真實毛利而非原始次數出價。 |
 | paid-measurement-loop | R（+S） | 把一次上線的改動相對對照在視窗內回讀 → Promote / Keep-testing / Rollback / Unproven。 |
 | attribution-reconciler | R | 針對 GA4/ecommerce 訂單 ID 真值集做常態去重、視窗/幣別歸一、模型對比、增量。 |
-| budget-pacing-monitor | S | *（NEW）* 在投放期追蹤消耗節奏對比預算，標記欠投/超投，並建議配速校正。 |
-| fatigue-frequency-manager | O | *（NEW）* 監視頻次與創意衰減訊號，標記疲勞廣告，並排程刷新/輪換。 |
+| budget-pacing-monitor | S | ** 在投放期追蹤消耗節奏對比預算，標記欠投/超投，並建議配速校正。 |
+| fatigue-frequency-manager | O | ** 監視頻次與創意衰減訊號，標記疲勞廣告，並排程刷新/輪換。 |
 
 **跨學科複用**（計入原階段，不重複造輪子）：[budget-optimizer](../influencer/target/budget-optimizer/SKILL.md)（花費 + 出價節奏/學習期模式）、[landing-optimizer](../influencer/report/landing-optimizer/SKILL.md)（點擊後）、[roi-calculator](../influencer/report/roi-calculator/SKILL.md)（回報計算）、[report-generator](../influencer/report/report-generator/SKILL.md)、[performance-analyzer](../influencer/report/performance-analyzer/SKILL.md)。
 
@@ -432,7 +432,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 
 | 技能 | 用途 |
 |------|------|
-| audience-mapper | *（合併 audience-analyzer + niche-researcher）* 在與創作者合作前做受眾畫像，並摸清其亞文化 / 微社群。 |
+| audience-mapper | 在與創作者合作前做受眾畫像，並摸清其亞文化 / 微社群。 |
 | trend-spotter | 活動節奏與主題——趨勢話題、聲音、內容格式、文化時刻。 |
 | influencer-discovery | 從零搭建紅人名單、拓展新平台、規模化找 nano/micro。 |
 | fit-scorer | 對候選名單做客觀加權適配打分（基於 STAR Suitability (S)）。 |
@@ -443,7 +443,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 | outreach-manager | pitch、跟進節奏、再啟用、費率談判、狀態追蹤。 |
 | ⛩ creator-content-auditor | 對紅人提交內容做發布前門決策（STAR Trust：FTC 揭露 STAR-T1、聲明真實性 STAR-T2）。 |
 | contract-helper | 起草/審閱創作者協議——使用權、獨家、標準條款。 |
-| content-amplifier | *（合併 content-amplifier + ugc-repurposer）* 用付費投放放大自然創作者內容，並把 UGC 二次利用到付費、網站、郵件、自然社媒。 |
+| content-amplifier | 用付費投放放大自然創作者內容，並把 UGC 二次利用到付費、網站、郵件、自然社媒。 |
 | landing-optimizer | 面向創作者/付費流量的著陸頁——訊息一致、行動裝置、A/B（同時服務付費點擊後）。 |
 | performance-analyzer | 評估創作者結果、橫比創作者、情感、轉換（同時是付費跨通路記分卡）。 |
 | roi-calculator | 度量/預測 ROI、為預算辯護、評估創作者/層級價值（共享回報計算引擎，含付費）。 |
