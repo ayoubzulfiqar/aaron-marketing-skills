@@ -6,7 +6,7 @@ This is the generated human view of [`references/system-catalog.json`](../refere
 
 - Architecture contract: `18.0.0`
 - Bundle version: `18.0.0`
-- Catalog digest: `sha256:390c15850de01a7ab517910926448d182a5fbec0ec62d1978df2f1103e9338a8`
+- Catalog digest: `sha256:0b16d9cf1493b6bf46b5cabd9e50a848404fee649c37cf485f80ca40963fe882`
 - Shape: **112 discipline skills across 7 disciplines + 8 protocol skills = 120 skills; 8 commands**
 
 ## Four Layers
@@ -129,7 +129,7 @@ Every discipline satisfies each column or cites a licensed deviation (see below)
 | Discipline | Loop | Command | Registry | Gate(s) | Score surface |
 |---|---|---|---|---|---|
 | **Brand Narrative** | TALE (Trace -> Architect -> Land -> Evaluate) | `/narrative --phase trace\|architect\|land\|evaluate` | `narrative` (DEV-HUMANVIEW-NARRATIVE) | `narrative-quality-auditor` | profiles-only |
-| **SEO/GEO** | SITE (Survey -> Implement -> Tune -> Evaluate) | `/seo-geo --phase survey\|implement\|tune\|evaluate` (DEV-CMD-MODE-ALIAS-SEO-GEO) | `entities` | `content-quality-auditor` · `domain-authority-auditor` | Comparable overall (weighted-arithmetic-mean) · Default diagnostic (weighted-arithmetic-mean) |
+| **SEO/GEO** | SITE (Survey -> Implement -> Tune -> Evaluate) | `/seo-geo --phase survey\|implement\|tune\|evaluate` | `entities` | `content-quality-auditor` · `domain-authority-auditor` | Comparable overall (weighted-arithmetic-mean) · Default diagnostic (weighted-arithmetic-mean) |
 | **Organic Social** | ECHO (Explore -> Craft -> Host -> Observe) | `/social --phase explore\|craft\|host\|observe` | `channels` | `social-quality-auditor` | profiles-only |
 | **Email Marketing** | SEND (Setup -> Engage -> Nurture -> Deliver) | `/email --phase setup\|engage\|nurture\|deliver` | `consent` | `email-quality-auditor` | EQS (weighted-arithmetic-mean) |
 | **Paid Ads** | ROAS (Research -> Orchestrate -> Activate -> Scale) | `/ad --phase research\|orchestrate\|activate\|scale` | `claims` | `ad-account-auditor` | RQS (weighted-arithmetic-mean) |
@@ -142,7 +142,6 @@ Every discipline satisfies each column or cites a licensed deviation (see below)
 |---|---|---|---|---|
 | `DEV-HUMANVIEW-LAUNCHES` | `SYM-09-human-view` | `registry:launches` | 18.0.0 | memory/launch/<skill>/ is the launch discipline's working-notes namespace, and the dossier/calendar view predates v18 in end-user projects; renaming the human view would orphan user state. (source: `references/skill-contract.md`) |
 | `DEV-HUMANVIEW-NARRATIVE` | `SYM-09-human-view` | `registry:narrative` | 18.0.0 | memory/narrative/<skill>/ is the narrative discipline's working-notes namespace, and canon.md/versions.md predate v18 in end-user projects; renaming the human view would orphan user state. (source: `references/skill-contract.md`) |
-| `DEV-CMD-MODE-ALIAS-SEO-GEO` | `SYM-03-command-selector` | `command:seo-geo` | 18.0.0 | The pre-v18 --mode research|create|audit|track surface stays as a documented deprecated alias for one major cycle so installed callers can migrate; the alias section is removed in v19 and this deviation expires with it. (source: `references/aaron-product-api-contract.md`) |
 
 ## Distribution Profiles
 

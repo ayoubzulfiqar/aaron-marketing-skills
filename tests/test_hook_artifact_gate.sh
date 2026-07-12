@@ -84,7 +84,7 @@ evidence_summary: reviewed 3 sections
 evidence_coverage: 100
 score_confidence: high
 open_loops: none
-recommended_next_skill: seo-content-writer
+recommended_next_skill: content-writer
 
 veto_count: 0
 cap_applied: false

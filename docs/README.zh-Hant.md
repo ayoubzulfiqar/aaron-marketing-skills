@@ -520,7 +520,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 |------|------|------|
 | `/aaron-marketing:auto` | 描述任意目標——推斷意圖並執行最小夠用的工作流 | `--deep`（窮盡/壓測） |
 | `/aaron-marketing:narrative` | 品牌敘事（TALE 循環）：追溯當前故事與品類、架構策略敘事與訊息體系、落地到各通路、品質門、共鳴與漂移 | `--phase trace\|architect\|land\|evaluate` |
-| `/aaron-marketing:seo-geo` | SEO/GEO 端到端（SITE 循環）：勘測需求/競品、實施內容、調優品質/技術/頁面、評估權威/排名/報告/記憶 | `--phase survey\|implement\|tune\|evaluate` + 各階段子參數（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`）· 已棄用別名 `--mode research\|create\|audit\|track` |
+| `/aaron-marketing:seo-geo` | SEO/GEO 端到端（SITE 循環）：勘測需求/競品、實施內容、調優品質/技術/頁面、評估權威/排名/報告/記憶 | `--phase survey\|implement\|tune\|evaluate` + 各階段子參數（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`） |
 | `/aaron-marketing:influencer` | 紅人（STAR 循環）：受眾洞察、偵察與適配、鎖定規劃、外聯、放大、ROI 匯報 | `--phase scout\|target\|activate\|report` |
 | `/aaron-marketing:ad` | 付費廣告（ROAS 循環）：分群、結構、創意、實驗設計、稽核門、衡量 | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | 郵件行銷（SEND 循環）：送達/同意、分群、創意、生命週期流程、變現、發送測試、稽核門 | `--phase setup\|engage\|nurture\|deliver` |
@@ -528,8 +528,6 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 | `/aaron-marketing:social` | 自然社媒（ECHO 循環）：通路組合與聲音、行事曆與創意、品質門、互動/危機主持、脈動與衡量 | `--phase explore\|craft\|host\|observe` |
 
 日常工作通常從 `/aaron-marketing:auto` 開始；其餘七個是顯式的學科入口，用 `--phase` 收窄階段。
-
-**改名說明：** 命令使用 `/aaron-marketing:` 前綴。原 `research` / `create` / `audit` / `track` 四個命令現映射到 `/aaron-marketing:seo-geo` 的 SITE 循環（`--mode` 保留為已棄用別名至 v19；子參數全部不變）。舊 `/seo:*` 與 `/aaron-seo-geo:*` 可經 `auto` 恢復——例如 `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` 返回 `/aaron-marketing:seo-geo https://example.com/blog/post --phase tune`。
 
 ---
 

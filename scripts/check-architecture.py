@@ -394,7 +394,7 @@ SYMMETRY_RULES = {
     "SYM-15-metadata-keys", "SYM-16-deviation-hygiene", "SYM-17-auto-order",
 }
 METADATA_KEYS = {"author", "version", "discipline", "phase", "geo-relevance", "hermes", "openclaw"}
-RESERVED_SCORE_TOKEN = re.compile(r"\b(?:RQS|EQS|CVI)\b")
+RESERVED_SCORE_TOKEN = re.compile(r"\b(?:RQS|EQS|SQS)\b")
 
 
 def command_text(name):

@@ -47,7 +47,7 @@ REQUIRED_CASE_KEYS = [
 # Manifest may carry ONLY these keys. Anything matching a score/metric word is a
 # scope-creep attempt (the rejected output-score baseline) and fails the run.
 MANIFEST_ALLOWED_KEYS = {"skills", "count", "required_case_keys", "note"}
-SCORE_WORD = re.compile(r"score|rating|cvi|rqs|pass[_-]?rate|metric|baseline_score", re.I)
+SCORE_WORD = re.compile(r"score|rating|sqs|rqs|pass[_-]?rate|metric|baseline_score", re.I)
 
 # Each case is a single-line flow object (optionally a `- ` list item). Line-based
 # extraction (first `{` to last `}` on the line) so inner braces like /blog/{slug}
@@ -60,8 +60,9 @@ TARGET_SKILL_RE = re.compile(r'target_skill:\s*"?([A-Za-z0-9_-]+)"?')
 EXPECTED_ROUTE_RE = re.compile(r'expected_route:\s*"([^"]*)"')
 ROUTE_CMD_RE = re.compile(r'/aaron-marketing:([a-z-]+)(?:\s+--(mode|phase)\s+([a-z-]+))?')
 # Each command's valid selector, derived from the catalog `command` contract:
-# all seven disciplines use --phase (SEO/GEO's legacy --mode alias is deprecated
-# and not allowed in the routing library), auto takes neither (only --deep).
+# all seven disciplines use --phase (SEO/GEO's former --mode alias was removed in
+# v18; the regex below still matches --mode only to reject any stray reintroduction),
+# auto takes neither (only --deep).
 # Guards expected_route against a typo'd command or an invalid/mismatched phase
 # value (e.g. "ad --phase research" is valid, "ad --mode research" is not).
 COMMAND_MODES = {

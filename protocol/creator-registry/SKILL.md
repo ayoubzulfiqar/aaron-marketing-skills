@@ -15,7 +15,7 @@ metadata: {"author": "aaron-he-zhu", "version": "18.0.0", "discipline": "protoco
 
 # Creator Registry
 
-The canonical creator-roster authority. It records facts and provenance; it does not calculate ACE/ART/ROI, judge compliance, or choose partners.
+The canonical creator-roster authority. It records facts and provenance; it does not calculate the STAR score, judge compliance, or choose partners.
 
 ## Quick Start
 
@@ -40,7 +40,7 @@ Use [skill-contract.md](../../references/skill-contract.md): status, objective, 
 - Verified cross-platform handle links and dated audience exports.
 - Closed outreach/negotiation outcomes and confirmed contact path.
 - Signed terms, usage rights, exclusivity windows, and rates.
-- C3 ART artifact IDs as compliance events, never a derived “safe/risky” label.
+- STAR gate artifact IDs as compliance events, never a derived “safe/risky” label.
 - Campaign outcome baselines with observation window and provenance.
 
 Minimize personal data. Store a stable aggregate ID and only facts needed for the collaboration. Never put raw email/phone/address in event IDs or summaries.

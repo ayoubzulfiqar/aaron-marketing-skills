@@ -294,18 +294,18 @@ Artifact Gate는 **프레임워크 비의존적**입니다 — 같은 훅이 TAL
 | competitor-analysis | 경쟁사 SEO 전략 분석, 도메인 비교, 그들의 키워드와 격차 발굴. |
 | serp-analysis | SERP 해석 — 기능, 스니펫, People Also Ask, 특정 쿼리의 랭킹 패턴. |
 | content-gap-analysis | 경쟁사 대비 누락 주제와 커버리지 구멍 발견. |
-| content-writer | *(통합: seo-content-writer + content-refresher)* SEO 최적화된 기사, 랜딩 페이지, 제품 카피 작성 및 리프레시. |
+| content-writer | SEO 최적화된 기사, 랜딩 페이지, 제품 카피 작성 및 리프레시. |
 | geo-content-optimizer | AI 엔진(ChatGPT, Perplexity, AI Overviews, Gemini, Claude, Copilot)을 위한 콘텐츠 최적화. |
-| serp-markup-builder | *(통합: meta-tags-optimizer + schema-markup-generator)* Title/Meta/OG/Twitter 태그 + JSON-LD / Schema.org 구조화 데이터. |
-| page-play-builder | *(통합: programmatic + parasite + comparison + local SEO, 4 모드)* 템플릿 구동 페이지 플레이 — 프로그래매틱 페이지, 패러사이트 플랫폼, 비교 페이지, local/GBP. |
+| serp-markup-builder | Title/Meta/OG/Twitter 태그 + JSON-LD / Schema.org 구조화 데이터. |
+| page-play-builder | 템플릿 구동 페이지 플레이 — 프로그래매틱 페이지, 패러사이트 플랫폼, 비교 페이지, local/GBP. |
 | ⛩ content-quality-auditor | 80항목 CORE-EEAT 게시 준비 게이트(SHIP/FIX/BLOCK). |
 | technical-seo-checker | 사이트 속도, Core Web Vitals, 색인, 크롤 가능성, robots. |
 | on-page-seo-checker | 페이지 수준 on-page 건강도 감사 — 헤딩, 키워드 배치, 이미지, 품질 신호. |
-| site-structure-optimizer | *(통합: internal-linking-optimizer + site-architecture)* 내부 링크, 앵커 텍스트, 고아 페이지, 페이지 계층, URL 분류, hub/spoke 클러스터. |
+| site-structure-optimizer | 내부 링크, 앵커 텍스트, 고아 페이지, 페이지 계층, URL 분류, hub/spoke 클러스터. |
 | ⛩ domain-authority-auditor | 40항목 CITE 도메인 신뢰 게이트(TRUSTED/CAUTIOUS/UNTRUSTED). |
 | rank-tracker | 키워드 랭킹, 순위 변동, 하락 추적. |
-| performance-monitor | *(통합: performance-reporter + alert-manager)* 다중 지표 SEO/GEO 리포트, 대시보드, 임계값 알림. |
-| offsite-signal-analyzer | *(통합: backlink-analyzer + ai-traffic)* 백링크 프로필 + 링크 품질, 그리고 자신의 GA4/GSC/로그 내 AI 어시스턴트 추천 트래픽. |
+| performance-monitor | 다중 지표 SEO/GEO 리포트, 대시보드, 임계값 알림. |
+| offsite-signal-analyzer | 백링크 프로필 + 링크 품질, 그리고 자신의 GA4/GSC/로그 내 AI 어시스턴트 추천 트래픽. |
 
 </details>
 
@@ -432,7 +432,7 @@ Artifact Gate는 **프레임워크 비의존적**입니다 — 같은 훅이 TAL
 
 | 스킬 | 하는 일 |
 |-------|--------------|
-| audience-mapper | *(통합: audience-analyzer + niche-researcher)* 크리에이터와 협업하기 전 타깃 오디언스를 프로파일링하고 그 서브컬처 / 마이크로 커뮤니티를 지도화. |
+| audience-mapper | 크리에이터와 협업하기 전 타깃 오디언스를 프로파일링하고 그 서브컬처 / 마이크로 커뮤니티를 지도화. |
 | trend-spotter | 캠페인 타이밍과 테마 — 트렌드 해시태그, 사운드, 포맷, 문화적 순간. |
 | influencer-discovery | 크리에이터 명부를 처음부터 구축, 새 플랫폼으로 확장, nano/micro를 대규모로 소싱. |
 | fit-scorer | 쇼트리스트에 대한 객관적 가중 적합도 점수(STAR Suitability (S)로 채점). |
@@ -443,7 +443,7 @@ Artifact Gate는 **프레임워크 비의존적**입니다 — 같은 훅이 TAL
 | outreach-manager | 피치, 팔로업 케이던스, 재참여, 요율 협상, 상태 추적. |
 | ⛩ creator-content-auditor | 크리에이터 제출물에 대한 게시 전 게이트 결정(STAR Trust: FTC 공개 STAR-T1, 클레임 무결성 STAR-T2). |
 | contract-helper | 크리에이터 계약 초안/검토 — 사용권, 독점, 표준 조항. |
-| content-amplifier | *(통합: content-amplifier + ugc-repurposer)* 오가닉 크리에이터 콘텐츠를 유료 지출로 증폭하고 UGC를 Paid, 웹, 이메일, 오가닉에 재활용. |
+| content-amplifier | 오가닉 크리에이터 콘텐츠를 유료 지출로 증폭하고 UGC를 Paid, 웹, 이메일, 오가닉에 재활용. |
 | landing-optimizer | 크리에이터/Paid 트래픽용 랜딩 페이지 — 메시지 매치, 모바일, A/B(Paid 클릭 후에도 기여). |
 | performance-analyzer | 크리에이터 결과 평가, 크리에이터 비교, 센티먼트, 전환(Paid 크로스채널 스코어카드도). |
 | roi-calculator | ROI 측정/예측, 예산 방어, 크리에이터/티어 가치 평가(공유 리턴 계산 엔진, Paid 포함). |
@@ -520,7 +520,7 @@ Artifact Gate는 **프레임워크 비의존적**입니다 — 같은 훅이 TAL
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | 임의의 목표를 설명 — 의도를 추론하고 가장 작은 유용한 워크플로 실행 | `--deep`(전수 / 스트레스 테스트) |
 | `/aaron-marketing:narrative` | 브랜드 내러티브(TALE 루프): 현재 스토리 & 카테고리 추적, 전략 내러티브 & 메시지 시스템 설계, 채널 전반에 안착, 품질 게이트, 공명 & 표류 | `--phase trace\|architect\|land\|evaluate` |
-| `/aaron-marketing:seo-geo` | SEO/GEO 엔드투엔드(SITE 루프): 수요/경쟁사 서베이, 콘텐츠 구현, 품질/기술/온페이지 튜닝, 권위/랭킹/리포트/메모리 평가 | `--phase survey\|implement\|tune\|evaluate` + 단계별 플래그(`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) · 사용 중단 예정 별칭 `--mode research\|create\|audit\|track` |
+| `/aaron-marketing:seo-geo` | SEO/GEO 엔드투엔드(SITE 루프): 수요/경쟁사 서베이, 콘텐츠 구현, 품질/기술/온페이지 튜닝, 권위/랭킹/리포트/메모리 평가 | `--phase survey\|implement\|tune\|evaluate` + 단계별 플래그(`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) |
 | `/aaron-marketing:influencer` | 인플루언서(STAR 루프): 오디언스 인사이트, 스카우팅 & 적합, 타기팅, 아웃리치, 증폭, ROI 리포팅 | `--phase scout\|target\|activate\|report` |
 | `/aaron-marketing:ad` | Paid ads(ROAS 루프): 세그먼트, 구조, 크리에이티브, 실험 설계, 감사 게이트, 측정 | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | 이메일(SEND 루프): deliverability/consent, 세그먼테이션, 크리에이티브, 라이프사이클 플로, 수익화, 발송 테스트, 감사 게이트 | `--phase setup\|engage\|nurture\|deliver` |
@@ -528,8 +528,6 @@ Artifact Gate는 **프레임워크 비의존적**입니다 — 같은 훅이 TAL
 | `/aaron-marketing:social` | 오가닉 소셜(ECHO 루프): 채널 포트폴리오 & 보이스, 캘린더 & 크리에이티브, 품질 게이트, 인게이지먼트/위기 호스팅, 펄스 & 측정 | `--phase explore\|craft\|host\|observe` |
 
 일상 작업은 보통 `/aaron-marketing:auto`로 시작합니다; 나머지 일곱은 명시적 분야 진입점이며, `--phase`로 단계를 좁힙니다.
-
-**이름 변경 참고:** 명령어는 `/aaron-marketing:` 접두사를 사용합니다. 이전 `research` / `create` / `audit` / `track` 명령어는 `/aaron-marketing:seo-geo`의 SITE 루프에 대응합니다(`--mode`는 v19까지 사용 중단 예정 별칭으로 유지; 모든 플래그 불변). 더 오래된 `/seo:*`와 `/aaron-seo-geo:*` 이름은 `auto`를 통해 복구됩니다 — 예: `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post`는 `/aaron-marketing:seo-geo https://example.com/blog/post --phase tune`를 반환합니다.
 
 ---
 

@@ -776,14 +776,6 @@
         "rationale": "memory/narrative/<skill>/ is the narrative discipline's working-notes namespace, and canon.md/versions.md predate v18 in end-user projects; renaming the human view would orphan user state.",
         "source_doc": "references/skill-contract.md",
         "since_version": "18.0.0"
-      },
-      {
-        "id": "DEV-CMD-MODE-ALIAS-SEO-GEO",
-        "rule": "SYM-03-command-selector",
-        "scope": "command:seo-geo",
-        "rationale": "The pre-v18 --mode research|create|audit|track surface stays as a documented deprecated alias for one major cycle so installed callers can migrate; the alias section is removed in v19 and this deviation expires with it.",
-        "source_doc": "references/aaron-product-api-contract.md",
-        "since_version": "18.0.0"
       }
     ]
   },

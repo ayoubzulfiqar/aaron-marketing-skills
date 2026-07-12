@@ -37,9 +37,9 @@ Reused cross-discipline (counted in their home phases, not duplicated): `positio
 | Phase | Skills |
 |-------|--------|
 | **Survey** | `keyword-research`, `competitor-analysis`, `serp-analysis`, `content-gap-analysis` |
-| **Implement** | `content-writer` (merge: seo-content-writer + content-refresher), `geo-content-optimizer`, `serp-markup-builder` (merge: meta-tags-optimizer + schema-markup-generator), `page-play-builder` (merge: programmatic + parasite + comparison + local SEO, 4 modes) |
-| **Tune** | `content-quality-auditor`, `technical-seo-checker`, `on-page-seo-checker`, `site-structure-optimizer` (merge: internal-linking-optimizer + site-architecture) |
-| **Evaluate** | `domain-authority-auditor`, `rank-tracker`, `performance-monitor` (merge: performance-reporter + alert-manager), `offsite-signal-analyzer` (merge: backlink-analyzer + ai-traffic) |
+| **Implement** | `content-writer`, `geo-content-optimizer`, `serp-markup-builder`, `page-play-builder` |
+| **Tune** | `content-quality-auditor`, `technical-seo-checker`, `on-page-seo-checker`, `site-structure-optimizer` |
+| **Evaluate** | `domain-authority-auditor`, `rank-tracker`, `performance-monitor`, `offsite-signal-analyzer` |
 
 **Social — ECHO (16):** phase directories under `social/` follow the ECHO loop (Explore → Craft → Host → Observe). The asset gate and program-maturity profiles are separate constructs. Ships **no** posting/engagement/DM automation of any kind.
 
@@ -76,14 +76,14 @@ Reused cross-discipline (counted in their home phases, not duplicated): `audienc
 
 Reused cross-discipline (counted in their home phases, not duplicated): `budget-optimizer` (spend allocation), `landing-optimizer` (post-click), `roi-calculator` (return math), `report-generator`, `performance-analyzer`.
 
-**Influencer — STAR (16):** phase directories under `influencer/` follow the STAR loop (Scout → Target → Activate → Report). Loop and quality framework now share the name STAR (**S**uitability · **T**rust · **A**ppeal · **R**eturn), symmetric with ROAS/SEND/ECHO/RAMP/TALE. Lineage: the old 6 phases collapse to 4 — insight + map fold into **scout**, activate + convert fold into **activate**, and track becomes **report**.
+**Influencer — STAR (16):** phase directories under `influencer/` follow the STAR loop (Scout → Target → Activate → Report). Loop and quality framework now share the name STAR (**S**uitability · **T**rust · **A**ppeal · **R**eturn), symmetric with ROAS/SEND/ECHO/RAMP/TALE.
 
 | Phase | Skills |
 |-------|--------|
-| **Scout** | `audience-mapper` (merge: audience-analyzer + niche-researcher), `trend-spotter`, `influencer-discovery`, `fit-scorer` |
-| **Target** | `competitor-tracker` (moved from map), `campaign-planner`, `brief-generator`, `budget-optimizer` |
-| **Activate** | `outreach-manager`, `creator-content-auditor`, `contract-helper`, `content-amplifier` (merge: content-amplifier + ugc-repurposer, from convert) |
-| **Report** | `landing-optimizer` (from convert), `performance-analyzer`, `roi-calculator`, `report-generator` |
+| **Scout** | `audience-mapper`, `trend-spotter`, `influencer-discovery`, `fit-scorer` |
+| **Target** | `competitor-tracker`, `campaign-planner`, `brief-generator`, `budget-optimizer` |
+| **Activate** | `outreach-manager`, `creator-content-auditor`, `contract-helper`, `content-amplifier` |
+| **Report** | `landing-optimizer`, `performance-analyzer`, `roi-calculator`, `report-generator` |
 
 **Launch — RAMP (16):** phase directories under `launch/` follow the RAMP loop (Research → Assemble → Mobilize → Prove). Preflight, execution, and outcome are separate lifecycle profiles and are never averaged.
 
@@ -108,7 +108,7 @@ Reused cross-discipline (counted in their home phases, not duplicated): `audienc
 
 ```
 /aaron-marketing:auto      — Infer marketing intent across all disciplines and run the smallest useful workflow (add --deep for exhaustive/stress-test)
-/aaron-marketing:seo-geo   — SEO/GEO end-to-end (SITE loop: --phase survey|implement|tune|evaluate; per-phase flags preserved: --competitors/--map, --brief/--series/--refresh/--publish/--meta/--schema/--type, --full/--tech/--visibility, --authority/--alert/--report/--remember/--period; --mode research|create|audit|track is a deprecated alias until v19)
+/aaron-marketing:seo-geo   — SEO/GEO end-to-end (SITE loop: --phase survey|implement|tune|evaluate; per-phase flags preserved: --competitors/--map, --brief/--series/--refresh/--publish/--meta/--schema/--type, --full/--tech/--visibility, --authority/--alert/--report/--remember/--period)
 /aaron-marketing:influencer    — Influencer (STAR loop): scout / target / activate / report (--phase to force a stage)
 /aaron-marketing:ad      — Paid ads (ROAS loop): research / orchestrate / activate / scale (--phase to force a stage)
 /aaron-marketing:email     — Email (SEND loop): setup / engage / nurture / deliver (--phase to force a stage)

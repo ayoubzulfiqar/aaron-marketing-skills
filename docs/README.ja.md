@@ -294,18 +294,18 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 | competitor-analysis | 競合の SEO 戦略を分析し、ドメインを比較し、そのキーワードとギャップをあぶり出す。 |
 | serp-analysis | SERP を読み解く —— 機能、スニペット、People Also Ask、あるクエリのランキングパターン。 |
 | content-gap-analysis | 競合に対して欠けているトピックとカバレッジの穴を見つける。 |
-| content-writer | *(統合: seo-content-writer + content-refresher)* SEO 最適化された記事、ランディングページ、製品コピーを執筆・リフレッシュ。 |
+| content-writer | SEO 最適化された記事、ランディングページ、製品コピーを執筆・リフレッシュ。 |
 | geo-content-optimizer | AI エンジン（ChatGPT、Perplexity、AI Overviews、Gemini、Claude、Copilot）向けにコンテンツを最適化。 |
-| serp-markup-builder | *(統合: meta-tags-optimizer + schema-markup-generator)* Title/Meta/OG/Twitter タグ + JSON-LD / Schema.org 構造化データ。 |
-| page-play-builder | *(統合: programmatic + parasite + comparison + local SEO、4 モード)* テンプレート駆動のページ施策 —— プログラマティックページ、パラサイトプラットフォーム、比較ページ、local/GBP。 |
+| serp-markup-builder | Title/Meta/OG/Twitter タグ + JSON-LD / Schema.org 構造化データ。 |
+| page-play-builder | テンプレート駆動のページ施策 —— プログラマティックページ、パラサイトプラットフォーム、比較ページ、local/GBP。 |
 | ⛩ content-quality-auditor | 80 項目の CORE-EEAT 公開準備ゲート（SHIP/FIX/BLOCK）。 |
 | technical-seo-checker | サイト速度、Core Web Vitals、インデックス、クロール可能性、robots。 |
 | on-page-seo-checker | ページレベルの on-page 健全性を監査 —— 見出し、キーワード配置、画像、品質シグナル。 |
-| site-structure-optimizer | *(統合: internal-linking-optimizer + site-architecture)* 内部リンク、アンカーテキスト、孤立ページ、ページ階層、URL 分類、hub/spoke クラスター。 |
+| site-structure-optimizer | 内部リンク、アンカーテキスト、孤立ページ、ページ階層、URL 分類、hub/spoke クラスター。 |
 | ⛩ domain-authority-auditor | 40 項目の CITE ドメイン信頼ゲート（TRUSTED/CAUTIOUS/UNTRUSTED）。 |
 | rank-tracker | キーワード順位、順位変動、下落を追跡。 |
-| performance-monitor | *(統合: performance-reporter + alert-manager)* 複数指標の SEO/GEO レポート、ダッシュボード、しきい値アラート。 |
-| offsite-signal-analyzer | *(統合: backlink-analyzer + ai-traffic)* バックリンクプロファイル + リンク品質、加えて自分の GA4/GSC/ログ内の AI アシスタントからの参照トラフィック。 |
+| performance-monitor | 複数指標の SEO/GEO レポート、ダッシュボード、しきい値アラート。 |
+| offsite-signal-analyzer | バックリンクプロファイル + リンク品質、加えて自分の GA4/GSC/ログ内の AI アシスタントからの参照トラフィック。 |
 
 </details>
 
@@ -432,7 +432,7 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 
 | スキル | 何をするか |
 |-------|--------------|
-| audience-mapper | *(統合: audience-analyzer + niche-researcher)* クリエイターと組む前に、ターゲットオーディエンスをプロファイルし、そのサブカルチャー / マイクロコミュニティを地図化。 |
+| audience-mapper | クリエイターと組む前に、ターゲットオーディエンスをプロファイルし、そのサブカルチャー / マイクロコミュニティを地図化。 |
 | trend-spotter | キャンペーンのタイミングとテーマ —— トレンドのハッシュタグ、サウンド、フォーマット、文化的モーメント。 |
 | influencer-discovery | クリエイター名簿をゼロから構築、新プラットフォームへ拡大、nano/micro を大規模にソーシング。 |
 | fit-scorer | ショートリストの客観的な加重フィットスコア（STAR Suitability (S) で採点）。 |
@@ -443,7 +443,7 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 | outreach-manager | ピッチ、フォローアップの頻度、再エンゲージ、料率交渉、ステータス追跡。 |
 | ⛩ creator-content-auditor | クリエイターの提出物への公開前ゲート判断（STAR Trust：FTC 開示 STAR-T1、クレーム完全性 STAR-T2）。 |
 | contract-helper | クリエイター契約の起草/レビュー —— 使用権、独占、標準条項。 |
-| content-amplifier | *(統合: content-amplifier + ugc-repurposer)* オーガニックなクリエイターコンテンツを有料出稿で増幅し、UGC を Paid、Web、メール、オーガニックへ再利用。 |
+| content-amplifier | オーガニックなクリエイターコンテンツを有料出稿で増幅し、UGC を Paid、Web、メール、オーガニックへ再利用。 |
 | landing-optimizer | クリエイター/Paid トラフィック向けランディングページ —— メッセージ整合、モバイル、A/B（Paid のクリック後にも寄与）。 |
 | performance-analyzer | クリエイター結果を評価、クリエイターを比較、センチメント、コンバージョン（Paid のクロスチャネルスコアカードも）。 |
 | roi-calculator | ROI を測定/予測、予算を擁護、クリエイター/ティアを評価（共有のリターン計算エンジン、Paid を含む）。 |
@@ -520,7 +520,7 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | 任意のゴールを記述 —— 意図を推論し最小限の有用なワークフローを実行 | `--deep`（網羅 / ストレステスト） |
 | `/aaron-marketing:narrative` | ブランドナラティブ（TALE ループ）：現在のストーリー & カテゴリをトレース、戦略ナラティブ & メッセージシステムを設計、チャネル全体に着地、品質ゲート、共鳴 & ドリフト | `--phase trace\|architect\|land\|evaluate` |
-| `/aaron-marketing:seo-geo` | SEO/GEO をエンドツーエンド（SITE ループ）：需要/競合のサーベイ、コンテンツの実装、品質/技術/オンページのチューニング、権威/順位/レポート/メモリの評価 | `--phase survey\|implement\|tune\|evaluate` + フェーズ別フラグ（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`） · 非推奨エイリアス `--mode research\|create\|audit\|track` |
+| `/aaron-marketing:seo-geo` | SEO/GEO をエンドツーエンド（SITE ループ）：需要/競合のサーベイ、コンテンツの実装、品質/技術/オンページのチューニング、権威/順位/レポート/メモリの評価 | `--phase survey\|implement\|tune\|evaluate` + フェーズ別フラグ（`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`） |
 | `/aaron-marketing:influencer` | インフルエンサー（STAR ループ）：オーディエンスインサイト、スカウティング & フィット、ターゲティング、アウトリーチ、増幅、ROI レポーティング | `--phase scout\|target\|activate\|report` |
 | `/aaron-marketing:ad` | Paid ads（ROAS ループ）：セグメント、構造、クリエイティブ、実験設計、監査ゲート、測定 | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | メール（SEND ループ）：deliverability/consent、セグメンテーション、クリエイティブ、ライフサイクルフロー、収益化、送信テスト、監査ゲート | `--phase setup\|engage\|nurture\|deliver` |
@@ -528,8 +528,6 @@ Artifact Gate は**フレームワーク非依存**です —— 同じフック
 | `/aaron-marketing:social` | Organic social（ECHO ループ）：チャネルポートフォリオ & ボイス、カレンダー & クリエイティブ、品質ゲート、エンゲージメント/危機のホスティング、パルス & 測定 | `--phase explore\|craft\|host\|observe` |
 
 日々の作業は通常 `/aaron-marketing:auto` から始まります；他の 7 つは明示的な領域エントリポイントで、`--phase` で段階を絞ります。
-
-**リネーム注記：** コマンドは `/aaron-marketing:` プレフィックスを使います。旧 `research` / `create` / `audit` / `track` コマンドは `/aaron-marketing:seo-geo` の SITE ループに対応します（`--mode` は v19 まで非推奨エイリアスとして残ります；フラグはすべて不変）。より古い `/seo:*` と `/aaron-seo-geo:*` の名前は `auto` 経由で復旧します —— 例：`/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` は `/aaron-marketing:seo-geo https://example.com/blog/post --phase tune` を返します。
 
 ---
 

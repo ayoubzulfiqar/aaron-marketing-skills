@@ -1,6 +1,6 @@
 # Content Refresh Templates
 
-Templates for content-refresher steps 2-9. Referenced from [SKILL.md](../SKILL.md).
+Templates for the refresh-mode steps 2-9. Referenced from [SKILL.md](../SKILL.md).
 
 ## Steps 2-3: Find And Diagnose Refresh Candidates
 

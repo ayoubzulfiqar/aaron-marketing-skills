@@ -17,8 +17,8 @@ metadata: {"author": "aaron-he-zhu", "version": "18.0.0", "discipline": "influen
 
 Maps **who** the brand is trying to reach and **what community** they belong to — the two halves of understanding an audience before any creator is selected. It runs in two modes against one shared inputs set:
 
-- **`audience` mode** — the wide-angle read: demographic + psychographic profiles, a behavioral/media-diet map, a platform-priority matrix, content preferences, an influencer-affinity table, one or more named personas, and a must-have / nice-to-have / red-flag **influencer-selection criteria** set ready to hand to discovery. (Absorbs the former `audience-analyzer`.)
-- **`niche` mode** — the deep-dive: a community map (size, sub-niches, psychographics), a culture decode (language, norms, taboos), key-voice tiers, a content ecosystem, a **Brand Fit Score (X/25)** with a Strong/Moderate/Weak/Poor verdict, and a phased entry strategy with explicit red lines. (Absorbs the former `niche-researcher`.)
+- **`audience` mode** — the wide-angle read: demographic + psychographic profiles, a behavioral/media-diet map, a platform-priority matrix, content preferences, an influencer-affinity table, one or more named personas, and a must-have / nice-to-have / red-flag **influencer-selection criteria** set ready to hand to discovery.
+- **`niche` mode** — the deep-dive: a community map (size, sub-niches, psychographics), a culture decode (language, norms, taboos), key-voice tiers, a content ecosystem, a **Brand Fit Score (X/25)** with a Strong/Moderate/Weak/Poor verdict, and a phased entry strategy with explicit red lines.
 
 Both feed [STAR](../../../references/star-benchmark.md) creator/content scoring downstream, but this skill computes **neither** the Suitability/Trust/Appeal/Return dimension scores nor the SQS — it produces the audience and community facts that `fit-scorer` and `creator-content-auditor` later score against. Scope guard below.
 

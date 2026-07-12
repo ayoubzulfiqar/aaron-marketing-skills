@@ -1,11 +1,11 @@
 ---
-description: "SEO/GEO end-to-end along the SITE loop: survey demand and competitors, implement content, tune quality/tech/on-page, and evaluate authority/rankings/reports/memory (--phase survey|implement|tune|evaluate; --mode research|create|audit|track is a deprecated alias). Not sure? Use /aaron-marketing:auto."
+description: "SEO/GEO end-to-end along the SITE loop: survey demand and competitors, implement content, tune quality/tech/on-page, and evaluate authority/rankings/reports/memory (--phase survey|implement|tune|evaluate). Not sure? Use /aaron-marketing:auto."
 argument-hint: "<goal-url-topic-or-domain> [--phase survey|implement|tune|evaluate] [phase flags]"
 ---
 
 # SEO/GEO Command
 
-Run the SEO/GEO lifecycle along the **SITE loop** (Survey → Implement → Tune → Evaluate) — the single SEO/GEO entrypoint (peer of `/aaron-marketing:influencer` and `/aaron-marketing:ad`). Skills score on [CORE-EEAT](../references/core-eeat-benchmark.md) (content) and [CITE](../references/cite-domain-rating.md) (domain authority). The former `research` / `create` / `audit` / `track` commands live on as a deprecated `--mode` alias (removed in v19) — every sub-flag is preserved unchanged.
+Run the SEO/GEO lifecycle along the **SITE loop** (Survey → Implement → Tune → Evaluate) — the single SEO/GEO entrypoint (peer of `/aaron-marketing:influencer` and `/aaron-marketing:ad`). Skills score on [CORE-EEAT](../references/core-eeat-benchmark.md) (content) and [CITE](../references/cite-domain-rating.md) (domain authority).
 
 ## Route
 
@@ -54,11 +54,6 @@ Infer the SITE-loop phase from the goal (or honor `--phase`) and route to the ma
 - `--remember`: memory-management owns the HOT/WARM/COLD lifecycle — capture, promote, demote, archive, query, restore-from-archive — plus cleanup, purge, and protocol aggregation; canonical entity profiles route to entity-registry. Restore looks up a matching `memory/archive/YYYY-MM-DD-*` file. Purge/GDPR/CCPA requests require scoped targets and delete or anonymize matching canonical and archived memory surfaces. Within SEO/GEO, only content-quality-auditor and domain-authority-auditor may append one veto marker to `memory/hot-cache.md` without extra confirmation — the same auto-append power the other auditor-class gates (creator-content-auditor, ad-account-auditor, email-quality-auditor) hold in their own disciplines.
 
 - **Scope edge — organic search vs neighbors**: durable message canon and voice live with narrative ([message-system-architect](../narrative/architect/message-system-architect/SKILL.md) et al.) — content here *expresses* that canon; machine-facing entity facts are [entity-registry](../protocol/entity-registry/SKILL.md) (consulted, never redefined); paid search/PMax structure is [campaign-architect](../ad/research/campaign-architect/SKILL.md); post-click CRO on landing pages is [landing-optimizer](../influencer/report/landing-optimizer/SKILL.md); repurposing/boosting a published asset starts at [content-amplifier](../influencer/activate/content-amplifier/SKILL.md); launch-window go-live tech items stay with this discipline's [technical-seo-checker](../seo-geo/tune/technical-seo-checker/SKILL.md) / [serp-markup-builder](../seo-geo/implement/serp-markup-builder/SKILL.md) but are *scheduled* by launch's asset packager.
-
-### Deprecated --mode (alias until v19)
-
-`--mode` maps onto the SITE loop with every sub-flag preserved unchanged: `research` → `--phase survey` · `create` → `--phase implement` · `audit` → `--phase tune` (`--authority` lands in `--phase evaluate`) · `track` → `--phase evaluate`. Honor `--mode` when given, answer with the mapped phase, and show the `--phase` equivalent once so the caller can migrate.
-
 ## Output
 
 Return inline artifacts by default. Files may be written only when the user explicitly asks and the runtime can write.

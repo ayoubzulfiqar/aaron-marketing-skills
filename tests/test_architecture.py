@@ -87,11 +87,11 @@ class SymmetryTests(unittest.TestCase):
         catalog = copy.deepcopy(self.catalog)
         catalog["symmetry"]["deviations"] = [
             item for item in catalog["symmetry"]["deviations"]
-            if item["id"] != "DEV-CMD-MODE-ALIAS-SEO-GEO"
+            if item["id"] != "DEV-HUMANVIEW-LAUNCHES"
         ]
         failures = self.symmetry_failures(catalog)
         self.assertTrue(
-            any("SYM-03-command-selector at command:seo-geo" in item for item in failures),
+            any("SYM-09-human-view at registry:launches" in item for item in failures),
             failures,
         )
 

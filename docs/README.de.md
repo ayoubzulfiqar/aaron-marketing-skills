@@ -294,18 +294,18 @@ Vier Phasenverzeichnisse (je 4 Skills) plus die beiden Qualitäts-Gates der Disz
 | competitor-analysis | Analysiert die SEO-Strategie eines Wettbewerbers, vergleicht Domains, deckt dessen Keywords und Lücken auf. |
 | serp-analysis | Liest eine SERP — Features, Snippets, People Also Ask, Ranking-Muster für eine Abfrage. |
 | content-gap-analysis | Findet fehlende Themen und Abdeckungslücken gegenüber Wettbewerbern. |
-| content-writer | *(Merge: seo-content-writer + content-refresher)* Schreibt und aktualisiert SEO-optimierte Artikel, Landingpages und Produkttexte. |
+| content-writer | Schreibt und aktualisiert SEO-optimierte Artikel, Landingpages und Produkttexte. |
 | geo-content-optimizer | Optimiert Inhalte für AI-Engines (ChatGPT, Perplexity, AI Overviews, Gemini, Claude, Copilot). |
-| serp-markup-builder | *(Merge: meta-tags-optimizer + schema-markup-generator)* Title/Meta/OG/Twitter-Tags plus JSON-LD / Schema.org strukturierte Daten. |
-| page-play-builder | *(Merge: programmatic + parasite + comparison + local SEO, 4 Modi)* Vorlagengetriebene Page-Plays — programmatische Seiten, Parasite-Plattformen, Vergleichsseiten, local/GBP. |
+| serp-markup-builder | Title/Meta/OG/Twitter-Tags plus JSON-LD / Schema.org strukturierte Daten. |
+| page-play-builder | Vorlagengetriebene Page-Plays — programmatische Seiten, Parasite-Plattformen, Vergleichsseiten, local/GBP. |
 | ⛩ content-quality-auditor | 80-Item-CORE-EEAT-Gate für Publish-Bereitschaft (SHIP/FIX/BLOCK). |
 | technical-seo-checker | Seitengeschwindigkeit, Core Web Vitals, Indexierung, Crawlbarkeit, robots. |
 | on-page-seo-checker | Auditiert die On-Page-Gesundheit auf Seitenebene — Überschriften, Keyword-Platzierung, Bilder, Qualitätssignale. |
-| site-structure-optimizer | *(Merge: internal-linking-optimizer + site-architecture)* Interne Links, Ankertext, verwaiste Seiten, Seitenhierarchie, URL-Taxonomie, Hub/Spoke-Cluster. |
+| site-structure-optimizer | Interne Links, Ankertext, verwaiste Seiten, Seitenhierarchie, URL-Taxonomie, Hub/Spoke-Cluster. |
 | ⛩ domain-authority-auditor | 40-Item-CITE-Gate für Domain-Vertrauen (TRUSTED/CAUTIOUS/UNTRUSTED). |
 | rank-tracker | Verfolgt Keyword-Rankings, Positionsänderungen und Abstürze. |
-| performance-monitor | *(Merge: performance-reporter + alert-manager)* Multi-Metrik-SEO/GEO-Berichte, Dashboards und Schwellenwert-Alerts. |
-| offsite-signal-analyzer | *(Merge: backlink-analyzer + ai-traffic)* Backlink-Profil + Linkqualität, plus Referral-Traffic von AI-Assistenten in deinem eigenen GA4/GSC/Logs. |
+| performance-monitor | Multi-Metrik-SEO/GEO-Berichte, Dashboards und Schwellenwert-Alerts. |
+| offsite-signal-analyzer | Backlink-Profil + Linkqualität, plus Referral-Traffic von AI-Assistenten in deinem eigenen GA4/GSC/Logs. |
 
 </details>
 
@@ -432,7 +432,7 @@ Vier Phasenverzeichnisse (je 4 Skills); das Gate der Disziplin (⛩ creator-cont
 
 | Skill | Was er tut |
 |-------|--------------|
-| audience-mapper | *(Merge: audience-analyzer + niche-researcher)* Profiliert die Zielgruppe und kartiert ihre Subkultur / Mikro-Community, bevor mit Creatorn zusammengearbeitet wird. |
+| audience-mapper | Profiliert die Zielgruppe und kartiert ihre Subkultur / Mikro-Community, bevor mit Creatorn zusammengearbeitet wird. |
 | trend-spotter | Kampagnen-Timing und -Themen — trendende Hashtags, Sounds, Formate, kulturelle Momente. |
 | influencer-discovery | Baut ein Creator-Roster von Grund auf, expandiert auf eine neue Plattform, sourct Nano/Micro im großen Maßstab. |
 | fit-scorer | Objektiver, gewichteter Fit-Score für eine Shortlist (bewertet auf STAR Suitability (S)). |
@@ -443,7 +443,7 @@ Vier Phasenverzeichnisse (je 4 Skills); das Gate der Disziplin (⛩ creator-cont
 | outreach-manager | Pitch, Follow-up-Kadenz, Reaktivierung, Ratenverhandlung, Statusverfolgung. |
 | ⛩ creator-content-auditor | Vorab-Publish-Gate-Entscheidung zu einer Creator-Einreichung (STAR Trust: FTC-Offenlegung STAR-T1, Claim-Integrität STAR-T2). |
 | contract-helper | Entwirft/prüft Creator-Vereinbarungen — Nutzungsrechte, Exklusivität, Standardklauseln. |
-| content-amplifier | *(Merge: content-amplifier + ugc-repurposer)* Erweitert organische Creator-Inhalte mit bezahlten Ausgaben und verwertet UGC über Paid, Web, E-Mail und Organic hinweg neu. |
+| content-amplifier | Erweitert organische Creator-Inhalte mit bezahlten Ausgaben und verwertet UGC über Paid, Web, E-Mail und Organic hinweg neu. |
 | landing-optimizer | Landingpages für Creator-/Paid-Traffic — Message-Match, Mobile, A/B (dient auch Paid Post-Click). |
 | performance-analyzer | Bewertet Creator-Ergebnisse, vergleicht Creator, Sentiment, Conversions (auch die Paid-Cross-Channel-Scorecard). |
 | roi-calculator | Misst/projiziert ROI, verteidigt Budgets, bewertet Creator/Tiers (gemeinsame Return-Math-Engine, inkl. Paid). |
@@ -520,7 +520,7 @@ Acht Befehle: `/aaron-marketing:auto` leitet jedes Ziel durch alle sieben Diszip
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | Beschreibe ein beliebiges Ziel — leitet die Absicht ab und führt den kleinsten nützlichen Workflow aus | `--deep` (erschöpfend / Stresstest) |
 | `/aaron-marketing:narrative` | Brand Narrative (TALE-Schleife): die aktuelle Story & Kategorie tracen, die strategische Narrative & das Message-System architektieren, sie über Kanäle landen, das Qualitäts-Gate, Resonanz & Drift | `--phase trace\|architect\|land\|evaluate` |
-| `/aaron-marketing:seo-geo` | SEO/GEO End-to-End (SITE-Schleife): Nachfrage/Wettbewerber sondieren, Inhalte implementieren, Qualität/Technik/On-Page tunen, Autorität/Rankings/Berichte/Speicher evaluieren | `--phase survey\|implement\|tune\|evaluate` + Flags pro Phase (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) · veralteter Alias `--mode research\|create\|audit\|track` |
+| `/aaron-marketing:seo-geo` | SEO/GEO End-to-End (SITE-Schleife): Nachfrage/Wettbewerber sondieren, Inhalte implementieren, Qualität/Technik/On-Page tunen, Autorität/Rankings/Berichte/Speicher evaluieren | `--phase survey\|implement\|tune\|evaluate` + Flags pro Phase (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) |
 | `/aaron-marketing:influencer` | Influencer (STAR-Schleife): Audience-Insight, Scouting & Fit, Targeting, Outreach, Amplification, ROI-Reporting | `--phase scout\|target\|activate\|report` |
 | `/aaron-marketing:ad` | Paid Ads (ROAS-Schleife): Segmente, Struktur, Creative, Experiment-Design, das Audit-Gate, Messung | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | E-Mail (SEND-Schleife): Deliverability/Consent, Segmentierung, Creative, Lifecycle-Flows, Monetarisierung, Send-Testing, das Audit-Gate | `--phase setup\|engage\|nurture\|deliver` |
@@ -528,8 +528,6 @@ Acht Befehle: `/aaron-marketing:auto` leitet jedes Ziel durch alle sieben Diszip
 | `/aaron-marketing:social` | Organic Social (ECHO-Schleife): Kanal-Portfolio & Stimme, Kalender & Creative, das Qualitäts-Gate, Engagement-/Crisis-Hosting, Puls & Messung | `--phase explore\|craft\|host\|observe` |
 
 Die tägliche Arbeit beginnt normalerweise mit `/aaron-marketing:auto`; die anderen sieben sind explizite Disziplin-Einstiegspunkte, mit `--phase` zur Eingrenzung der Stufe.
-
-**Umbenennungshinweis:** Befehle verwenden das Präfix `/aaron-marketing:`. Die früheren Befehle `research` / `create` / `audit` / `track` werden auf die SITE-Schleife von `/aaron-marketing:seo-geo` abgebildet (`--mode` bleibt bis v19 ein veralteter Alias; alle Flags unverändert). Ältere `/seo:*`- und `/aaron-seo-geo:*`-Namen werden über `auto` wiederhergestellt — z. B. gibt `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` `/aaron-marketing:seo-geo https://example.com/blog/post --phase tune` zurück.
 
 ---
 
