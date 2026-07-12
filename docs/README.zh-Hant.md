@@ -24,7 +24,7 @@
 
 | 層 | 技能 | 生命週期（階段目錄） | 框架 → 門 | 入口命令 |
 |----|------|----------------------|-----------|----------|
-| **Narrative** | 16 | trace → architect → land → evaluate | [TALE](../references/tale-benchmark.md) → `narrative-quality-auditor` (truth / system / effectiveness profiles) | `/aaron-marketing:narrative` |
+| **品牌敘事** | 16 | trace → architect → land → evaluate | [TALE](../references/tale-benchmark.md) → `narrative-quality-auditor` (truth / system / effectiveness profiles) | `/aaron-marketing:narrative` |
 | **SEO/GEO** | 16 | survey → implement → tune → evaluate | [CORE-EEAT](../references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](../references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
 | **社媒** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (asset / program-maturity profiles) | `/aaron-marketing:social` |
 | **郵件** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor`（EQS） | `/aaron-marketing:email` |
@@ -53,7 +53,7 @@
   - [協議層](#協議層)
   - [記憶與自動化](#記憶與自動化)
 - [技能目錄](#技能目錄)
-  - [Narrative — TALE（16）](#narrative--tale16)
+  - [品牌敘事 — TALE（16）](#品牌敘事--tale16)
   - [SEO/GEO — SITE（16）](#seogeo--site16)
   - [紅人 — STAR（16）](#紅人--star16)
   - [付費廣告 — ROAS（16）](#付費廣告--roas16)
@@ -153,12 +153,12 @@
 
 | 層 | 採用門檻 | 學科 | 節奏 |
 |----|----------|------|------|
-| **L1 · Strategy** —— 我們說什麼 / 我們是誰 | crawl | **Narrative** · TALE | 常駐 |
-| **L2 · Channels** —— 表達策略的常駐引擎（owned → bought） | walk | **SEO/GEO** · CORE-EEAT + CITE · **Organic Social** · ECHO · **Email** · SEND · **Paid Ads** · ROAS · **Influencer** · C³ | 常駐（紅人偏 episodic） |
-| **L3 · Orchestration** —— 跨通路的限時時刻 | run | **Product Launch** · RAMP | episodic |
+| **L1 · Strategy** —— 我們說什麼 / 我們是誰 | crawl | **品牌敘事** · TALE | 常駐 |
+| **L2 · Channels** —— 表達策略的常駐引擎（owned → bought） | walk | **SEO/GEO** · CORE-EEAT + CITE · **社媒** · ECHO · **郵件** · SEND · **付費廣告** · ROAS · **紅人** · C³ | 常駐（紅人偏 episodic） |
+| **L3 · Orchestration** —— 跨通路的限時時刻 | run | **產品發布** · RAMP | episodic |
 | **L4 · Protocol** —— 共享的記錄系統 | — | 7 個真相註冊表 + 工作記憶 · 8 個 auditor 門 · 一套技能契約 | — |
 
-Narrative 是訊息；通路是表達它的媒介。每個核心 builder 都會記錄它所使用的確切正典 ID/版本與聲明投影偏移量（offset），或一次經明確核准的回退/阻斷。每個學科的 4 階段循環都住在自己的層裡（Narrative = Trace → Architect → Land → Evaluate）。
+敘事是訊息；通路是表達它的媒介。每個核心 builder 都會記錄它所使用的確切正典 ID/版本與聲明投影偏移量（offset），或一次經明確核准的回退/阻斷。每個學科的 4 階段循環都住在自己的層裡（敘事 = Trace → Architect → Land → Evaluate）。
 
 七個學科都用階段**目錄**（`narrative/trace/`…、`seo-geo/survey/`…、`influencer/scout/`…、`ad/research/`…、`email/setup/`…、`launch/research/`…、`social/explore/`…）。注意 "activate" 在紅人裡指創作者外聯、在付費裡指帳戶門控——同詞不同域。
 
@@ -237,11 +237,11 @@ Artifact Gate 是**框架無關**的——同一個 hook 校驗 TALE、CORE-EEAT
 
 ## 技能目錄
 
-技能連結開啟各自的 `SKILL.md`。展開每個學科下的 **詳情** 可看每個技能的一句話用途。目錄順序遵循[四層系統](#系統四層行銷作業系統)——先 Narrative（L1 · Strategy），接著五個常駐通路，再 Launch（L3 · Orchestration），最後協議層。
+技能連結開啟各自的 `SKILL.md`。展開每個學科下的 **詳情** 可看每個技能的一句話用途。目錄順序遵循[四層系統](#系統四層行銷作業系統)——先品牌敘事（L1 · Strategy），接著五個常駐通路，再 Launch（L3 · Orchestration），最後協議層。
 
-### Narrative — TALE（16）
+### 品牌敘事 — TALE（16）
 
-`narrative/` 下四個階段按 Trace → Architect → Land → Evaluate 排布。`narrative-quality-auditor` 分別執行 truth、system、effectiveness 三個 profile；完整評審只把三個結果關聯起來，絕不取平均。Narrative 是各通路 builder 所繼承的 L1 策略。
+`narrative/` 下四個階段按 Trace → Architect → Land → Evaluate 排布。`narrative-quality-auditor` 分別執行 truth、system、effectiveness 三個 profile；完整評審只把三個結果關聯起來，絕不取平均。敘事是各通路 builder 所繼承的 L1 策略。
 
 | 階段 | 技能 |
 |------|------|
@@ -250,7 +250,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 校驗 TALE、CORE-EEAT
 | **Land** | [narrative-cascade-planner](../narrative/land/narrative-cascade-planner/SKILL.md), [pitch-narrative-builder](../narrative/land/pitch-narrative-builder/SKILL.md), [narrative-enablement-kit](../narrative/land/narrative-enablement-kit/SKILL.md), [proof-point-packager](../narrative/land/proof-point-packager/SKILL.md) |
 | **Evaluate** | ⛩ [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md), [message-test-designer](../narrative/evaluate/message-test-designer/SKILL.md), [narrative-resonance-monitor](../narrative/evaluate/narrative-resonance-monitor/SKILL.md), [narrative-drift-monitor](../narrative/evaluate/narrative-drift-monitor/SKILL.md) |
 
-<details><summary><b>逐技能用途（Narrative）</b></summary>
+<details><summary><b>逐技能用途（品牌敘事）</b></summary>
 
 | 技能 | TALE 槓桿 | 用途 |
 |------|-----------|------|
@@ -601,7 +601,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 校驗 TALE、CORE-EEAT
 ## 倉庫結構
 
 ```
-narrative/{trace,architect,land,evaluate}/                  # Narrative — TALE(16，含其門)
+narrative/{trace,architect,land,evaluate}/                  # 品牌敘事 — TALE(16，含其門)
 seo-geo/{survey,implement,tune,evaluate}/                  # SEO/GEO(16，含其 2 個門)
 influencer/{scout,target,activate,report}/                   # 紅人(16，含其門)
 ad/research|orchestrate|activate|scale/            # 付費廣告 — ROAS(16，含其門)
