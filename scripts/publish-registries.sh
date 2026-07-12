@@ -32,6 +32,9 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+# Resume-state entries are keyed by bundle version so a state file left over
+# from a previous release can never mark the next release's publishes "done".
+VER="$(/usr/bin/python3 -c 'import json;print(json.load(open(".claude-plugin/plugin.json"))["version"])')"
 STATE="${TMPDIR:-/tmp}/publish-registries.state"; touch "$STATE"
 donep(){ grep -qxF "$1" "$STATE"; }; markp(){ echo "$1" >>"$STATE"; }
 
@@ -62,9 +65,9 @@ if [ "$PLAT" != skillhub ] && [ -n "$CH" ]; then
   echo "== ClawHub: publishing $nch behind skill(s) =="
   while read -r s; do [ -n "$s" ] || continue
     if [ "$LIVE" -eq 0 ]; then echo "  would publish (clawhub) $s"; continue; fi
-    donep "ch:$s" && { echo "  skip $s (done)"; continue; }
+    donep "ch:$VER:$s" && { echo "  skip $s (done)"; continue; }
     out=$(bash scripts/publish-clawhub.sh --skill "$s" --i-accept-mit0 2>&1); rc=$?
-    if [ $rc -eq 0 ]; then echo "  OK $s"; markp "ch:$s"; else echo "  FAIL $s :: $(echo "$out"|tail -1)"; fail=1; fi
+    if [ $rc -eq 0 ]; then echo "  OK $s"; markp "ch:$VER:$s"; else echo "  FAIL $s :: $(echo "$out"|tail -1)"; fail=1; fi
     sleep 6
   done <<< "$CH"
 fi
@@ -73,12 +76,12 @@ if [ "$PLAT" != clawhub ] && [ -n "$SH" ]; then
   echo "== SkillHub: publishing $nsh behind skill(s) (40s throttle) =="
   while read -r s; do [ -n "$s" ] || continue
     if [ "$LIVE" -eq 0 ]; then echo "  would publish (skillhub) $s"; continue; fi
-    donep "sh:$s" && { echo "  skip $s (done)"; continue; }
+    donep "sh:$VER:$s" && { echo "  skip $s (done)"; continue; }
     ok=0
     for try in 1 2 3 4; do
       out=$(bash scripts/publish-skillhub.sh --live --skill "$s" 2>&1); rc=$?
-      if echo "$out" | grep -qE 'Published|skillId'; then echo "  OK $s"; markp "sh:$s"; ok=1; break; fi
-      if echo "$out" | grep -q '已存在'; then echo "  CURRENT $s (already at repo version)"; markp "sh:$s"; ok=1; break; fi
+      if echo "$out" | grep -qE 'Published|skillId'; then echo "  OK $s"; markp "sh:$VER:$s"; ok=1; break; fi
+      if echo "$out" | grep -q '已存在'; then echo "  CURRENT $s (already at repo version)"; markp "sh:$VER:$s"; ok=1; break; fi
       if echo "$out" | grep -qiE '频率过高|429|too many|rate'; then echo "  backoff $s (try $try, 5min)"; sleep 300; continue; fi
       echo "  FAIL $s :: $(echo "$out"|tail -1)"; fail=1; break
     done

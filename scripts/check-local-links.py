@@ -55,7 +55,13 @@ def main():
             scan_line = re.sub(r"`[^`]*`", "", line)
             for matched in LINK.finditer(scan_line):
                 target = target_value(matched.group(1))
-                if not target or target.startswith("#") or target.startswith("/"):
+                if not target or target.startswith("#"):
+                    continue
+                if target.startswith("/") and not target.startswith("//"):
+                    failures.append(
+                        "%s:%d root-absolute link target (use a plugin-relative path): %s"
+                        % (path.relative_to(ROOT), line_number, target)
+                    )
                     continue
                 if SCHEME.match(target) or target.startswith("//"):
                     continue

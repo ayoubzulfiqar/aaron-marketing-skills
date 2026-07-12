@@ -99,7 +99,11 @@ FRAMEWORKS
   grep -q "^### v$BUNDLE " VERSIONS.md || err "VERSIONS.md changelog entry '### v$BUNDLE …' missing"
   # openclaw.plugin.json is the OpenClaw bundle-plugin manifest (ClawHub package publish).
   # It carries the bundle version too — keep it in the version-lock so it can't drift.
-  [ -f openclaw.plugin.json ] && { grep -q "\"version\": \"$BUNDLE\"" openclaw.plugin.json || err "openclaw.plugin.json version != $BUNDLE"; }
+  if [ -f openclaw.plugin.json ]; then
+    grep -q "\"version\": \"$BUNDLE\"" openclaw.plugin.json || err "openclaw.plugin.json version != $BUNDLE"
+  else
+    err "openclaw.plugin.json missing — the OpenClaw bundle manifest is a locked surface"
+  fi
 fi
 
 # ---- 2. per-skill sync ------------------------------------------------------
@@ -276,7 +280,28 @@ for disc in seo-geo influencer ad email launch social narrative; do
   done < <(find "$disc" -name SKILL.md 2>/dev/null | sed 's#/SKILL.md##; s#.*/##' | sort -u)
 done
 
+# ---- 8. per-discipline README guides + CLAUDE.md name every discipline skill -
+# <disc>/README.md(.zh.md) are self-contained discipline catalogs (linked from
+# the root README as "Discipline guide") and CLAUDE.md carries the master phase
+# tables; none are machine-generated, so assert every skill physically under a
+# discipline dir is named in all of them. Guides carry no version badge by
+# design — coverage, not version, is the locked surface here.
+for disc in seo-geo influencer ad email launch social narrative; do
+  for guide in "$disc/README.md" "$disc/README.zh.md"; do
+    if [ ! -f "$guide" ]; then err "$guide missing — the $disc discipline guide"; continue; fi
+    while IFS= read -r skill; do
+      [ -n "$skill" ] || continue
+      grep -qw "$skill" "$guide" \
+        || err "$guide does not name skill '$skill' (guide coverage gap)"
+    done < <(find "$disc" -name SKILL.md 2>/dev/null | sed 's#/SKILL.md##; s#.*/##' | sort -u)
+  done
+done
+while IFS= read -r skill; do
+  [ -n "$skill" ] || continue
+  grep -qw "$skill" CLAUDE.md || err "CLAUDE.md does not name skill '$skill' (catalog rot)"
+done < <(find seo-geo influencer ad email launch social narrative protocol -name SKILL.md 2>/dev/null | sed 's#/SKILL.md##; s#.*/##' | sort -u)
+
 if [ $fail -eq 0 ]; then
-  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 10 tracking surfaces + README topology/commands + localized badges + OpenClaw manifest + About SSOT; auto-routing covers all 7 disciplines; every discipline command lists its full skill set"
+  echo "version-sync clean — bundle $BUNDLE, $skill_count skills consistent across the 10 tracking surfaces + README topology/commands + localized badges + OpenClaw manifest + About SSOT; auto-routing covers all 7 disciplines; every discipline command, guide pair, and the CLAUDE.md catalog list their full skill sets"
 fi
 exit $fail

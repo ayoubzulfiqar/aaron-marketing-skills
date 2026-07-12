@@ -155,7 +155,7 @@ def main(argv=None):
     except GenerationError as exc:
         print("error: %s" % exc, file=sys.stderr)
         return 1
-    print("standalone auditor runtime bundles %s (8/8)" % ("generated" if args.write else "current"))
+    print("standalone auditor runtime bundles %s (%d/%d)" % ("generated" if args.write else "current", len(auditors), len(auditors)))
     return 0
 
 

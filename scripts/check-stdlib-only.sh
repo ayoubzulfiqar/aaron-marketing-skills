@@ -16,6 +16,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+# Fail CLOSED on a dead glob: if any scanned location stops matching files the
+# guard must abort, not silently pass with an empty scan set (the historical
+# "scans a directory that no longer exists" bug class).
+for pat in "scripts/*.py" "scripts/connectors/*.py" "tests/*.py"; do
+  compgen -G "$pat" > /dev/null || { echo "MOAT GUARD MISCONFIGURED — no files match '$pat'"; exit 1; }
+done
+
 # (a) Python stdlib module names, straight from the interpreter (no hardcoded list).
 STDLIB="$(python3 -c "import sys;print('\n'.join(sorted(sys.stdlib_module_names)))")"
 
@@ -69,6 +76,7 @@ if [ -n "$violations" ]; then
 fi
 
 # --- Paid Ads red line: a paid SKILL.md must never require a keyed ad-platform API at Tier 1 ---
+[ -d ad ] || { echo "MOAT GUARD MISCONFIGURED — ad/ discipline dir missing (red-line scan has no target)"; exit 1; }
 # Best-effort prose tripwire (heuristic; a sentence mixing "required" with an exonerating word on the
 # same line can evade it). The real guarantee is the keyless/own-export framing authored into each skill.
 ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' ad/ 2>/dev/null \
