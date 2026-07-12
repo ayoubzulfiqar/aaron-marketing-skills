@@ -58,7 +58,9 @@ CASE_LINE = re.compile(r"^\s*-?\s*(\{.*\})\s*$")
 TARGET_SKILL_RE = re.compile(r'target_skill:\s*"?([A-Za-z0-9_-]+)"?')
 # expected_route is a quoted chain like "/aaron-marketing:ad --phase activate -> ...".
 EXPECTED_ROUTE_RE = re.compile(r'expected_route:\s*"([^"]*)"')
-ROUTE_CMD_RE = re.compile(r'/aaron-marketing:([a-z-]+)(?:\s+--(mode|phase)\s+([a-z-]+))?')
+ROUTE_SEG_CMD_RE = re.compile(r'/aaron-marketing:([a-z-]+)')
+ROUTE_SEG_SELECTOR_RE = re.compile(r'--(mode|phase)\s+([a-z-]+)')
+ROUTE_SEG_FLAG_RE = re.compile(r'--([a-z][a-z-]*)')
 # Each command's valid selector, derived from the catalog `command` contract:
 # all seven disciplines use --phase (SEO/GEO's former --mode alias was removed in
 # v18; the regex below still matches --mode only to reject any stray reintroduction),
@@ -70,6 +72,18 @@ COMMAND_MODES = {
     for spec in _CATALOG["disciplines"].values()
 }
 COMMAND_MODES["auto"] = (None, set())
+# Per-phase flags of /aaron-marketing:seo-geo — keep in step with the per-phase
+# flag sections of commands/seo-geo.md. --competitors is legal in survey and
+# (alongside --authority) in evaluate; --period rides --report in evaluate.
+SEO_GEO_PHASE_FLAGS = {
+    "survey": {"competitors", "map"},
+    "implement": {"brief", "series", "refresh", "publish", "meta", "schema", "type"},
+    "tune": {"full", "tech", "visibility"},
+    "evaluate": {"authority", "alert", "report", "remember", "period", "competitors"},
+}
+# Slug-shaped token (two-plus hyphen-joined parts) — used to vet skill names
+# inside parenthesized route chains without tripping on hyphenated prose.
+SLUG_FORM = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)+$")
 
 fails = []
 def fail(msg):
@@ -109,13 +123,72 @@ def lint_cases(slug):
             # inside a quoted prose value no longer masks a truly-missing key.
             if not re.search(r'(?:^|[{,])\s*"?' + re.escape(key) + r'"?\s*:', obj):
                 fail("%s/cases.md case #%d missing required key '%s'" % (slug, i, key))
-        m = re.search(r"target_skill:\s*([A-Za-z0-9_-]+)", obj)
+        m = TARGET_SKILL_RE.search(obj)
         if m and m.group(1) not in VALID_SLUGS:
             fail("%s/cases.md case #%d target_skill '%s' is not a real skill" % (slug, i, m.group(1)))
     return True
 
 
 VALID_SLUGS = set(discover_skills())
+
+
+def lint_route_chain(route, lineno):
+    """Validate one expected_route chain beyond the bare selector check:
+
+    - every `/aaron-marketing:<cmd>` segment names a known command, its
+      selector is `--phase <catalog value>` (never `--mode`), and
+    - seo-geo segments carry only flags belonging to that segment's phase
+      (the per-phase flag contract of commands/seo-geo.md) — the drift class
+      where a bulk edit pairs `--phase survey` with a tune/evaluate flag, and
+    - skill slugs inside parenthesized chains resolve to real skills.
+    """
+    # Segments join with "->" (a chain) or "|" (disambiguation alternatives).
+    for seg in re.split(r"->|\|", route):
+        m = ROUTE_SEG_CMD_RE.search(seg)
+        if not m:
+            continue  # paren-only fragment; slugs are vetted below
+        cmd = m.group(1)
+        spec = COMMAND_MODES.get(cmd)
+        if spec is None:
+            fail("auto-routing-scenarios.md line %d: expected_route names unknown "
+                 "command '/aaron-marketing:%s'" % (lineno, cmd))
+            continue
+        exp_flag, allowed = spec
+        phase = None
+        sel = ROUTE_SEG_SELECTOR_RE.search(seg)
+        if sel:
+            flag, val = sel.group(1), sel.group(2)
+            if flag != exp_flag or val not in allowed:
+                fail("auto-routing-scenarios.md line %d: expected_route '--%s %s' is not "
+                     "valid for /aaron-marketing:%s" % (lineno, flag, val, cmd))
+            else:
+                phase = val
+        extra = [f for f in ROUTE_SEG_FLAG_RE.findall(seg) if f not in ("mode", "phase")]
+        if cmd == "seo-geo":
+            legal = SEO_GEO_PHASE_FLAGS.get(phase, set())
+            for f in extra:
+                if f not in legal:
+                    fail("auto-routing-scenarios.md line %d: '--%s' is not a flag of "
+                         "/aaron-marketing:seo-geo --phase %s (per-phase flag contract, "
+                         "commands/seo-geo.md)" % (lineno, f, phase or "<none>"))
+        elif cmd == "auto":
+            for f in extra:
+                if f != "deep":
+                    fail("auto-routing-scenarios.md line %d: /aaron-marketing:auto takes "
+                         "only --deep, got '--%s'" % (lineno, f))
+        else:
+            for f in extra:
+                fail("auto-routing-scenarios.md line %d: /aaron-marketing:%s routes carry "
+                     "no flags beyond --phase, got '--%s'" % (lineno, cmd, f))
+    for group in re.findall(r"\(([^)]*)\)", route):
+        for element in re.split(r"->|,", group):
+            element = element.strip()
+            if not element:
+                continue
+            tok = element.split()[0].strip("`")
+            if SLUG_FORM.match(tok) and tok not in VALID_SLUGS:
+                fail("auto-routing-scenarios.md line %d: expected_route references "
+                     "unknown skill '%s'" % (lineno, tok))
 
 
 def lint_routing_library():
@@ -147,18 +220,9 @@ def lint_routing_library():
                  % (i, m.group(1)))
         er = EXPECTED_ROUTE_RE.search(line)
         if er:
-            for mm in ROUTE_CMD_RE.finditer(er.group(1)):
-                cmd, flag, val = mm.group(1), mm.group(2), mm.group(3)
-                spec = COMMAND_MODES.get(cmd)
-                if spec is None:
-                    fail("auto-routing-scenarios.md line %d: expected_route names unknown "
-                         "command '/aaron-marketing:%s'" % (i, cmd))
-                    continue
-                exp_flag, allowed = spec
-                if flag and (flag != exp_flag or val not in allowed):
-                    fail("auto-routing-scenarios.md line %d: expected_route '--%s %s' is not "
-                         "valid for /aaron-marketing:%s" % (i, flag, val, cmd))
-    print("== routing-library lint: %d routing cases, target_skill + expected_route checked ==" % seen)
+            lint_route_chain(er.group(1), i)
+    print("== routing-library lint: %d routing cases, target_skill + expected_route "
+          "(selector, per-phase flags, chained slugs) checked ==" % seen)
 
 
 def build_manifest():
@@ -214,7 +278,12 @@ def main():
                  % (man.get("count"), len(man.get("skills", []))))
         print("== compared against structure-manifest.json (%d skills) ==" % len(man.get("skills", [])))
     else:
-        print("NOTE: no structure-manifest.json yet — run with --update to create it.")
+        # Fail CLOSED: without the committed baseline the no-dropped-skill
+        # regression guard is disabled, so a missing/deleted manifest must be
+        # a hard failure, not a note.
+        fail("structure-manifest.json missing — the no-dropped-skill regression "
+             "baseline (restore it from git, or run --update after an intentional "
+             "structural change)")
 
     if fails:
         print("\nEVAL STRUCTURE LINT FAILED — %d issue(s)." % len(fails))
