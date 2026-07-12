@@ -24,13 +24,13 @@
 
 | 层 | 技能 | 生命周期（阶段目录） | 框架 → 门 | 入口命令 |
 |----|------|----------------------|-----------|----------|
-| **品牌叙事（TALE）** | 16 | trace → architect → land → evaluate | [TALE](../references/tale-benchmark.md) → `narrative-quality-auditor` (truth / system / effectiveness profiles) | `/aaron-marketing:narrative` |
+| **品牌叙事** | 16 | trace → architect → land → evaluate | [TALE](../references/tale-benchmark.md) → `narrative-quality-auditor` (truth / system / effectiveness profiles) | `/aaron-marketing:narrative` |
 | **SEO/GEO** | 16 | survey → implement → tune → evaluate | [CORE-EEAT](../references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](../references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
-| **自然社媒（ECHO）** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (asset / program-maturity profiles) | `/aaron-marketing:social` |
-| **邮件营销（SEND）** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor`（EQS） | `/aaron-marketing:email` |
-| **付费广告（ROAS）** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor`（RQS） | `/aaron-marketing:ad` |
+| **自然社媒** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (asset / program-maturity profiles) | `/aaron-marketing:social` |
+| **邮件营销** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor`（EQS） | `/aaron-marketing:email` |
+| **付费广告** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor`（RQS） | `/aaron-marketing:ad` |
 | **红人** | 16 | scout → target → activate → report | [C³](../references/c3-benchmark.md) → `creator-content-auditor`（ART）；`fit-scorer` 打 ACE 分 | `/aaron-marketing:influencer` |
-| **产品发布（RAMP）** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
+| **产品发布** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
 | **协议层** | 8 | ——（阶段流程之外的共享机件） | 7 个真相注册表（实体 · 创作者 · offer/声明 · 同意 · 发布 · 频道 · 叙事）+ HOT/WARM/COLD 记忆 | —— |
 
 `/aaron-marketing:auto` 可把任意自然语言目标路由到整套体系。技能与命令都是**纯 Markdown**；小型 Bash/Python 标准库运行时提供 hooks、校验、评分、注册表事件、连接器与 CI 检查（无 `pip`、无构建步骤）。**每个技能都在 Tier 1 用你提供的数据即可运行**；连接器只自动化数据拉取，或一次经明确批准的变更。
