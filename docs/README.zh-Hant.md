@@ -33,7 +33,7 @@
 | **產品發布** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
 | **協議層** | 8 | ——（階段流程之外的共享機件） | 7 個真相註冊表（entity · creator · offer/claims · consent · launch · channel · narrative）+ HOT/WARM/COLD 記憶 | —— |
 
-`/aaron-marketing:auto` 可把任意自然語言目標路由到整套體系。技能與命令都是**純 Markdown**；小型 Bash/Python 標準庫執行時提供 hooks、校驗、評分、註冊表事件、連接器與 CI 檢查（無 `pip`、無建置步驟）。**每個技能都在 Tier 1 用你提供的資料即可執行**；連接器只自動化資料拉取，或一次經明確核准的變更。
+`/aaron-marketing:auto` 可把任意自然語言目標路由到整套體系。技能與命令都是**純 Markdown**；小型 Bash/Python 標準庫執行時提供 hooks、驗證、評分、註冊表事件、連接器與 CI 檢查（無 `pip`、無建置步驟）。**每個技能都在 Tier 1 用你提供的資料即可執行**；連接器只自動化資料拉取，或一次經明確核准的變更。
 
 權威的型別化拓撲是 [`references/system-catalog.json`](../references/system-catalog.json)；可讀的四層地圖、全部 120 條路徑、註冊表所有者、auditor 落點與分發檔案見[生成的系統架構文件](system-architecture.md)。
 
@@ -80,7 +80,7 @@
 | **預設 keyless** | 每個技能都能在 **Tier 1** 僅憑貼上的資料、或從免費/第一方來源拉取的資料執行。付費工具與 MCP 伺服器是選配，絕非前提。付費廣告技能基於**自有帳戶手動匯出**評分——帶金鑰的廣告 API 永不必需。 |
 | **內容優先、契約可執行** | 技能始終是 Markdown。小型 Bash/Python 標準庫執行時讓評分、狀態、安全與契約一致性都可確定性執行，且不新增任何套件相依。 |
 | **一套共享契約** | 120 個技能暴露同樣的七段結構，並自帶 `discipline` + `phase` 中繼資料，整個庫像一套作業系統：每個技能都知道自己的輸入、輸出，以及下一個該交棒的技能。 |
-| **帶門的品質** | 八套基準驅動八個 auditor-class 門，產出結構化、可機器校驗的判定——不是憑感覺。成功/失敗/批次 hook 以有界檢查揭露無效寫入；pre-commit/CI 只兜底已提交 Git 內容中的 PII，不校驗 runtime 產物。 |
+| **帶門的品質** | 八套基準驅動八個 auditor-class 門，產出結構化、可機器驗證的判定——不是憑感覺。成功/失敗/批次 hook 以有界檢查揭露無效寫入；pre-commit/CI 只兜底已提交 Git 內容中的 PII，不驗證 runtime 產物。 |
 | **真相住在事件裡** | 七條只追加（append-only）的註冊表事件流是規範真相；由所有者掌控的投影對外暴露實體、創作者、聲明、同意、發布、通路與敘事狀態，全程不再有破壞性佇列。 |
 | **跨輪記憶** | HOT/WARM/COLD 記憶模型在技能與工作階段之間攜帶發現、分數與未決事項，並在寫入時淨化。 |
 | **人話** | 技能內建 AI 腔偵測器與禁用詞表，讓輸出讀起來像人寫的。 |
@@ -109,19 +109,19 @@
 若宿主支援自動技能路由，直接描述目標即可：
 
 ```text
-帮我研究面向小团队的 SaaS 产品的关键词
+幫我研究面向小團隊的 SaaS 產品的關鍵字
 ```
 ```text
-帮一个护肤品牌找 TikTok 红人并给适配度打分
+幫一個保養品牌找 TikTok 紅人並為適配度評分
 ```
 ```text
-在我加预算前，审计这个 Google Ads 账户——导出文件已附上
+在我加預算前，稽核這個 Google Ads 帳戶——匯出檔案已附上
 ```
 
 或用斜線命令 —— `/auto` 負責路由，學科入口直達：
 
 ```text
-/aaron-marketing:auto 把我们的定价页改造成可被 AI 引用的对比中心
+/aaron-marketing:auto 把我們的定價頁改造成可被 AI 引用的對比中心
 ```
 ```text
 /aaron-marketing:seo-geo https://example.com/blog/my-article --phase tune
@@ -177,7 +177,7 @@
 | **[RAMP](../references/ramp-benchmark.md)** | 產品發布的就緒 / 資產 / 動能 / 證明 | R / A / M / P；40 個穩定 ID | `preflight`、`execution`、`outcome` 三個 profile 結果各自獨立；絕不跨時間視界取平均 | RAMP `R1`/`A1`/`M1`/`P1` |
 | **[ECHO](../references/echo-benchmark.md)** | 自然社媒的嵌入度 / 工藝 / 營運 / 可觀測性 | E / C / H / O；40 個穩定 ID | 每次只跑一個 `asset-gate` 或 `program-maturity-*` profile；絕不混合不同類單元 | ECHO `E1`/`C1`/`C2`/`H1`/`H2`/`O1` |
 
-每套框架由一個 **auditor-class 門**執行——其型別化產物（`class: auditor-output`）由確定性 validator 與有界生命週期 hooks 校驗。儲存庫 CI 只回歸測試 validator 與契約，不會檢查被忽略的主機執行期產物。門是工作流步驟，所以駐留並計入各自學科：
+每套框架由一個 **auditor-class 門**執行——其型別化產物（`class: auditor-output`）由確定性 validator 與有界生命週期 hooks 驗證。儲存庫 CI 只回歸測試 validator 與契約，不會檢查被忽略的主機執行期產物。門是工作流步驟，所以駐留並計入各自學科：
 
 | 門 | 框架 | 所在 | 判定 |
 |----|------|------|------|
@@ -226,12 +226,12 @@
 | `SessionStart` | `startup\|resume\|clear\|compact` | 注入**淨化後**的 hot-cache + 未決事項指標（提示注入行被塗掉；符號連結快取被拒）。 |
 | `UserPromptSubmit` | （全部） | 輕量逐提示上下文 hook。 |
 | `PreToolUse` | 已知可寫工具 | 精確路徑的直接 `memory/**` 寫入必須被 Git 忽略；可識別的 opaque shell/MCP 記憶變更不受支援並會被拒絕。Registry runtime 會再次檢查最終/暫存/鎖定路徑。 |
-| `PostToolUse` | 已知可寫工具 | 成功寫入後複核整個 operational-memory 命名空間，並校驗準確審計目標或執行有界保留區掃描。 |
+| `PostToolUse` | 已知可寫工具 | 成功寫入後複核整個 operational-memory 命名空間，並驗證準確審計目標或執行有界保留區掃描。 |
 | `PostToolUseFailure` | 已知可寫工具 | 工具失敗後執行相同的寫後隱私與 Artifact Gate 檢查，因為失敗命令仍可能已寫入檔案。 |
 | `PostToolBatch` | （全部） | 每批平行工具結束後複核 operational memory 與完整審計保留區。 |
-| `Stop` | （全部） | 執行最後一次有界掃描並可阻止一次以便修復；`stop_hook_active` 會放行後續停止。pre-commit/CI 僅保護已提交 Git 內容中的 PII，不校驗被忽略的 runtime 產物。 |
+| `Stop` | （全部） | 執行最後一次有界掃描並可阻止一次以便修復；`stop_hook_active` 會放行後續停止。pre-commit/CI 僅保護已提交 Git 內容中的 PII，不驗證被忽略的 runtime 產物。 |
 
-Artifact Gate 是**框架無關**的——同一個 hook 校驗 TALE、CORE-EEAT、CITE、C³、ROAS、SEND、RAMP、ECHO 產物，無任何針對單框架的程式碼。
+Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT、CITE、C³、ROAS、SEND、RAMP、ECHO 產物，無任何針對單框架的程式碼。
 
 ---
 
@@ -334,7 +334,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 校驗 TALE、CORE-EEAT
 | advocacy-program-designer | C | 員工/社群倡導計畫——opt-in、揭露預設值、可分享資產包。 |
 | ⛩ social-quality-auditor | asset gate / program maturity | 型別化 ECHO 門，一次只審一個單元/profile；絕不混合資產與營運兩類構念。寫入 `memory/audits/social/`。 |
 | engagement-inbox-manager | H | 回覆/留言/私訊分診 playbook——回應分層、升級、真誠互動紀律（不製造/誘餌式互動）。 |
-| social-selling-planner | H | 創辦人/團隊社交銷售動作——關係優先外聯，不做自動化私訊。 |
+| social-selling-planner | H | 創辦人/團隊社群銷售動作——關係優先外聯，不做自動化私訊。 |
 | crisis-response-planner | H | 預先草擬的危機分層、緩衝聲明、升級階梯、暫停排程觸發條件。 |
 | social-pulse-monitor | O | 從 keyless 來源獲取提及/情感/主題脈動、spike-vs-sustain 判讀（proxy 資料已標註）。 |
 | share-of-voice-tracker | O | 在週期穩定的分母上，對比具名競品的聲量占比。 |
@@ -561,7 +561,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 校驗 TALE、CORE-EEAT
 | **Tier 3** | 更完整的 MCP 集 | 全自動多源工作流。 |
 
 - **內建零依賴助手** 位於 `scripts/connectors/`（僅 Python 標準庫），在本地拉取公開/自有資料——如 PageSpeed/CrUX、Open PageRank、頁面抓取、Wayback CDX、Wikidata SPARQL、Common Crawl、advertools 配方——外加 **`resend.py`**：郵件技能直連 Resend ESP 的自動化（免費檔 key：寄件網域認證狀態、種子測試投遞、抑制名單同步、廣播定時發送；變更類子命令預設 dry-run，需 `--live` 才執行）；以及 **`firecrawl.py`** + **`tavily.py`**：研究類技能直連託管抓取器的 keyless 自動化（Firecrawl：即時搜尋結果 + JS 渲染頁 markdown + 站點 URL 清單；Tavily：帶評分的搜尋 + AI 答案引擎引用來源探針（GEO 用）+ URL 擷取——兩者完全無需 key，均內建本地 robots.txt 預檢）。
-- **免費/keyless 來源** 按類別記錄：Google Search Console 與 GA4（自有資料）、PageSpeed/CrUX、Wikidata、Common Crawl、Open PageRank、Firecrawl keyless SERP/抓取、Tavily keyless AI 搜尋、DNS-over-HTTPS 郵件認證記錄（`doh.py`）、維基百科關注度序列（`pageviews.py`）、GDELT 新聞提及（`gdelt.py`）、免費 key 的 YouTube 創作者指標（`youtube.py`）、IndexNow + 百度收錄推送（`indexpush.py`，dry-run 門控）、廣告透明庫（Meta/Google/TikTok），以及 crt.sh、W3C 校驗器、oEmbed、HN Algolia 的配方行。
+- **免費/keyless 來源** 按類別記錄：Google Search Console 與 GA4（自有資料）、PageSpeed/CrUX、Wikidata、Common Crawl、Open PageRank、Firecrawl keyless SERP/抓取、Tavily keyless AI 搜尋、DNS-over-HTTPS 郵件認證記錄（`doh.py`）、維基百科關注度序列（`pageviews.py`）、GDELT 新聞提及（`gdelt.py`）、免費 key 的 YouTube 創作者指標（`youtube.py`）、IndexNow + 百度收錄推送（`indexpush.py`，dry-run 門控）、廣告透明庫（Meta/Google/TikTok），以及 crt.sh、W3C 驗證器、oEmbed、HN Algolia 的配方行。
 - **選配 MCP 伺服器**（Ahrefs、Semrush、SE Ranking、SISTRIX、SimilarWeb、自架免費的 **OpenSEO** 套件、Cloudflare、Vercel、HubSpot、Amplitude、Notion、Webflow、Sanity、Contentful、Slack、Resend、keyless 的 Firecrawl 與 Tavily）在 [`docs/mcp-catalog.json`](mcp-catalog.json) 中作為**僅複製貼上參考**——目錄位於會被自動註冊的外掛根 `.mcp.json` 路徑之外，不會為你註冊任何東西。把你想要的條目複製進自己的 MCP 設定即可。
 
 付費廣告技能基於你的**自有帳戶手動匯出**（原生廣告管理後台 CSV、GA4、電商）評分。帶金鑰的廣告 API（Google Ads SDK、Meta Marketing API）僅是 opt-in Tier-2/3，**絕不**作為 Tier-1 要求。郵件技能同理——基於你**自己的 ESP 匯出**評分，所有送達率訊號均 keyless（DNS 查詢、DMARC RUA 報告、種子收件測試），帶金鑰的 ESP API 也絕不是 Tier-1 要求；若你的 ESP 是 Resend，內建的 `resend.py` 可在免費檔上自動化同一閉環。
@@ -623,7 +623,7 @@ docs/            # 在地化 README（zh）
 
 ## 設計哲學
 
-- **內容優先。** 技能是 Markdown；零相依的 Bash/Python 標準庫執行時提供連接器、評分、註冊表事件、校驗與檢查。第三方 / `pip` 相依被 CI 明令禁止。
+- **內容優先。** 技能是 Markdown；零相依的 Bash/Python 標準庫執行時提供連接器、評分、註冊表事件、驗證與檢查。第三方 / `pip` 相依被 CI 明令禁止。
 - **keyless 優先。** 每個 `~~category` 都有免費/自有資料配方；MCP 與付費工具純屬便利。
 - **外科手術式 & MECE。** 每個技能只擔一項職責，邊界清晰；重疊的工作做成現有技能的*模式*，而非新堆一個薄技能。註冊表存證、門評判、分析器餵門。
 - **不編數字。** 技能為每個資料標註 Measured / User-provided / Estimated，並內建 AI 腔 / 禁用詞偵測。
@@ -638,7 +638,7 @@ docs/            # 在地化 README（zh）
 | 守衛 | 檢查 |
 |------|------|
 | `validate-skill.sh` | 全部 120 個技能的 frontmatter、必備章節、版本一致性、外掛相對連結。 |
-| `golden-auditor-math.py` | **八套**框架的權重和 + 工作範例算術的確定性校驗。 |
+| `golden-auditor-math.py` | **八套**框架的權重和 + 工作範例算術的確定性驗證。 |
 | `check-evals.py` | eval 結構 lint + `structure-manifest.json`（120/120 技能均帶 eval 用例）。 |
 | `check-pii.py` | 攔截提交的金鑰 / PII（token 級允許名單，fail-closed）。 |
 | `check-stdlib-only.sh` | 依賴蔓延守衛 + 付費廣告帶金鑰 API 紅線。 |
