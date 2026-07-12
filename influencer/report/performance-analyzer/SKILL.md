@@ -74,7 +74,7 @@ Work the steps in order. Each fill-in template lives in [references/analysis-tem
 7. **Conversion & attribution analysis** — draw the funnel, score conversion metrics vs benchmark, attribute by method (promo / UTM / direct / estimated), and table promo-code performance. Template: step 7.
 8. **Generate insights & recommendations** — write the top-5 learnings, what worked / what didn't, optimization opportunities, roster renew/drop calls, and future-campaign guidance. Template: step 8.
 
-Before naming any creator/format/platform a real winner, clear the significance bar in [measurement-protocol.md](../../../references/measurement-protocol.md) — otherwise mark it Keep-testing. When a structured score is needed, apply per-dimension C3 analysis (ACE/ART scope scores) from [c3/scoring-architecture.md](../../../references/c3/scoring-architecture.md), and hand the measured inputs to [roi-calculator](../roi-calculator/SKILL.md) for the ROI score and CVI rollup — this skill contributes the inputs but does not compute the rollup.
+Before naming any creator/format/platform a real winner, clear the significance bar in [measurement-protocol.md](../../../references/measurement-protocol.md) — otherwise mark it Keep-testing. When a structured score is needed, apply per-dimension STAR analysis (Suitability/Trust/Appeal/Return dimension reads) from [star-benchmark.md](../../../references/star-benchmark.md), and hand the measured inputs to [roi-calculator](../roi-calculator/SKILL.md) for the measured Return (R) evidence — this skill contributes the inputs but does not compute the SQS (the creator-content-auditor gate does).
 
 ## Example
 
@@ -105,7 +105,7 @@ Before naming any creator/format/platform a real winner, clear the significance 
 - [state-model.md](../../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../../CONNECTORS.md) — verified free/keyless data recipes per connector category.
 - [measurement-protocol.md](../../../references/measurement-protocol.md) — preregistered readback windows, outcome unit, alpha, practical-effect boundary, multiplicity/sequential policy, guardrails, and decision owner. Report statistical and practical flags separately; use `experiment.py` for deterministic `Calculated` evidence, and never substitute a universal p-value/lift rule or attribute a business action to the helper.
-- The C3 benchmark at [references/c3/scoring-architecture.md](../../../references/c3/scoring-architecture.md) — scoring architecture when a structured score is needed.
+- The STAR benchmark at [references/star-benchmark.md](../../../references/star-benchmark.md) — scoring architecture when a structured score is needed.
 - Sibling skills: [roi-calculator](../roi-calculator/SKILL.md), [report-generator](../report-generator/SKILL.md), [fit-scorer](../../scout/fit-scorer/SKILL.md), [campaign-planner](../../target/campaign-planner/SKILL.md).
 
 ## Next Best Skill

@@ -2,7 +2,7 @@
 
 Per-dimension scoring tables, the final-score rollup, the multi-influencer comparison report, the custom-weighting matrix, and a worked example. The numbered steps in [SKILL.md](../SKILL.md) reference these blocks. Fill in the bracketed cells per candidate.
 
-These 1-5 tables are a campaign-specific prioritization aid, not the typed C3 ACE rubric. Emit ACE from `references/c3/ace-creator-benchmark.md` through `scripts/rubric-score.py`; label every score from this file `commercial_fit_score`, and never feed it into CVI or use it to clear an ACE veto.
+These 1-5 tables are a campaign-specific prioritization aid, not the typed STAR Suitability rubric. The Suitability (S) read comes from `references/star-benchmark.md`; label every score from this file `commercial_fit_score`, and never feed it into the SQS or use it to clear a Suitability veto.
 
 ---
 

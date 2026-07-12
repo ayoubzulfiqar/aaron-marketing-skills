@@ -88,7 +88,7 @@ else
   done <<'FRAMEWORKS'
 **CORE-EEAT** (80 items, 8 dimensions)
 **CITE** (40 items, 4 dimensions)
-**C³** (9 dimensions, Creator/Content/Campaign on ACE/ART/ROI
+**STAR** (S Suitability / T Trust / A Appeal / R Return
 **ROAS** (R Return / O Offer / A Audience / S Spend-efficiency
 **SEND** (S Sender-integrity/deliverability / E Engagement / N Nurture-lifecycle / D Direct-response
 **RAMP** (40 stable IDs across R Readiness / A Assets / M Momentum / P Proof

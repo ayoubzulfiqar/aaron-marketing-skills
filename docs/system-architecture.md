@@ -6,7 +6,7 @@ This is the generated human view of [`references/system-catalog.json`](../refere
 
 - Architecture contract: `18.0.0`
 - Bundle version: `18.0.0`
-- Catalog digest: `sha256:ce5f66164226006bb251b829615e69f795bdfc6e2fe5c3d1a8e7ff6c7dc6a8a8`
+- Catalog digest: `sha256:390c15850de01a7ab517910926448d182a5fbec0ec62d1978df2f1103e9338a8`
 - Shape: **112 discipline skills across 7 disciplines + 8 protocol skills = 120 skills; 8 commands**
 
 ## Four Layers
@@ -29,7 +29,7 @@ Canonical logical order: **narrative → seo-geo → social → email → ad →
 | **Organic Social** | L2 | ECHO | Explore -> Craft -> Host -> Observe | 16 |
 | **Email Marketing** | L2 | SEND | Setup -> Engage -> Nurture -> Deliver | 16 |
 | **Paid Ads** | L2 | ROAS | Research -> Orchestrate -> Activate -> Scale | 16 |
-| **Influencer Marketing** | L2 | C3 | Scout -> Target -> Activate -> Report | 16 |
+| **Influencer Marketing** | L2 | STAR | Scout -> Target -> Activate -> Report | 16 |
 | **Product Launch** | L3 | RAMP | Research -> Assemble -> Mobilize -> Prove | 16 |
 
 ### Brand Narrative
@@ -107,7 +107,7 @@ The protocol layer contains 8 skills: [`entity-registry`](../protocol/entity-reg
 | [`social-quality-auditor`](../social/host/social-quality-auditor/SKILL.md) | ECHO | `memory/audits/social/` | generated `references/auditor-runtime.md` |
 | [`email-quality-auditor`](../email/deliver/email-quality-auditor/SKILL.md) | SEND | `memory/audits/email/` | generated `references/auditor-runtime.md` |
 | [`ad-account-auditor`](../ad/activate/ad-account-auditor/SKILL.md) | ROAS | `memory/audits/ad/` | generated `references/auditor-runtime.md` |
-| [`creator-content-auditor`](../influencer/activate/creator-content-auditor/SKILL.md) | C3 | `memory/audits/influencer/` | generated `references/auditor-runtime.md` |
+| [`creator-content-auditor`](../influencer/activate/creator-content-auditor/SKILL.md) | STAR | `memory/audits/influencer/` | generated `references/auditor-runtime.md` |
 | [`launch-readiness-auditor`](../launch/mobilize/launch-readiness-auditor/SKILL.md) | RAMP | `memory/audits/launch/` | generated `references/auditor-runtime.md` |
 
 ## L1 Dependency
@@ -133,7 +133,7 @@ Every discipline satisfies each column or cites a licensed deviation (see below)
 | **Organic Social** | ECHO (Explore -> Craft -> Host -> Observe) | `/social --phase explore\|craft\|host\|observe` | `channels` | `social-quality-auditor` | profiles-only |
 | **Email Marketing** | SEND (Setup -> Engage -> Nurture -> Deliver) | `/email --phase setup\|engage\|nurture\|deliver` | `consent` | `email-quality-auditor` | EQS (weighted-arithmetic-mean) |
 | **Paid Ads** | ROAS (Research -> Orchestrate -> Activate -> Scale) | `/ad --phase research\|orchestrate\|activate\|scale` | `claims` | `ad-account-auditor` | RQS (weighted-arithmetic-mean) |
-| **Influencer Marketing** | STAR (Scout -> Target -> Activate -> Report) | `/influencer --phase scout\|target\|activate\|report` | `creators` | `creator-content-auditor` | CVI (geometric-mean) |
+| **Influencer Marketing** | STAR (Scout -> Target -> Activate -> Report) | `/influencer --phase scout\|target\|activate\|report` | `creators` | `creator-content-auditor` | SQS (weighted-arithmetic-mean) |
 | **Product Launch** | RAMP (Research -> Assemble -> Mobilize -> Prove) | `/launch --phase research\|assemble\|mobilize\|prove` | `launches` (DEV-HUMANVIEW-LAUNCHES) | `launch-readiness-auditor` | profiles-only |
 
 ### Licensed Deviations

@@ -30,7 +30,7 @@ def complete_run(framework="ROAS", profile="direct-response", context=None, stat
     if context is None:
         context = {key: "fixture" for key in spec.get("required_context", [])}
         context.update(spec["profiles"][profile].get("context_equals", {}))
-        if framework == "C3":
+        if framework == "STAR":
             context["assessment_time"] = "actual"
     items = []
     for ids in score.expected_items(spec, profile).values():
@@ -81,22 +81,6 @@ def set_summary_score(result, value):
 class CatalogTests(unittest.TestCase):
     def test_catalog_is_valid(self):
         self.assertEqual(score.validate_catalog(CATALOG), [])
-
-    def test_c3_rollup_schema_declares_discriminated_properties_at_top_level(self):
-        schema = json.loads((ROOT / "references" / "c3-rollup.schema.json").read_text())
-        self.assertFalse(schema["additionalProperties"])
-        self.assertEqual(set(schema["properties"]), {"scopes", "components"})
-        self.assertEqual(
-            {tuple(branch["required"]) for branch in schema["oneOf"]},
-            {("scopes",), ("components",)},
-        )
-        scored = schema["$defs"]["scoredResult"]
-        self.assertEqual(scored["properties"]["catalog_version"], {"const": "18.0.0"})
-        self.assertTrue({
-            "status", "verdict", "evidence_coverage", "score_confidence",
-            "veto_count", "cap_applied", "raw_overall_score", "final_overall_score",
-        }.issubset(scored["required"]))
-        self.assertEqual(set(scored["properties"]["verdict"]["enum"]), {"SHIP", "FIX"})
 
     def test_catalog_contains_eight_frameworks(self):
         self.assertEqual(len(CATALOG["frameworks"]), 8)
@@ -164,16 +148,6 @@ class RubricScoreTests(unittest.TestCase):
                    if next(item for item in cite["items"] if item["id"] == item_id)["state"] != "na"]
             set_dimension_points(cite, ids, points)
         self.assertEqual(score.score_run(cite, CATALOG)["raw_overall_score"], 75)
-
-        c3 = complete_run("C3", "ace-awareness")
-        c3_points = {"ACE.A": 35, "ACE.C": 15, "ACE.E": 35}
-        expected_c3 = score.expected_items(CATALOG["frameworks"]["C3"], "ace-awareness")
-        for dimension, points in c3_points.items():
-            ids = list(expected_c3[dimension])
-            if dimension == "ACE.C":
-                ids = ["ACE.C1", "ACE.C2", "ACE.C3", "ACE.C4"]
-            set_dimension_points(c3, ids, points)
-        self.assertEqual(score.score_run(c3, CATALOG)["raw_overall_score"], 75)
 
     def test_na_requires_catalog_permission_and_reason(self):
         run = complete_run("SEND", "newsletter")
@@ -256,23 +230,6 @@ class RubricScoreTests(unittest.TestCase):
         self.assertEqual(result["score_state"], "NOT_SCORED")
         self.assertEqual(result["dimension_coverage"]["O"], 0)
 
-    def test_c3_rollup_rejects_forecast_actual_mixing(self):
-        scopes = []
-        for profile in ("ace-awareness", "art-awareness", "roi-awareness"):
-            run = complete_run("C3", profile, context={
-                "scope": profile.split("-", 1)[0],
-                "goal": "awareness",
-                "assessment_time": "actual",
-                "rollup_id": "campaign-1",
-            })
-            scopes.append(score.score_run(run, CATALOG))
-        rollup = score.c3_rollup({"scopes": scopes})
-        self.assertEqual(rollup["cvi"], 100)
-        mixed = copy.deepcopy(scopes)
-        mixed[-1]["context"]["assessment_time"] = "forecast"
-        with self.assertRaisesRegex(score.RubricError, "cannot mix"):
-            score.c3_rollup({"scopes": mixed})
-
     def test_profile_context_must_match(self):
         run = complete_run("SEND", "newsletter")
         run["context"]["program_type"] = "promotional"
@@ -296,10 +253,10 @@ class RubricScoreTests(unittest.TestCase):
         with self.assertRaisesRegex(score.RubricError, "Unknown requires a gap reason"):
             score.score_run(run, CATALOG)
 
-    def test_c3_forecast_requires_actual_only_items_to_be_na(self):
-        run = complete_run("C3", "roi-awareness")
+    def test_star_forecast_requires_actual_only_items_to_be_na(self):
+        run = complete_run("STAR", "awareness")
         run["context"]["assessment_time"] = "forecast"
-        actual_only = {"ROI.R1", "ROI.R2", "ROI.I1", "ROI.I2", "ROI.I3"}
+        actual_only = {"R1", "R2", "R3", "R4", "R5", "R6"}
         for item in run["items"]:
             if item["id"] in actual_only:
                 item_id = item["id"]
@@ -307,172 +264,11 @@ class RubricScoreTests(unittest.TestCase):
                 item.update({"id": item_id, "state": "na", "reason": "forecast read"})
         self.assertEqual(score.score_run(run, CATALOG)["score_state"], "SCORED")
 
-    def test_c3_roi_attribution_failure_emits_results_unverified_flag(self):
-        run = complete_run("C3", "roi-conversion")
-        next(item for item in run["items"] if item["id"] == "ROI.I3")["state"] = "fail"
+    def test_star_attribution_failure_emits_results_unverified_flag(self):
+        run = complete_run("STAR", "conversion")
+        next(item for item in run["items"] if item["id"] == "R5")["state"] = "fail"
         result = score.score_run(run, CATALOG)
-        self.assertEqual(result["flags"], [{"id": "ROI.I3", "flag": "results-unverified"}])
-
-    def test_c3_rollup_requires_same_goal_and_rollup_identity(self):
-        scopes = []
-        for profile in ("ace-awareness", "art-awareness", "roi-awareness"):
-            scopes.append(score.score_run(complete_run("C3", profile), CATALOG))
-        wrong_goal = copy.deepcopy(scopes)
-        wrong_goal[1]["profile"] = "art-engagement"
-        wrong_goal[1]["context"]["goal"] = "engagement"
-        with self.assertRaisesRegex(score.RubricError, "share one goal"):
-            score.c3_rollup({"scopes": wrong_goal})
-        wrong_campaign = copy.deepcopy(scopes)
-        wrong_campaign[2]["context"]["rollup_id"] = "campaign-2"
-        with self.assertRaisesRegex(score.RubricError, "share one rollup_id"):
-            score.c3_rollup({"scopes": wrong_campaign})
-
-    def test_c3_components_aggregate_ace_by_budget_and_art_equally(self):
-        def result(profile, value, target):
-            scored = score.score_run(complete_run("C3", profile), CATALOG)
-            scored["target"] = target
-            return set_summary_score(scored, value)
-
-        payload = {"components": {
-            "ace": [
-                {"result": result("ace-awareness", 60, "creator-a"), "weight": 1},
-                {"result": result("ace-awareness", 100, "creator-b"), "weight": 3},
-            ],
-            "art": [
-                {"result": result("art-awareness", 80, "asset-a")},
-                {"result": result("art-awareness", 100, "asset-b")},
-            ],
-            "roi": [{"result": result("roi-awareness", 70, "campaign-1")}],
-        }}
-        rolled = score.c3_rollup(payload)
-        self.assertEqual(rolled["scope_scores"], {"ace": 90, "art": 90, "roi": 70})
-        self.assertEqual(rolled["component_counts"], {"ace": 2, "art": 2, "roi": 1})
-        self.assertEqual(rolled["cvi"], 82)
-
-        missing_weight = copy.deepcopy(payload)
-        del missing_weight["components"]["ace"][0]["weight"]
-        with self.assertRaisesRegex(score.RubricError, "require a positive budget weight"):
-            score.c3_rollup(missing_weight)
-
-    def test_c3_component_averages_remain_exact_until_cvi_floor(self):
-        def result(profile, value, target):
-            scored = score.score_run(complete_run("C3", profile), CATALOG)
-            scored["target"] = target
-            return set_summary_score(scored, value)
-
-        payload = {"components": {
-            "ace": [
-                {"result": result("ace-awareness", 50, "creator-a"), "weight": 1},
-                {"result": result("ace-awareness", 50, "creator-b"), "weight": 1},
-            ],
-            "art": [
-                {"result": result("art-awareness", 69, "asset-a")},
-                {"result": result("art-awareness", 100, "asset-b")},
-            ],
-            "roi": [{"result": result("roi-awareness", 100, "campaign-1")}],
-        }}
-        rolled = score.c3_rollup(payload)
-        self.assertEqual(rolled["scope_scores"], {"ace": 50, "art": 84.5, "roi": 100})
-        self.assertEqual(rolled["cvi"], 75)
-
-    def test_c3_context_identity_is_typed_before_scoring_and_rollup(self):
-        malformed_run = complete_run("C3", "ace-awareness")
-        malformed_run["context"]["rollup_id"] = ["campaign-1"]
-        with self.assertRaisesRegex(score.RubricError, "rollup_id must be a non-empty string"):
-            score.score_run(malformed_run, CATALOG)
-
-        scopes = [
-            score.score_run(complete_run("C3", profile), CATALOG)
-            for profile in ("ace-awareness", "art-awareness", "roi-awareness")
-        ]
-        malformed_rollup = copy.deepcopy(scopes)
-        malformed_rollup[0]["context"]["rollup_id"] = ["campaign-1"]
-        with self.assertRaisesRegex(score.RubricError, "rollup_id must be a non-empty string"):
-            score.c3_rollup({"scopes": malformed_rollup})
-
-    def test_c3_weight_runtime_matches_numeric_schema(self):
-        def result(profile, target):
-            scored = score.score_run(complete_run("C3", profile), CATALOG)
-            scored["target"] = target
-            return scored
-
-        payload = {"components": {
-            "ace": [
-                {"result": result("ace-awareness", "creator-a"), "weight": "1"},
-                {"result": result("ace-awareness", "creator-b"), "weight": 1},
-            ],
-            "art": [{"result": result("art-awareness", "asset-a")}],
-            "roi": [{"result": result("roi-awareness", "campaign-1")}],
-        }}
-        with self.assertRaisesRegex(score.RubricError, "positive finite number"):
-            score.c3_rollup(payload)
-
-        boolean_weight = copy.deepcopy(payload)
-        boolean_weight["components"]["ace"][0]["weight"] = True
-        with self.assertRaisesRegex(score.RubricError, "positive finite number"):
-            score.c3_rollup(boolean_weight)
-
-    def test_json_decimal_weights_remain_exact_across_cvi_boundary(self):
-        def result(profile, value, target):
-            scored = score.score_run(complete_run("C3", profile), CATALOG)
-            scored["target"] = target
-            return set_summary_score(scored, value)
-
-        payload = {"components": {
-            "ace": [
-                {"result": result("ace-awareness", 0, "creator-a"), "weight": 0},
-                {"result": result("ace-awareness", 100, "creator-b"), "weight": 0},
-            ],
-            "art": [{"result": result("art-awareness", 100, "asset-a")}],
-            "roi": [{"result": result("roi-awareness", 100, "campaign-1")}],
-        }}
-        encoded = json.dumps(payload, separators=(",", ":"))
-        encoded = encoded.replace('"weight":0}', '"weight":0.271000000000000001}', 1)
-        encoded = encoded.replace('"weight":0}', '"weight":0.728999999999999999}', 1)
-        with tempfile.NamedTemporaryFile("w", encoding="utf-8") as handle:
-            handle.write(encoded)
-            handle.flush()
-            parsed = score.load_json(handle.name)
-        rolled = score.c3_rollup(parsed)
-        self.assertEqual(str(parsed["components"]["ace"][0]["weight"]), "0.271000000000000001")
-        round_tripped = json.loads(
-            score.exact_json_dumps({"weight": parsed["components"]["ace"][0]["weight"]}),
-            parse_float=Decimal,
-        )
-        self.assertEqual(round_tripped["weight"], Decimal("0.271000000000000001"))
-        self.assertEqual(rolled["scope_scores"]["ace"], 72.9)
-        self.assertEqual(rolled["cvi"], 89)
-
-    def test_c3_rollup_rejects_blocked_or_internally_inconsistent_results(self):
-        scopes = [
-            score.score_run(complete_run("C3", profile), CATALOG)
-            for profile in ("ace-awareness", "art-awareness", "roi-awareness")
-        ]
-        blocked = copy.deepcopy(scopes)
-        blocked[0].update({
-            "status": "DONE", "verdict": "BLOCK", "veto_count": 2,
-            "cap_applied": False, "final_overall_score": 100,
-        })
-        with self.assertRaisesRegex(score.RubricError, "blocked|SHIP or FIX"):
-            score.c3_rollup({"scopes": blocked})
-
-        mismatched = copy.deepcopy(scopes)
-        mismatched[0]["final_overall_score"] = 0
-        with self.assertRaisesRegex(score.RubricError, "final == raw"):
-            score.c3_rollup({"scopes": mismatched})
-
-    def test_c3_rollup_binds_components_to_the_active_catalog(self):
-        scopes = [
-            score.score_run(complete_run("C3", profile), CATALOG)
-            for profile in ("ace-awareness", "art-awareness", "roi-awareness")
-        ]
-        for version in ("16.0.0", "999.0.0"):
-            with self.subTest(version=version):
-                forged = copy.deepcopy(scopes)
-                for component in forged:
-                    component["catalog_version"] = version
-                with self.assertRaisesRegex(score.RubricError, "does not match active catalog"):
-                    score.c3_rollup({"scopes": forged})
+        self.assertEqual(result["flags"], [{"id": "R5", "flag": "results-unverified"}])
 
     def test_json_valid_malicious_types_raise_rubric_errors(self):
         mutations = (

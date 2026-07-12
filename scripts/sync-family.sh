@@ -218,11 +218,12 @@ check_marker_target brand-narrative-agent-skills 'plugin.json#narrative' "$TMP/g
 
 check_ids_target core-eeat-content-benchmark references/core-eeat-benchmark.md README.md
 check_ids_target cite-domain-rating references/cite-domain-rating.md README.md
-# v17 turned references/c3-benchmark.md into an index page; the item IDs live
-# in the references/c3/ split files, so the umbrella ID set aggregates those.
-check_ids_target influencer-marketing-c3-benchmark \
-  references/c3/ace-creator-benchmark.md:references/c3/art-content-benchmark.md:references/c3/roi-campaign-benchmark.md:references/c3/scoring-architecture.md \
-  README.md ace-creator-benchmark.md art-content-benchmark.md roi-campaign-benchmark.md scoring-architecture.md
+# v18 replaced the C3 split with the single references/star-benchmark.md (STAR framework).
+# OWNER ACTION: rename the GitHub mirror influencer-marketing-c3-benchmark ->
+# influencer-marketing-star-benchmark before the next sync, or this target will 404.
+check_ids_target influencer-marketing-star-benchmark \
+  references/star-benchmark.md \
+  README.md star-benchmark.md
 
 echo
 if [ $DRIFT -eq 1 ]; then

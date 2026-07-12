@@ -41,9 +41,8 @@ def complete_run(catalog, framework_name, profile, state="pass"):
             for item_id in item_ids
         )
     context = {key: "golden-fixture" for key in framework.get("required_context", [])}
-    if framework_name == "C3":
-        scope, goal = profile.split("-", 1)
-        context.update({"scope": scope, "goal": goal, "assessment_time": "actual"})
+    if framework_name == "STAR":
+        context["assessment_time"] = "actual"
     if framework_name == "RAMP":
         context["lifecycle_read"] = profile
     if framework_name == "ECHO":
@@ -124,61 +123,16 @@ def main():
                 assert_equal(blocked["verdict"], "BLOCK", label + " two vetoes yield BLOCK", failures)
                 assert_equal("final_overall_score" in blocked, False, label + " BLOCK emits no final score", failures)
 
-    print("== C3 scope rollup ==")
-    scopes = [
-        scored[("C3", "ace-awareness")],
-        scored[("C3", "art-awareness")],
-        scored[("C3", "roi-awareness")],
-    ]
-    rollup = SCORER.c3_rollup({"scopes": scopes})
-    assert_equal(rollup["cvi"], 100, "perfect C3 scopes roll up to CVI 100", failures)
-    assert_equal(SCORER.floor_cube_root(59 * 80 * 70), 69, "integer cube-root boundary is stable", failures)
-
-    exact_scope = complete_run(catalog, "C3", "ace-awareness")
-    exact_states = {
-        "ACE.A1": "pass", "ACE.A2": "pass", "ACE.A3": "pass", "ACE.A4": "partial",
-        "ACE.C1": "pass", "ACE.C2": "partial", "ACE.C3": "fail", "ACE.C4": "fail",
-        "ACE.E1": "pass", "ACE.E2": "pass", "ACE.E3": "pass", "ACE.E4": "partial",
-    }
-    for item in exact_scope["items"]:
-        item["state"] = exact_states[item["id"]]
-    exact_result = SCORER.score_run(exact_scope, catalog)
+    print("== STAR exact weighting ==")
+    exact = complete_run(catalog, "STAR", "awareness")
+    for item in exact["items"]:
+        if item["id"] == "A10":
+            item["state"] = "partial"  # A dimension: 9 pass + 1 partial -> 95
+    exact_result = SCORER.score_run(exact, catalog)
+    # awareness weights S0.30 T0.20 A0.35 R0.15 -> 100*.65 + 95*.35 = 98.25 -> floor 98
     assert_equal(
-        exact_result["raw_overall_score"], 75,
-        "C3 exact weighted scope score is floored only after dimension rollup", failures,
-    )
-
-    def component(profile, value, target):
-        result = copy.deepcopy(scored[("C3", profile)])
-        result["target"] = target
-        result["raw_overall_score"] = value
-        result["final_overall_score"] = value
-        result["veto_count"] = 0
-        result["cap_applied"] = False
-        if value >= 75:
-            result.update({"status": "DONE", "verdict": "SHIP"})
-        else:
-            result.update({"status": "DONE_WITH_CONCERNS", "verdict": "FIX"})
-        return result
-
-    exact_rollup = SCORER.c3_rollup({"components": {
-        "ace": [
-            {"result": component("ace-awareness", 50, "creator-a"), "weight": 1},
-            {"result": component("ace-awareness", 50, "creator-b"), "weight": 1},
-        ],
-        "art": [
-            {"result": component("art-awareness", 69, "asset-a")},
-            {"result": component("art-awareness", 100, "asset-b")},
-        ],
-        "roi": [{"result": component("roi-awareness", 100, "campaign-1")}],
-    }})
-    assert_equal(
-        exact_rollup["scope_scores"], {"ace": 50, "art": 84.5, "roi": 100},
-        "C3 component means remain exact", failures,
-    )
-    assert_equal(
-        exact_rollup["cvi"], 75,
-        "C3 50 x 84.5 x 100 floors to CVI 75", failures,
+        exact_result["raw_overall_score"], 98,
+        "STAR exact profile-weighted mean is floored only after dimension rollup", failures,
     )
 
     print()

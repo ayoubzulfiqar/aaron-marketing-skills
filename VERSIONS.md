@@ -142,16 +142,17 @@ Breaking rename release; 120 skills and 8 commands remain unchanged in count. Th
 | seo-geo phase dirs | `research` / `build` / `optimize` / `monitor` | `survey` / `implement` / `tune` / `evaluate` (**SITE** loop) |
 | influencer phase dirs | `discover` / `plan` / `measure` | `scout` / `target` / `report` (**STAR** loop; `activate` unchanged) |
 | skill | `entity-optimizer` | `entity-registry` (registry owner naming) |
-| skill | `content-reviewer` | `creator-content-auditor` (gate naming; same C³ ART gate, same `memory/audits/influencer/` sink) |
+| skill | `content-reviewer` | `creator-content-auditor` (gate naming; same STAR gate, same `memory/audits/influencer/` sink) |
 | skill | `on-page-seo-auditor` | `on-page-seo-checker` (not a gate; `-auditor` suffix is now reserved for `class: auditor`) |
 | seo-geo command | `--mode research\|create\|audit\|track` | `--phase survey\|implement\|tune\|evaluate`; `--mode` remains a **deprecated alias until v19** (research→survey, create→implement, audit→tune with `--authority` in evaluate, track→evaluate; every sub-flag unchanged) |
 
 User-side state requires **no migration**: registry keys, `memory/events/*.ndjson` streams, `memory/projections/*.json`, human views (`memory/entities/`, `memory/launch-registry/`, …), and audit sinks all keep their pre-v18 paths. Installed hosts pick up the renamed skills on the next `npx skills` update; the three old names simply stop being served.
 
-- **Typed symmetry contract (catalog schema 1.1).** Per-discipline `loop_name` / `command{selector,values}` / `registry` / `gates[]`; per-gate `score_surface {type: composite|diagnostic|profiles-only, name, rollup}` (EQS, RQS, CVI, the two CORE-EEAT/CITE diagnostics, and three profiles-only gates stay exactly as their benchmarks define them); top-level `symmetry {rules: SYM-01..17, deviations}`.
+- **Typed symmetry contract (catalog schema 1.1).** Per-discipline `loop_name` / `command{selector,values}` / `registry` / `gates[]`; per-gate `score_surface {type: composite|diagnostic|profiles-only, name, rollup}` (EQS, RQS, SQS, the two CORE-EEAT/CITE diagnostics, and three profiles-only gates stay exactly as their benchmarks define them); top-level `symmetry {rules: SYM-01..17, deviations}`.
 - **Conform-or-declared enforcement.** `check-architecture.py check_symmetry()` fails any rule violation without a licensed deviation AND any stale deviation that no longer licenses a live violation. Three deviations ship: the two human-view paths that would orphan end-user state, and the seo-geo `--mode` alias (expires at v19).
 - **Duplicate truth tables eliminated.** `check-evals.py` derives phase directories and command selectors from the system catalog; `check-evals.py` and `check-local-links.py` are now CI steps.
 - **Docs.** `docs/system-architecture.md` gains a generated Symmetry Contract matrix + Licensed Deviations table; CONTRIBUTING's category table is one-row-per-discipline in logical order; the frontmatter template documents the full 12-key surface and the fixed metadata key set (`family` removed from the 16 influencer skills; `geo-relevance` now on all 120).
+- **Influencer framework C³ → STAR.** The 3-scope geometric-CVI framework (ACE/ART/ROI) becomes a 4-dimension arithmetic framework — Suitability/Trust/Appeal/Return, composite **SQS** = floor(profile-weighted arithmetic mean), the same family as ROAS/SEND. `creator-content-auditor` is the sole SQS gate; the typed multi-creator `c3-rollup` and its schema are removed (score each partnership; a budget-weighted SQS mean may summarize). Now loop==framework==STAR, matching the other five channel disciplines.
 
 ### v17.0.0 — Methodology, runtime, and architecture hardening (2026-07-11)
 

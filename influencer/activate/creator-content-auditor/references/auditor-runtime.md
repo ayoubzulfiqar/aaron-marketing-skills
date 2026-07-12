@@ -4,9 +4,9 @@
 
 - **Runtime version:** 3.0.0
 - **Catalog version:** 18.0.0
-- **Framework:** C3
+- **Framework:** STAR
 - **Auditor:** creator-content-auditor
-- **Source digest:** `sha256:7815bfae0f1cdb3c954c67a5fd804174d176ac0fe198b2ecb4cf33014a162ff4`
+- **Source digest:** `sha256:22ebba8fd1c27a4460e80df4d2e776c28b7bdfd49d6dd9240063f52963425121`
 
 This immutable bundle is the fail-closed standalone fallback for this auditor. It contains the exact typed framework slice needed to collect observations without inventing rules. Repository/plugin installs use the root policy, schemas, and deterministic scorer. A standalone one-folder install must not fetch mutable sources, compute a score, claim a gate verdict, or persist an audit artifact.
 
@@ -16,106 +16,112 @@ This immutable bundle is the fail-closed standalone fallback for this auditor. I
 {
   "catalog_version": "18.0.0",
   "frameworks": {
-    "C3": {
-      "construct": "three separately observed influencer scopes: creator, content, and campaign",
+    "STAR": {
+      "construct": "influencer partnership quality across creator suitability, trust and compliance, content appeal, and campaign return",
       "context_allowed": {
         "assessment_time": [
           "forecast",
           "actual"
         ]
       },
-      "cross_scope_rollup": {
-        "forecast_actual_mixing": false,
-        "method": "geometric-mean",
-        "requires_same_assessment_time": true,
-        "requires_same_catalog_version": true,
-        "requires_same_goal": true,
-        "requires_same_rollup_id": true
-      },
       "dimensions": {
-        "ACE.A": {
+        "A": {
           "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ACE.A",
-          "name": "Audience Asset"
-        },
-        "ACE.C": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ACE.C",
-          "name": "Credibility"
-        },
-        "ACE.E": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ACE.E",
-          "name": "Engagement"
-        },
-        "ART.A": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ART.A",
+          "item_count": 10,
+          "item_prefix": "A",
           "name": "Appeal"
         },
-        "ART.R": {
+        "R": {
           "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ART.R",
-          "name": "Relevance"
-        },
-        "ART.T": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ART.T",
-          "name": "Transparency"
-        },
-        "ROI.I": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ROI.I",
-          "name": "Impact"
-        },
-        "ROI.O": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ROI.O",
-          "name": "Orchestration"
-        },
-        "ROI.R": {
-          "id_width": 1,
-          "item_count": 4,
-          "item_prefix": "ROI.R",
+          "item_count": 10,
+          "item_prefix": "R",
           "name": "Return"
+        },
+        "S": {
+          "id_width": 1,
+          "item_count": 10,
+          "item_prefix": "S",
+          "name": "Suitability"
+        },
+        "T": {
+          "id_width": 1,
+          "item_count": 10,
+          "item_prefix": "T",
+          "name": "Trust"
         }
       },
+      "item_definitions": {
+        "A1": "the hook earns attention within the platform's first-impression window",
+        "A10": "originality — the piece is not a templated re-run of prior sponsorships",
+        "A2": "creative quality (production, editing, pacing) meets the platform bar",
+        "A3": "the brand integration feels native to the creator, not bolted-on",
+        "A4": "storytelling and format choice fit the platform's native behavior",
+        "A5": "message accuracy — the brief's key message is conveyed without distortion",
+        "A6": "audience relevance — the content speaks to the target's beliefs and needs",
+        "A7": "the call-to-action is present, clear, and matched to the declared goal",
+        "A8": "on-brand tone, terminology, and visual identity are respected",
+        "A9": "accessibility (captions, alt text, legibility) is handled",
+        "R1": "measured ROI/ROAS is read against the declared target",
+        "R10": "the measurement plan (UTMs, codes, controls) is defined before launch",
+        "R2": "CPE/CPM/CPA are benchmarked on a normalized window",
+        "R3": "value-for-spend beats the declared alternative-channel baseline",
+        "R4": "KPI attainment versus the pre-registered target is reported",
+        "R5": "conversions and outcomes are attributed with a stated method and rigor",
+        "R6": "incremental impact is separated from baseline where measurable",
+        "R7": "creator-mix and channel choices fit the goal (orchestration, knowable at plan time)",
+        "R8": "budget split and timing across creators and phases are justified",
+        "R9": "the deliverable schedule and cadence match the campaign window",
+        "S1": "audience composition, geography, and language match the target within a stated window",
+        "S10": "commercial saturation and disclosed category history are transparent and acceptable",
+        "S2": "real-follower rate is at/above the tier x platform x niche benchmark",
+        "S3": "follower growth is organic and stable, with no purchase or spike anomalies",
+        "S4": "typical reach reliability across recent posts is benchmarked, not cherry-picked",
+        "S5": "engagement rate meets the niche median for the creator's tier and platform",
+        "S6": "engagement is authentic, not pod-coordinated or bought",
+        "S7": "repeat audience action (saves/shares/returns) shows durable influence, not campaign conversion",
+        "S8": "brand/category fit and audience-brand overlap are evidenced, independent of any single deal",
+        "S9": "creator reliability, professionalism, and delivery history support the partnership",
+        "T1": "required FTC/ASA disclosure is present, clear, and conspicuous on sponsored content",
+        "T10": "rights, usage, whitelisting, and exclusivity terms are represented truthfully",
+        "T2": "every material claim in the deliverable is truthful and substantiated",
+        "T3": "no disqualifying brand-safety evidence exists under the declared policy and window",
+        "T4": "disclosure meets platform-specific tool and caption placement requirements",
+        "T5": "prohibited or restricted-category rules for the product are satisfied",
+        "T6": "prior disclosure and compliance history shows no unresolved violations",
+        "T7": "the material connection (gifting/affiliate/paid) is accurately represented to the audience",
+        "T8": "comparative or performance claims carry evidence at the point of claim",
+        "T9": "sensitive-audience, health, financial, and age-gating requirements are met where applicable"
+      },
       "item_policies": {
-        "ACE.A1": {
-          "definition": "audience composition is measured and stable; brand fit is excluded"
-        },
-        "ACE.A3": {
-          "definition": "typical reach reliability across a stated window; campaign tier fit is excluded"
-        },
-        "ACE.C4": {
-          "definition": "commercial saturation and disclosed category history; a specific brand conflict is scored in ROI.O1"
-        },
-        "ACE.E3": {
-          "definition": "repeat audience action signals with source/date; campaign conversion is scored in ROI.I2"
-        },
-        "ROI.I1": {
+        "R1": {
           "applicability": "conditional",
           "applicable_when": {
             "assessment_time": "actual"
           },
           "unknown_policy": "needs-input"
         },
-        "ROI.I2": {
+        "R2": {
           "applicability": "conditional",
           "applicable_when": {
             "assessment_time": "actual"
           },
           "unknown_policy": "needs-input"
         },
-        "ROI.I3": {
+        "R3": {
+          "applicability": "conditional",
+          "applicable_when": {
+            "assessment_time": "actual"
+          },
+          "unknown_policy": "needs-input"
+        },
+        "R4": {
+          "applicability": "conditional",
+          "applicable_when": {
+            "assessment_time": "actual"
+          },
+          "unknown_policy": "needs-input"
+        },
+        "R5": {
           "applicability": "conditional",
           "applicable_when": {
             "assessment_time": "actual"
@@ -123,169 +129,98 @@ This immutable bundle is the fail-closed standalone fallback for this auditor. I
           "fail_flag": "results-unverified",
           "unknown_policy": "needs-input"
         },
-        "ROI.R1": {
+        "R6": {
           "applicability": "conditional",
           "applicable_when": {
             "assessment_time": "actual"
           },
           "unknown_policy": "needs-input"
         },
-        "ROI.R2": {
-          "applicability": "conditional",
-          "applicable_when": {
-            "assessment_time": "actual"
-          },
-          "unknown_policy": "needs-input"
+        "S2": {
+          "unknown_policy": "needs-input",
+          "veto": true
+        },
+        "S6": {
+          "unknown_policy": "needs-input",
+          "veto": true
+        },
+        "S7": {
+          "definition": "durable repeat-audience influence; campaign conversion is scored in R"
+        },
+        "S8": {
+          "definition": "brand-independent fit; a specific brand conflict is scored in R7 orchestration"
+        },
+        "T1": {
+          "veto": true
+        },
+        "T2": {
+          "veto": true
+        },
+        "T3": {
+          "unknown_policy": "needs-input",
+          "veto": true
         }
       },
       "profiles": {
-        "ace-awareness": {
+        "awareness": {
           "context_equals": {
-            "goal": "awareness",
-            "scope": "ace"
+            "goal": "awareness"
           },
           "dimensions": {
-            "ACE.A": 0.45,
-            "ACE.C": 0.25,
-            "ACE.E": 0.3
+            "A": 0.35,
+            "R": 0.15,
+            "S": 0.3,
+            "T": 0.2
           }
         },
-        "ace-brand-building": {
+        "brand-building": {
           "context_equals": {
-            "goal": "brand-building",
-            "scope": "ace"
+            "goal": "brand-building"
           },
           "dimensions": {
-            "ACE.A": 0.3,
-            "ACE.C": 0.45,
-            "ACE.E": 0.25
+            "A": 0.2,
+            "R": 0.15,
+            "S": 0.3,
+            "T": 0.35
           }
         },
-        "ace-conversion": {
+        "conversion": {
           "context_equals": {
-            "goal": "conversion",
-            "scope": "ace"
+            "goal": "conversion"
           },
           "dimensions": {
-            "ACE.A": 0.35,
-            "ACE.C": 0.3,
-            "ACE.E": 0.35
+            "A": 0.2,
+            "R": 0.35,
+            "S": 0.25,
+            "T": 0.2
           }
         },
-        "ace-engagement": {
+        "engagement": {
           "context_equals": {
-            "goal": "engagement",
-            "scope": "ace"
+            "goal": "engagement"
           },
           "dimensions": {
-            "ACE.A": 0.25,
-            "ACE.C": 0.25,
-            "ACE.E": 0.5
-          }
-        },
-        "art-awareness": {
-          "context_equals": {
-            "goal": "awareness",
-            "scope": "art"
-          },
-          "dimensions": {
-            "ART.A": 0.45,
-            "ART.R": 0.3,
-            "ART.T": 0.25
-          }
-        },
-        "art-brand-building": {
-          "context_equals": {
-            "goal": "brand-building",
-            "scope": "art"
-          },
-          "dimensions": {
-            "ART.A": 0.35,
-            "ART.R": 0.4,
-            "ART.T": 0.25
-          }
-        },
-        "art-conversion": {
-          "context_equals": {
-            "goal": "conversion",
-            "scope": "art"
-          },
-          "dimensions": {
-            "ART.A": 0.35,
-            "ART.R": 0.4,
-            "ART.T": 0.25
-          }
-        },
-        "art-engagement": {
-          "context_equals": {
-            "goal": "engagement",
-            "scope": "art"
-          },
-          "dimensions": {
-            "ART.A": 0.5,
-            "ART.R": 0.25,
-            "ART.T": 0.25
-          }
-        },
-        "roi-awareness": {
-          "context_equals": {
-            "goal": "awareness",
-            "scope": "roi"
-          },
-          "dimensions": {
-            "ROI.I": 0.4,
-            "ROI.O": 0.4,
-            "ROI.R": 0.2
-          }
-        },
-        "roi-brand-building": {
-          "context_equals": {
-            "goal": "brand-building",
-            "scope": "roi"
-          },
-          "dimensions": {
-            "ROI.I": 0.35,
-            "ROI.O": 0.4,
-            "ROI.R": 0.25
-          }
-        },
-        "roi-conversion": {
-          "context_equals": {
-            "goal": "conversion",
-            "scope": "roi"
-          },
-          "dimensions": {
-            "ROI.I": 0.35,
-            "ROI.O": 0.25,
-            "ROI.R": 0.4
-          }
-        },
-        "roi-engagement": {
-          "context_equals": {
-            "goal": "engagement",
-            "scope": "roi"
-          },
-          "dimensions": {
-            "ROI.I": 0.4,
-            "ROI.O": 0.35,
-            "ROI.R": 0.25
+            "A": 0.4,
+            "R": 0.15,
+            "S": 0.25,
+            "T": 0.2
           }
         }
       },
       "required_context": [
-        "scope",
         "goal",
         "assessment_time",
-        "rollup_id"
+        "platform",
+        "market"
       ],
-      "source": "references/c3-benchmark.md",
-      "unit_of_analysis": "one qualified scope at one observation time; forecast and actual campaign reads are never merged",
+      "source": "references/star-benchmark.md",
+      "unit_of_analysis": "one creator partnership — creator, deliverable, and attributed outcome — at one observation time; forecast and actual reads are never merged",
       "veto_items": [
-        "ACE.A2",
-        "ACE.C1",
-        "ACE.E2",
-        "ART.T1",
-        "ART.T2"
+        "S2",
+        "S6",
+        "T1",
+        "T2",
+        "T3"
       ]
     }
   },

@@ -29,7 +29,7 @@ Eine Bibliothek von Claude-Skills und Slash-Befehlen, die einen Chat-Agenten in 
 | **Social** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (asset / program-maturity profiles) | `/aaron-marketing:social` |
 | **E-Mail** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor` (EQS) | `/aaron-marketing:email` |
 | **Paid Ads** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:ad` |
-| **Influencer** | 16 | scout → target → activate → report | [C³](../references/c3-benchmark.md) → `creator-content-auditor` (ART); `fit-scorer` bewertet ACE | `/aaron-marketing:influencer` |
+| **Influencer** | 16 | scout → target → activate → report | [STAR](../references/star-benchmark.md) → `creator-content-auditor` (SQS); `fit-scorer` bewertet Suitability (S) | `/aaron-marketing:influencer` |
 | **Launch** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
 | **Protokollschicht** | 8 | — (gemeinsame Maschinerie, außerhalb der Phasenflüsse) | 7 Wahrheitsregister (entity · creator · offer/claims · consent · launch · channel · narrative) + HOT/WARM/COLD-Speicher | — |
 
@@ -154,7 +154,7 @@ Eine Markenstimme, ausgedrückt über fünf Always-on-Kanäle, konzentriert auf 
 | Schicht | Adoption | Disziplinen | Kadenz |
 |-------|-------|-------------|---------|
 | **L1 · Strategie** — was wir sagen / wer wir sind | crawl | **Narrative** · TALE | always-on |
-| **L2 · Kanäle** — Always-on-Engines, die die Strategie ausdrücken (owned → bought) | walk | **SEO/GEO** · CORE-EEAT + CITE · **Organic Social** · ECHO · **Email** · SEND · **Paid Ads** · ROAS · **Influencer** · C³ | always-on (Influencer mit episodischem Hang) |
+| **L2 · Kanäle** — Always-on-Engines, die die Strategie ausdrücken (owned → bought) | walk | **SEO/GEO** · CORE-EEAT + CITE · **Organic Social** · ECHO · **Email** · SEND · **Paid Ads** · ROAS · **Influencer** · STAR | always-on (Influencer mit episodischem Hang) |
 | **L3 · Orchestrierung** — der zeitlich begrenzte Moment über Kanäle hinweg | run | **Product Launch** · RAMP | episodisch |
 | **L4 · Protokoll** — das gemeinsame System of Record | — | 7 Wahrheitsregister + Arbeitsgedächtnis · 8 Auditor-Gates · ein Skill-Vertrag | — |
 
@@ -171,7 +171,7 @@ Acht Benchmarks machen „gut" messbar. Jedes definiert Dimensionen, eine Aggreg
 | **[TALE](../references/tale-benchmark.md)** | Brand-Narrative-Wahrheit / -System / -Wirksamkeit | T / A / L / E | Getrennte `truth`-, `system`- und `effectiveness`-Profilergebnisse; kein Gesamt-Komposit | TALE `T1`/`A1`/`L1`/`E1` |
 | **[CORE-EEAT](../references/core-eeat-benchmark.md)** | Content-Qualität mit diagnostischen CORE/GEO- und EEAT/SEO-Sichten | 80 Items / 8 Dimensionen | Vollständiges profilgewichtetes Ergebnis; diagnostische Sichten sind keine eigenen Summen | `T04`/`C01`/`R10` |
 | **[CITE](../references/cite-domain-rating.md)** | Domain-Autorität und Zitationsvertrauen | 40 Items / 4 Dimensionen | Arithmetisches profilgewichtetes Mittel | `T03`/`T05`/`T09` |
-| **[C³](../references/c3-benchmark.md)** | Influencer Creator / Content / Campaign | ACE / ART / ROI; 9 Dimensionen | `CVI = floor((ACE x ART x ROI)^(1/3))` nach drei vollständigen, kompatiblen Scope-Ergebnissen | ACE `A2`/`C1`/`E2`; ART `T1`/`T2` |
+| **[STAR](../references/star-benchmark.md)** | Influencer Suitability / Trust / Appeal / Return | S / T / A / R; 40 Items / 4 Dimensionen | `SQS = floor(profile-weighted mean)` | `STAR-S2`/`S6`, `STAR-T1`/`T2`/`T3` |
 | **[ROAS](../references/roas-benchmark.md)** | Inkrementeller Beitrag und Betriebsqualität von Paid Ads | R / O / A / S | `RQS = floor(profile-weighted mean)` | `R1`/`R2`/`O1`/`O2`/`A1` |
 | **[SEND](../references/send-benchmark.md)** | E-Mail: Absender-Integrität / Engagement / Nurture / direktes Ergebnis | S / E / N / D | `EQS = floor(profile-weighted mean)` | `S1`/`S2`/`N1`/`D1` |
 | **[RAMP](../references/ramp-benchmark.md)** | Product Launch: Bereitschaft / Assets / Momentum / Beweis | R / A / M / P; 40 stabile IDs | Getrennte `preflight`-, `execution`- und `outcome`-Profilergebnisse; Zeithorizonte nie mitteln | RAMP `R1`/`A1`/`M1`/`P1` |
@@ -184,7 +184,7 @@ Jedes Framework wird von einem **Gate der Auditor-Klasse** durchgesetzt — eine
 | [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md) | TALE-Profile | `narrative/evaluate/` | Getrennte truth-/system-/effectiveness-Ergebnisse; kein Komposit |
 | [content-quality-auditor](../seo-geo/tune/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/tune/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [domain-authority-auditor](../seo-geo/evaluate/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/evaluate/` | SHIP / FIX / BLOCK / UNDECIDED; Vertrauenslabels sind rein erläuternd |
-| [creator-content-auditor](../influencer/activate/creator-content-auditor/SKILL.md) | C³ ART | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED plus creator-gerichteter Übersetzung |
+| [creator-content-auditor](../influencer/activate/creator-content-auditor/SKILL.md) | STAR SQS | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED plus creator-gerichteter Übersetzung |
 | [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md) | ROAS | `ad/activate/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [email-quality-auditor](../email/deliver/email-quality-auditor/SKILL.md) | SEND | `email/deliver/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [launch-readiness-auditor](../launch/mobilize/launch-readiness-auditor/SKILL.md) | RAMP-Lifecycle-Profil | `launch/mobilize/` | SHIP / FIX / BLOCK / UNDECIDED für eine deklarierte Lifecycle-Lesung |
@@ -231,7 +231,7 @@ Die Register folgen einer **Alleinschreiber-Regel** (andere Skills reichen über
 | `PostToolBatch` | (alle) | Prüft nach jedem parallelen Batch den operativen Speicher und die reservierte Audit-Senke erneut. |
 | `Stop` | (alle) | Führt einen letzten begrenzten Sweep aus; der Active-Stop-Guard erlaubt danach die Beendigung. Pre-commit/CI schützen nur committete Git-Inhalte vor PII, nicht ignorierte Runtime-Artefakte. |
 
-Das Artifact Gate ist **framework-agnostisch** — derselbe Hook validiert TALE-, CORE-EEAT-, CITE-, C³-, ROAS-, SEND-, RAMP- und ECHO-Artefakte ohne framework-spezifischen Code.
+Das Artifact Gate ist **framework-agnostisch** — derselbe Hook validiert TALE-, CORE-EEAT-, CITE-, STAR-, ROAS-, SEND-, RAMP- und ECHO-Artefakte ohne framework-spezifischen Code.
 
 ---
 
@@ -435,13 +435,13 @@ Vier Phasenverzeichnisse (je 4 Skills); das Gate der Disziplin (⛩ creator-cont
 | audience-mapper | *(Merge: audience-analyzer + niche-researcher)* Profiliert die Zielgruppe und kartiert ihre Subkultur / Mikro-Community, bevor mit Creatorn zusammengearbeitet wird. |
 | trend-spotter | Kampagnen-Timing und -Themen — trendende Hashtags, Sounds, Formate, kulturelle Momente. |
 | influencer-discovery | Baut ein Creator-Roster von Grund auf, expandiert auf eine neue Plattform, sourct Nano/Micro im großen Maßstab. |
-| fit-scorer | Objektiver, gewichteter Fit-Score für eine Shortlist (bewertet auf C³ ACE). |
+| fit-scorer | Objektiver, gewichteter Fit-Score für eine Shortlist (bewertet auf STAR Suitability (S)). |
 | competitor-tracker | Die Creator, Kampagnen, Formate, geschätzte Reichweite/Ausgaben und Lücken eines Wettbewerbers. |
 | campaign-planner | Plant eine Kampagne, einen Produkt-Launch, ein Tentpole oder ein Always-on-Creator-Programm. |
 | brief-generator | Standardisierte Influencer-Briefs und wiederverwendbare Team-Vorlagen. |
 | budget-optimizer | Verteilt Ausgaben über Tiers/Plattformen, projiziert ROI, modelliert Szenarien (dient auch Paid-Ads-Ausgaben + Bid-Pacing). |
 | outreach-manager | Pitch, Follow-up-Kadenz, Reaktivierung, Ratenverhandlung, Statusverfolgung. |
-| ⛩ creator-content-auditor | Vorab-Publish-Gate-Entscheidung zu einer Creator-Einreichung (C³ ART: FTC-Offenlegung T1, Claim-Integrität T2). |
+| ⛩ creator-content-auditor | Vorab-Publish-Gate-Entscheidung zu einer Creator-Einreichung (STAR Trust: FTC-Offenlegung STAR-T1, Claim-Integrität STAR-T2). |
 | contract-helper | Entwirft/prüft Creator-Vereinbarungen — Nutzungsrechte, Exklusivität, Standardklauseln. |
 | content-amplifier | *(Merge: content-amplifier + ugc-repurposer)* Erweitert organische Creator-Inhalte mit bezahlten Ausgaben und verwertet UGC über Paid, Web, E-Mail und Organic hinweg neu. |
 | landing-optimizer | Landingpages für Creator-/Paid-Traffic — Message-Match, Mobile, A/B (dient auch Paid Post-Click). |
@@ -577,9 +577,9 @@ Paid-Ads-Skills bewerten aus deinem **eigenen manuellen Kontoexport** (nativer A
 4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; `domain-authority-auditor` (⛩) für die Vertrauensprüfung
 
 **Influencer**
-1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (C³ ACE)
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
 2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ ART-Gate) → `contract-helper` → `content-amplifier`
+3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ STAR-Gate) → `contract-helper` → `content-amplifier`
 4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
 
 **Paid Ads (ROAS-Schleife)**

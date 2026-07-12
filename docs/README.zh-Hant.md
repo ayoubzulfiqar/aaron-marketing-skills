@@ -29,7 +29,7 @@
 | **社媒** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (asset / program-maturity profiles) | `/aaron-marketing:social` |
 | **郵件** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor`（EQS） | `/aaron-marketing:email` |
 | **付費廣告** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor`（RQS） | `/aaron-marketing:ad` |
-| **紅人** | 16 | scout → target → activate → report | [C³](../references/c3-benchmark.md) → `creator-content-auditor`（ART）；`fit-scorer` 打 ACE 分 | `/aaron-marketing:influencer` |
+| **紅人** | 16 | scout → target → activate → report | [STAR](../references/star-benchmark.md) → `creator-content-auditor`（SQS）；`fit-scorer` 打 Suitability (S) 分 | `/aaron-marketing:influencer` |
 | **產品發布** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
 | **協議層** | 8 | ——（階段流程之外的共享機件） | 7 個真相註冊表（entity · creator · offer/claims · consent · launch · channel · narrative）+ HOT/WARM/COLD 記憶 | —— |
 
@@ -154,7 +154,7 @@
 | 層 | 採用門檻 | 學科 | 節奏 |
 |----|----------|------|------|
 | **L1 · Strategy** —— 我們說什麼 / 我們是誰 | crawl | **品牌敘事** · TALE | 常駐 |
-| **L2 · Channels** —— 表達策略的常駐引擎（owned → bought） | walk | **SEO/GEO** · CORE-EEAT + CITE · **社媒** · ECHO · **郵件** · SEND · **付費廣告** · ROAS · **紅人** · C³ | 常駐（紅人偏 episodic） |
+| **L2 · Channels** —— 表達策略的常駐引擎（owned → bought） | walk | **SEO/GEO** · CORE-EEAT + CITE · **社媒** · ECHO · **郵件** · SEND · **付費廣告** · ROAS · **紅人** · STAR | 常駐（紅人偏 episodic） |
 | **L3 · Orchestration** —— 跨通路的限時時刻 | run | **產品發布** · RAMP | episodic |
 | **L4 · Protocol** —— 共享的記錄系統 | — | 7 個真相註冊表 + 工作記憶 · 8 個 auditor 門 · 一套技能契約 | — |
 
@@ -171,7 +171,7 @@
 | **[TALE](../references/tale-benchmark.md)** | 品牌敘事的真相 / 體系 / 效果 | T / A / L / E | `truth`、`system`、`effectiveness` 三個 profile 結果各自獨立；無總合成分 | TALE `T1`/`A1`/`L1`/`E1` |
 | **[CORE-EEAT](../references/core-eeat-benchmark.md)** | 內容品質，附 CORE/GEO 與 EEAT/SEO 診斷視圖 | 80 項 / 8 維 | 完整的 profile 加權結果；診斷視圖不是獨立總分 | `T04`/`C01`/`R10` |
 | **[CITE](../references/cite-domain-rating.md)** | 網域權威與引用信任 | 40 項 / 4 維 | 算術 profile 加權平均 | `T03`/`T05`/`T09` |
-| **[C³](../references/c3-benchmark.md)** | 紅人 Creator / Content / Campaign | ACE / ART / ROI；9 維 | 三個完整且口徑相容的 scope 結果齊備後取 `CVI = floor((ACE x ART x ROI)^(1/3))` | ACE `A2`/`C1`/`E2`；ART `T1`/`T2` |
+| **[STAR](../references/star-benchmark.md)** | 紅人 Suitability / Trust / Appeal / Return | S / T / A / R；40 項 / 4 維 | `SQS = floor(profile-weighted mean)` | `STAR-S2`/`S6`, `STAR-T1`/`T2`/`T3` |
 | **[ROAS](../references/roas-benchmark.md)** | 付費廣告的增量貢獻與營運品質 | R / O / A / S | `RQS = floor(profile-weighted mean)` | `R1`/`R2`/`O1`/`O2`/`A1` |
 | **[SEND](../references/send-benchmark.md)** | 郵件的寄件者完整性 / 互動 / 培育 / 直接成效 | S / E / N / D | `EQS = floor(profile-weighted mean)` | `S1`/`S2`/`N1`/`D1` |
 | **[RAMP](../references/ramp-benchmark.md)** | 產品發布的就緒 / 資產 / 動能 / 證明 | R / A / M / P；40 個穩定 ID | `preflight`、`execution`、`outcome` 三個 profile 結果各自獨立；絕不跨時間視界取平均 | RAMP `R1`/`A1`/`M1`/`P1` |
@@ -184,7 +184,7 @@
 | [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md) | TALE 三 profile | `narrative/evaluate/` | truth/system/effectiveness 結果各自獨立；無合成總分 |
 | [content-quality-auditor](../seo-geo/tune/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/tune/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [domain-authority-auditor](../seo-geo/evaluate/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/evaluate/` | SHIP / FIX / BLOCK / UNDECIDED；信任標籤僅作解釋 |
-| [creator-content-auditor](../influencer/activate/creator-content-auditor/SKILL.md) | C³ ART | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED，另附面向創作者的轉述 |
+| [creator-content-auditor](../influencer/activate/creator-content-auditor/SKILL.md) | STAR SQS | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED，另附面向創作者的轉述 |
 | [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md) | ROAS | `ad/activate/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [email-quality-auditor](../email/deliver/email-quality-auditor/SKILL.md) | SEND | `email/deliver/` | SHIP / FIX / BLOCK / UNDECIDED |
 | [launch-readiness-auditor](../launch/mobilize/launch-readiness-auditor/SKILL.md) | RAMP 生命週期 profile | `launch/mobilize/` | 對一個已宣告的生命週期讀數給出 SHIP / FIX / BLOCK / UNDECIDED |
@@ -231,7 +231,7 @@
 | `PostToolBatch` | （全部） | 每批平行工具結束後複核 operational memory 與完整審計保留區。 |
 | `Stop` | （全部） | 執行最後一次有界掃描並可阻止一次以便修復；`stop_hook_active` 會放行後續停止。pre-commit/CI 僅保護已提交 Git 內容中的 PII，不驗證被忽略的 runtime 產物。 |
 
-Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT、CITE、C³、ROAS、SEND、RAMP、ECHO 產物，無任何針對單框架的程式碼。
+Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT、CITE、STAR、ROAS、SEND、RAMP、ECHO 產物，無任何針對單框架的程式碼。
 
 ---
 
@@ -419,7 +419,7 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 
 ### 紅人 — STAR（16）
 
-四個階段目錄（各 4 技能）沿 STAR 循環（Scout → Target → Activate → Report）排布；品質基準仍是 C³；本學科的門（⛩ creator-content-auditor）位於 Activate。
+四個階段目錄（各 4 技能）沿 STAR 循環（Scout → Target → Activate → Report）排布；循環與品質基準現同為 STAR（Suitability · Trust · Appeal · Return）；本學科的門（⛩ creator-content-auditor）位於 Activate。
 
 | 階段 | 技能 |
 |------|------|
@@ -435,13 +435,13 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 | audience-mapper | *（合併 audience-analyzer + niche-researcher）* 在與創作者合作前做受眾畫像，並摸清其亞文化 / 微社群。 |
 | trend-spotter | 活動節奏與主題——趨勢話題、聲音、內容格式、文化時刻。 |
 | influencer-discovery | 從零搭建紅人名單、拓展新平台、規模化找 nano/micro。 |
-| fit-scorer | 對候選名單做客觀加權適配打分（基於 C³ ACE）。 |
+| fit-scorer | 對候選名單做客觀加權適配打分（基於 STAR Suitability (S)）。 |
 | competitor-tracker | 競品的合作紅人、活動、格式、估算觸及/花費與缺口。 |
 | campaign-planner | 規劃活動、產品發布、tentpole 或常態化創作者專案。 |
 | brief-generator | 標準化紅人 brief 與可複用團隊範本。 |
 | budget-optimizer | 跨層級/平台分配預算、預測 ROI、建模情境（同時服務付費廣告的花費 + 出價節奏）。 |
 | outreach-manager | pitch、跟進節奏、再啟用、費率談判、狀態追蹤。 |
-| ⛩ creator-content-auditor | 對紅人提交內容做發布前門決策（C³ ART：FTC 揭露 T1、聲明真實性 T2）。 |
+| ⛩ creator-content-auditor | 對紅人提交內容做發布前門決策（STAR Trust：FTC 揭露 STAR-T1、聲明真實性 STAR-T2）。 |
 | contract-helper | 起草/審閱創作者協議——使用權、獨家、標準條款。 |
 | content-amplifier | *（合併 content-amplifier + ugc-repurposer）* 用付費投放放大自然創作者內容，並把 UGC 二次利用到付費、網站、郵件、自然社媒。 |
 | landing-optimizer | 面向創作者/付費流量的著陸頁——訊息一致、行動裝置、A/B（同時服務付費點擊後）。 |
@@ -577,9 +577,9 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`；信任評審用 `domain-authority-auditor`（⛩）
 
 **紅人**
-1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（C³ ACE）
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（STAR Suitability）
 2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `creator-content-auditor`（⛩ ART 門） → `contract-helper` → `content-amplifier`
+3. **Activate** — `outreach-manager` → `creator-content-auditor`（⛩ STAR 門） → `contract-helper` → `content-amplifier`
 4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
 
 **付費廣告（ROAS 循環）**

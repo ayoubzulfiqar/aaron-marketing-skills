@@ -17,7 +17,7 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 | Social | `social/<phase>/` | Plans, crafts, hosts, and measures organic social (ECHO loop: explore/craft/host/observe) |
 | Email | `email/<phase>/` | Grows, sends, and audits email programs (SEND loop: setup/engage/nurture/deliver) |
 | Paid Ads | `ad/<phase>/` | Builds, audits, and scales paid-ad campaigns (ROAS loop: research/orchestrate/activate/scale) |
-| Influencer | `influencer/<phase>/` | Scouts audiences/creators, targets campaigns, activates outreach & the C³ ART gate, reports ROI (STAR loop: scout/target/activate/report) |
+| Influencer | `influencer/<phase>/` | Scouts audiences/creators, targets campaigns, activates outreach & the STAR gate, reports ROI (STAR loop: scout/target/activate/report) |
 | Launch | `launch/<phase>/` | Plans, gates, executes, and proves product launches (RAMP loop: research/assemble/mobilize/prove) |
 | Protocol | `protocol/` | Cross-cutting layer (7 truth registries: entity/creator/claims/consent/launch/channel/narrative + memory) — shared across disciplines |
 
@@ -62,7 +62,7 @@ Auditor-class skills are the exception: repository mode reads the root typed run
 |---------------------|-----------|------------|
 | `content-quality-auditor` | CORE-EEAT (publish readiness) | `memory/audits/content/` |
 | `domain-authority-auditor` | CITE (citation trust) | `memory/audits/domain/` |
-| `creator-content-auditor` | C³ ART (influencer content gate) | `memory/audits/influencer/` |
+| `creator-content-auditor` | STAR SQS (influencer content gate) | `memory/audits/influencer/` |
 | `ad-account-auditor` | ROAS RQS (paid-ads gate) | `memory/audits/ad/` |
 | `email-quality-auditor` | SEND EQS (email SEND gate) | `memory/audits/email/` |
 | `launch-readiness-auditor` | RAMP lifecycle-profile gate | `memory/audits/launch/` |
@@ -78,7 +78,7 @@ Cross-cutting reference protocols apply across disciplines: the humanizer-slop p
 ```
 
 CI runs additional guards beyond the per-skill validator:
-- **golden behavior** — runs every typed profile through the real catalog/scorer, including Unknown, one-veto, multi-veto, cap, and C³ rollup boundaries; it never regex-scrapes Markdown formulas.
+- **golden behavior** — runs every typed profile through the real catalog/scorer, including Unknown, one-veto, multi-veto, cap, and STAR rollup boundaries; it never regex-scrapes Markdown formulas.
 - **behavior conformance** — orchestrates rubric, registry, HTTP, hook, permission, and routing suites offline; an optional NDJSON adapter can evaluate semantic cases without becoming a CI dependency.
 - **architecture conformance** — checks `references/system-catalog.json` against all 120 paths/frontmatters, plugin order, framework/auditor/registry ownership, transition graphs, L1 dependencies, distribution contracts, and the **symmetry contract** (SYM-01..17: loop/acronym derivation, command selector, registry/gate naming and topology, score surfaces, grouping titles, Scope edges, metadata key set — every violation must be licensed by a `symmetry.deviations` entry, and stale deviations fail).
 
@@ -107,7 +107,7 @@ After adding or updating a skill, keep these **10 tracking surfaces** in sync. *
 - `.claude-plugin/marketplace.json` — **byte-identical mirror** of the root `marketplace.json` (copy it after editing the root)
 - `README.md` — skills table + version badge
 - `CLAUDE.md` — category table + version
-- `AGENTS.md` — name/count line + framework item/dimension counts (CORE-EEAT / CITE / C³ / ROAS / SEND / RAMP / ECHO / TALE)
+- `AGENTS.md` — name/count line + framework item/dimension counts (CORE-EEAT / CITE / STAR / ROAS / SEND / RAMP / ECHO / TALE)
 - `docs/README.zh.md` — Chinese README: the 120 · 16 / 16 / 16 / 16 / 16 / 16 / 16 / 8 counts (skills / SEO-GEO / influencer / paid ads / email / launch / social / narrative / protocol) + 8 commands + version badge. The 8 additional localized READMEs (`docs/README.{de,es,fr,it,ja,ko,pt,zh-Hant}.md`) are now version-locked too — `check-versions.sh` asserts each carries the current `version-<bundle>-orange` badge (the bundle value is read from `plugin.json`, so this never goes stale on a bump).
 - `.github/repo-about.json` — the GitHub repo **About** SSOT (sidebar description + topics). The About is *not* read by GitHub directly and *not* editable by the CI token, so it silently drifted on the v13/v14 discipline bumps. Edit the count/disciplines/gates here, then project it onto GitHub with `bash scripts/sync-about.sh --live` (owner-run, needs admin auth). `check-versions.sh` asserts its skill count matches the tree; the weekly `about-drift.yml` sentinel fails red if GitHub drifts from it.
 

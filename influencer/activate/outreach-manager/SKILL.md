@@ -96,7 +96,7 @@ Full multi-version output, follow-up cadence, negotiation guide, and pipeline tr
 - [skill-contract.md](../../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../../CONNECTORS.md) — free/keyless data recipe per connector category.
-- C3 benchmark scoring at [references/c3/scoring-architecture.md](../../../references/c3/scoring-architecture.md) — quality scoring reference for downstream review.
+- STAR benchmark scoring at [references/star-benchmark.md](../../../references/star-benchmark.md) — quality scoring reference for downstream review.
 - [expert-panel.md](../../../references/expert-panel.md) — multi-persona review method for pressure-testing outreach copy before sending.
 - Sibling skills: [influencer-discovery](../../scout/influencer-discovery/SKILL.md), [fit-scorer](../../scout/fit-scorer/SKILL.md), [brief-generator](../../target/brief-generator/SKILL.md), [contract-helper](../contract-helper/SKILL.md), [creator-content-auditor](../creator-content-auditor/SKILL.md).
 

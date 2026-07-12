@@ -647,7 +647,7 @@ Sketch the influence structure: Tier 1 leaders → core community; rising stars 
 
 **Fit Assessment**: [Strong/Moderate/Weak/Poor]
 
-> This X/25 is a niche-entry go/no-go for the community. It is **not** the C³ ACE creator score or the CVI — those are computed downstream by fit-scorer and roi-calculator, not here.
+> This X/25 is a niche-entry go/no-go for the community. It is **not** the STAR Suitability (S) read or the SQS — the Suitability read is produced downstream by fit-scorer and the SQS by the creator-content-auditor gate, not here.
 
 ### Risk Assessment
 

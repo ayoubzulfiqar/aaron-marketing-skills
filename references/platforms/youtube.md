@@ -81,4 +81,4 @@ OtterlyAI YouTube Citation Study (2026); Search Engine Land coverage of YouTube 
 ## Related
 
 - `../skill-contract.md` — shared skill contract
-- `../c3-benchmark.md` — influencer content scoring (ACE/ART/ROI)
+- `../star-benchmark.md` — influencer content scoring (Suitability/Trust/Appeal/Return)

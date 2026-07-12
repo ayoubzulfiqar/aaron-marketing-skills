@@ -105,10 +105,10 @@ Fill-in templates for each review step, a worked example, the quick checklist, a
 
 ## Step 4 — Compliance Review
 
-This compliance gate is the C³ **Content** review ([ART](../../../../references/c3/art-content-benchmark.md)). Two ART items are veto-level — a failure forces the overall decision to **Reject** (never "revise"), and you must cite the veto ID:
+This compliance gate is the STAR **Trust** review ([Trust dimension](../../../../references/star-benchmark.md)). Two Trust items are veto-level — a failure forces the overall decision to **Reject** (never "revise"), and you must cite the veto ID:
 
-- **T1 · FTC Disclosure** (maps to the Disclosure Check + FTC compliance rows below) — missing or inadequate disclosure on sponsored content → **Reject (T1)**. Regulatory basis: FTC 16 CFR §255 and the 2024 Trade Regulation Rule (16 CFR Part 465). Not legal advice.
-- **T2 · Claim Integrity** (maps to Claims substantiation) — false or unsubstantiated claims → **Reject (T2)**.
+- **STAR-T1 · FTC Disclosure** (maps to the Disclosure Check + FTC compliance rows below) — missing or inadequate disclosure on sponsored content → **Reject (STAR-T1)**. Regulatory basis: FTC 16 CFR §255 and the 2024 Trade Regulation Rule (16 CFR Part 465). Not legal advice.
+- **STAR-T2 · Claim Integrity** (maps to Claims substantiation) — false or unsubstantiated claims → **Reject (STAR-T2)**.
 
 ```markdown
 ## Compliance Review
@@ -382,14 +382,14 @@ Best,
 | Compliance | 5/10 | ❌ |
 | Quality | 9/10 | ✅ |
 
-**Decision**: ❌ REJECTED — **Reject (T1 · FTC Disclosure veto)**
+**Decision**: ❌ REJECTED — **Reject (STAR-T1 · FTC Disclosure veto)**
 
-> A missing/inadequate disclosure on sponsored content is the ART **T1 veto** — it forces a Reject, not a revise (FTC 16 CFR §255). The creator must fix the veto item and resubmit; the non-veto items below are required on resubmission.
+> A missing/inadequate disclosure on sponsored content is the STAR **`STAR-T1`** Trust veto — it forces a Reject, not a revise (FTC 16 CFR §255). The creator must fix the veto item and resubmit; the non-veto items below are required on resubmission.
 
 ## Issues Found
 
 ### Veto — forces Reject (Compliance)
-1. **Missing disclosure** - No #ad or sponsored disclosure visible → **T1 veto → Reject**
+1. **Missing disclosure** - No #ad or sponsored disclosure visible → **STAR-T1 veto → Reject**
    - Fix: Add #ad in caption and/or verbal disclosure in first 3 seconds
 
 2. **Promo code not mentioned** - Brief required promo code "FIONA20"

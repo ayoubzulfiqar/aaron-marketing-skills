@@ -356,7 +356,7 @@
       "display_name": "Influencer Marketing",
       "layer": "L2",
       "frameworks": [
-        "C3"
+        "STAR"
       ],
       "loop_name": "STAR",
       "loop": "Scout -> Target -> Activate -> Report",
@@ -683,23 +683,20 @@
     },
     {
       "skill": "creator-content-auditor",
-      "framework": "C3",
+      "framework": "STAR",
       "path": "influencer/activate/creator-content-auditor",
       "sink": "memory/audits/influencer/",
       "runtime_sources": [
         "references/auditor-runbook.md",
         "references/scoring-semantics.md",
-        "references/c3-benchmark.md",
-        "references/c3/art-content-benchmark.md",
-        "references/c3/scoring-architecture.md",
-        "references/c3-rollup.schema.json",
+        "references/star-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
       ],
       "score_surface": {
         "type": "composite",
-        "name": "CVI",
-        "rollup": "geometric-mean"
+        "name": "SQS",
+        "rollup": "weighted-arithmetic-mean"
       }
     },
     {

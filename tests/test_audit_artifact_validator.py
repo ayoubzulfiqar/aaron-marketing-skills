@@ -94,9 +94,9 @@ class AuditArtifactValidatorTests(unittest.TestCase):
             '"final_overall_score": {"maximum": 59}',
             '"profile": {"const": "cross-framework-summary"}',
             '"status": {"const": "DONE"}',
-            '"framework": {"const": "C3"}',
+            '"framework": {"const": "STAR"}',
             '"additionalProperties": false',
-            '"rollup_id": {"minLength": 1, "pattern": "\\\\S", "type": "string"}',
+            '"market": {"minLength": 1, "type": "string"}',
         ):
             self.assertIn(required_fragment, branches)
 
@@ -344,12 +344,12 @@ class AuditArtifactValidatorTests(unittest.TestCase):
         ))
         self.assertTrue(any("context.goal" in error for error in self.validate(mismatched)[1]))
 
-    def test_c3_artifact_context_matches_the_scorer_closed_type(self):
+    def test_star_artifact_context_matches_the_scorer_closed_type(self):
         valid = artifact(
-            framework="C3", profile="ace-awareness",
+            framework="STAR", profile="awareness",
             context=(
-                '{"scope":"ace","goal":"awareness","assessment_time":"actual",'
-                '"rollup_id":"campaign-1"}'
+                '{"goal":"awareness","assessment_time":"actual",'
+                '"platform":"tiktok","market":"US"}'
             ),
         )
         self.assertEqual(
@@ -357,15 +357,14 @@ class AuditArtifactValidatorTests(unittest.TestCase):
         )
 
         malformed = artifact(
-            framework="C3", profile="ace-awareness",
+            framework="STAR", profile="awareness",
             context=(
-                '{"scope":"ace","goal":"awareness","assessment_time":"actual",'
-                '"rollup_id":["campaign-1"],"extra":true}'
+                '{"goal":"awareness","assessment_time":"someday",'
+                '"platform":"tiktok","market":"US"}'
             ),
         )
         errors = self.validate(malformed, "memory/audits/influencer/result.md")[1]
-        self.assertTrue(any("rollup_id must be a non-empty string" in error for error in errors))
-        self.assertTrue(any("unknown fields" in error for error in errors))
+        self.assertTrue(any("assessment_time must be one of" in error for error in errors))
 
     def test_direct_audit_path_is_reserved_for_unscored_multi_summary(self):
         _, individual_errors = self.validate(artifact(), "memory/audits/result.md")

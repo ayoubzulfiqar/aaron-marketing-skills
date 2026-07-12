@@ -20,10 +20,6 @@ import sys
 import tempfile
 import time
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _framework_runtime import validate_c3_context as validate_typed_c3_context
-
-
 SCHEMA_VERSION = "3.0"
 RUNBOOK_VERSION = "3.0.0"
 MIN_SCORE_COVERAGE = 100
@@ -39,7 +35,7 @@ MAX_HOOK_JSON_NODES = 10_000
 MAX_CONTEXT_JSON_DEPTH = 64
 MAX_CONTEXT_JSON_NODES = 10_000
 MAX_JSON_NUMBER_DIGITS = 1000
-FRAMEWORKS = {"CORE-EEAT", "CITE", "C3", "ROAS", "SEND", "RAMP", "ECHO", "TALE", "MULTI"}
+FRAMEWORKS = {"CORE-EEAT", "CITE", "STAR", "ROAS", "SEND", "RAMP", "ECHO", "TALE", "MULTI"}
 STATUSES = {"DONE", "DONE_WITH_CONCERNS", "BLOCKED", "NEEDS_INPUT"}
 VERDICTS = {"SHIP", "FIX", "BLOCK", "UNDECIDED"}
 SCORE_STATES = {"SCORED", "NOT_SCORED"}
@@ -48,7 +44,7 @@ SEVERITIES = {"veto", "high", "medium", "low"}
 PATH_FRAMEWORK = {
     "content": "CORE-EEAT",
     "domain": "CITE",
-    "influencer": "C3",
+    "influencer": "STAR",
     "ad": "ROAS",
     "email": "SEND",
     "launch": "RAMP",
@@ -273,13 +269,6 @@ def load_framework_catalog():
         return {}, "cannot load framework catalog fail-closed: %s" % exc
 
 
-def validate_c3_context(context, errors):
-    """Keep durable C3 context identical to the scorer's closed typed input."""
-    if not isinstance(context, dict):
-        return
-    validate_typed_c3_context(context, errors, label="C3 context")
-
-
 def validate(path, relative_path=None):
     try:
         before = os.lstat(path)
@@ -380,8 +369,6 @@ def validate(path, relative_path=None):
                 for key, allowed in specification.get("context_allowed", {}).items():
                     if context.get(key) not in allowed:
                         errors.append("context.%s must be one of %s" % (key, allowed))
-                if framework == "C3":
-                    validate_c3_context(context, errors)
 
     status = body.get("status")
     verdict = body.get("verdict")

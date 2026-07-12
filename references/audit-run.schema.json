@@ -40,7 +40,7 @@
   "allOf": [
     {
       "if": {
-        "properties": {"framework": {"const": "C3"}},
+        "properties": {"framework": {"const": "STAR"}},
         "required": ["framework"]
       },
       "then": {
@@ -48,12 +48,12 @@
           "context": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["scope", "goal", "assessment_time", "rollup_id"],
+            "required": ["goal", "assessment_time", "platform", "market"],
             "properties": {
-              "scope": {"enum": ["ace", "art", "roi"]},
               "goal": {"enum": ["awareness", "engagement", "conversion", "brand-building"]},
               "assessment_time": {"enum": ["forecast", "actual"]},
-              "rollup_id": {"type": "string", "minLength": 1, "pattern": "\\S"}
+              "platform": {"type": "string", "minLength": 1},
+              "market": {"type": "string", "minLength": 1}
             }
           }
         }

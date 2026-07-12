@@ -33,7 +33,7 @@
 - [ ] `CLAUDE.md` category table updated (if counts/structure changed)
 - [ ] `AGENTS.md` name/count line updated (if counts/structure changed)
 - [ ] `docs/README.zh.md` counts + version badge updated (if counts/structure changed)
-- [ ] No CORE-EEAT, CITE, C³, ROAS, veto, cap, BLOCKED, or artifact-gate standard was weakened
+- [ ] No CORE-EEAT, CITE, STAR, ROAS, veto, cap, BLOCKED, or artifact-gate standard was weakened
 - [ ] No new pip / third-party dependency (stdlib-only; enforced by `scripts/check-stdlib-only.sh`)
 - [ ] No secrets / PII introduced (`scripts/check-pii.py` clean)
 - [ ] Eval structure intact (`scripts/check-evals.py`; `--update` the manifest if skills changed)

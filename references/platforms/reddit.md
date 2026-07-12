@@ -54,4 +54,4 @@ When generating Reddit copy, return:
 
 ## Related
 - `../platforms/` — other platform playbooks
-- `../c3-benchmark.md` — influencer content scoring (Creator/Content/Campaign)
+- `../star-benchmark.md` — influencer content scoring (Suitability/Trust/Appeal/Return)

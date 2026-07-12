@@ -88,7 +88,7 @@ Output names the top trends to act on now — e.g. "Hot Girl Walk" Evolution (2.
 - [skill-contract.md](../../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../../references/state-model.md) — HOT/WARM/COLD memory tiers and save paths.
 - [CONNECTORS.md](../../../CONNECTORS.md) — free/keyless data recipe per connector category.
-- C3 benchmark scoring at [references/c3/scoring-architecture.md](../../../references/c3/scoring-architecture.md) — for grading trend-driven creative output downstream.
+- STAR benchmark scoring at [references/star-benchmark.md](../../../references/star-benchmark.md) — for grading trend-driven creative output downstream.
 - Siblings in the discover phase: [audience-mapper](../audience-mapper/SKILL.md), [influencer-discovery](../influencer-discovery/SKILL.md), [fit-scorer](../fit-scorer/SKILL.md).
 
 ## Next Best Skill

@@ -17,13 +17,6 @@ import os
 import re
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _framework_runtime import (
-    C3_ASSESSMENT_TIMES, C3_CONTEXT_FIELDS, C3_GOALS, C3_SCOPES,
-    validate_c3_context,
-)
-
-
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_CATALOG = os.path.join(ROOT, "references", "framework-catalog.json")
 OBSERVED_STATES = {"pass", "partial", "fail"}
@@ -50,7 +43,7 @@ SEMANTICS_FIELDS = {
 FRAMEWORK_FIELDS = {
     "source", "construct", "unit_of_analysis", "required_context", "context_allowed",
     "profiles", "dimensions", "item_definitions", "item_policies", "veto_items",
-    "benchmark_mode", "cross_scope_rollup", "composite_score", "outcomes",
+    "benchmark_mode", "composite_score", "outcomes",
 }
 PROFILE_FIELDS = {"context_equals", "dimensions", "include_items", "exclude_items"}
 DIMENSION_FIELDS = {"name", "item_prefix", "item_count", "id_width"}
@@ -225,7 +218,7 @@ def validate_catalog(catalog):
         errors.append("catalog_version must be a semantic version")
 
     frameworks = catalog.get("frameworks")
-    expected_names = {"CORE-EEAT", "CITE", "C3", "ROAS", "SEND", "RAMP", "ECHO", "TALE"}
+    expected_names = {"CORE-EEAT", "CITE", "STAR", "ROAS", "SEND", "RAMP", "ECHO", "TALE"}
     if not isinstance(frameworks, dict) or set(frameworks) != expected_names:
         errors.append("catalog must contain exactly the eight frameworks")
         if not isinstance(frameworks, dict):
@@ -307,8 +300,6 @@ def validate_catalog(catalog):
                 errors.append("%s %s must be a non-empty string" % (name, field_name))
         if "composite_score" in framework and not isinstance(framework["composite_score"], bool):
             errors.append("%s composite_score must be boolean" % name)
-        if "cross_scope_rollup" in framework and not isinstance(framework["cross_scope_rollup"], dict):
-            errors.append("%s cross_scope_rollup must be an object" % name)
         required_context = framework.get("required_context", [])
         valid_context_keys = (
             isinstance(required_context, list) and bool(required_context)
@@ -511,25 +502,6 @@ def json_number(value):
     return float(value)
 
 
-def floor_cube_root(value):
-    """Floor an exact non-negative cube root without a floating-point guess."""
-    value = exact_fraction(value)
-    if value < 0:
-        raise RubricError("cube-root input must be non-negative")
-    numerator = value.numerator
-    denominator = value.denominator
-    low, high = 0, 1
-    while high ** 3 * denominator <= numerator:
-        low, high = high, high * 2
-    while low + 1 < high:
-        middle = (low + high) // 2
-        if middle ** 3 * denominator <= numerator:
-            low = middle
-        else:
-            high = middle
-    return low
-
-
 def score_run(run, catalog):
     errors = validate_catalog(catalog)
     if errors:
@@ -561,8 +533,6 @@ def score_run(run, catalog):
     if not isinstance(context, dict):
         errors.append("context must be an object")
         context = {}
-    if framework_name == "C3":
-        validate_c3_context(context, errors)
     for key in framework.get("required_context", []):
         if key not in context or context[key] in (None, "", []):
             errors.append("missing required context: %s" % key)
@@ -806,214 +776,12 @@ def score_run(run, catalog):
     return result
 
 
-def active_catalog_version(expected_catalog_version=None):
-    """Resolve the explicitly selected catalog or the repository default."""
-    if expected_catalog_version is None:
-        catalog = load_json(DEFAULT_CATALOG)
-        errors = validate_catalog(catalog)
-        if errors:
-            raise RubricError("invalid catalog: " + "; ".join(errors))
-        expected_catalog_version = catalog["catalog_version"]
-    if (not isinstance(expected_catalog_version, str)
-            or not SEMVER_RE.fullmatch(expected_catalog_version)):
-        raise RubricError("active catalog_version must be a semantic version")
-    return expected_catalog_version
-
-
-def validate_c3_component_state(result):
-    """Reject forged/incomplete component summaries before a CVI is computed."""
-    status = result.get("status")
-    verdict = result.get("verdict")
-    score_state = result.get("score_state")
-    coverage = result.get("evidence_coverage")
-    confidence = result.get("score_confidence")
-    veto_count = result.get("veto_count")
-    cap_applied = result.get("cap_applied")
-    raw = result.get("raw_overall_score")
-    final = result.get("final_overall_score")
-
-    if score_state != "SCORED":
-        raise RubricError("every C3 component must be a complete scored result")
-    if not isinstance(coverage, int) or isinstance(coverage, bool) or coverage != 100:
-        raise RubricError("every C3 component requires evidence_coverage 100")
-    if not isinstance(confidence, str) or confidence not in {"high", "medium", "low"}:
-        raise RubricError("every C3 component requires a scored confidence label")
-    if (not isinstance(veto_count, int) or isinstance(veto_count, bool)
-            or veto_count < 0):
-        raise RubricError("C3 component veto_count must be a non-negative integer")
-    if not isinstance(cap_applied, bool):
-        raise RubricError("C3 component cap_applied must be boolean")
-    for label, value in (("raw_overall_score", raw), ("final_overall_score", final)):
-        if not isinstance(value, int) or isinstance(value, bool) or not 0 <= value <= 100:
-            raise RubricError("C3 component %s must be an integer from 0 to 100" % label)
-
-    if veto_count == 0:
-        if cap_applied or final != raw:
-            raise RubricError("zero-veto C3 components require final == raw and no cap")
-        if verdict == "SHIP":
-            if status != "DONE" or raw < 75:
-                raise RubricError("C3 SHIP components require DONE and raw score >= 75")
-        elif verdict == "FIX":
-            if status != "DONE_WITH_CONCERNS":
-                raise RubricError("C3 FIX components require DONE_WITH_CONCERNS")
-        else:
-            raise RubricError("zero-veto C3 components require SHIP or FIX")
-    elif veto_count == 1:
-        if (status != "DONE_WITH_CONCERNS" or verdict != "FIX" or not cap_applied
-                or final != min(raw, 59)):
-            raise RubricError("one-veto C3 components require FIX and final=min(raw, 59)")
-    else:
-        raise RubricError("blocked C3 components cannot produce a CVI")
-
-
-def c3_rollup(payload, expected_catalog_version=None):
-    expected_catalog_version = active_catalog_version(expected_catalog_version)
-    if not isinstance(payload, dict) or set(payload) - {"scopes", "components"}:
-        raise RubricError("C3 rollup input must contain only scopes or components")
-    if ("scopes" in payload) == ("components" in payload):
-        raise RubricError("C3 rollup requires exactly one of scopes or components")
-    if "scopes" in payload:
-        scopes = payload["scopes"]
-        if not isinstance(scopes, list) or len(scopes) != 3:
-            raise RubricError("C3 scopes mode requires exactly three scored results")
-        components = {"ace": [], "art": [], "roi": []}
-        for result in scopes:
-            prefix = str(result.get("profile", "")).split("-", 1)[0] if isinstance(result, dict) else ""
-            if prefix not in components or components[prefix]:
-                raise RubricError("C3 scopes mode requires one ACE, one ART, and one ROI result")
-            components[prefix].append({"result": result})
-    else:
-        raw_components = payload["components"]
-        if not isinstance(raw_components, dict) or set(raw_components) != {"ace", "art", "roi"}:
-            raise RubricError("C3 components require exactly ace, art, and roi arrays")
-        components = {}
-        for scope, entries in raw_components.items():
-            if not isinstance(entries, list) or not entries:
-                raise RubricError("C3 %s components must be a non-empty array" % scope)
-            if scope == "roi" and len(entries) != 1:
-                raise RubricError("C3 components require exactly one ROI result")
-            components[scope] = entries
-
-    scores_by_scope = {"ace": [], "art": [], "roi": []}
-    weights = []
-    times = set()
-    dates = set()
-    goals = set()
-    rollup_ids = set()
-    catalog_versions = set()
-    targets = {"ace": [], "art": [], "roi": []}
-    for scope in ("ace", "art", "roi"):
-        for entry in components[scope]:
-            if not isinstance(entry, dict) or set(entry) - {"result", "weight"} or "result" not in entry:
-                raise RubricError("C3 component entries require result and optional weight only")
-            result = entry["result"]
-            if not isinstance(result, dict) or result.get("framework") != "C3" or result.get("score_state") != "SCORED":
-                raise RubricError("every C3 component must be a scored C3 result")
-            validate_c3_component_state(result)
-            profile_value = result.get("profile")
-            if not isinstance(profile_value, str):
-                raise RubricError("C3 component profile must be a string")
-            profile_parts = profile_value.split("-", 1)
-            if len(profile_parts) != 2 or profile_parts[0] != scope:
-                raise RubricError("C3 %s component must use an %s-* profile" % (scope, scope))
-            goal = profile_parts[1]
-            if goal not in C3_GOALS:
-                raise RubricError("C3 component has an unknown goal profile")
-            if "final_overall_score" not in result:
-                raise RubricError("blocked C3 components cannot produce a CVI")
-            value = result["final_overall_score"]
-            if not isinstance(value, int) or isinstance(value, bool) or not 0 <= value <= 100:
-                raise RubricError("C3 component scores must be integers from 0 to 100")
-            context = result.get("context")
-            identity_errors = []
-            validate_c3_context(
-                context, identity_errors, "C3 component context",
-                expected_scope=scope, expected_goal=goal,
-            )
-            if identity_errors:
-                raise RubricError("; ".join(sorted(set(identity_errors))))
-            target = result.get("target")
-            if not isinstance(target, str) or not target.strip():
-                raise RubricError("C3 component target is required")
-            observed_at = result.get("observed_at")
-            date_errors = []
-            if parse_date(observed_at, "C3 component observed_at", date_errors) is None:
-                raise RubricError("; ".join(date_errors))
-            catalog_version = result.get("catalog_version")
-            if not isinstance(catalog_version, str) or not SEMVER_RE.fullmatch(catalog_version):
-                raise RubricError("C3 component catalog_version must be a semantic version")
-            if catalog_version != expected_catalog_version:
-                raise RubricError(
-                    "C3 component catalog_version %s does not match active catalog %s"
-                    % (catalog_version, expected_catalog_version)
-                )
-            scores_by_scope[scope].append(value)
-            targets[scope].append(target)
-            times.add(context["assessment_time"])
-            goals.add(goal)
-            rollup_ids.add(context["rollup_id"])
-            dates.add(observed_at)
-            catalog_versions.add(catalog_version)
-
-            if scope == "ace":
-                raw_weight = entry.get("weight")
-                if len(components["ace"]) > 1 and raw_weight is None:
-                    raise RubricError("multiple ACE components require a positive budget weight")
-                raw_weight = 1 if raw_weight is None else raw_weight
-                if not finite_number(raw_weight) or raw_weight <= 0:
-                    raise RubricError("ACE component weight must be a positive finite number")
-                weight = exact_fraction(raw_weight)
-                weights.append(weight)
-            elif "weight" in entry:
-                raise RubricError("only ACE components accept budget weights; ART is equal-weighted")
-    if len(times) != 1 or None in times:
-        raise RubricError("C3 scopes must use the same assessment_time; forecast and actual cannot mix")
-    if not times.issubset({"forecast", "actual"}):
-        raise RubricError("C3 assessment_time must be forecast or actual")
-    if len(dates) != 1:
-        raise RubricError("C3 scopes must share one observation date")
-    if len(goals) != 1:
-        raise RubricError("C3 scopes must share one goal")
-    if len(rollup_ids) != 1 or None in rollup_ids:
-        raise RubricError("C3 scopes must share one rollup_id")
-    if len(catalog_versions) != 1 or None in catalog_versions:
-        raise RubricError("C3 scopes must share one catalog version")
-    ace_numerator = sum(
-        Fraction(value) * weight for value, weight in zip(scores_by_scope["ace"], weights)
-    )
-    ace_score = ace_numerator / sum(weights)
-    art_score = Fraction(sum(scores_by_scope["art"]), len(scores_by_scope["art"]))
-    roi_score = Fraction(scores_by_scope["roi"][0])
-    aggregate_scores = {
-        "ace": json_number(ace_score),
-        "art": json_number(art_score),
-        "roi": json_number(roi_score),
-    }
-    product = ace_score * art_score * roi_score
-    return {
-        "framework": "C3",
-        "rollup": "CVI",
-        "catalog_version": catalog_versions.pop(),
-        "goal": goals.pop(),
-        "rollup_id": rollup_ids.pop(),
-        "assessment_time": times.pop(),
-        "observed_at": dates.pop(),
-        "scope_scores": aggregate_scores,
-        "component_counts": {scope: len(values) for scope, values in scores_by_scope.items()},
-        "component_targets": targets,
-        "cvi": floor_cube_root(product),
-        "advisory": True,
-    }
-
-
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--catalog", default=DEFAULT_CATALOG)
     subparsers = parser.add_subparsers(dest="command", required=True)
     score_parser = subparsers.add_parser("score", help="Score one typed audit run.")
     score_parser.add_argument("run")
-    c3_parser = subparsers.add_parser("c3-rollup", help="Roll up three scored C3 scope results.")
-    c3_parser.add_argument("results")
     subparsers.add_parser("check-catalog", help="Validate the framework catalog.")
     args = parser.parse_args(argv)
     try:
@@ -1024,10 +792,7 @@ def main(argv=None):
         if args.command == "check-catalog":
             print("framework catalog valid: 8 frameworks")
             return 0
-        if args.command == "score":
-            output = score_run(load_json(args.run), catalog)
-        else:
-            output = c3_rollup(load_json(args.results), catalog["catalog_version"])
+        output = score_run(load_json(args.run), catalog)
     except (RubricError, OverflowError, RecursionError) as exc:
         print("error: %s" % exc, file=sys.stderr)
         return 1

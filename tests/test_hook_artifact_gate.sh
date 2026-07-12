@@ -196,18 +196,18 @@ printf 'not a typed Markdown artifact\n' > "$PROJ/memory/audits/content/bypass.t
 assert_block "non-Markdown files cannot bypass the reserved sink" "$(gate content/bypass.txt)"
 rm -f "$PROJ/memory/audits/content/bypass.txt"
 
-echo "Artifact Gate — C3 influencer (creator-content-auditor) artifacts"
+echo "Artifact Gate — STAR influencer (creator-content-auditor) artifacts"
 mkdir -p "$PROJ/memory/audits/influencer" "$PROJ/memory/audits/ad" "$PROJ/memory/influencer/creator-content-auditor"
 
-# C3-1. Compliant creator-content-auditor ART artifact (Approved->DONE) under memory/audits/influencer/ -> PASS
+# STAR-1. Compliant creator-content-auditor ART artifact (Approved->DONE) under memory/audits/influencer/ -> PASS
 cat > "$PROJ/memory/audits/influencer/cr_good.md" <<'EOF'
 ---
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
 catalog_version: "18.0.0"
-framework: C3
-profile: art-awareness
+framework: STAR
+profile: awareness
 ---
 
 status: DONE
@@ -216,12 +216,12 @@ score_state: SCORED
 objective: "review sponsored Reel for brand + FTC compliance"
 target: "creator @example, IG Reel"
 observed_at: 2026-07-10
-context: {"scope":"art","goal":"awareness","assessment_time":"actual","rollup_id":"campaign-1"}
+context: {"goal":"awareness","assessment_time":"actual","platform":"instagram","market":"US"}
 key_findings:
   - title: disclosure present
     severity: low
     evidence: "#ad in first line"
-evidence_summary: ART reviewed — appeal/relevance/transparency
+evidence_summary: STAR content dims reviewed — appeal + trust
 evidence_coverage: 100
 score_confidence: high
 open_loops: none
@@ -231,17 +231,17 @@ cap_applied: false
 raw_overall_score: 86
 final_overall_score: 86
 EOF
-assert_pass "C3 creator-content-auditor ART artifact (DONE) passes the gate" "$(gate influencer/cr_good.md)"
+assert_pass "STAR creator-content-auditor artifact (DONE) passes the gate" "$(gate influencer/cr_good.md)"
 
-# C3-2. One verified veto is a completed FIX with the universal Low-band ceiling.
+# STAR-2. One verified veto is a completed FIX with the universal Low-band ceiling.
 cat > "$PROJ/memory/audits/influencer/cr_veto.md" <<'EOF'
 ---
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
 catalog_version: "18.0.0"
-framework: C3
-profile: art-awareness
+framework: STAR
+profile: awareness
 ---
 
 status: DONE_WITH_CONCERNS
@@ -250,7 +250,7 @@ score_state: SCORED
 objective: "review sponsored post"
 target: "creator @example, TikTok"
 observed_at: 2026-07-10
-context: {"scope":"art","goal":"awareness","assessment_time":"actual","rollup_id":"campaign-1"}
+context: {"goal":"awareness","assessment_time":"actual","platform":"instagram","market":"US"}
 key_findings:
   - title: disclosure absent
     severity: veto
@@ -265,13 +265,13 @@ cap_applied: true
 raw_overall_score: 70
 final_overall_score: 59
 EOF
-assert_pass "C3 single-veto FIX uses the universal 59 ceiling" "$(gate influencer/cr_veto.md)"
+assert_pass "STAR single-veto FIX uses the universal 59 ceiling" "$(gate influencer/cr_veto.md)"
 
-# C3-3. Marked influencer artifact missing cap_applied -> BLOCK (gate enforces on the influencer subdir too)
+# STAR-3. Marked influencer artifact missing cap_applied -> BLOCK (gate enforces on the influencer subdir too)
 sed '/^cap_applied:/d' "$PROJ/memory/audits/influencer/cr_good.md" > "$PROJ/memory/audits/influencer/cr_bad.md"
-assert_block "C3 influencer artifact missing cap_applied blocks" "$(gate influencer/cr_bad.md)"
+assert_block "STAR influencer artifact missing cap_applied blocks" "$(gate influencer/cr_bad.md)"
 
-# C3-4. A creator-content-auditor working draft OUTSIDE memory/audits/ is NOT gated (discipline-local, fail-open)
+# STAR-4. A creator-content-auditor working draft OUTSIDE memory/audits/ is NOT gated (discipline-local, fail-open)
 cat > "$PROJ/memory/influencer/creator-content-auditor/draft.md" <<'EOF'
 ---
 class: auditor-output
@@ -282,7 +282,7 @@ EOF
 draft_out="$(printf '{"tool_input":{"file_path":"memory/influencer/creator-content-auditor/draft.md"},"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" post-tool-use)"
 assert_pass "creator-content-auditor draft outside memory/audits/ is not gated (fail-open)" "$draft_out"
 
-# C3-5. ROAS ad-account-auditor artifact under memory/audits/ad/ -> PASS (explicit paid-consumer coverage)
+# STAR-5. ROAS ad-account-auditor artifact under memory/audits/ad/ -> PASS (explicit paid-consumer coverage)
 cat > "$PROJ/memory/audits/ad/aa_good.md" <<'EOF'
 ---
 class: auditor-output
@@ -316,7 +316,7 @@ final_overall_score: 78
 EOF
 assert_pass "ROAS ad/ artifact passes the gate" "$(gate ad/aa_good.md)"
 
-# C3-6. Path ownership is enforced.
+# STAR-6. Path ownership is enforced.
 sed 's/framework: ROAS/framework: SEND/' "$PROJ/memory/audits/ad/aa_good.md" > "$PROJ/memory/audits/ad/aa_wrong_framework.md"
 assert_block "audit sink rejects the wrong framework" "$(gate ad/aa_wrong_framework.md)"
 

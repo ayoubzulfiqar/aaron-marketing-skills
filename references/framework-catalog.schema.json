@@ -11,11 +11,11 @@
     "frameworks": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["CORE-EEAT", "CITE", "C3", "ROAS", "SEND", "RAMP", "ECHO", "TALE"],
+      "required": ["CORE-EEAT", "CITE", "STAR", "ROAS", "SEND", "RAMP", "ECHO", "TALE"],
       "properties": {
         "CORE-EEAT": {"$ref": "#/$defs/framework"},
         "CITE": {"$ref": "#/$defs/framework"},
-        "C3": {"$ref": "#/$defs/framework"},
+        "STAR": {"$ref": "#/$defs/framework"},
         "ROAS": {"$ref": "#/$defs/framework"},
         "SEND": {"$ref": "#/$defs/framework"},
         "RAMP": {"$ref": "#/$defs/framework"},
@@ -132,7 +132,6 @@
         "item_policies": {"type": "object", "additionalProperties": {"$ref": "#/$defs/itemPolicy"}},
         "veto_items": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
         "benchmark_mode": {"type": "string", "minLength": 1},
-        "cross_scope_rollup": {"type": "object"},
         "composite_score": {"type": "boolean"},
         "outcomes": {"type": "string", "minLength": 1}
       }
