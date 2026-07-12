@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """kg.py — keyless entity / knowledge-graph lookups against Wikidata & Wikipedia.
 
-For `entity-optimizer` and `geo-content-optimizer`: resolve a brand / person /
+For `entity-registry` and `geo-content-optimizer`: resolve a brand / person /
 product string to a canonical Wikidata entity (QID), inspect its structured
 claims, and confirm whether the open knowledge graph that feeds Google's
 Knowledge Panel and most AI answer engines actually recognizes the entity.

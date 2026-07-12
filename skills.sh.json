@@ -25,7 +25,7 @@
       ]
     },
     {
-      "title": "SEO/GEO (16) — research → build → optimize → monitor",
+      "title": "SEO/GEO · SITE · CORE-EEAT+CITE (16) — survey → implement → tune → evaluate",
       "description": "Search and generative-engine optimization: keyword/SERP/gap research, content and citation readiness, markup/page plays, CORE-EEAT and CITE auditor gates, then rank, performance, and off-site monitoring.",
       "skills": [
         "keyword-research",
@@ -38,7 +38,7 @@
         "page-play-builder",
         "content-quality-auditor",
         "technical-seo-checker",
-        "on-page-seo-auditor",
+        "on-page-seo-checker",
         "site-structure-optimizer",
         "domain-authority-auditor",
         "rank-tracker",
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "title": "Influencer marketing (16) — discover → plan → activate → measure",
+      "title": "Influencer marketing · STAR · C³ (16) — scout → target → activate → report",
       "description": "Creator campaigns end to end: audience and creator discovery, planning/briefs/budgets, outreach and the C3 ART content gate, contracts/amplification, then post-click, ROI, and reporting evidence.",
       "skills": [
         "audience-mapper",
@@ -125,7 +125,7 @@
         "brief-generator",
         "budget-optimizer",
         "outreach-manager",
-        "content-reviewer",
+        "creator-content-auditor",
         "contract-helper",
         "content-amplifier",
         "landing-optimizer",
@@ -160,7 +160,7 @@
       "title": "Protocol layer (8) — shared truth registries & memory",
       "description": "Seven sole-writer registries backed by append-only event streams and rebuildable projections, plus non-canonical HOT/WARM/COLD working memory. Other skills propose; registry owners authorize canonical mutations.",
       "skills": [
-        "entity-optimizer",
+        "entity-registry",
         "creator-registry",
         "offer-claims-registry",
         "consent-registry",

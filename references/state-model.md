@@ -36,7 +36,7 @@ The repository tracks only safe templates and guidance under `memory/`. A full c
 
 | Registry | Canonical stream | Owner | Human view |
 |---|---|---|---|
-| Entities | `memory/events/entities.ndjson` | `entity-optimizer` | `memory/entities/` |
+| Entities | `memory/events/entities.ndjson` | `entity-registry` | `memory/entities/` |
 | Creators | `memory/events/creators.ndjson` | `creator-registry` | `memory/creators/` |
 | Claims/offers | `memory/events/claims.ndjson` | `offer-claims-registry` | `memory/claims/` |
 | Consent/suppression | `memory/events/consent.ndjson` | `consent-registry` | `memory/consent/` |
@@ -77,7 +77,7 @@ WARM paths hold dated artifacts produced by skills, for example:
 |---|---|
 | SEO/GEO research | `memory/research/<skill>/` |
 | SEO/GEO build | `memory/content/<skill>/` |
-| SEO/GEO optimize | `memory/seo-geo/optimize/<skill>/` |
+| SEO/GEO optimize | `memory/seo-geo/tune/<skill>/` |
 | SEO/GEO monitor | `memory/monitoring/<skill>/` |
 | Influencer | `memory/influencer/<skill>/` |
 | Paid ads | `memory/ad/<skill>/` |

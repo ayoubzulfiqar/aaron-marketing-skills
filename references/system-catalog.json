@@ -122,33 +122,33 @@
         "CORE-EEAT",
         "CITE"
       ],
-      "loop": "Research -> Build -> Optimize -> Monitor",
+      "loop": "Survey -> Implement -> Tune -> Evaluate",
       "phase_order": [
-        "research",
-        "build",
-        "optimize",
-        "monitor"
+        "survey",
+        "implement",
+        "tune",
+        "evaluate"
       ],
       "phases": {
-        "research": [
+        "survey": [
           "keyword-research",
           "competitor-analysis",
           "serp-analysis",
           "content-gap-analysis"
         ],
-        "build": [
+        "implement": [
           "content-writer",
           "geo-content-optimizer",
           "serp-markup-builder",
           "page-play-builder"
         ],
-        "optimize": [
+        "tune": [
           "content-quality-auditor",
           "technical-seo-checker",
-          "on-page-seo-auditor",
+          "on-page-seo-checker",
           "site-structure-optimizer"
         ],
-        "monitor": [
+        "evaluate": [
           "domain-authority-auditor",
           "rank-tracker",
           "performance-monitor",
@@ -282,21 +282,21 @@
       "frameworks": [
         "C3"
       ],
-      "loop": "Discover -> Plan -> Activate -> Measure",
+      "loop": "Scout -> Target -> Activate -> Report",
       "phase_order": [
-        "discover",
-        "plan",
+        "scout",
+        "target",
         "activate",
-        "measure"
+        "report"
       ],
       "phases": {
-        "discover": [
+        "scout": [
           "audience-mapper",
           "trend-spotter",
           "influencer-discovery",
           "fit-scorer"
         ],
-        "plan": [
+        "target": [
           "competitor-tracker",
           "campaign-planner",
           "brief-generator",
@@ -304,11 +304,11 @@
         ],
         "activate": [
           "outreach-manager",
-          "content-reviewer",
+          "creator-content-auditor",
           "contract-helper",
           "content-amplifier"
         ],
-        "measure": [
+        "report": [
           "landing-optimizer",
           "performance-analyzer",
           "roi-calculator",
@@ -361,7 +361,7 @@
     "display_name": "Shared Protocol",
     "layer": "L4",
     "skills": [
-      "entity-optimizer",
+      "entity-registry",
       "creator-registry",
       "offer-claims-registry",
       "consent-registry",
@@ -374,7 +374,7 @@
   "registries": [
     {
       "key": "entities",
-      "owner": "entity-optimizer",
+      "owner": "entity-registry",
       "stream": "memory/events/entities.ndjson",
       "projection": "memory/projections/entities.json",
       "human_view": "memory/entities/"
@@ -483,7 +483,7 @@
     {
       "skill": "content-quality-auditor",
       "framework": "CORE-EEAT",
-      "path": "seo-geo/optimize/content-quality-auditor",
+      "path": "seo-geo/tune/content-quality-auditor",
       "sink": "memory/audits/content/",
       "runtime_sources": [
         "references/auditor-runbook.md",
@@ -496,7 +496,7 @@
     {
       "skill": "domain-authority-auditor",
       "framework": "CITE",
-      "path": "seo-geo/monitor/domain-authority-auditor",
+      "path": "seo-geo/evaluate/domain-authority-auditor",
       "sink": "memory/audits/domain/",
       "runtime_sources": [
         "references/auditor-runbook.md",
@@ -546,18 +546,18 @@
       ]
     },
     {
-      "skill": "content-reviewer",
+      "skill": "creator-content-auditor",
       "framework": "C3",
-      "path": "influencer/activate/content-reviewer",
+      "path": "influencer/activate/creator-content-auditor",
       "sink": "memory/audits/influencer/",
       "runtime_sources": [
         "references/auditor-runbook.md",
         "references/scoring-semantics.md",
         "references/c3-benchmark.md",
-                      "references/c3/art-content-benchmark.md",
-                      "references/c3/scoring-architecture.md",
-                      "references/c3-rollup.schema.json",
-                      "references/audit-run.schema.json",
+        "references/c3/art-content-benchmark.md",
+        "references/c3/scoring-architecture.md",
+        "references/c3-rollup.schema.json",
+        "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
       ]
     },
@@ -588,11 +588,11 @@
       "blocked"
     ],
     "builders": [
-      "seo-geo/build/content-writer",
+      "seo-geo/implement/content-writer",
       "social/craft/social-creative-builder",
       "email/engage/email-creative-builder",
       "ad/orchestrate/ad-creative-builder",
-      "influencer/plan/brief-generator",
+      "influencer/target/brief-generator",
       "launch/assemble/message-house-builder",
       "launch/assemble/launch-asset-packager"
     ]

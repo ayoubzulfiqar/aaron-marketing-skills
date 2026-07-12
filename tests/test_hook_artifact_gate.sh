@@ -196,10 +196,10 @@ printf 'not a typed Markdown artifact\n' > "$PROJ/memory/audits/content/bypass.t
 assert_block "non-Markdown files cannot bypass the reserved sink" "$(gate content/bypass.txt)"
 rm -f "$PROJ/memory/audits/content/bypass.txt"
 
-echo "Artifact Gate — C3 influencer (content-reviewer) artifacts"
-mkdir -p "$PROJ/memory/audits/influencer" "$PROJ/memory/audits/ad" "$PROJ/memory/influencer/content-reviewer"
+echo "Artifact Gate — C3 influencer (creator-content-auditor) artifacts"
+mkdir -p "$PROJ/memory/audits/influencer" "$PROJ/memory/audits/ad" "$PROJ/memory/influencer/creator-content-auditor"
 
-# C3-1. Compliant content-reviewer ART artifact (Approved->DONE) under memory/audits/influencer/ -> PASS
+# C3-1. Compliant creator-content-auditor ART artifact (Approved->DONE) under memory/audits/influencer/ -> PASS
 cat > "$PROJ/memory/audits/influencer/cr_good.md" <<'EOF'
 ---
 class: auditor-output
@@ -231,7 +231,7 @@ cap_applied: false
 raw_overall_score: 86
 final_overall_score: 86
 EOF
-assert_pass "C3 content-reviewer ART artifact (DONE) passes the gate" "$(gate influencer/cr_good.md)"
+assert_pass "C3 creator-content-auditor ART artifact (DONE) passes the gate" "$(gate influencer/cr_good.md)"
 
 # C3-2. One verified veto is a completed FIX with the universal Low-band ceiling.
 cat > "$PROJ/memory/audits/influencer/cr_veto.md" <<'EOF'
@@ -259,7 +259,7 @@ evidence_summary: "T1 veto — no disclosure on paid post (FTC 16 CFR 255)"
 evidence_coverage: 100
 score_confidence: high
 open_loops: "disclosure must be fixed before publication"
-recommended_next_skill: content-reviewer
+recommended_next_skill: creator-content-auditor
 veto_count: 1
 cap_applied: true
 raw_overall_score: 70
@@ -271,16 +271,16 @@ assert_pass "C3 single-veto FIX uses the universal 59 ceiling" "$(gate influence
 sed '/^cap_applied:/d' "$PROJ/memory/audits/influencer/cr_good.md" > "$PROJ/memory/audits/influencer/cr_bad.md"
 assert_block "C3 influencer artifact missing cap_applied blocks" "$(gate influencer/cr_bad.md)"
 
-# C3-4. A content-reviewer working draft OUTSIDE memory/audits/ is NOT gated (discipline-local, fail-open)
-cat > "$PROJ/memory/influencer/content-reviewer/draft.md" <<'EOF'
+# C3-4. A creator-content-auditor working draft OUTSIDE memory/audits/ is NOT gated (discipline-local, fail-open)
+cat > "$PROJ/memory/influencer/creator-content-auditor/draft.md" <<'EOF'
 ---
 class: auditor-output
 ---
 status: DONE
 (intentionally incomplete working draft, not a gated artifact)
 EOF
-draft_out="$(printf '{"tool_input":{"file_path":"memory/influencer/content-reviewer/draft.md"},"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" post-tool-use)"
-assert_pass "content-reviewer draft outside memory/audits/ is not gated (fail-open)" "$draft_out"
+draft_out="$(printf '{"tool_input":{"file_path":"memory/influencer/creator-content-auditor/draft.md"},"cwd":"%s"}' "$PROJ" | CLAUDE_PROJECT_DIR="$PROJ" bash "$HOOK" post-tool-use)"
+assert_pass "creator-content-auditor draft outside memory/audits/ is not gated (fail-open)" "$draft_out"
 
 # C3-5. ROAS ad-account-auditor artifact under memory/audits/ad/ -> PASS (explicit paid-consumer coverage)
 cat > "$PROJ/memory/audits/ad/aa_good.md" <<'EOF'

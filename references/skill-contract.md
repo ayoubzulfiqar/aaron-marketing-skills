@@ -172,7 +172,7 @@ No accepted canon permits exploratory drafting only. A user may authorize a name
 |---|---|---|
 | SEO/GEO research | `memory/research/<skill>/` | entities/claims when relevant |
 | SEO/GEO build | `memory/content/<skill>/` | entities/claims |
-| SEO/GEO optimize | `memory/seo-geo/optimize/<skill>/` | relevant owner |
+| SEO/GEO optimize | `memory/seo-geo/tune/<skill>/` | relevant owner |
 | SEO/GEO monitor | `memory/monitoring/<skill>/` | entities/claims |
 | Influencer | `memory/influencer/<skill>/` | creators/claims/consent |
 | Paid ads | `memory/ad/<skill>/` | claims/consent |

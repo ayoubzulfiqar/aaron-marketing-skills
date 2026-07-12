@@ -3,7 +3,7 @@ name: creator-registry
 slug: aaron-creator-registry
 displayName: "Creator Registry · 创作者档案"
 summary: "创作者档案/达人名册"
-description: 'Use when the user asks "what did we pay this creator last time" or to "update the creator roster"; curates creator identity, rate, rights, exclusivity, compliance-event, and performance facts through the append-only creators event stream. Not for scoring fit — use fit-scorer; not for reviewing content — use content-reviewer. 创作者档案/达人名册'
+description: 'Use when the user asks "what did we pay this creator last time" or to "update the creator roster"; curates creator identity, rate, rights, exclusivity, compliance-event, and performance facts through the append-only creators event stream. Not for scoring fit — use fit-scorer; not for reviewing content — use creator-content-auditor. 创作者档案/达人名册'
 version: "17.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
@@ -74,7 +74,7 @@ Standalone one-folder installs may prepare proposals only; they cannot append/pr
 
 ## Next Best Skill
 
-- **New fit decision:** [fit-scorer](../../influencer/discover/fit-scorer/SKILL.md)
+- **New fit decision:** [fit-scorer](../../influencer/scout/fit-scorer/SKILL.md)
 - **Terms/rights:** [contract-helper](../../influencer/activate/contract-helper/SKILL.md)
 - **Re-engagement:** [outreach-manager](../../influencer/activate/outreach-manager/SKILL.md)
 - **Archive/erase:** [memory-management](../memory-management/SKILL.md)

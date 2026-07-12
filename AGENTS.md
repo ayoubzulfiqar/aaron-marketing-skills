@@ -81,7 +81,7 @@ Skills use `~~category` placeholders. See [CONNECTORS.md](CONNECTORS.md). Every 
 
 See [CLAUDE.md § Inter-Skill Handoff](CLAUDE.md). Key fields (per skill-contract §Handoff Summary Format): status, objective, key findings, evidence, assumptions, open loops, recommended next skill — plus `cap_applied` / `raw_overall_score` / `final_overall_score` for the 8 auditor-class gates.
 
-Auditor-class gates: `content-quality-auditor` (CORE-EEAT publish gate), `domain-authority-auditor` (CITE citation-trust gate), `content-reviewer` (C³ ART gate → `memory/audits/influencer/`), `ad-account-auditor` (ROAS gate → `memory/audits/ad/`), `email-quality-auditor` (SEND gate → `memory/audits/email/`), `launch-readiness-auditor` (RAMP lifecycle-profile gate → `memory/audits/launch/`), `social-quality-auditor` (ECHO asset/program gate → `memory/audits/social/`), and `narrative-quality-auditor` (TALE profile gate → `memory/audits/narrative/`). New cross-cutting reference protocols: `humanizer-slop`, the `measurement-protocol` decision protocol, and `platforms/`.
+Auditor-class gates: `content-quality-auditor` (CORE-EEAT publish gate), `domain-authority-auditor` (CITE citation-trust gate), `creator-content-auditor` (C³ ART gate → `memory/audits/influencer/`), `ad-account-auditor` (ROAS gate → `memory/audits/ad/`), `email-quality-auditor` (SEND gate → `memory/audits/email/`), `launch-readiness-auditor` (RAMP lifecycle-profile gate → `memory/audits/launch/`), `social-quality-auditor` (ECHO asset/program gate → `memory/audits/social/`), and `narrative-quality-auditor` (TALE profile gate → `memory/audits/narrative/`). New cross-cutting reference protocols: `humanizer-slop`, the `measurement-protocol` decision protocol, and `platforms/`.
 
 ## Git Workflow
 

@@ -306,7 +306,8 @@
         "O1": {"veto": true, "unknown_policy": "needs-input", "asset_gate_note": "an observed asset with no performance rate or metric claim may pass this control; do not infer from missing asset access"}
       },
       "veto_items": ["E1", "C1", "C2", "H1", "H2", "O1"],
-      "outcomes": "reported as measured metrics with controls; no rubric score until outcome calibration exists"
+      "outcomes": "reported as measured metrics with controls; no rubric score until outcome calibration exists",
+      "composite_score": false
     },
     "TALE": {
       "source": "references/tale-benchmark.md",

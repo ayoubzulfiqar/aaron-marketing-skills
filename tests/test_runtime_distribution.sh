@@ -41,7 +41,7 @@ python3 "$plugin_resolved/scripts/registry-events.py" --help >/dev/null
 # Registry instructions use the same host-root resolution and never leave a
 # runnable working-directory-relative registry command behind.
 registry_skills=(
-  entity-optimizer creator-registry offer-claims-registry consent-registry
+  entity-registry creator-registry offer-claims-registry consent-registry
   channel-registry launch-registry narrative-registry memory-management
 )
 for skill in "${registry_skills[@]}"; do

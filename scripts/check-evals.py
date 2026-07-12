@@ -33,8 +33,8 @@ MANIFEST = os.path.join(EVALS, "structure-manifest.json")
 ROUTING_LIBRARY = os.path.join(ROOT, "references", "auto-routing-scenarios.md")
 
 PHASE_DIRS = [
-    "seo-geo/research", "seo-geo/build", "seo-geo/optimize", "seo-geo/monitor", "protocol",   # SEO/GEO
-    "influencer/discover", "influencer/plan", "influencer/activate", "influencer/measure",      # influencer (4x4)
+    "seo-geo/survey", "seo-geo/implement", "seo-geo/tune", "seo-geo/evaluate", "protocol",   # SEO/GEO (SITE)
+    "influencer/scout", "influencer/target", "influencer/activate", "influencer/report",      # influencer (STAR, 4x4)
     "ad/research", "ad/orchestrate", "ad/activate", "ad/scale",                                                        # paid ads (when present)
     "email/setup", "email/engage", "email/nurture", "email/deliver",                                                          # email marketing
     "launch/research", "launch/assemble", "launch/mobilize", "launch/prove",                                                  # product launch (RAMP)
@@ -60,12 +60,14 @@ TARGET_SKILL_RE = re.compile(r'target_skill:\s*"?([A-Za-z0-9_-]+)"?')
 # expected_route is a quoted chain like "/aaron-marketing:ad --phase activate -> ...".
 EXPECTED_ROUTE_RE = re.compile(r'expected_route:\s*"([^"]*)"')
 ROUTE_CMD_RE = re.compile(r'/aaron-marketing:([a-z-]+)(?:\s+--(mode|phase)\s+([a-z-]+))?')
-# Each command's valid selector: SEO/GEO uses --mode, the six others --phase,
+# Each command's valid selector: all seven disciplines use --phase (SEO/GEO's
+# legacy --mode alias is deprecated and not allowed in the routing library),
 # auto takes neither (only --deep). Guards expected_route against a typo'd command
-# or an invalid/mismatched phase|mode value (e.g. "ad --mode research").
+# or an invalid/mismatched phase value (e.g. "ad --phase research" is valid,
+# "ad --mode research" is not).
 COMMAND_MODES = {
-    "seo-geo": ("mode", {"research", "create", "audit", "track"}),
-    "influencer": ("phase", {"discover", "plan", "activate", "measure"}),
+    "seo-geo": ("phase", {"survey", "implement", "tune", "evaluate"}),
+    "influencer": ("phase", {"scout", "target", "activate", "report"}),
     "ad": ("phase", {"research", "orchestrate", "activate", "scale"}),
     "email": ("phase", {"setup", "engage", "nurture", "deliver"}),
     "launch": ("phase", {"research", "assemble", "mobilize", "prove"}),

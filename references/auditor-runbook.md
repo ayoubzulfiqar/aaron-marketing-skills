@@ -12,7 +12,7 @@ The eight auditor-class artifact producers are:
 |---|---|---|
 | `content-quality-auditor` | CORE-EEAT | `memory/audits/content/` |
 | `domain-authority-auditor` | CITE | `memory/audits/domain/` |
-| `content-reviewer` | C3/ART | `memory/audits/influencer/` |
+| `creator-content-auditor` | C3/ART | `memory/audits/influencer/` |
 | `ad-account-auditor` | ROAS | `memory/audits/ad/` |
 | `email-quality-auditor` | SEND | `memory/audits/email/` |
 | `launch-readiness-auditor` | RAMP | `memory/audits/launch/` |

@@ -75,8 +75,8 @@ Audience, reach, engagement, return, and impact are relative to a locked creator
 
 ## Skill Ownership
 
-- **Discover** — [`fit-scorer`](../influencer/discover/fit-scorer/SKILL.md) produces ACE; `influencer-discovery` only supplies candidates/evidence.
-- **Activate** — [`content-reviewer`](../influencer/activate/content-reviewer/SKILL.md) produces ART and applies `ART.T1/T2`.
-- **Measure** — [`roi-calculator`](../influencer/measure/roi-calculator/SKILL.md) produces ROI and CVI; `performance-analyzer` supplies measured inputs.
+- **Discover** — [`fit-scorer`](../influencer/scout/fit-scorer/SKILL.md) produces ACE; `influencer-discovery` only supplies candidates/evidence.
+- **Activate** — [`creator-content-auditor`](../influencer/activate/creator-content-auditor/SKILL.md) produces ART and applies `ART.T1/T2`.
+- **Measure** — [`roi-calculator`](../influencer/report/roi-calculator/SKILL.md) produces ROI and CVI; `performance-analyzer` supplies measured inputs.
 
 All outputs remain advisory until the versioned profile passes the reliability and outcome-calibration protocol in [`scoring-semantics.md`](scoring-semantics.md).

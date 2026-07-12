@@ -82,7 +82,7 @@ Two open-network platforms, one card. Both run on open protocols (AT Protocol / 
 
 ## GEO/SEO relevance (both networks)
 
-- Bluesky: `bsky.app` profile/post pages render logged-out and are crawlable, unless the author enables the discourage-logged-out-visibility setting (Measured — Bluesky app setting exists; actual SERP presence Estimated — SERP observation). Domain handles double as an entity-consistency signal — align with `../entity-optimizer`-style `sameAs` data.
+- Bluesky: `bsky.app` profile/post pages render logged-out and are crawlable, unless the author enables the discourage-logged-out-visibility setting (Measured — Bluesky app setting exists; actual SERP presence Estimated — SERP observation). Domain handles double as an entity-consistency signal — align with `../entity-registry`-style `sameAs` data.
 - Mastodon: per-user preference controls search-engine indexing and many users/instances opt out — treat Mastodon as a weak, per-instance SEO surface; the GEO value is community presence, not citations (Measured — the preference exists in Mastodon settings; aggregate behavior Estimated).
 
 ## Related

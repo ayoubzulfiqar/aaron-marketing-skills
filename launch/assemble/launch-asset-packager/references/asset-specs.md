@@ -38,7 +38,7 @@ Character budgets **per App Store Connect / Play Console official documentation 
 
 ## 3. Technical go-live checklist
 
-Manifest rows only — **execution and verification belong to [technical-seo-checker](../../../../seo-geo/optimize/technical-seo-checker/SKILL.md) and [serp-markup-builder](../../../../seo-geo/build/serp-markup-builder/SKILL.md)**. Each row records status + the executing skill.
+Manifest rows only — **execution and verification belong to [technical-seo-checker](../../../../seo-geo/tune/technical-seo-checker/SKILL.md) and [serp-markup-builder](../../../../seo-geo/implement/serp-markup-builder/SKILL.md)**. Each row records status + the executing skill.
 
 | Item | Passes when | Executing skill |
 |------|-------------|-----------------|

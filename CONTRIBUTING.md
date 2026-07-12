@@ -12,20 +12,14 @@ Thanks for your interest in contributing! This guide covers adding skills, impro
 
 | Category | Directory | Use when the skill... |
 |----------|-----------|----------------------|
-| Research | `seo-geo/research/` | Gathers market data before content creation (SEO/GEO) |
-| Build | `seo-geo/build/` | Creates new content or markup (SEO/GEO) |
-| Optimize | `seo-geo/optimize/` | Improves existing content or site health (SEO/GEO) |
-| Monitor | `seo-geo/monitor/` | Tracks performance over time (SEO/GEO) |
-| Protocol | `protocol/` | Cross-cutting layer (7 truth registries: entity/creator/claims/consent/launch/channel/narrative + memory) — shared across disciplines |
-| Discover | `influencer/discover/` | Audience/niche mapping + influencer discovery & fit (influencer) |
-| Plan | `influencer/plan/` | Competitor tracking, campaigns, briefs, budgets (influencer) |
-| Activate | `influencer/activate/` | Outreach, content review (C³ ART gate), contracts, amplification (influencer) |
-| Measure | `influencer/measure/` | Post-click, performance, ROI, reports (influencer) |
-| Paid Ads | `ad/<phase>/` | Builds, audits, and scales paid-ad campaigns (ROAS loop: research/orchestrate/activate/scale) |
-| Email | `email/<phase>/` | Grows, sends, and audits email programs (SEND loop: setup/engage/nurture/deliver) |
-| Launch | `launch/<phase>/` | Plans, gates, executes, and proves product launches (RAMP loop: research/assemble/mobilize/prove) |
-| Social | `social/<phase>/` | Plans, crafts, hosts, and measures organic social (ECHO loop: explore/craft/host/observe) |
 | Narrative | `narrative/<phase>/` | Traces, architects, lands, and proves brand narrative & messaging (TALE loop: trace/architect/land/evaluate) |
+| SEO/GEO | `seo-geo/<phase>/` | Surveys demand, implements content/markup, tunes quality/tech, evaluates authority & rankings (SITE loop: survey/implement/tune/evaluate) |
+| Social | `social/<phase>/` | Plans, crafts, hosts, and measures organic social (ECHO loop: explore/craft/host/observe) |
+| Email | `email/<phase>/` | Grows, sends, and audits email programs (SEND loop: setup/engage/nurture/deliver) |
+| Paid Ads | `ad/<phase>/` | Builds, audits, and scales paid-ad campaigns (ROAS loop: research/orchestrate/activate/scale) |
+| Influencer | `influencer/<phase>/` | Scouts audiences/creators, targets campaigns, activates outreach & the C³ ART gate, reports ROI (STAR loop: scout/target/activate/report) |
+| Launch | `launch/<phase>/` | Plans, gates, executes, and proves product launches (RAMP loop: research/assemble/mobilize/prove) |
+| Protocol | `protocol/` | Cross-cutting layer (7 truth registries: entity/creator/claims/consent/launch/channel/narrative + memory) — shared across disciplines |
 
 ### 2. Create the skill directory
 
@@ -47,9 +41,14 @@ version: "1.0.0"
 description: 'Use when the user asks to "[trigger]". [What it does]. For [related task], see [other-skill].'
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
-metadata: {"author": "your-github-username", "version": "1.0.0", "discipline": "seo-geo", "phase": "research", "geo-relevance": "high|medium|low", "hermes": {"tags": ["marketing", "seo-geo", "research"], "category": "seo-geo"}, "openclaw": {"emoji": "🔍", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
+homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
+when_to_use: "[One line on when this skill applies — underscores in the key, not hyphens]"
+argument-hint: "<main-input> [--optional-flag]"
+metadata: {"author": "your-github-username", "version": "1.0.0", "discipline": "seo-geo", "phase": "survey", "geo-relevance": "high|medium|low", "hermes": {"tags": ["marketing", "seo-geo", "survey"], "category": "seo-geo"}, "openclaw": {"emoji": "🔍", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 ```
+
+All eleven keys above (plus top-level `homepage`) appear on every shipped skill. The only sanctioned *extra* top-level keys are `class: auditor` (the 8 gate skills only) and `allowed-tools` (skills that fetch URLs, e.g. `WebFetch`). The `metadata` key set is fixed: `author` / `version` / `discipline` / `phase` / `geo-relevance` / `hermes` / `openclaw` — no other keys.
 
 The `name` field must match the directory name exactly. `metadata` must be a **single-line strict-JSON object** (valid YAML flow mapping) — OpenClaw's frontmatter parser reads single-line keys only, and the validator fails a YAML block map. In single-quoted scalars, double any literal apostrophe (`designer''s`). Keep the `hermes` (tags/category) and `openclaw` (emoji/homepage) host extensions in step with the skill's discipline. The `slug`/`displayName`/`summary` trio is the [SkillHub.cn](https://skillhub.cn) publishing contract — `slug` must be the platform-owned frontmatter slug (`<skill-name>` when available, otherwise `aaron-<skill-name>` as the conflict fallback; validator-enforced), `displayName` bilingual, `summary` a Chinese one-liner.
 
@@ -63,7 +62,7 @@ Auditor-class skills are the exception: repository mode reads the root typed run
 |---------------------|-----------|------------|
 | `content-quality-auditor` | CORE-EEAT (publish readiness) | `memory/audits/content/` |
 | `domain-authority-auditor` | CITE (citation trust) | `memory/audits/domain/` |
-| `content-reviewer` | C³ ART (influencer content gate) | `memory/audits/influencer/` |
+| `creator-content-auditor` | C³ ART (influencer content gate) | `memory/audits/influencer/` |
 | `ad-account-auditor` | ROAS RQS (paid-ads gate) | `memory/audits/ad/` |
 | `email-quality-auditor` | SEND EQS (email SEND gate) | `memory/audits/email/` |
 | `launch-readiness-auditor` | RAMP lifecycle-profile gate | `memory/audits/launch/` |

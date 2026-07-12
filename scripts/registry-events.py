@@ -29,7 +29,7 @@ except ImportError:  # pragma: no cover - exercised only on non-POSIX hosts
 SCHEMA_VERSION = "1.0"
 REGISTRIES = {"entities", "creators", "claims", "consent", "launches", "channels", "narrative"}
 OWNERS = {
-    "entities": "entity-optimizer",
+    "entities": "entity-registry",
     "creators": "creator-registry",
     "claims": "offer-claims-registry",
     "consent": "consent-registry",

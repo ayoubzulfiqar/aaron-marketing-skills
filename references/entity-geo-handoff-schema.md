@@ -1,6 +1,6 @@
 # Entity to GEO Handoff Contract
 
-This contract connects `entity-optimizer` to entity-aware content/schema builders. Canonical history is `memory/events/entities.ndjson`; current accepted records are in `memory/projections/entities.json`. Files under `memory/entities/` are optional generated views.
+This contract connects `entity-registry` to entity-aware content/schema builders. Canonical history is `memory/events/entities.ndjson`; current accepted records are in `memory/projections/entities.json`. Files under `memory/entities/` are optional generated views.
 
 ## Accepted Entity Data
 
@@ -49,7 +49,7 @@ This contract connects `entity-optimizer` to entity-aware content/schema builder
 
 ## Producer Rules
 
-1. `entity-optimizer` alone accepts/rejects/upserts entity state through `registry-events.py`.
+1. `entity-registry` alone accepts/rejects/upserts entity state through `registry-events.py`.
 2. Ordinary skills submit authorized `operation: propose` events with idempotency/source/date/current revision.
 3. Natural-person records use pseudonymous aggregate IDs and minimum necessary professional facts. Keep direct contact PII out of events/views.
 4. Never merge identities on name/logo similarity alone.
@@ -64,7 +64,7 @@ Before entity-aware content or schema generation:
 2. Reject erased/tombstoned records and surface stale/conflicting identity evidence.
 3. Populate schema only from accepted fields; ask for missing required values rather than guessing.
 4. For external copy, independently verify the Narrative/claims dependency tuple. A stale/missing tuple sets `dependency_status: blocked` or an explicitly authorized exploratory fallback.
-5. Route durable corrections as proposals to `entity-optimizer`; do not edit JSON or Markdown views.
+5. Route durable corrections as proposals to `entity-registry`; do not edit JSON or Markdown views.
 
 ## Versioning
 

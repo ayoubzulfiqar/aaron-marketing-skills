@@ -6,7 +6,7 @@
 - **Catalog version:** 17.0.0
 - **Framework:** ECHO
 - **Auditor:** social-quality-auditor
-- **Source digest:** `sha256:ac645d3911c7af57c0317a7442007daab9f769de86e8ea21dc57e6e1287bda2f`
+- **Source digest:** `sha256:91f42e2faae0009c2a35ac81fea879d3534db52f3c8d55681802f85ef4cac04e`
 
 This immutable bundle is the fail-closed standalone fallback for this auditor. It contains the exact typed framework slice needed to collect observations without inventing rules. Repository/plugin installs use the root policy, schemas, and deterministic scorer. A standalone one-folder install must not fetch mutable sources, compute a score, claim a gate verdict, or persist an audit artifact.
 
@@ -17,6 +17,7 @@ This immutable bundle is the fail-closed standalone fallback for this auditor. I
   "catalog_version": "17.0.0",
   "frameworks": {
     "ECHO": {
+      "composite_score": false,
       "construct": "separate social asset compliance and program operating maturity reads",
       "dimensions": {
         "C": {

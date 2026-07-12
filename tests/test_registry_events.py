@@ -431,7 +431,7 @@ class RegistryEventTests(unittest.TestCase):
             "entities", "capability-other-principal",
             actor={"type": "skill", "id": "content-writer"},
         )
-        with self.assertRaisesRegex(registry.RegistryError, "entity-optimizer"):
+        with self.assertRaisesRegex(registry.RegistryError, "entity-registry"):
             registry.issue_host_capability(
                 self.host_key, "entities", "content-writer", ["upsert"],
                 "2999-01-01T00:00:00Z", request=other_principal_request,

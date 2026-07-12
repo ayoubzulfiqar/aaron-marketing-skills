@@ -87,7 +87,7 @@ Google built OKF for data teams sharing catalog metadata (BigQuery tables, metri
 ## Which skills consume this
 
 - **`geo-content-optimizer`**: recommends and structures the `llms.txt` reading list and OKF concept files as part of AI-visibility prep.
-- **`entity-optimizer`**: uses the cross-linked bundle to express entity relationships consistently across pages (the canonical entity profile).
+- **`entity-registry`**: uses the cross-linked bundle to express entity relationships consistently across pages (the canonical entity profile).
 - **`serp-markup-builder`**: produces the per-page schema layer that sits alongside the bundle; OKF `type` values map to schema types (Article, FAQPage, Product).
 
 See also `skill-contract.md` for the shared handoff contract.

@@ -145,4 +145,4 @@ The user's direct request may itself authorize the named operation. Otherwise as
 
 ## Next Best Skill
 
-Route a canonical conflict to its owner: `entity-optimizer`, `creator-registry`, `offer-claims-registry`, `consent-registry`, `launch-registry`, `channel-registry`, or `narrative-registry`. Resume execution work only after the needed projection and authorization state are clear.
+Route a canonical conflict to its owner: `entity-registry`, `creator-registry`, `offer-claims-registry`, `consent-registry`, `launch-registry`, `channel-registry`, or `narrative-registry`. Resume execution work only after the needed projection and authorization state are clear.

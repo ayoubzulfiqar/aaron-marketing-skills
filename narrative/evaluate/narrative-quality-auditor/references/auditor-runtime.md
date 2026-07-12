@@ -6,7 +6,7 @@
 - **Catalog version:** 17.0.0
 - **Framework:** TALE
 - **Auditor:** narrative-quality-auditor
-- **Source digest:** `sha256:0fc9542b4aac315ea3b5ed6b652d9e8a8d67184432bdcd55380fc2de74f48717`
+- **Source digest:** `sha256:e22fa2d2993eced147c1614850efbac2f6e225ce08fdd669c63c717aec9540e8`
 
 This immutable bundle is the fail-closed standalone fallback for this auditor. It contains the exact typed framework slice needed to collect observations without inventing rules. Repository/plugin installs use the root policy, schemas, and deterministic scorer. A standalone one-folder install must not fetch mutable sources, compute a score, claim a gate verdict, or persist an audit artifact.
 

@@ -3,7 +3,7 @@ description: "Run a paid-ads (ROAS) workflow: audience segments, account structu
 argument-hint: "<goal-or-account> [--phase research|orchestrate|activate|scale]"
 ---
 
-# Paid Command
+# Paid Ads Command
 
 Run the paid-ads lifecycle along the **ROAS loop** (Research → Orchestrate → Activate → Scale). Skills score on the [ROAS framework](../references/roas-benchmark.md) and operate from the user's **own-account manual export** — keyed ad-platform APIs are never required.
 
@@ -23,6 +23,7 @@ Infer the ROAS-loop phase from the goal (or honor `--phase`) and route to the ma
 - Keyless Tier 1 — score from native ad-manager / GA4 / ecommerce exports the user provides; keyed Google Ads / Meta APIs are opt-in Tier-2/3 MCP only.
 - Only `ad-account-auditor` computes the profile-weighted RQS; every other skill works one lever and hands off. `budget-optimizer` (reused from influencer) allocates spend across campaigns; in-platform bid strategy, search-term mining, and feed work are their own skills (`bid-strategy-planner`, `search-term-miner`, `product-feed-optimizer`).
 - Label every metric Measured / User-provided / Estimated; never invent ROAS/CPA figures.
+- **Scope edge — paid media vs neighbors**: approved claim/offer *wording* comes from the [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md) projection (this discipline proposes, never adjudicates); creator whitelisting/Spark Ads enter via [content-amplifier](../influencer/activate/content-amplifier/SKILL.md) before paid execution here; [landing-experience-checker](../ad/orchestrate/landing-experience-checker/SKILL.md) owns the pre-launch ad-to-page message-match preflight while page CRO itself is [landing-optimizer](../influencer/report/landing-optimizer/SKILL.md); cross-campaign spend allocation reuses [budget-optimizer](../influencer/target/budget-optimizer/SKILL.md); paid search demand research stays with SEO/GEO's [keyword-research](../seo-geo/survey/keyword-research/SKILL.md) when the question is organic-first.
 
 ## Output
 

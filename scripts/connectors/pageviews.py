@@ -2,7 +2,7 @@
 """pageviews.py — Wikimedia Pageviews: keyless per-article attention data.
 
 Real monthly/daily view counts for any Wikipedia article — a **Measured**
-public-attention signal for an entity or topic. Feeds entity-optimizer
+public-attention signal for an entity or topic. Feeds entity-registry
 (entity demand trend), keyword-research (topic demand proxy alongside
 autocomplete), and trend-spotter (is a topic's attention rising?). Resolve a
 name to its exact article title first with `kg.py reconcile "<name>"`.

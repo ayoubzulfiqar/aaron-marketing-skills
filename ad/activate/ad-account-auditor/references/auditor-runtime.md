@@ -6,7 +6,7 @@
 - **Catalog version:** 17.0.0
 - **Framework:** ROAS
 - **Auditor:** ad-account-auditor
-- **Source digest:** `sha256:45a73bc39b4e9f0e44b0d6da4b0e1cc0976c49684d1e59a5cee495b00849bf4b`
+- **Source digest:** `sha256:341d98b1dee31443852fe119264903dc710beb54025d9c86bf725b703fc1b2e5`
 
 This immutable bundle is the fail-closed standalone fallback for this auditor. It contains the exact typed framework slice needed to collect observations without inventing rules. Repository/plugin installs use the root policy, schemas, and deterministic scorer. A standalone one-folder install must not fetch mutable sources, compute a score, claim a gate verdict, or persist an audit artifact.
 
