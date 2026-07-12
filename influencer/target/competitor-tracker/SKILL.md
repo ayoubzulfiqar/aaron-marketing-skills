@@ -87,13 +87,13 @@ Each step has a fill-in template in [references/templates.md](references/templat
 - [skill-contract.md](../../../references/skill-contract.md) — shared contract and handoff summary format.
 - [state-model.md](../../../references/state-model.md) — memory tiers and save-path conventions.
 - [CONNECTORS.md](../../../CONNECTORS.md) — keyless/free data recipe per `~~` connector category.
-- Sibling Map skills: [influencer-discovery](../../scout/influencer-discovery/SKILL.md) — find creators competitors aren't using; [fit-scorer](../../scout/fit-scorer/SKILL.md) — score competitor partners for your brand.
+- Sibling Scout skills: [influencer-discovery](../../scout/influencer-discovery/SKILL.md) — find creators competitors aren't using; [fit-scorer](../../scout/fit-scorer/SKILL.md) — score competitor partners for your brand.
 - [trend-spotter](../../scout/trend-spotter/SKILL.md) — spot trends competitors are riding.
 
 ## Next Best Skill
 
 - **Primary**: [campaign-planner](../campaign-planner/SKILL.md) — turn competitive gaps into a differentiated campaign.
-- **Alternate (Map)**: [influencer-discovery](../../scout/influencer-discovery/SKILL.md) — pursue the untapped and former-competitor creators this analysis surfaced.
-- **Alternate (Map)**: [fit-scorer](../../scout/fit-scorer/SKILL.md) — score a competitor's roster against your brand before you poach.
+- **Alternate (Scout)**: [influencer-discovery](../../scout/influencer-discovery/SKILL.md) — pursue the untapped and former-competitor creators this analysis surfaced.
+- **Alternate (Scout)**: [fit-scorer](../../scout/fit-scorer/SKILL.md) — score a competitor's roster against your brand before you poach.
 
 Termination note: keep a visited-set of skills invoked this session. If the next skill has already run this session, stop and report the chain complete instead of re-invoking. Max chain depth is 3 hops.

@@ -97,7 +97,7 @@ Disclosure and usage rights must be stated explicitly — never leave them as pl
 ## Next Best Skill
 
 - **Primary**: [budget-optimizer](../budget-optimizer/SKILL.md) - Once the brief defines deliverables, set how spend is split across creators and platforms.
-- **Alternates (same Plan family)**:
+- **Alternates (same Target family)**:
   - [campaign-planner](../campaign-planner/SKILL.md) - Re-plan campaign scope if the brief surfaces new deliverable needs.
   - [outreach-manager](../../activate/outreach-manager/SKILL.md) - Send the finished brief to selected creators.
 

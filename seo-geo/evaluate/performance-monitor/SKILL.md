@@ -17,7 +17,7 @@ metadata: {"author": "aaron-he-zhu", "version": "18.0.0", "discipline": "seo-geo
 
 One monitor skill, two modes. **`report`** builds a stakeholder-facing multi-metric snapshot of what already happened (traffic, rankings, GEO/AI, authority, backlinks, content) and turns period-over-period deltas into prioritized recommendations. **`alert`** configures forward-looking threshold and anomaly notifications so a drop in rankings, traffic, technical health, backlinks, competitor position, or AI citations fires before someone eyeballs it. Pick the mode from intent: past-tense reporting → `report`; future-tense "tell me when" → `alert`.
 
-**Mode set:** `report` (multi-metric snapshot, absorbed from performance-reporter) · `alert` (forward thresholds/anomalies, absorbed from alert-manager). Default when unstated: infer from verb tense (see Decision Gates).
+**Mode set:** `report` (multi-metric snapshot) · `alert` (forward thresholds/anomalies). Default when unstated: infer from verb tense (see Decision Gates).
 
 **Scope guard — what this skill does NOT do:** it does not compute the CORE-EEAT content score or run its vetoes (T04/C01/R10) — that gate is [content-quality-auditor](../../tune/content-quality-auditor/SKILL.md); it does not compute the CITE domain score or run its vetoes (T03/T05/T09) — that gate is [domain-authority-auditor](../domain-authority-auditor/SKILL.md). This skill *reports* those scores when a gate has already produced them and *watches* them for change; it never scores. Raw position-by-position ranking deltas belong to [rank-tracker](../rank-tracker/SKILL.md).
 

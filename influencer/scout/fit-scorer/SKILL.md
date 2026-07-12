@@ -91,7 +91,7 @@ The commercial comparison layouts live in [references/scoring-templates.md](refe
 
 **Primary**: [competitor-tracker](../../target/competitor-tracker/SKILL.md) — benchmark your top-scored picks against the creators competitors already work with before you commit budget.
 
-**Alternates** (same discover phase):
+**Alternates** (same scout phase):
 - [influencer-discovery](../influencer-discovery/SKILL.md) — if the shortlist is too thin to rank, source more candidates.
 - [audience-mapper](../audience-mapper/SKILL.md) — if audience-match scores are uncertain, tighten the target-audience definition first.
 

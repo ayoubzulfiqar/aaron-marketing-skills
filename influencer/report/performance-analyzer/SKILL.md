@@ -112,7 +112,7 @@ Before naming any creator/format/platform a real winner, clear the significance 
 
 **Primary**: [roi-calculator](../roi-calculator/SKILL.md) — convert measured performance into dollar-level ROI, cost-per-result, and payback math.
 
-**Alternates** (same Measure family):
+**Alternates** (same Report family):
 
 - [report-generator](../report-generator/SKILL.md) — package the analysis into a formal stakeholder report.
 - [fit-scorer](../../scout/fit-scorer/SKILL.md) — feed proven performers back into creator scoring for the next round.

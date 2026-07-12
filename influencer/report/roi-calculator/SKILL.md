@@ -147,7 +147,7 @@ The source-dated benchmark evidence template lives in [references/roi-templates.
 
 **Primary**: [report-generator](../report-generator/SKILL.md) — turn the ROI numbers into a stakeholder-ready report.
 
-**Alternates** (same Measure family):
+**Alternates** (same Report family):
 
 - [performance-analyzer](../performance-analyzer/SKILL.md) — go back for deeper performance breakdowns if the ROI math exposed gaps.
 - [budget-optimizer](../../target/budget-optimizer/SKILL.md) — feed by-influencer and by-tier ROI into the next budget allocation.

@@ -103,7 +103,7 @@ Ask "Save these results for future sessions?" If yes, write to `memory/influence
 - [STAR benchmark — Skill Ownership](../../../references/star-benchmark.md) — how downstream creator/fit scoring uses this output.
 - [skill-contract.md](../../../references/skill-contract.md) · [state-model.md](../../../references/state-model.md) — shared contract, handoff schema, memory tiers, save paths.
 - [CONNECTORS.md](../../../CONNECTORS.md) · [SECURITY.md](../../../SECURITY.md) — free/keyless recipe per connector category and the untrusted-data boundary.
-- Sibling Discover skills: [trend-spotter](../trend-spotter/SKILL.md), [influencer-discovery](../influencer-discovery/SKILL.md), [fit-scorer](../fit-scorer/SKILL.md).
+- Sibling Scout skills: [trend-spotter](../trend-spotter/SKILL.md), [influencer-discovery](../influencer-discovery/SKILL.md), [fit-scorer](../fit-scorer/SKILL.md).
 
 ## Next Best Skill
 
@@ -112,4 +112,4 @@ Global termination applies (visited-set, `max-depth: 3`, ambiguity-stop) — see
 - **Primary**: [influencer-discovery](../influencer-discovery/SKILL.md) — once the selection criteria (audience mode) or the voice tiers + red lines (niche mode) are written and promoted, find and shortlist specific creators against them.
 - **If the audience/niche is set but you need live momentum first**: [trend-spotter](../trend-spotter/SKILL.md) — surface what is currently moving so partnerships ride live signal; then STOP if it was already visited this chain.
 - **After a shortlist exists**: [fit-scorer](../fit-scorer/SKILL.md) — score candidates on Suitability and run the `STAR-S2`/`STAR-S6` vetoes (this skill does not score).
-- **Terminal**: once the influencer-selection criteria (audience) or the phased entry strategy + red lines (niche) are written and promoted, the discover-mapping step is complete — hand off to discovery and STOP; report chain-complete rather than re-entering the sibling mode on the same brand.
+- **Terminal**: once the influencer-selection criteria (audience) or the phased entry strategy + red lines (niche) are written and promoted, the scout-mapping step is complete — hand off to discovery and STOP; report chain-complete rather than re-entering the sibling mode on the same brand.

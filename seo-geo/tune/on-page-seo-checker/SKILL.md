@@ -14,7 +14,7 @@ allowed-tools: WebFetch
 metadata: {"author": "aaron-he-zhu", "version": "18.0.0", "discipline": "seo-geo", "phase": "tune", "geo-relevance": "medium", "hermes": {"tags": ["marketing", "seo-geo", "tune"], "category": "seo-geo"}, "openclaw": {"emoji": "🔍", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 
-# On-Page SEO Auditor
+# On-Page SEO Checker
 
 
 This skill audits the structural on-page SEO signals a single page controls and provides actionable, prioritized recommendations.

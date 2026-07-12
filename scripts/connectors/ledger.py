@@ -4,8 +4,8 @@
 The measurement spine for the skills: instead of *narrating* a number, a skill
 records each connector run as a timestamped snapshot, then computes the
 **delta** between runs. This is what turns "rankings improved" into a verifiable
-before/after, and what every monitor-phase skill (rank-tracker,
-performance-reporter, technical-seo-checker) should read for baselines.
+before/after, and what every monitoring skill (rank-tracker,
+performance-monitor, technical-seo-checker) should read for baselines.
 
 No network, no third-party packages. Snapshots are append-only JSONL files under
 a per-target directory, so the store is plain text the user owns and can diff in

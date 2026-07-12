@@ -103,7 +103,7 @@ Save the finished plan to `memory/influencer/landing-optimizer/YYYY-MM-DD-<topic
 
 **Primary**: [performance-analyzer](../performance-analyzer/SKILL.md) — measure whether the optimizations actually moved conversion, AOV, and attribution.
 
-**Alternates** (same Measure family):
+**Alternates** (same Report family):
 
 - [content-amplifier](../../activate/content-amplifier/SKILL.md) — when the audit shows the page needs more creator content to feature.
 - [roi-calculator](../roi-calculator/SKILL.md) — when the page's conversion is validated and you want to translate it into ROI and payback math.

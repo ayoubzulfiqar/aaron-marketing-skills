@@ -20,10 +20,10 @@ Reports the two off-site signal families a domain earns from the outside world: 
 
 **Mode set:**
 
-| Mode | Absorbs | Data source | Answers |
-|------|---------|-------------|---------|
-| `backlinks` (default) | backlink-analyzer | `~~link database` export / pasted CSV | Referring domains, anchor mix, toxic-link share, disavow candidates, competitor link gaps |
-| `ai-referrals` | ai-traffic | GA4 / GSC / server-log export | AI-assistant referral sessions, trend, top landing pages, AI-vs-organic conversion |
+| Mode | Data source | Answers |
+|------|-------------|---------|
+| `backlinks` (default) | `~~link database` export / pasted CSV | Referring domains, anchor mix, toxic-link share, disavow candidates, competitor link gaps |
+| `ai-referrals` | GA4 / GSC / server-log export | AI-assistant referral sessions, trend, top landing pages, AI-vs-organic conversion |
 
 **The seam**: backlinks answers "is this domain worth trusting as a source?" from the link graph; ai-referrals answers "are AI engines already sending citations-as-traffic?" from your own analytics. Never blend the two datasets into one number — report each mode's figures under its own heading and let `domain-authority-auditor` join them into a CITE score.
 
