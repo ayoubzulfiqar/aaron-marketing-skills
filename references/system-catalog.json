@@ -1,6 +1,6 @@
 {
   "$schema": "./system-catalog.schema.json",
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "architecture_version": "17.0.0",
   "bundle_version": "17.0.0",
   "counts": {
@@ -81,12 +81,27 @@
       "frameworks": [
         "TALE"
       ],
+      "loop_name": "TALE",
       "loop": "Trace -> Architect -> Land -> Evaluate",
       "phase_order": [
         "trace",
         "architect",
         "land",
         "evaluate"
+      ],
+      "command": {
+        "name": "narrative",
+        "selector": "phase",
+        "values": [
+          "trace",
+          "architect",
+          "land",
+          "evaluate"
+        ]
+      },
+      "registry": "narrative",
+      "gates": [
+        "narrative-quality-auditor"
       ],
       "phases": {
         "trace": [
@@ -122,12 +137,28 @@
         "CORE-EEAT",
         "CITE"
       ],
+      "loop_name": "SITE",
       "loop": "Survey -> Implement -> Tune -> Evaluate",
       "phase_order": [
         "survey",
         "implement",
         "tune",
         "evaluate"
+      ],
+      "command": {
+        "name": "seo-geo",
+        "selector": "phase",
+        "values": [
+          "survey",
+          "implement",
+          "tune",
+          "evaluate"
+        ]
+      },
+      "registry": "entities",
+      "gates": [
+        "content-quality-auditor",
+        "domain-authority-auditor"
       ],
       "phases": {
         "survey": [
@@ -162,12 +193,27 @@
       "frameworks": [
         "ECHO"
       ],
+      "loop_name": "ECHO",
       "loop": "Explore -> Craft -> Host -> Observe",
       "phase_order": [
         "explore",
         "craft",
         "host",
         "observe"
+      ],
+      "command": {
+        "name": "social",
+        "selector": "phase",
+        "values": [
+          "explore",
+          "craft",
+          "host",
+          "observe"
+        ]
+      },
+      "registry": "channels",
+      "gates": [
+        "social-quality-auditor"
       ],
       "phases": {
         "explore": [
@@ -202,12 +248,27 @@
       "frameworks": [
         "SEND"
       ],
+      "loop_name": "SEND",
       "loop": "Setup -> Engage -> Nurture -> Deliver",
       "phase_order": [
         "setup",
         "engage",
         "nurture",
         "deliver"
+      ],
+      "command": {
+        "name": "email",
+        "selector": "phase",
+        "values": [
+          "setup",
+          "engage",
+          "nurture",
+          "deliver"
+        ]
+      },
+      "registry": "consent",
+      "gates": [
+        "email-quality-auditor"
       ],
       "phases": {
         "setup": [
@@ -242,12 +303,27 @@
       "frameworks": [
         "ROAS"
       ],
+      "loop_name": "ROAS",
       "loop": "Research -> Orchestrate -> Activate -> Scale",
       "phase_order": [
         "research",
         "orchestrate",
         "activate",
         "scale"
+      ],
+      "command": {
+        "name": "ad",
+        "selector": "phase",
+        "values": [
+          "research",
+          "orchestrate",
+          "activate",
+          "scale"
+        ]
+      },
+      "registry": "claims",
+      "gates": [
+        "ad-account-auditor"
       ],
       "phases": {
         "research": [
@@ -282,12 +358,27 @@
       "frameworks": [
         "C3"
       ],
+      "loop_name": "STAR",
       "loop": "Scout -> Target -> Activate -> Report",
       "phase_order": [
         "scout",
         "target",
         "activate",
         "report"
+      ],
+      "command": {
+        "name": "influencer",
+        "selector": "phase",
+        "values": [
+          "scout",
+          "target",
+          "activate",
+          "report"
+        ]
+      },
+      "registry": "creators",
+      "gates": [
+        "creator-content-auditor"
       ],
       "phases": {
         "scout": [
@@ -322,12 +413,27 @@
       "frameworks": [
         "RAMP"
       ],
+      "loop_name": "RAMP",
       "loop": "Research -> Assemble -> Mobilize -> Prove",
       "phase_order": [
         "research",
         "assemble",
         "mobilize",
         "prove"
+      ],
+      "command": {
+        "name": "launch",
+        "selector": "phase",
+        "values": [
+          "research",
+          "assemble",
+          "mobilize",
+          "prove"
+        ]
+      },
+      "registry": "launches",
+      "gates": [
+        "launch-readiness-auditor"
       ],
       "phases": {
         "research": [
@@ -478,7 +584,12 @@
         "references/tale-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "profiles-only",
+        "name": null,
+        "rollup": "none"
+      }
     },
     {
       "skill": "content-quality-auditor",
@@ -491,7 +602,12 @@
         "references/core-eeat-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "diagnostic",
+        "name": "Comparable overall",
+        "rollup": "weighted-arithmetic-mean"
+      }
     },
     {
       "skill": "domain-authority-auditor",
@@ -504,7 +620,12 @@
         "references/cite-domain-rating.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "diagnostic",
+        "name": "Default diagnostic",
+        "rollup": "weighted-arithmetic-mean"
+      }
     },
     {
       "skill": "social-quality-auditor",
@@ -517,7 +638,12 @@
         "references/echo-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "profiles-only",
+        "name": null,
+        "rollup": "none"
+      }
     },
     {
       "skill": "email-quality-auditor",
@@ -530,7 +656,12 @@
         "references/send-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "composite",
+        "name": "EQS",
+        "rollup": "weighted-arithmetic-mean"
+      }
     },
     {
       "skill": "ad-account-auditor",
@@ -543,7 +674,12 @@
         "references/roas-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "composite",
+        "name": "RQS",
+        "rollup": "weighted-arithmetic-mean"
+      }
     },
     {
       "skill": "creator-content-auditor",
@@ -559,7 +695,12 @@
         "references/c3-rollup.schema.json",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "composite",
+        "name": "CVI",
+        "rollup": "geometric-mean"
+      }
     },
     {
       "skill": "launch-readiness-auditor",
@@ -572,7 +713,12 @@
         "references/ramp-benchmark.md",
         "references/audit-run.schema.json",
         "references/audit-artifact.schema.json"
-      ]
+      ],
+      "score_surface": {
+        "type": "profiles-only",
+        "name": null,
+        "rollup": "none"
+      }
     }
   ],
   "l1_dependency": {
@@ -595,6 +741,53 @@
       "influencer/target/brief-generator",
       "launch/assemble/message-house-builder",
       "launch/assemble/launch-asset-packager"
+    ]
+  },
+  "symmetry": {
+    "rules": {
+      "SYM-01-loop-derived": "loop equals the ' -> '-joined Title-Case phase_order",
+      "SYM-02-loop-acronym": "phase_order initials spell loop_name",
+      "SYM-03-command-selector": "command.selector is 'phase', command.values equals phase_order, the command doc advertises --phase and documents no other selector",
+      "SYM-04-registry-link": "discipline registry keys form a bijection with the 7 registries and each command names its stream or owner",
+      "SYM-05-owner-naming": "registry owner slug ends in -registry",
+      "SYM-06-gate-naming": "gate slug ends in -auditor",
+      "SYM-07-auditor-suffix": "the -auditor skill-name suffix is reserved for class: auditor skills",
+      "SYM-08-gate-topology": "discipline gates are exactly the 8 catalog auditors, each resident in its home discipline",
+      "SYM-09-human-view": "registry human_view is memory/<key>/",
+      "SYM-10-score-surface-typed": "every auditor declares a score_surface of type composite, diagnostic, or profiles-only",
+      "SYM-11-score-surface-consistent": "score_surface agrees with the benchmark doc and framework-catalog composite/rollup policy",
+      "SYM-12-grouping-title": "the skills.sh grouping title carries the loop_name, every framework id, the phase chain, and the skill count",
+      "SYM-13-scope-edge": "every discipline command carries a Scope edge block",
+      "SYM-14-command-h1": "a command H1 is '# <Title> Command' using the command stem or the discipline display_name",
+      "SYM-15-metadata-keys": "SKILL.md metadata carries exactly author/version/discipline/phase/geo-relevance/hermes/openclaw",
+      "SYM-16-deviation-hygiene": "every deviation names an implemented rule, resolves its scope, cites an existing source_doc, and still licenses a live violation",
+      "SYM-17-auto-order": "the auto command resolver enumerates the seven discipline commands in logical_order"
+    },
+    "deviations": [
+      {
+        "id": "DEV-HUMANVIEW-LAUNCHES",
+        "rule": "SYM-09-human-view",
+        "scope": "registry:launches",
+        "rationale": "memory/launch/<skill>/ is the launch discipline's working-notes namespace, and the dossier/calendar view predates v18 in end-user projects; renaming the human view would orphan user state.",
+        "source_doc": "references/skill-contract.md",
+        "since_version": "18.0.0"
+      },
+      {
+        "id": "DEV-HUMANVIEW-NARRATIVE",
+        "rule": "SYM-09-human-view",
+        "scope": "registry:narrative",
+        "rationale": "memory/narrative/<skill>/ is the narrative discipline's working-notes namespace, and canon.md/versions.md predate v18 in end-user projects; renaming the human view would orphan user state.",
+        "source_doc": "references/skill-contract.md",
+        "since_version": "18.0.0"
+      },
+      {
+        "id": "DEV-CMD-MODE-ALIAS-SEO-GEO",
+        "rule": "SYM-03-command-selector",
+        "scope": "command:seo-geo",
+        "rationale": "The pre-v18 --mode research|create|audit|track surface stays as a documented deprecated alias for one major cycle so installed callers can migrate; the alias section is removed in v19 and this deviation expires with it.",
+        "source_doc": "references/aaron-product-api-contract.md",
+        "since_version": "18.0.0"
+      }
     ]
   },
   "distribution_profiles": {

@@ -6,7 +6,7 @@ This is the generated human view of [`references/system-catalog.json`](../refere
 
 - Architecture contract: `17.0.0`
 - Bundle version: `17.0.0`
-- Catalog digest: `sha256:ba8a6f1ed5e967fc5229d923ad7e17207a564d01ef0eb75d9cdd3e5e5f9c3c56`
+- Catalog digest: `sha256:17ffdc29e3d28368bd289e387f07f818f96853f72293c2fe6c963af6b8cce8e4`
 - Shape: **112 discipline skills across 7 disciplines + 8 protocol skills = 120 skills; 8 commands**
 
 ## Four Layers
@@ -121,6 +121,28 @@ The seven core downstream builders must carry `narrative_canon_id`, `narrative_c
 - [`brief-generator`](../influencer/target/brief-generator/SKILL.md)
 - [`message-house-builder`](../launch/assemble/message-house-builder/SKILL.md)
 - [`launch-asset-packager`](../launch/assemble/launch-asset-packager/SKILL.md)
+
+## Symmetry Contract
+
+Every discipline satisfies each column or cites a licensed deviation (see below); `check-architecture.py` enforces conform-or-declared and fails stale deviations.
+
+| Discipline | Loop | Command | Registry | Gate(s) | Score surface |
+|---|---|---|---|---|---|
+| **Brand Narrative** | TALE (Trace -> Architect -> Land -> Evaluate) | `/narrative --phase trace\|architect\|land\|evaluate` | `narrative` (DEV-HUMANVIEW-NARRATIVE) | `narrative-quality-auditor` | profiles-only |
+| **SEO/GEO** | SITE (Survey -> Implement -> Tune -> Evaluate) | `/seo-geo --phase survey\|implement\|tune\|evaluate` (DEV-CMD-MODE-ALIAS-SEO-GEO) | `entities` | `content-quality-auditor` · `domain-authority-auditor` | Comparable overall (weighted-arithmetic-mean) · Default diagnostic (weighted-arithmetic-mean) |
+| **Organic Social** | ECHO (Explore -> Craft -> Host -> Observe) | `/social --phase explore\|craft\|host\|observe` | `channels` | `social-quality-auditor` | profiles-only |
+| **Email Marketing** | SEND (Setup -> Engage -> Nurture -> Deliver) | `/email --phase setup\|engage\|nurture\|deliver` | `consent` | `email-quality-auditor` | EQS (weighted-arithmetic-mean) |
+| **Paid Ads** | ROAS (Research -> Orchestrate -> Activate -> Scale) | `/ad --phase research\|orchestrate\|activate\|scale` | `claims` | `ad-account-auditor` | RQS (weighted-arithmetic-mean) |
+| **Influencer Marketing** | STAR (Scout -> Target -> Activate -> Report) | `/influencer --phase scout\|target\|activate\|report` | `creators` | `creator-content-auditor` | CVI (geometric-mean) |
+| **Product Launch** | RAMP (Research -> Assemble -> Mobilize -> Prove) | `/launch --phase research\|assemble\|mobilize\|prove` | `launches` (DEV-HUMANVIEW-LAUNCHES) | `launch-readiness-auditor` | profiles-only |
+
+### Licensed Deviations
+
+| ID | Rule | Scope | Since | Rationale |
+|---|---|---|---|---|
+| `DEV-HUMANVIEW-LAUNCHES` | `SYM-09-human-view` | `registry:launches` | 18.0.0 | memory/launch/<skill>/ is the launch discipline's working-notes namespace, and the dossier/calendar view predates v18 in end-user projects; renaming the human view would orphan user state. (source: `references/skill-contract.md`) |
+| `DEV-HUMANVIEW-NARRATIVE` | `SYM-09-human-view` | `registry:narrative` | 18.0.0 | memory/narrative/<skill>/ is the narrative discipline's working-notes namespace, and canon.md/versions.md predate v18 in end-user projects; renaming the human view would orphan user state. (source: `references/skill-contract.md`) |
+| `DEV-CMD-MODE-ALIAS-SEO-GEO` | `SYM-03-command-selector` | `command:seo-geo` | 18.0.0 | The pre-v18 --mode research|create|audit|track surface stays as a documented deprecated alias for one major cycle so installed callers can migrate; the alias section is removed in v19 and this deviation expires with it. (source: `references/aaron-product-api-contract.md`) |
 
 ## Distribution Profiles
 

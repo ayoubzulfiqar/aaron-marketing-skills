@@ -32,15 +32,14 @@ EVALS = os.path.join(ROOT, "evals")
 MANIFEST = os.path.join(EVALS, "structure-manifest.json")
 ROUTING_LIBRARY = os.path.join(ROOT, "references", "auto-routing-scenarios.md")
 
+# Phase directories and command selectors derive from the system catalog — the
+# single source of truth — so they can never drift from the real topology again.
+_CATALOG = json.load(open(os.path.join(ROOT, "references", "system-catalog.json"), encoding="utf-8"))
 PHASE_DIRS = [
-    "seo-geo/survey", "seo-geo/implement", "seo-geo/tune", "seo-geo/evaluate", "protocol",   # SEO/GEO (SITE)
-    "influencer/scout", "influencer/target", "influencer/activate", "influencer/report",      # influencer (STAR, 4x4)
-    "ad/research", "ad/orchestrate", "ad/activate", "ad/scale",                                                        # paid ads (when present)
-    "email/setup", "email/engage", "email/nurture", "email/deliver",                                                          # email marketing
-    "launch/research", "launch/assemble", "launch/mobilize", "launch/prove",                                                  # product launch (RAMP)
-    "social/explore", "social/craft", "social/host", "social/observe",                                                        # organic social (ECHO)
-    "narrative/trace", "narrative/architect", "narrative/land", "narrative/evaluate",                                          # brand narrative (TALE)
-]
+    "%s/%s" % (discipline, phase)
+    for discipline, spec in _CATALOG["disciplines"].items()
+    for phase in spec["phase_order"]
+] + ["protocol"]
 REQUIRED_CASE_KEYS = [
     "id", "type", "target_skill", "scenario",
     "input_summary", "expected_behavior", "failure_modes",
@@ -60,21 +59,16 @@ TARGET_SKILL_RE = re.compile(r'target_skill:\s*"?([A-Za-z0-9_-]+)"?')
 # expected_route is a quoted chain like "/aaron-marketing:ad --phase activate -> ...".
 EXPECTED_ROUTE_RE = re.compile(r'expected_route:\s*"([^"]*)"')
 ROUTE_CMD_RE = re.compile(r'/aaron-marketing:([a-z-]+)(?:\s+--(mode|phase)\s+([a-z-]+))?')
-# Each command's valid selector: all seven disciplines use --phase (SEO/GEO's
-# legacy --mode alias is deprecated and not allowed in the routing library),
-# auto takes neither (only --deep). Guards expected_route against a typo'd command
-# or an invalid/mismatched phase value (e.g. "ad --phase research" is valid,
-# "ad --mode research" is not).
+# Each command's valid selector, derived from the catalog `command` contract:
+# all seven disciplines use --phase (SEO/GEO's legacy --mode alias is deprecated
+# and not allowed in the routing library), auto takes neither (only --deep).
+# Guards expected_route against a typo'd command or an invalid/mismatched phase
+# value (e.g. "ad --phase research" is valid, "ad --mode research" is not).
 COMMAND_MODES = {
-    "seo-geo": ("phase", {"survey", "implement", "tune", "evaluate"}),
-    "influencer": ("phase", {"scout", "target", "activate", "report"}),
-    "ad": ("phase", {"research", "orchestrate", "activate", "scale"}),
-    "email": ("phase", {"setup", "engage", "nurture", "deliver"}),
-    "launch": ("phase", {"research", "assemble", "mobilize", "prove"}),
-    "social": ("phase", {"explore", "craft", "host", "observe"}),
-    "narrative": ("phase", {"trace", "architect", "land", "evaluate"}),
-    "auto": (None, set()),
+    spec["command"]["name"]: (spec["command"]["selector"], set(spec["command"]["values"]))
+    for spec in _CATALOG["disciplines"].values()
 }
+COMMAND_MODES["auto"] = (None, set())
 
 fails = []
 def fail(msg):

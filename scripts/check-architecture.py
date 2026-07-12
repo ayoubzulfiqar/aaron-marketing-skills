@@ -115,11 +115,11 @@ def check_catalog_shape(catalog, expected_paths, failures):
     required_top = {
         "$schema", "schema_version", "architecture_version", "bundle_version", "counts",
         "logical_order", "layers", "commands", "disciplines", "protocol", "registries",
-        "auditors", "l1_dependency", "distribution_profiles",
+        "auditors", "l1_dependency", "symmetry", "distribution_profiles",
     }
     if set(catalog) != required_top:
         failures.append("system catalog top-level keys differ from the strict contract")
-    if catalog.get("$schema") != "./system-catalog.schema.json" or catalog.get("schema_version") != "1.0":
+    if catalog.get("$schema") != "./system-catalog.schema.json" or catalog.get("schema_version") != "1.1":
         failures.append("system catalog schema identity/version is invalid")
     counts = catalog.get("counts", {})
     actual = {
@@ -385,6 +385,204 @@ def check_l1_dependency(catalog, failures):
                 failures.append("L1 builder %s is missing dependency token %r" % (path, token))
 
 
+SYMMETRY_RULES = {
+    "SYM-01-loop-derived", "SYM-02-loop-acronym", "SYM-03-command-selector",
+    "SYM-04-registry-link", "SYM-05-owner-naming", "SYM-06-gate-naming",
+    "SYM-07-auditor-suffix", "SYM-08-gate-topology", "SYM-09-human-view",
+    "SYM-10-score-surface-typed", "SYM-11-score-surface-consistent",
+    "SYM-12-grouping-title", "SYM-13-scope-edge", "SYM-14-command-h1",
+    "SYM-15-metadata-keys", "SYM-16-deviation-hygiene", "SYM-17-auto-order",
+}
+METADATA_KEYS = {"author", "version", "discipline", "phase", "geo-relevance", "hermes", "openclaw"}
+RESERVED_SCORE_TOKEN = re.compile(r"\b(?:RQS|EQS|CVI)\b")
+
+
+def command_text(name):
+    path = ROOT / "commands" / ("%s.md" % name)
+    if not path.is_file():
+        return None
+    return path.read_text(encoding="utf-8")
+
+
+def check_symmetry(catalog, expected_paths, failures):
+    """Conform-or-declared: every SYM rule violation must be licensed by a deviation,
+    and every deviation must still license a live violation (stale deviations fail)."""
+    symmetry = catalog.get("symmetry", {})
+    rules = symmetry.get("rules", {})
+    deviations = symmetry.get("deviations", [])
+    if set(rules) != SYMMETRY_RULES:
+        failures.append("symmetry.rules keys differ from the implemented SYM rule set")
+
+    disciplines = catalog.get("disciplines", {})
+    registries = catalog.get("registries", [])
+    auditors = catalog.get("auditors", [])
+    fw_catalog = load_json(FRAMEWORK_PATH).get("frameworks", {})
+    violations = set()
+
+    # SYM-01 / SYM-02 — loop string and loop_name acronym derive from phase_order.
+    for name, spec in disciplines.items():
+        order = spec.get("phase_order", [])
+        if spec.get("loop") != " -> ".join(phase.title() for phase in order):
+            violations.add(("SYM-01-loop-derived", "discipline:%s" % name))
+        if "".join(phase[:1] for phase in order).upper() != spec.get("loop_name"):
+            violations.add(("SYM-02-loop-acronym", "discipline:%s" % name))
+
+    # SYM-03 — --phase is the only documented selector and matches phase_order.
+    for name, spec in disciplines.items():
+        command = spec.get("command", {})
+        scope = "command:%s" % command.get("name", name)
+        text = command_text(command.get("name", name))
+        advertised = "--phase %s" % "|".join(command.get("values", []))
+        conforms = (
+            command.get("name") == name
+            and command.get("selector") == "phase"
+            and command.get("values") == spec.get("phase_order")
+            and text is not None
+            and advertised in text
+            and "--mode" not in text
+        )
+        if not conforms:
+            violations.add(("SYM-03-command-selector", scope))
+
+    # SYM-04 — registry bijection + each command names its stream or owner.
+    registry_by_key = {entry["key"]: entry for entry in registries}
+    used_keys = [spec.get("registry") for spec in disciplines.values()]
+    if sorted(used_keys) != sorted(registry_by_key):
+        failures.append("discipline registry links are not a bijection with the catalog registries")
+    for name, spec in disciplines.items():
+        entry = registry_by_key.get(spec.get("registry"))
+        text = command_text(spec.get("command", {}).get("name", name)) or ""
+        if entry is None or (entry["stream"] not in text and entry["owner"] not in text):
+            violations.add(("SYM-04-registry-link", "discipline:%s" % name))
+
+    # SYM-05 / SYM-09 — registry owner naming and human-view canonical path.
+    for entry in registries:
+        if not entry.get("owner", "").endswith("-registry"):
+            violations.add(("SYM-05-owner-naming", "registry:%s" % entry["key"]))
+        if entry.get("human_view") != "memory/%s/" % entry["key"]:
+            violations.add(("SYM-09-human-view", "registry:%s" % entry["key"]))
+
+    # SYM-06 / SYM-08 — gate naming, and gates == the 8 auditors in their home disciplines.
+    auditor_by_skill = {entry["skill"]: entry for entry in auditors}
+    all_gates = []
+    for name, spec in disciplines.items():
+        for gate in spec.get("gates", []):
+            all_gates.append(gate)
+            if not gate.endswith("-auditor"):
+                violations.add(("SYM-06-gate-naming", "auditor:%s" % gate))
+            entry = auditor_by_skill.get(gate)
+            if entry is None or not entry["path"].startswith("%s/" % name):
+                failures.append("gate %s is not a catalog auditor resident in %s/" % (gate, name))
+    if sorted(all_gates) != sorted(auditor_by_skill):
+        failures.append("discipline gates do not enumerate exactly the 8 catalog auditors")
+
+    # SYM-07 / SYM-15 — the -auditor suffix is reserved; metadata key set is uniform.
+    for path in expected_paths:
+        skill_file = ROOT / path / "SKILL.md"
+        values, metadata = frontmatter(skill_file)
+        if path.rsplit("/", 1)[-1].endswith("-auditor") and values.get("class") != "auditor":
+            violations.add(("SYM-07-auditor-suffix", "skill:%s" % path))
+        if set(metadata) != METADATA_KEYS:
+            violations.add(("SYM-15-metadata-keys", "skill:%s" % path))
+
+    # SYM-10 / SYM-11 — score surface typing and consistency with benchmark + framework catalog.
+    for entry in auditors:
+        scope = "auditor:%s" % entry["skill"]
+        surface = entry.get("score_surface")
+        if (
+            not isinstance(surface, dict)
+            or surface.get("type") not in {"composite", "diagnostic", "profiles-only"}
+            or surface.get("rollup") not in {"weighted-arithmetic-mean", "geometric-mean", "none"}
+        ):
+            violations.add(("SYM-10-score-surface-typed", scope))
+            continue
+        benchmark = next(
+            (source for source in entry.get("runtime_sources", [])
+             if source.endswith("-benchmark.md") or source.endswith("-domain-rating.md")),
+            None,
+        )
+        benchmark_text = (ROOT / benchmark).read_text(encoding="utf-8") if benchmark else ""
+        framework = fw_catalog.get(entry.get("framework"), {})
+        if surface["type"] in {"composite", "diagnostic"}:
+            consistent = (
+                isinstance(surface.get("name"), str)
+                and surface["name"] in benchmark_text
+                and surface["rollup"] != "none"
+            )
+            if surface["rollup"] == "geometric-mean":
+                consistent = consistent and (
+                    framework.get("cross_scope_rollup", {}).get("method") == "geometric-mean"
+                )
+        else:
+            consistent = (
+                surface.get("name") is None
+                and surface["rollup"] == "none"
+                and framework.get("composite_score") is False
+                and not RESERVED_SCORE_TOKEN.search(benchmark_text)
+            )
+        if not consistent:
+            violations.add(("SYM-11-score-surface-consistent", scope))
+
+    # SYM-12 — skills.sh grouping titles carry loop_name, frameworks, phase chain, count.
+    groupings = load_json(GROUPINGS_PATH).get("groupings", [])
+    ordered = [name for name in catalog.get("logical_order", []) if name in disciplines]
+    for index, name in enumerate(ordered):
+        if index >= len(groupings):
+            break
+        spec = disciplines[name]
+        title = groupings[index].get("title", "").translate(str.maketrans({"³": "3"}))
+        chain = " → ".join(spec["phase_order"])
+        wanted = [spec["loop_name"], chain, "(16)"] + [
+            framework.replace("³", "3") for framework in spec["frameworks"]
+        ]
+        if any(token not in title for token in wanted):
+            violations.add(("SYM-12-grouping-title", "discipline:%s" % name))
+
+    # SYM-13 / SYM-14 — Scope edge blocks and command H1 convention.
+    display_names = {spec["command"]["name"]: spec["display_name"] for spec in disciplines.values()}
+    for name in catalog.get("commands", []):
+        text = command_text(name)
+        if text is None:
+            failures.append("commands/%s.md is missing" % name)
+            continue
+        if name in display_names and "**Scope edge" not in text:
+            violations.add(("SYM-13-scope-edge", "command:%s" % name))
+        heading = next((line for line in text.splitlines() if line.startswith("# ")), "")
+        titles = {name.title(), name.replace("-", " ").title(), display_names.get(name, "")}
+        if heading not in {"# %s Command" % title for title in titles if title}:
+            violations.add(("SYM-14-command-h1", "command:%s" % name))
+
+    # SYM-17 — auto.md resolver enumerates discipline commands in logical order.
+    auto_text = command_text("auto") or ""
+    positions = [auto_text.find("/aaron-marketing:%s`" % name) for name in ordered]
+    if -1 in positions or positions != sorted(positions):
+        violations.add(("SYM-17-auto-order", "command:auto"))
+
+    # SYM-16 + engine — subtract licensed deviations; leftovers and stale licenses fail.
+    licensed = set()
+    known_scopes = (
+        {"discipline:%s" % name for name in disciplines}
+        | {"registry:%s" % entry["key"] for entry in registries}
+        | {"auditor:%s" % entry["skill"] for entry in auditors}
+        | {"command:%s" % name for name in catalog.get("commands", [])}
+        | {"skill:%s" % path for path in expected_paths}
+    )
+    for deviation in deviations:
+        rule = deviation.get("rule")
+        scope = deviation.get("scope")
+        if rule not in SYMMETRY_RULES or scope not in known_scopes:
+            failures.append("deviation %s names an unknown rule or scope" % deviation.get("id"))
+            continue
+        source = deviation.get("source_doc")
+        if source and not (ROOT / source).is_file():
+            failures.append("deviation %s cites a missing source_doc" % deviation.get("id"))
+        licensed.add((rule, scope))
+    for rule, scope in sorted(violations - licensed):
+        failures.append("symmetry violation %s at %s has no licensed deviation" % (rule, scope))
+    for rule, scope in sorted(licensed - violations):
+        failures.append("stale deviation: %s at %s no longer violates and must be removed" % (rule, scope))
+
+
 def markdown_files():
     excluded_parts = {".git", ".planning", ".agents", ".codex", "reference-oss"}
     for path in ROOT.rglob("*.md"):
@@ -488,6 +686,7 @@ def main():
         check_registries(catalog, failures)
         check_auditors(catalog, failures)
         check_l1_dependency(catalog, failures)
+        check_symmetry(catalog, expected_paths, failures)
         check_legacy_and_producers(catalog, failures)
     except (ArchitectureError, OSError, ValueError, KeyError) as exc:
         failures.append("architecture check aborted safely: %s" % exc)

@@ -141,6 +141,67 @@ def render(catalog):
         "- [`%s`](../%s/SKILL.md)" % (path.rsplit("/", 1)[-1], path)
         for path in dependency["builders"]
     )
+    symmetry = catalog["symmetry"]
+    deviations_by_scope = {}
+    for deviation in symmetry["deviations"]:
+        deviations_by_scope.setdefault(deviation["scope"], []).append(deviation["id"])
+    surface_by_gate = {auditor["skill"]: auditor["score_surface"] for auditor in catalog["auditors"]}
+    lines.extend([
+        "",
+        "## Symmetry Contract",
+        "",
+        "Every discipline satisfies each column or cites a licensed deviation (see below);"
+        " `check-architecture.py` enforces conform-or-declared and fails stale deviations.",
+        "",
+        "| Discipline | Loop | Command | Registry | Gate(s) | Score surface |",
+        "|---|---|---|---|---|---|",
+    ])
+    for discipline in catalog["logical_order"]:
+        if discipline == "protocol":
+            continue
+        spec = catalog["disciplines"][discipline]
+        command = spec["command"]
+        command_cell = "`/%s --phase %s`" % (command["name"], "\\|".join(command["values"]))
+        alias = deviations_by_scope.get("command:%s" % command["name"])
+        if alias:
+            command_cell += " (%s)" % ", ".join(alias)
+        registry_cell = "`%s`" % spec["registry"]
+        view_deviation = deviations_by_scope.get("registry:%s" % spec["registry"])
+        if view_deviation:
+            registry_cell += " (%s)" % ", ".join(view_deviation)
+        surfaces = []
+        for gate in spec["gates"]:
+            surface = surface_by_gate[gate]
+            surfaces.append(
+                surface["name"] and "%s (%s)" % (surface["name"], surface["rollup"])
+                or "profiles-only"
+            )
+        lines.append(
+            "| **%s** | %s (%s) | %s | %s | %s | %s |"
+            % (
+                spec["display_name"], spec["loop_name"], spec["loop"], command_cell,
+                registry_cell, " · ".join("`%s`" % gate for gate in spec["gates"]),
+                " · ".join(surfaces),
+            )
+        )
+    lines.extend([
+        "",
+        "### Licensed Deviations",
+        "",
+        "| ID | Rule | Scope | Since | Rationale |",
+        "|---|---|---|---|---|",
+    ])
+    for deviation in symmetry["deviations"]:
+        rationale = deviation["rationale"]
+        if deviation.get("source_doc"):
+            rationale += " (source: `%s`)" % deviation["source_doc"]
+        lines.append(
+            "| `%s` | `%s` | `%s` | %s | %s |"
+            % (
+                deviation["id"], deviation["rule"], deviation["scope"],
+                deviation["since_version"], rationale,
+            )
+        )
     lines.extend([
         "",
         "## Distribution Profiles",

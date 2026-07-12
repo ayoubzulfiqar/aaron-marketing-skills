@@ -67,5 +67,104 @@ class CatalogLayerTests(unittest.TestCase):
         )
 
 
+class SymmetryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.module = load_module()
+        with (ROOT / "references" / "system-catalog.json").open(encoding="utf-8") as handle:
+            cls.catalog = json.load(handle)
+
+    def symmetry_failures(self, catalog):
+        failures = []
+        paths = self.module.expected_skill_paths(catalog, failures)
+        self.module.check_symmetry(catalog, paths, failures)
+        return failures
+
+    def test_pristine_catalog_has_no_symmetry_failures(self):
+        self.assertEqual([], self.symmetry_failures(copy.deepcopy(self.catalog)))
+
+    def test_dropped_deviation_surfaces_the_licensed_violation(self):
+        catalog = copy.deepcopy(self.catalog)
+        catalog["symmetry"]["deviations"] = [
+            item for item in catalog["symmetry"]["deviations"]
+            if item["id"] != "DEV-CMD-MODE-ALIAS-SEO-GEO"
+        ]
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(
+            any("SYM-03-command-selector at command:seo-geo" in item for item in failures),
+            failures,
+        )
+
+    def test_stale_deviation_fails(self):
+        catalog = copy.deepcopy(self.catalog)
+        catalog["symmetry"]["deviations"].append({
+            "id": "DEV-STALE-EXAMPLE",
+            "rule": "SYM-05-owner-naming",
+            "scope": "registry:consent",
+            "rationale": "test",
+            "since_version": "18.0.0",
+        })
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(any("stale deviation" in item for item in failures), failures)
+
+    def test_corrupted_loop_string_fails(self):
+        catalog = copy.deepcopy(self.catalog)
+        catalog["disciplines"]["email"]["loop"] = "Setup -> Engage -> Nurture -> Delivery"
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(
+            any("SYM-01-loop-derived at discipline:email" in item for item in failures),
+            failures,
+        )
+
+    def test_loop_name_must_match_phase_initials(self):
+        catalog = copy.deepcopy(self.catalog)
+        catalog["disciplines"]["influencer"]["loop_name"] = "CAST"
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(
+            any("SYM-02-loop-acronym at discipline:influencer" in item for item in failures),
+            failures,
+        )
+
+    def test_wrong_score_surface_name_fails(self):
+        catalog = copy.deepcopy(self.catalog)
+        for entry in catalog["auditors"]:
+            if entry["skill"] == "ad-account-auditor":
+                entry["score_surface"]["name"] = "XQS"
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(
+            any("SYM-11-score-surface-consistent at auditor:ad-account-auditor" in item
+                for item in failures),
+            failures,
+        )
+
+    def test_composite_score_on_profiles_only_gate_fails(self):
+        catalog = copy.deepcopy(self.catalog)
+        for entry in catalog["auditors"]:
+            if entry["skill"] == "launch-readiness-auditor":
+                entry["score_surface"] = {
+                    "type": "composite", "name": "LRS", "rollup": "weighted-arithmetic-mean",
+                }
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(
+            any("auditor:launch-readiness-auditor" in item for item in failures),
+            failures,
+        )
+
+    def test_unknown_deviation_rule_or_scope_fails(self):
+        catalog = copy.deepcopy(self.catalog)
+        catalog["symmetry"]["deviations"].append({
+            "id": "DEV-BOGUS",
+            "rule": "SYM-99-nonexistent",
+            "scope": "discipline:seo-geo",
+            "rationale": "test",
+            "since_version": "18.0.0",
+        })
+        failures = self.symmetry_failures(catalog)
+        self.assertTrue(
+            any("unknown rule or scope" in item for item in failures),
+            failures,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
