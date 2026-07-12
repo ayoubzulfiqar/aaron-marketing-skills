@@ -568,29 +568,55 @@ Artifact Gate 是**框架无关**的——同一个 hook 校验 CORE-EEAT、CITE
 
 ## 推荐工作流
 
-**SEO/GEO**
-1. **Survey 勘测** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
-2. **Implement 实施** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
-3. **Tune 调优** — `content-quality-auditor`（⛩ 发布门） → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
-4. **Evaluate 评估** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`；信任评审用 `domain-authority-auditor`（⛩）
+真实目标大多横跨多个学科。`/aaron-marketing:auto` 会把一句自然语言目标路由到七个学科中最小可用的技能链——比如一次产品发布会同时调动 Launch、Email、Social 与 Paid：
 
-**红人**
-1. **Scout 侦察** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（STAR Suitability）
-2. **Target 锁定** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate 启动** — `outreach-manager` → `creator-content-auditor`（⛩ STAR 门） → `contract-helper` → `content-amplifier`
-4. **Report 汇报** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+```text
+/aaron-marketing:auto 三周后在 Product Hunt 发布 v2——等候名单 1,200 人；需要发布页、邮件序列和发布日计划
+```
 
-**付费广告（ROAS 循环）**
-1. **研究** — `audience-segment-builder` → `campaign-architect`
-2. **编排** — `ad-creative-builder` → `ad-test-designer`（落地页配 `landing-optimizer`）
-3. **激活** — `conversion-signal-qa` → `ad-account-auditor`（⛩ RQS 门），在任何预算上线前
-4. **放大** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+也可以端到端驱动单个学科的循环（各学科目录下的 `README.zh.md` 学科指南提供场景级打法）：
+
+**品牌叙事（TALE 循环）**
+1. **Trace** — `narrative-baseline-mapper` → `category-narrative-mapper` → `audience-belief-mapper` → `positioning-truth-tracer`
+2. **Architect** — `strategic-narrative-designer` → `message-system-architect` → `brand-language-codifier` → `story-bank-builder`
+3. **Land** — `narrative-cascade-planner` → `pitch-narrative-builder` → `narrative-enablement-kit` → `proof-point-packager`
+4. **Evaluate** — `narrative-quality-auditor`（⛩ TALE 门）→ `message-test-designer` → `narrative-resonance-monitor` → `narrative-drift-monitor`
+
+**SEO/GEO（SITE 循环）**
+1. **Survey** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
+2. **Implement** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
+3. **Tune** — `content-quality-auditor`（⛩ 发布门）→ `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
+4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`；信任评审用 `domain-authority-auditor`（⛩）
+
+**自然社媒（ECHO 循环）**
+1. **Explore** — `channel-portfolio-planner` → `voice-dossier-builder` → `platform-norm-profiler` → `participation-warmup-planner`
+2. **Craft** — `social-calendar-builder` → `social-creative-builder` → `short-video-scripter` → `advocacy-program-designer`
+3. **Host** — `social-quality-auditor`（⛩ ECHO 门）→ `engagement-inbox-manager` → `social-selling-planner` → `crisis-response-planner`
+4. **Observe** — `social-pulse-monitor` → `share-of-voice-tracker` → `dark-social-attributor` → `social-measurement-loop`
 
 **邮件营销（SEND 循环）**
-1. **搭建** — `deliverability-qa` → `list-segment-builder`
-2. **触达** — `email-creative-builder`（落地页配 `landing-optimizer`）
-3. **培育** — `email-sequence-designer` → `newsletter-monetization-planner`
-4. **投递** — `send-experiment-designer` → `email-quality-auditor`（⛩ EQS 门），在任何发送前
+1. **Setup** — `deliverability-qa` → `list-segment-builder`
+2. **Engage** — `email-creative-builder`
+3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
+4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` （⛩ EQS 门），在任何发送前
+
+**付费广告（ROAS 循环）**
+1. **Research** — `audience-segment-builder` → `campaign-architect`
+2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer` （落地页配 `landing-optimizer`）
+3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` （⛩ RQS 门），在任何预算上线前
+4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+
+**红人（STAR 循环）**
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（STAR Suitability）
+2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
+3. **Activate** — `outreach-manager` → `creator-content-auditor`（⛩ STAR 门）→ `contract-helper` → `content-amplifier`
+4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+
+**产品发布（RAMP 循环）**
+1. **Research** — `positioning-mapper` → `launch-tier-planner` → `launch-window-planner` → `early-access-designer`
+2. **Assemble** — `message-house-builder` → `launch-asset-packager` → `pricing-packaging-planner` → `sales-enablement-kit`
+3. **Mobilize** — `launch-readiness-auditor`（⛩ RAMP 门）→ `launch-day-conductor` → `community-launch-runner` → `press-media-relations`
+4. **Prove** — `launch-monitor` → `launch-feedback-synthesizer` → `launch-retro-analyzer` → `momentum-planner`
 
 要做完整信任评审，把 `content-quality-auditor` 与 `domain-authority-auditor` 搭配，得到合计 120 项的评估。开启 `memory-management` 后，交棒与未决事项自动留存在 HOT/WARM/COLD 记忆中。
 

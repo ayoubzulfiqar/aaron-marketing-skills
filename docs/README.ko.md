@@ -568,29 +568,55 @@ Paid Ads 스킬은 **자기 계정의 수동 내보내기**(네이티브 광고 
 
 ## 권장 워크플로
 
-**SEO/GEO**
+실제 목표는 대부분 여러 분야에 걸쳐 있습니다. `/aaron-marketing:auto`는 자연어 목표를 7개 분야의 최소 스킬 체인으로 라우팅합니다 — 예컨대 제품 론칭은 Launch·Email·Social·Paid를 동시에 가동합니다:
+
+```text
+/aaron-marketing:auto 3주 뒤 Product Hunt에서 v2 론칭 — 대기자 1,200명; 랜딩 페이지, 이메일, 론칭 당일 플랜 필요
+```
+
+하나의 분야 루프를 끝까지 돌릴 수도 있습니다(각 분야 디렉터리의 `README.md` 가이드가 시나리오 단위 플레이를 제공합니다):
+
+**Narrative (TALE 루프)**
+1. **Trace** — `narrative-baseline-mapper` → `category-narrative-mapper` → `audience-belief-mapper` → `positioning-truth-tracer`
+2. **Architect** — `strategic-narrative-designer` → `message-system-architect` → `brand-language-codifier` → `story-bank-builder`
+3. **Land** — `narrative-cascade-planner` → `pitch-narrative-builder` → `narrative-enablement-kit` → `proof-point-packager`
+4. **Evaluate** — `narrative-quality-auditor` (⛩ TALE 게이트) → `message-test-designer` → `narrative-resonance-monitor` → `narrative-drift-monitor`
+
+**SEO/GEO (SITE 루프)**
 1. **Survey** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
 2. **Implement** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
-3. **Tune** — `content-quality-auditor`(⛩ 게시 게이트) → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
-4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; 신뢰 검토에는 `domain-authority-auditor`(⛩)
+3. **Tune** — `content-quality-auditor` (⛩ 게시 게이트) → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
+4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; 신뢰 리뷰는 `domain-authority-auditor`(⛩)
 
-**인플루언서**
-1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`(STAR Suitability)
-2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `creator-content-auditor`(⛩ STAR 게이트) → `contract-helper` → `content-amplifier`
-4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+**Social (ECHO 루프)**
+1. **Explore** — `channel-portfolio-planner` → `voice-dossier-builder` → `platform-norm-profiler` → `participation-warmup-planner`
+2. **Craft** — `social-calendar-builder` → `social-creative-builder` → `short-video-scripter` → `advocacy-program-designer`
+3. **Host** — `social-quality-auditor` (⛩ ECHO 게이트) → `engagement-inbox-manager` → `social-selling-planner` → `crisis-response-planner`
+4. **Observe** — `social-pulse-monitor` → `share-of-voice-tracker` → `dark-social-attributor` → `social-measurement-loop`
 
-**Paid Ads(ROAS 루프)**
-1. **Research** — `audience-segment-builder` → `campaign-architect`
-2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer`(페이지용으로 + `landing-optimizer`)
-3. **Activate** — `conversion-signal-qa` → `ad-account-auditor`(⛩ RQS 게이트), 어떤 예산이든 라이브되기 전에
-4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
-
-**이메일(SEND 루프)**
+**Email (SEND 루프)**
 1. **Setup** — `deliverability-qa` → `list-segment-builder`
 2. **Engage** — `email-creative-builder`
 3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
-4. **Deliver** — `send-experiment-designer` → `email-quality-auditor`(⛩ EQS 게이트), 발송 전에
+4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ EQS 게이트) — 발송 전
+
+**Paid Ads (ROAS 루프)**
+1. **Research** — `audience-segment-builder` → `campaign-architect`
+2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer` (페이지는 `landing-optimizer`)
+3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` (⛩ RQS 게이트) — 예산 집행 전
+4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+
+**인플루언서 (STAR 루프)**
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
+2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
+3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ STAR 게이트) → `contract-helper` → `content-amplifier`
+4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+
+**Launch (RAMP 루프)**
+1. **Research** — `positioning-mapper` → `launch-tier-planner` → `launch-window-planner` → `early-access-designer`
+2. **Assemble** — `message-house-builder` → `launch-asset-packager` → `pricing-packaging-planner` → `sales-enablement-kit`
+3. **Mobilize** — `launch-readiness-auditor` (⛩ RAMP 게이트) → `launch-day-conductor` → `community-launch-runner` → `press-media-relations`
+4. **Prove** — `launch-monitor` → `launch-feedback-synthesizer` → `launch-retro-analyzer` → `momentum-planner`
 
 완전한 신뢰 검토를 위해 `content-quality-auditor`를 `domain-authority-auditor`와 짝지어 합계 120항목 평가를. `memory-management`가 활성이면 인계와 미해결 사항이 HOT/WARM/COLD 메모리에 자동으로 지속됩니다.
 

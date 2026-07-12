@@ -568,29 +568,55 @@ Artifact Gate 是**框架無關**的——同一個 hook 驗證 TALE、CORE-EEAT
 
 ## 推薦工作流
 
-**SEO/GEO**
+真實目標大多橫跨多個學科。`/aaron-marketing:auto` 會把一句自然語言目標路由到七個學科中最小可用的技能鏈——例如一次產品發布會同時調動 Launch、Email、Social 與 Paid：
+
+```text
+/aaron-marketing:auto 三週後在 Product Hunt 發布 v2——等候名單 1,200 人；需要發布頁、郵件序列與發布日計畫
+```
+
+也可以端到端驅動單一學科的循環（各學科目錄下的 `README.zh.md` 學科指南提供場景級打法）：
+
+**品牌敘事（TALE 循環）**
+1. **Trace** — `narrative-baseline-mapper` → `category-narrative-mapper` → `audience-belief-mapper` → `positioning-truth-tracer`
+2. **Architect** — `strategic-narrative-designer` → `message-system-architect` → `brand-language-codifier` → `story-bank-builder`
+3. **Land** — `narrative-cascade-planner` → `pitch-narrative-builder` → `narrative-enablement-kit` → `proof-point-packager`
+4. **Evaluate** — `narrative-quality-auditor`（⛩ TALE 門）→ `message-test-designer` → `narrative-resonance-monitor` → `narrative-drift-monitor`
+
+**SEO/GEO（SITE 循環）**
 1. **Survey** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
 2. **Implement** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
-3. **Tune** — `content-quality-auditor`（⛩ 發布門） → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
+3. **Tune** — `content-quality-auditor`（⛩ 發布門）→ `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
 4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`；信任評審用 `domain-authority-auditor`（⛩）
 
-**紅人**
-1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（STAR Suitability）
-2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `creator-content-auditor`（⛩ STAR 門） → `contract-helper` → `content-amplifier`
-4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
-
-**付費廣告（ROAS 循環）**
-1. **Research** — `audience-segment-builder` → `campaign-architect`
-2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer`（著陸頁配 `landing-optimizer`）
-3. **Activate** — `conversion-signal-qa` → `ad-account-auditor`（⛩ RQS 門），在任何預算上線前
-4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+**社媒（ECHO 循環）**
+1. **Explore** — `channel-portfolio-planner` → `voice-dossier-builder` → `platform-norm-profiler` → `participation-warmup-planner`
+2. **Craft** — `social-calendar-builder` → `social-creative-builder` → `short-video-scripter` → `advocacy-program-designer`
+3. **Host** — `social-quality-auditor`（⛩ ECHO 門）→ `engagement-inbox-manager` → `social-selling-planner` → `crisis-response-planner`
+4. **Observe** — `social-pulse-monitor` → `share-of-voice-tracker` → `dark-social-attributor` → `social-measurement-loop`
 
 **郵件行銷（SEND 循環）**
 1. **Setup** — `deliverability-qa` → `list-segment-builder`
 2. **Engage** — `email-creative-builder`
 3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
-4. **Deliver** — `send-experiment-designer` → `email-quality-auditor`（⛩ EQS 門），在任何發送前
+4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` （⛩ EQS 門），在任何發送前
+
+**付費廣告（ROAS 循環）**
+1. **Research** — `audience-segment-builder` → `campaign-architect`
+2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer` （落地頁配 `landing-optimizer`）
+3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` （⛩ RQS 門），在任何預算上線前
+4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+
+**紅人（STAR 循環）**
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer`（STAR Suitability）
+2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
+3. **Activate** — `outreach-manager` → `creator-content-auditor`（⛩ STAR 門）→ `contract-helper` → `content-amplifier`
+4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+
+**產品發布（RAMP 循環）**
+1. **Research** — `positioning-mapper` → `launch-tier-planner` → `launch-window-planner` → `early-access-designer`
+2. **Assemble** — `message-house-builder` → `launch-asset-packager` → `pricing-packaging-planner` → `sales-enablement-kit`
+3. **Mobilize** — `launch-readiness-auditor`（⛩ RAMP 門）→ `launch-day-conductor` → `community-launch-runner` → `press-media-relations`
+4. **Prove** — `launch-monitor` → `launch-feedback-synthesizer` → `launch-retro-analyzer` → `momentum-planner`
 
 要做完整信任評審，把 `content-quality-auditor` 與 `domain-authority-auditor` 搭配，得到合計 120 項的評估。開啟 `memory-management` 後，交棒與未決事項自動留存在 HOT/WARM/COLD 記憶中。
 

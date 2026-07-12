@@ -568,29 +568,55 @@ As skills de paid ads pontuam a partir da sua **exportação manual da própria 
 
 ## Workflows recomendados
 
-**SEO/GEO**
+A maioria dos objetivos reais cruza disciplinas. `/aaron-marketing:auto` roteia um objetivo em linguagem natural para a menor cadeia útil entre as sete — um lançamento de produto, por exemplo, aciona Launch, Email, Social e Paid de uma vez:
+
+```text
+/aaron-marketing:auto lançar nossa v2 no Product Hunt em 3 semanas — 1.200 na lista de espera; precisamos da página, dos e-mails e do plano do dia do lançamento
+```
+
+Ou conduza o loop de uma disciplina de ponta a ponta (o guia `README.md` em cada diretório de disciplina adiciona jogadas por cenário):
+
+**Narrative (loop TALE)**
+1. **Trace** — `narrative-baseline-mapper` → `category-narrative-mapper` → `audience-belief-mapper` → `positioning-truth-tracer`
+2. **Architect** — `strategic-narrative-designer` → `message-system-architect` → `brand-language-codifier` → `story-bank-builder`
+3. **Land** — `narrative-cascade-planner` → `pitch-narrative-builder` → `narrative-enablement-kit` → `proof-point-packager`
+4. **Evaluate** — `narrative-quality-auditor` (⛩ portão TALE) → `message-test-designer` → `narrative-resonance-monitor` → `narrative-drift-monitor`
+
+**SEO/GEO (loop SITE)**
 1. **Survey** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
 2. **Implement** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
-3. **Tune** — `content-quality-auditor` (⛩ gate de publicação) → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
-4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; `domain-authority-auditor` (⛩) para a revisão de confiança
+3. **Tune** — `content-quality-auditor` (⛩ portão de publicação) → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
+4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; revisão de confiança com `domain-authority-auditor` (⛩)
 
-**Influenciadores**
-1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
-2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ gate STAR) → `contract-helper` → `content-amplifier`
-4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+**Social (loop ECHO)**
+1. **Explore** — `channel-portfolio-planner` → `voice-dossier-builder` → `platform-norm-profiler` → `participation-warmup-planner`
+2. **Craft** — `social-calendar-builder` → `social-creative-builder` → `short-video-scripter` → `advocacy-program-designer`
+3. **Host** — `social-quality-auditor` (⛩ portão ECHO) → `engagement-inbox-manager` → `social-selling-planner` → `crisis-response-planner`
+4. **Observe** — `social-pulse-monitor` → `share-of-voice-tracker` → `dark-social-attributor` → `social-measurement-loop`
+
+**Email (loop SEND)**
+1. **Setup** — `deliverability-qa` → `list-segment-builder`
+2. **Engage** — `email-creative-builder`
+3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
+4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ portão EQS) antes de qualquer envio
 
 **Paid Ads (loop ROAS)**
 1. **Research** — `audience-segment-builder` → `campaign-architect`
 2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer` (+ `landing-optimizer` para a página)
-3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` (⛩ gate RQS) antes de qualquer orçamento ir ao ar
+3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` (⛩ portão RQS) antes de qualquer orçamento ao vivo
 4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
 
-**E-mail (loop SEND)**
-1. **Setup** — `deliverability-qa` → `list-segment-builder`
-2. **Engage** — `email-creative-builder`
-3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
-4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ gate EQS) antes do envio
+**Influenciadores (loop STAR)**
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
+2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
+3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ portão STAR) → `contract-helper` → `content-amplifier`
+4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+
+**Launch (loop RAMP)**
+1. **Research** — `positioning-mapper` → `launch-tier-planner` → `launch-window-planner` → `early-access-designer`
+2. **Assemble** — `message-house-builder` → `launch-asset-packager` → `pricing-packaging-planner` → `sales-enablement-kit`
+3. **Mobilize** — `launch-readiness-auditor` (⛩ portão RAMP) → `launch-day-conductor` → `community-launch-runner` → `press-media-relations`
+4. **Prove** — `launch-monitor` → `launch-feedback-synthesizer` → `launch-retro-analyzer` → `momentum-planner`
 
 Para uma revisão de confiança completa, combine `content-quality-auditor` com `domain-authority-auditor` para uma avaliação combinada de 120 itens. Com `memory-management` ativo, passagens de bastão e pendências persistem automaticamente na memória HOT/WARM/COLD.
 
