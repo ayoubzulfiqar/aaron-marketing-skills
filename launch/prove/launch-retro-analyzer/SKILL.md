@@ -51,7 +51,7 @@ Close out the [product] launch: build the actual-vs-target table, log the learni
 
 ## Data Sources
 
-The UTM-attributed `~~web analytics` export (GA4 or equivalent, own data — manual export) is the truth set for the actuals column; `~~launch platform` and `~~app store data` dashboards are self-reported reference numbers, kept in a separate column. Public launch-window telemetry comes from the keyless/free-key connectors — `scripts/connectors/hn.py`, `scripts/connectors/producthunt.py`, `scripts/connectors/appstore.py`, and `scripts/connectors/gdelt.py` (`~~brand monitor` news echo). Every path is keyless Tier-1 — paste the exports if no connector is set up. Keyed launch platforms and commercial suites are an optional Tier-2/3 MCP convenience, never required. See [CONNECTORS.md](../../../CONNECTORS.md).
+The UTM-attributed `~~web analytics` export (GA4 or equivalent, own data — manual export) is the truth set for the actuals column; `~~launch platform` and `~~app store data` dashboards are self-reported reference numbers, kept in a separate column. Public launch-window telemetry comes from the keyless/free-key connectors — `scripts/connectors/hn.py`, `scripts/connectors/producthunt.py` (non-commercial API ToS — business use needs Product Hunt approval, attribution required), `scripts/connectors/appstore.py`, and `scripts/connectors/gdelt.py` (`~~brand monitor` news echo). Every path is keyless Tier-1 — paste the exports if no connector is set up. Keyed launch platforms and commercial suites are an optional Tier-2/3 MCP convenience, never required. See [CONNECTORS.md](../../../CONNECTORS.md).
 
 ## Instructions
 

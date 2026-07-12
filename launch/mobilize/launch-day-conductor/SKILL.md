@@ -49,7 +49,7 @@ We shipped the release 20 minutes ago. Here is the error rate and signup funnel 
 
 ## Data Sources
 
-Pre-conditions come from project memory: the gate artifact in `memory/audits/launch/` and the dossier in `memory/launch-registry/`. Live window reads are keyless Tier-1: own analytics real-time export via `~~web analytics` (GA4, Measured), public launch telemetry via `scripts/connectors/hn.py` (keyless Algolia + Firebase), `scripts/connectors/producthunt.py` (free-key developer token), `scripts/connectors/appstore.py` (keyless documented endpoints), and news echo via `scripts/connectors/gdelt.py` (≥5s between calls). Keyed launch platforms and dashboards are an optional Tier-2/3 MCP convenience, never required. See [CONNECTORS.md](../../../CONNECTORS.md).
+Pre-conditions come from project memory: the gate artifact in `memory/audits/launch/` and the dossier in `memory/launch-registry/`. Live window reads are keyless Tier-1: own analytics real-time export via `~~web analytics` (GA4, Measured), public launch telemetry via `scripts/connectors/hn.py` (keyless Algolia + Firebase), `scripts/connectors/producthunt.py` (free-key developer token; non-commercial API ToS — business use needs Product Hunt approval, attribution required), `scripts/connectors/appstore.py` (keyless documented endpoints), and news echo via `scripts/connectors/gdelt.py` (≥5s between calls). Keyed launch platforms and dashboards are an optional Tier-2/3 MCP convenience, never required. See [CONNECTORS.md](../../../CONNECTORS.md).
 
 ## Instructions
 

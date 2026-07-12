@@ -51,7 +51,7 @@ Define the embargo window for [launch]: lift moment, timezone, and who is commit
 
 ## Data Sources
 
-Use `scripts/connectors/producthunt.py` (competitor launch history, free-key developer token), `scripts/connectors/hn.py` (keyless community-rhythm pull), and `scripts/connectors/gdelt.py` (news pulse around candidate dates; keep ≥5s between calls) — all outputs labeled Measured. Category placeholders: `~~launch platform` (launch-day telemetry), `~~app store data` (review/listing state), `~~brand monitor` (news echo). Everything is keyless/free-key Tier-1; when a connector is missing, ask the user to paste competitor launch dates and event calendars (User-provided). Keyed launch platforms are an optional Tier-2/3 convenience, never required. See [CONNECTORS.md](../../../CONNECTORS.md).
+Use `scripts/connectors/producthunt.py` (competitor launch history, free-key developer token; non-commercial API ToS — business use needs Product Hunt approval, attribution required), `scripts/connectors/hn.py` (keyless community-rhythm pull), and `scripts/connectors/gdelt.py` (news pulse around candidate dates; keep ≥5s between calls) — all outputs labeled Measured. Category placeholders: `~~launch platform` (launch-day telemetry), `~~app store data` (review/listing state), `~~brand monitor` (news echo). Everything is keyless/free-key Tier-1; when a connector is missing, ask the user to paste competitor launch dates and event calendars (User-provided). Keyed launch platforms are an optional Tier-2/3 convenience, never required. See [CONNECTORS.md](../../../CONNECTORS.md).
 
 ## Instructions
 

@@ -30,6 +30,7 @@ The repository tracks only safe templates and guidance under `memory/`. A full c
 5. A proposal has no canonical effect until accepted. Rejecting or accepting never deletes the original event.
 6. JSON projections are installed atomically and can be rebuilt from verified history. Human Markdown is a rendering of the projection.
 7. Stale expected revisions fail. A caller must re-read and reconcile; force-overwrite is not a recovery path.
+8. Proposals resolve individually in offset order — the owner adjudicates each `propose` on its own merits, in stream order, never as a batch. This is the clause launch-window (T-0) writers rely on: competing same-window proposals resolve deterministically, one offset at a time.
 8. Event streams are never cleared, consumed, rotated, archived, or edited by a skill.
 
 ### Registry Ownership

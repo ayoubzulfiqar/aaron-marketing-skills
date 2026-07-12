@@ -46,7 +46,7 @@ This skill judges. `conversion-signal-qa`, `attribution-reconciler`, `campaign-a
 | Outcome truth | Deduplicated order/lead IDs from ecommerce, analytics, or CRM |
 | Economics | Currency, margin/contribution, CAC/payback constraint |
 | Attribution | Platform + own-data timestamps/IDs, normalized windows and lag |
-| Safety/claims | Placement report, rendered ad/landing, approved claim/disclosure state |
+| Safety/claims | Placement report, rendered ad/landing, approved claim/disclosure state from [offer-claims-registry](../../../protocol/offer-claims-registry/SKILL.md) (the paid claims SSOT) |
 | Incrementality | Holdout/geo split/causal test, otherwise explicitly labeled proxy |
 
 ## Instructions
@@ -65,7 +65,7 @@ Declare profile (`direct-response|prospecting|incremental-profit`), target, curr
 4. Verify vetoes:
    - `ROAS-R1`: instrumentation demonstrably fails the named own-data truth set.
    - `ROAS-R2`: material double-counting/inflation is demonstrated.
-   - `ROAS-O1`: material claim/disclosure failure.
+   - `ROAS-O1`: material claim/disclosure failure against the `offer-claims-registry` approved state.
    - `ROAS-O2`: applicable platform/restricted-category violation.
    - `ROAS-A1`: placement evidence demonstrates a material safety breach.
 5. Run the typed scorer. Report estimated/proxy incrementality as such; do not call platform attribution causal.
@@ -115,6 +115,7 @@ Persist only after explicit authorization to `memory/audits/ad/YYYY-MM-DD-<topic
 ## Next Best Skill
 
 - **Tracking:** [conversion-signal-qa](../conversion-signal-qa/SKILL.md)
+- **Claims/disclosures:** [offer-claims-registry](../../../protocol/offer-claims-registry/SKILL.md) — the approved claim/disclosure state behind `ROAS-O1`
 - **Attribution:** [attribution-reconciler](../../scale/attribution-reconciler/SKILL.md)
 - **Structure/audience:** [campaign-architect](../../research/campaign-architect/SKILL.md)
 - **Pacing:** [budget-pacing-monitor](../../scale/budget-pacing-monitor/SKILL.md)

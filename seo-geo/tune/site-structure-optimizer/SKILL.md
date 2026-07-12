@@ -157,4 +157,4 @@ Termination: apply the global visited-set / `max-depth: 3` / ambiguity-stop rule
 
 - If you ran **architecture** mode: primary → run this skill again in **linking** mode to optimize the actual links inside the new structure. If linking was already run this chain, STOP (visited-set) and report chain-complete.
 - If you ran **linking** mode: primary → [on-page-seo-checker](../on-page-seo-checker/SKILL.md) — verify that revised internal links support page-level goals.
-- If the structure is publish-ready and a scored gate is needed: [content-quality-auditor](../content-quality-auditor/SKILL.md) — the only skill that computes the CORE-EEAT score and runs R08/R10/T04/C01 vetoes. Stop after the gate returns a verdict.
+- If the structure is publish-ready and a scored gate is needed: [content-quality-auditor](../content-quality-auditor/SKILL.md) — the only skill that computes the CORE-EEAT score and runs the T04/C01/R10 vetoes. Stop after the gate returns a verdict.

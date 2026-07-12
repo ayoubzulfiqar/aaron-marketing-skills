@@ -49,7 +49,7 @@ Example 6: "/aaron-marketing:auto turn our pricing page into an AI-citable compa
 
 ## Status matrix
 
-> Legend — ✅ live · 🟡 prepared, owner action pending · 🔬 researched, route below · ⬜ not applicable / not worth it
+> Legend — ✅ live · 🟢 submitted, awaiting listing · 🟡 prepared, owner action pending · 🔴 blocked upstream (route below) · ⬜ not applicable / not worth it
 
 | # | Platform | Type | Status |
 |---|----------|------|--------|

@@ -110,7 +110,7 @@ Termination note: keep a visited-set. If a skill in this chain was already invok
 
 ## Related Skills
 
-- [influencer-discovery](../../scout/influencer-discovery) - Find influencers to reach out to
-- [fit-scorer](../../scout/fit-scorer) - Prioritize who to contact first
-- [brief-generator](../../target/brief-generator) - Send briefs to confirmed partners
-- [contract-helper](../contract-helper) - Finalize agreements
+- [influencer-discovery](../../scout/influencer-discovery/SKILL.md) - Find influencers to reach out to
+- [fit-scorer](../../scout/fit-scorer/SKILL.md) - Prioritize who to contact first
+- [brief-generator](../../target/brief-generator/SKILL.md) - Send briefs to confirmed partners
+- [contract-helper](../contract-helper/SKILL.md) - Finalize agreements

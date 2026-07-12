@@ -126,7 +126,7 @@ Applicable but unobserved items are `unknown`; omitted items are also `unknown`.
 
 ### Score Calculation
 
-- **Dimension score** = sum of 10 items (0–100)
+- **Dimension score** = mean of the applicable items × 10 (0–100; catalog-authorized `na` items drop out of the mean)
 - **Default diagnostic** = C × 0.35 + I × 0.20 + T × 0.25 + E × 0.20
 - **Comparable profile score** = C × w_C + I × w_I + T × w_T + E × w_E, after peer-relative anchors and complete evidence are locked
 

@@ -33,7 +33,7 @@ Run the STAR gate; show claim/disclosure blockers, the SQS, and write the creato
 
 ## Skill Contract
 
-**Reads:** one frozen submission; brief/canon version; approved claims/disclosures; platform requirements; the `fit-scorer` Suitability read; and (for an `actual` re-read) the `roi-calculator` Return evidence. **Writes:** a user report and, only with permission, a v3 artifact. **Done when:** every applicable STAR item is explicit, the typed SQS result is preserved, and feedback maps each requested change to evidence.
+**Reads:** one frozen submission; brief/canon version; approved claims/disclosures (substantiation state from `offer-claims-registry`); platform requirements; the `fit-scorer` Suitability read and the `creator-registry` dossier (the audience-authenticity facts behind `STAR-S2`/`S6`); and (for an `actual` re-read) the `roi-calculator` Return evidence. **Writes:** a user report and, only with permission, a v3 artifact. **Done when:** every applicable STAR item is explicit, the typed SQS result is preserved, and feedback maps each requested change to evidence.
 
 Only this gate computes the profile-weighted SQS; every other influencer skill works one lever and hands off — `fit-scorer` supplies Suitability, `roi-calculator` supplies measured Return, `contract-helper` owns terms. This gate does not adjudicate claims or rights.
 

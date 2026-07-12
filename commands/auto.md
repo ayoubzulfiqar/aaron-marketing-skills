@@ -29,7 +29,8 @@ Run the marketing pack-local Aaron workflow (narrative/TALE + SEO/GEO/SITE + soc
 - Apply scenario-library risk gates: publish readiness, YMYL, schema factuality, batch scale, external side effects, memory/entity writes, reputation ethics, GEO visibility claims, insufficient data, technical indexation.
 - Respect specialist boundaries: batch content stays chunked; audit/publish readiness require full veto-aware evidence; GEO visibility cannot promise citations; memory cleanup stays with memory-management; canonical entity writes stay with entity-registry.
 - Do not route repository maintenance, version sync, release, permission, or governance requests through `/aaron-marketing:auto`; they fall outside the pack-local marketing workflow.
-- Words such as apply, commit, release, publish, or fix are not automatic permission grants. Publish-package and readiness work routes through `/aaron-marketing:seo-geo --phase implement --publish`; actual CMS/external publication, commits, releases, and repo edits require explicit confirmation.- Return an execution summary by default: completed steps, evidence used, blockers or gate stops, artifacts produced, assumptions, and next safe action. Diagnostic route trace appears only when explicitly requested.
+- Words such as apply, commit, release, publish, or fix are not automatic permission grants. Publish-package and readiness work routes through `/aaron-marketing:seo-geo --phase implement --publish`; actual CMS/external publication, commits, releases, and repo edits require explicit confirmation.
+- Return an execution summary by default: completed steps, evidence used, blockers or gate stops, artifacts produced, assumptions, and next safe action. Diagnostic route trace appears only when explicitly requested.
 - Never write files unless explicitly requested and supported by the runtime.
 
 ## Output

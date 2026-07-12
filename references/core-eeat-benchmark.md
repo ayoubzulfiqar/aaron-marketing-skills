@@ -152,7 +152,7 @@ Applicable but unobserved items are `unknown`; omitted items are also `unknown`.
 
 ### Score Calculation
 
-- **Dimension score** = sum of 10 items (0–100)
+- **Dimension score** = mean of the applicable items × 10 (0–100; catalog-authorized `na` items drop out of the mean)
 - **GEO diagnostic** = (C + O + R + E) / 4, only when those four dimensions are complete
 - **SEO diagnostic** = (Exp + Ept + A + T) / 4, only when those four dimensions are complete
 - **Comparable overall** = Σ (dimension score × declared content-profile weight), emitted only when all applicable profile items are observed
