@@ -1,5 +1,5 @@
 {
-  "catalog_version": "17.0.0",
+  "catalog_version": "18.0.0",
   "semantics": {
     "external_validity": "advisory-until-outcome-calibrated",
     "score_states": ["pass", "partial", "fail", "unknown", "na"],

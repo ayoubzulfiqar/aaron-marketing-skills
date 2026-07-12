@@ -91,7 +91,7 @@ class CatalogTests(unittest.TestCase):
             {("scopes",), ("components",)},
         )
         scored = schema["$defs"]["scoredResult"]
-        self.assertEqual(scored["properties"]["catalog_version"], {"const": "17.0.0"})
+        self.assertEqual(scored["properties"]["catalog_version"], {"const": "18.0.0"})
         self.assertTrue({
             "status", "verdict", "evidence_coverage", "score_confidence",
             "veto_count", "cap_applied", "raw_overall_score", "final_overall_score",

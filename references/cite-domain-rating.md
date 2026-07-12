@@ -6,7 +6,7 @@
 >
 > **Version sync**: When the source spec updates, check: item count references in README (currently "40 items"), skill validation checkpoints, and Sections 2, 3, 7 below.
 
-> **v17 execution contract**: this file owns human item anchors. Profiles, required comparison context, conditional applicability, and veto identity live in [`framework-catalog.json`](framework-catalog.json); Unknown/N/A, evidence, coverage, score, status, and verdict semantics live in [`scoring-semantics.md`](scoring-semantics.md). CITE is advisory and peer-relative until outcome-calibrated.
+> **v18 execution contract**: this file owns human item anchors. Profiles, required comparison context, conditional applicability, and veto identity live in [`framework-catalog.json`](framework-catalog.json); Unknown/N/A, evidence, coverage, score, status, and verdict semantics live in [`scoring-semantics.md`](scoring-semantics.md). CITE is advisory and peer-relative until outcome-calibrated.
 
 **4 dimensions × 10 items = 40 evaluation criteria** for assessing domain authority in the Generative Engine Optimization (GEO) era.
 

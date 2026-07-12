@@ -48,7 +48,7 @@ Every observed item cites a source, source date, evidence type, and confidence. 
 
 ## 5. Coverage and Scoring
 
-All applicable items require an observed `pass`, `partial`, or `fail` before a comparable total is emitted. The v17 threshold is therefore **100% applicable evidence coverage**. Incomplete runs remain useful: they return dimension coverage, a best/worst score interval, explicit gaps, `score_state: NOT_SCORED`, and normally `verdict: UNDECIDED`.
+All applicable items require an observed `pass`, `partial`, or `fail` before a comparable total is emitted. The v18 threshold is therefore **100% applicable evidence coverage**. Incomplete runs remain useful: they return dimension coverage, a best/worst score interval, explicit gaps, `score_state: NOT_SCORED`, and normally `verdict: UNDECIDED`.
 
 For a complete run:
 

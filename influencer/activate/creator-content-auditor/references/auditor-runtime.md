@@ -3,10 +3,10 @@
 # Standalone Auditor Runtime
 
 - **Runtime version:** 3.0.0
-- **Catalog version:** 17.0.0
+- **Catalog version:** 18.0.0
 - **Framework:** C3
 - **Auditor:** creator-content-auditor
-- **Source digest:** `sha256:7fc7f2412775c070c55d178e714dca286cf6a571834c0bd0a2ef77e0b86fa8bf`
+- **Source digest:** `sha256:7815bfae0f1cdb3c954c67a5fd804174d176ac0fe198b2ecb4cf33014a162ff4`
 
 This immutable bundle is the fail-closed standalone fallback for this auditor. It contains the exact typed framework slice needed to collect observations without inventing rules. Repository/plugin installs use the root policy, schemas, and deterministic scorer. A standalone one-folder install must not fetch mutable sources, compute a score, claim a gate verdict, or persist an audit artifact.
 
@@ -14,7 +14,7 @@ This immutable bundle is the fail-closed standalone fallback for this auditor. I
 
 ```json
 {
-  "catalog_version": "17.0.0",
+  "catalog_version": "18.0.0",
   "frameworks": {
     "C3": {
       "construct": "three separately observed influencer scopes: creator, content, and campaign",

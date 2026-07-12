@@ -1,6 +1,6 @@
 # State Model
 
-This document defines the v17 project-state architecture. Runtime state is private by default, registry history is event sourced, projections are disposable views, and ordinary skill outputs never become canonical merely because they were saved.
+This document defines the v18 project-state architecture. Runtime state is private by default, registry history is event sourced, projections are disposable views, and ordinary skill outputs never become canonical merely because they were saved.
 
 ## State Classes
 

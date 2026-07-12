@@ -50,7 +50,7 @@
       ],
       "properties": {
         "framework": {"const": "C3"},
-        "catalog_version": {"const": "17.0.0"},
+        "catalog_version": {"const": "18.0.0"},
         "profile": {
           "type": "string",
           "pattern": "^(ace|art|roi)-(awareness|engagement|conversion|brand-building)$"

@@ -105,7 +105,7 @@ The durable Markdown artifact uses scalar YAML frontmatter plus a deterministic 
 class: auditor-output
 schema_version: 3.0
 runbook_version: 3.0.0
-catalog_version: 17.0.0
+catalog_version: 18.0.0
 framework: ROAS
 profile: direct-response
 ---

@@ -18,7 +18,7 @@
 #   bash scripts/publish-skillhub.sh                          # dry-run (default): local pre-check, all manifest skills
 #   bash scripts/publish-skillhub.sh --skill keyword-research # dry-run one skill
 #   bash scripts/publish-skillhub.sh --live                   # publish all (changelog 首次发布)
-#   bash scripts/publish-skillhub.sh --live --changelog "v17.0.0 更新说明"
+#   bash scripts/publish-skillhub.sh --live --changelog "v18.0.0 更新说明"
 #
 # Exit: 0 all requested skills processed, 1 on any failure.
 

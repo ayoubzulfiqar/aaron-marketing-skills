@@ -20,7 +20,7 @@ def artifact(**overrides):
     values = {
         "framework": "ROAS",
         "profile": "direct-response",
-        "catalog_version": "17.0.0",
+        "catalog_version": "18.0.0",
         "status": "DONE",
         "verdict": "SHIP",
         "score_state": "SCORED",
@@ -78,14 +78,14 @@ class AuditArtifactValidatorTests(unittest.TestCase):
         record, errors = self.validate(artifact())
         self.assertEqual(errors, [])
         self.assertEqual(record["final_overall_score"], 80)
-        self.assertEqual(record["catalog_version"], "17.0.0")
+        self.assertEqual(record["catalog_version"], "18.0.0")
         self.assertEqual(record["context"]["currency"], "USD")
 
     def test_companion_schema_declares_current_catalog_and_state_machine(self):
         schema = json.loads(
             (ROOT / "references" / "audit-artifact.schema.json").read_text()
         )
-        self.assertEqual(schema["properties"]["catalog_version"], {"const": "17.0.0"})
+        self.assertEqual(schema["properties"]["catalog_version"], {"const": "18.0.0"})
         branches = json.dumps(schema["allOf"], sort_keys=True)
         for required_fragment in (
             '"score_state": {"const": "SCORED"}',
@@ -304,7 +304,7 @@ class AuditArtifactValidatorTests(unittest.TestCase):
                             for error in self.validate(undecided)[1]))
 
     def test_catalog_version_and_typed_material_context_are_required(self):
-        missing_version = artifact().replace('catalog_version: "17.0.0"\n', "")
+        missing_version = artifact().replace('catalog_version: "18.0.0"\n', "")
         self.assertTrue(any("catalog_version" in error
                             for error in self.validate(missing_version)[1]))
         invalid_version = artifact(catalog_version="v17")

@@ -4,14 +4,14 @@ slug: creator-content-auditor
 displayName: "Creator Content Auditor · 创作者内容审计"
 summary: "C³ ART 门:品牌契合、信息准确、FTC 披露合规的门控判定与创作者修改反馈"
 description: 'Use when the user asks to "review this influencer content" or "check if this post meets brand guidelines"; runs a typed C3 ART asset gate, checks disclosure and claim-integrity vetoes, and writes constructive revision feedback. Not for drafting the brief — use brief-generator; not for partnership terms — use contract-helper.'
-version: "17.0.0"
+version: "18.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
 when_to_use: "Activate when an influencer content submission needs a pre-publish gate against the brief, approved claims, disclosure obligations, platform requirements, and C3 ART criteria."
 argument-hint: "<content submission or link> <platform> <campaign goal>"
 class: auditor
-metadata: {"author": "aaron-he-zhu", "version": "17.0.0", "discipline": "influencer", "phase": "activate", "geo-relevance": "low", "hermes": {"tags": ["marketing", "influencer", "activate"], "category": "influencer"}, "openclaw": {"emoji": "📣", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
+metadata: {"author": "aaron-he-zhu", "version": "18.0.0", "discipline": "influencer", "phase": "activate", "geo-relevance": "low", "hermes": {"tags": ["marketing", "influencer", "activate"], "category": "influencer"}, "openclaw": {"emoji": "📣", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 
 # Content Reviewer

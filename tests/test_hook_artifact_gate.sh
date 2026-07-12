@@ -64,7 +64,7 @@ cat > "$PROJ/memory/audits/content/good.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
-catalog_version: "17.0.0"
+catalog_version: "18.0.0"
 framework: CORE-EEAT
 profile: product-review
 ---
@@ -106,7 +106,7 @@ cat > "$PROJ/memory/audits/content/blocked_ok.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
-catalog_version: "17.0.0"
+catalog_version: "18.0.0"
 framework: CORE-EEAT
 profile: product-review
 ---
@@ -155,7 +155,7 @@ cat > "$PROJ/memory/audits/content/blocked_nocap.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
-catalog_version: "17.0.0"
+catalog_version: "18.0.0"
 framework: CORE-EEAT
 profile: product-review
 ---
@@ -205,7 +205,7 @@ cat > "$PROJ/memory/audits/influencer/cr_good.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
-catalog_version: "17.0.0"
+catalog_version: "18.0.0"
 framework: C3
 profile: art-awareness
 ---
@@ -239,7 +239,7 @@ cat > "$PROJ/memory/audits/influencer/cr_veto.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
-catalog_version: "17.0.0"
+catalog_version: "18.0.0"
 framework: C3
 profile: art-awareness
 ---
@@ -288,7 +288,7 @@ cat > "$PROJ/memory/audits/ad/aa_good.md" <<'EOF'
 class: auditor-output
 schema_version: "3.0"
 runbook_version: "3.0.0"
-catalog_version: "17.0.0"
+catalog_version: "18.0.0"
 framework: ROAS
 profile: direct-response
 ---

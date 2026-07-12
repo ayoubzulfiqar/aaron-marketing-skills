@@ -14,7 +14,7 @@
     "class": {"const": "auditor-output"},
     "schema_version": {"const": "3.0"},
     "runbook_version": {"const": "3.0.0"},
-    "catalog_version": {"const": "17.0.0"},
+    "catalog_version": {"const": "18.0.0"},
     "framework": {"enum": ["CORE-EEAT", "CITE", "C3", "ROAS", "SEND", "RAMP", "ECHO", "TALE", "MULTI"]},
     "profile": {
       "type": "string",

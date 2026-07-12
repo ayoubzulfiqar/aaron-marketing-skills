@@ -6,7 +6,7 @@
 >
 > **Version sync**: When the source spec updates, check: item count references in README (currently "80 items"), skill validation checkpoints, and Sections 2, 3, 7 below.
 
-> **v17 execution contract**: this file owns the human item anchors. Profiles, conditional applicability, veto identity, and required context are versioned in [`framework-catalog.json`](framework-catalog.json); Unknown/N/A, evidence, coverage, score, status, and verdict semantics are defined in [`scoring-semantics.md`](scoring-semantics.md). The framework is advisory until outcome-calibrated.
+> **v18 execution contract**: this file owns the human item anchors. Profiles, conditional applicability, veto identity, and required context are versioned in [`framework-catalog.json`](framework-catalog.json); Unknown/N/A, evidence, coverage, score, status, and verdict semantics are defined in [`scoring-semantics.md`](scoring-semantics.md). The framework is advisory until outcome-calibrated.
 
 **8 dimensions × 10 items = 80 evaluation criteria** for optimizing content visibility across AI engines (GEO) and search engines (SEO).
 

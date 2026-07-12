@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills"><img src="https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-17.0.0-orange" alt="Version"></a>
+  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-18.0.0-orange" alt="Version"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main"><img src="https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills" alt="Last Commit"></a>
 </p>
@@ -653,7 +653,7 @@ A deriva de endpoints ao vivo é amostrada separadamente pelo **manual** [`scrip
 ## Contribuir & documentos do projeto
 
 - **[CONTRIBUTING.md](../CONTRIBUTING.md)** — regras de authoring, o checklist de contribuição e a lista autoritativa das 10 superfícies de tracking.
-- **[VERSIONS.md](../VERSIONS.md)** — versões por skill + changelog (bundle atual: `17.0.0`).
+- **[VERSIONS.md](../VERSIONS.md)** — versões por skill + changelog (bundle atual: `18.0.0`).
 - **[SECURITY.md](../SECURITY.md)** · **[PRIVACY.md](../PRIVACY.md)** · **[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)** — política de segurança, privacidade e comunidade.
 - **[CLAUDE.md](../CLAUDE.md)** / **[AGENTS.md](../AGENTS.md)** — contexto voltado ao agente para este repo.
 
@@ -667,7 +667,7 @@ Estas skills auxiliam workflows de narrativa de marca, SEO/GEO, influencer-marke
 
 Apache License 2.0 — veja [LICENSE](../LICENSE).
 
-*Última sincronização com o README em inglês: v17.0.0*
+*Última sincronização com o README em inglês: v18.0.0*
 
 ## Star History
 
