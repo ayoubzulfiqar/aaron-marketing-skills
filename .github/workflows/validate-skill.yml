@@ -49,6 +49,9 @@ jobs:
       - name: Deterministic behavior conformance
         run: python3 scripts/run-behavior-evals.py
 
+      - name: Eval-fixture and routing structural lint
+        run: python3 scripts/check-evals.py
+
       - name: PII / secret scan
         # Read every tracked blob from the index so hidden directories, symlinks,
         # and filesystem-walk exclusions cannot bypass the release gate.
@@ -72,6 +75,9 @@ jobs:
           found=$(npx -y skills add . --list 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -oE 'Found [0-9]+ skill' | grep -oE '[0-9]+' | head -1 || true)
           echo "declared=$declared found=${found:-none}"
           [ "${found:-0}" = "$declared" ]
+
+      - name: Local Markdown link targets
+        run: python3 scripts/check-local-links.py
 
       - name: Validate JSON and shell syntax
         run: |

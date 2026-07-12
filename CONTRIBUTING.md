@@ -80,7 +80,7 @@ Cross-cutting reference protocols apply across disciplines: the humanizer-slop p
 CI runs additional guards beyond the per-skill validator:
 - **golden behavior** — runs every typed profile through the real catalog/scorer, including Unknown, one-veto, multi-veto, cap, and C³ rollup boundaries; it never regex-scrapes Markdown formulas.
 - **behavior conformance** — orchestrates rubric, registry, HTTP, hook, permission, and routing suites offline; an optional NDJSON adapter can evaluate semantic cases without becoming a CI dependency.
-- **architecture conformance** — checks `references/system-catalog.json` against all 120 paths/frontmatters, plugin order, framework/auditor/registry ownership, transition graphs, L1 dependencies, and distribution contracts.
+- **architecture conformance** — checks `references/system-catalog.json` against all 120 paths/frontmatters, plugin order, framework/auditor/registry ownership, transition graphs, L1 dependencies, distribution contracts, and the **symmetry contract** (SYM-01..17: loop/acronym derivation, command selector, registry/gate naming and topology, score surfaces, grouping titles, Scope edges, metadata key set — every violation must be licensed by a `symmetry.deviations` entry, and stale deviations fail).
 
 Build the same minimal payload users receive and run its boundary tests:
 
@@ -90,7 +90,8 @@ python3 -m unittest tests.test_distribution_builder
 ```
 
 The allowlist in `references/distribution-files.json` is authoritative. Runtime additions must be declared there; tests, evals, CI, generators, and repository-maintenance documentation must not leak into the plugin payload. Standalone one-folder auditor bundles stay compact and fail closed; regenerate them with `python3 scripts/generate-auditor-runtime.py --write` after changing any bound source.
-- **check-evals** — structural lint over all eval fixtures and auto-routing targets.
+- **check-evals** — structural lint over all eval fixtures and auto-routing targets (phase directories and command selectors derive from the system catalog).
+- **check-local-links** — every repo-local Markdown link target must resolve inside the repo.
 - **check-pii** — scans for committed PII. Enable the repository pre-commit hook once
   per clone with `git config core.hooksPath .githooks`; CI independently scans every
   tracked index blob with `python3 scripts/check-pii.py --tracked`.
