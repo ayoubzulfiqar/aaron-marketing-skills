@@ -81,9 +81,11 @@ extract_ids() { # $1 file → sorted unique item IDs (bold anywhere, or leading 
   # The trailing grep must not fail the pipeline under pipefail when a source
   # legitimately contains zero IDs (e.g. an index page); emptiness is judged
   # by the caller, which fails loudly on an empty umbrella ID set.
+  # Leading-cell forms covered: | S1 | · | **S1** | · | `S1` | · | `S2` ⛔ |
+  # (star-benchmark.md backticks its IDs and marks veto rows with a trailing ⛔).
   {
     grep -oE '\*\*[A-Z][0-9]{1,2}\*\*' "$1" || true
-    grep -oE '^\|[[:space:]]*\**[A-Z][0-9]{1,2}\**[[:space:]]*\|' "$1" || true
+    grep -oE '^\|[[:space:]]*[*`]*[A-Z][0-9]{1,2}[*`]*[[:space:]]*(⛔[[:space:]]*)?\|' "$1" || true
   } | { grep -oE '[A-Z][0-9]{1,2}' || true; } | sort -u
 }
 
