@@ -40,9 +40,18 @@ fetch_raw() { # $1 repo, $2 file → stdout (fails silently; caller checks)
   # that budget can already be spent by other jobs, and a 403 then reads as "repo
   # missing/drifted" (a false CI failure). Pass a token when one is present (Actions
   # always provides GITHUB_TOKEN) to raise the limit to 5,000/hr.
+  # Owner-run local shells usually have no GITHUB_TOKEN — borrow the gh CLI's
+  # token so repeated runs don't exhaust the 60 req/hr anonymous cap (observed
+  # at v18.0.0 as ROTATING false "unreachable" repos across back-to-back runs).
+  local tok="${GITHUB_TOKEN:-}" ghbin
+  if [ -z "$tok" ]; then
+    for ghbin in gh /opt/homebrew/bin/gh; do
+      command -v "$ghbin" >/dev/null 2>&1 && { tok="$("$ghbin" auth token 2>/dev/null || true)"; break; }
+    done
+  fi
   local url="https://api.github.com/repos/$OWNER/$1/contents/$2?ref=main"
-  if [ -n "${GITHUB_TOKEN:-}" ]; then
-    curl -fsSL -H "Authorization: Bearer $GITHUB_TOKEN" -H 'Accept: application/vnd.github.raw' "$url"
+  if [ -n "$tok" ]; then
+    curl -fsSL -H "Authorization: Bearer $tok" -H 'Accept: application/vnd.github.raw' "$url"
   else
     curl -fsSL -H 'Accept: application/vnd.github.raw' "$url"
   fi

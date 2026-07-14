@@ -82,4 +82,16 @@ cmd=(clawhub package publish "$SOURCE"
      --changelog "aaron-marketing bundle-plugin @ $VER — 120 skills + 8 commands, seven disciplines + protocol layer.")
 [ "$LIVE" -eq 0 ] && cmd+=(--dry-run)
 
-"${cmd[@]}"
+out=$("${cmd[@]}" 2>&1); rc=$?
+printf '%s\n' "$out"
+# A transport error AFTER the upload landed (observed at v18.0.0: "other side
+# closed" from the CLI's post-upload fetch) is indistinguishable from a failed
+# upload by exit code alone — verify server-side before declaring failure.
+if [ "$LIVE" -eq 1 ] && [ "$rc" -ne 0 ]; then
+  pv="$(clawhub package inspect "$NAME" 2>/dev/null | grep -E '^Latest' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+  if [ "$pv" = "$VER" ]; then
+    echo "NOTE: CLI reported a transport error, but $NAME@$VER is live on ClawHub (verified via inspect) — treating as success."
+    exit 0
+  fi
+fi
+exit $rc

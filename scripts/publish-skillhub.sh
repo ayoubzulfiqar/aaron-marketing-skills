@@ -19,6 +19,8 @@
 #   bash scripts/publish-skillhub.sh --skill keyword-research # dry-run one skill
 #   bash scripts/publish-skillhub.sh --live                   # publish all (changelog 首次发布)
 #   bash scripts/publish-skillhub.sh --live --changelog "v18.0.0 更新说明"
+#   bash scripts/publish-skillhub.sh --live --skill x --attempts 1 --throttle 0
+#                          # orchestrated mode: publish-registries.sh owns retry/pacing
 #
 # Exit: 0 all requested skills processed, 1 on any failure.
 
@@ -29,7 +31,8 @@ HOST="https://api.skillhub.cn"
 DRY_RUN=1         # dry-run by default, like every other publisher; --live to upload
 ONLY_SKILL=""
 CHANGELOG="首次发布"
-THROTTLE=25       # seconds between real publishes (platform rate-limits bursts)
+THROTTLE=25       # seconds BETWEEN real publishes (leading, so a single-skill run never sleeps)
+ATTEMPTS=4        # rate-limit retries per skill; orchestrators pass --attempts 1
 RESUME_FROM=""    # skip manifest entries until this skill name (inclusive start)
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -39,6 +42,7 @@ while [ $# -gt 0 ]; do
     --changelog) shift; CHANGELOG="${1:-}" ;;
     --host) shift; HOST="${1:-}" ;;
     --throttle) shift; THROTTLE="${1:-25}" ;;
+    --attempts) shift; ATTEMPTS="${1:-4}" ;;
     --resume-from) shift; RESUME_FROM="${1:-}" ;;
     *) echo "unknown flag: $1" >&2; exit 1 ;;
   esac
@@ -59,7 +63,7 @@ for p in json.load(open('.claude-plugin/plugin.json'))['skills']:
     print(p[2:] if p.startswith('./') else p)
 ")
 
-fail=0 count=0 skipping=0
+fail=0 count=0 skipping=0 published=0
 [ -n "$RESUME_FROM" ] && skipping=1
 for dir in $SKILL_DIRS; do
   name=$(basename "$dir")
@@ -84,15 +88,22 @@ for dir in $SKILL_DIRS; do
   else
     cmd+=(--changelog "$CHANGELOG")
     echo "==> $slug"
-    # rate-limit aware: retry up to 4x with a 70s backoff on 频率/429 errors
+    # throttle BETWEEN publishes (leading): a single-skill invocation — the
+    # orchestrated per-skill path — no longer burns a trailing sleep.
+    [ "$published" -gt 0 ] && [ "$THROTTLE" -gt 0 ] && sleep "$THROTTLE"
+    published=$((published + 1))
+    # rate-limit aware: up to $ATTEMPTS tries with a 70s backoff on 频率/429.
+    # Orchestrators (publish-registries.sh) pass --attempts 1 and own the
+    # retry policy, so the two layers cannot multiply into 16 requests.
     attempts=0 ok=0
-    while [ "$attempts" -lt 4 ]; do
+    while [ "$attempts" -lt "$ATTEMPTS" ]; do
       out=$("${cmd[@]}" 2>&1); rc=$?
       echo "$out"
       if [ "$rc" -eq 0 ]; then ok=1; break; fi
       if echo "$out" | grep -q "频率\|稍后再试\|429"; then
         attempts=$((attempts + 1))
-        echo "    rate-limited — waiting 70s (retry $attempts/4)"
+        [ "$attempts" -lt "$ATTEMPTS" ] || break
+        echo "    rate-limited — waiting 70s (retry $attempts/$ATTEMPTS)"
         sleep 70
       else
         break
@@ -102,8 +113,6 @@ for dir in $SKILL_DIRS; do
       echo "FAIL: publish failed for $slug" >&2
       fail=1
     fi
-    # throttle between publishes so we stay under the platform burst limit
-    [ "$THROTTLE" -gt 0 ] && sleep "$THROTTLE"
   fi
   count=$((count + 1))
 done

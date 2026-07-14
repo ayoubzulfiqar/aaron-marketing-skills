@@ -6,28 +6,39 @@
 # stale/missing skill at its current repo version via the per-skill publishers.
 # Idempotent: an already-current version returns "版本已存在" (SkillHub) or the
 # "already exists" path (ClawHub) and is counted in-sync, not a failure.
-# Resumable (state file) and rate-limit-aware. Dry-run by default.
+# Resumable (state file, keyed by bundle version) and quota-aware. Dry-run default.
 #
 # Usage:
 #   bash scripts/publish-registries.sh                     # dry-run: list the behind-set
 #   bash scripts/publish-registries.sh --live              # publish behind-set on both
+#   bash scripts/publish-registries.sh --live --parallel   # both platforms concurrently
 #   bash scripts/publish-registries.sh --live clawhub      # one platform (clawhub|skillhub|both)
 #   bash scripts/publish-registries.sh --from-json f.json  # reuse a registry-status --json snapshot
+#   bash scripts/publish-registries.sh --skillhub-budget N # max SkillHub publishes this run (default 90)
 #
-# ClawHub updates to existing skills are NOT hourly-capped (only brand-new skills
-# are ~5/hr); SkillHub throttles bursts (发布频率过高) so we space 40s + back off
-# 5 min on 429. ClawHub relicenses published skills MIT-0. Owner-run, never CI.
+# SkillHub quota (measured at v18.0.0, 2026-07): ~100 publishes per 24h ROLLING
+# window, account-wide. Exceeding it returns 发布频率过高 for every skill, and
+# retries themselves keep the window hot — so this script (a) stops at a budget
+# below the cap, (b) retries a rate-limit ONCE after 5 min, then DEFERs the
+# skill, and (c) aborts the SkillHub pass after 2 consecutive deferrals
+# (account-level window). Deferred ≠ failed: exit 8 means "re-run this same
+# command after the window" — the state file + idempotent publishes make the
+# re-run cheap. ClawHub updates to existing skills are not hourly-capped (only
+# brand-new skills are ~5/hr). ClawHub relicenses published skills MIT-0.
+# Owner-run, never CI. Exit: 0 clean · 1 hard failure · 8 quota-deferred.
 set -u
 cd "$(cd "$(dirname "$0")/.." && pwd)"
 
-LIVE=0; PLAT="both"; FROM=""
+LIVE=0; PLAT="both"; FROM=""; PARALLEL=0; SH_BUDGET=90
 while [ $# -gt 0 ]; do
   case "$1" in
     --live) LIVE=1 ;;
+    --parallel) PARALLEL=1 ;;
     --from-json) shift; FROM="${1:-}" ;;
+    --skillhub-budget) shift; SH_BUDGET="${1:-90}" ;;
     clawhub|skillhub|both) PLAT="$1" ;;
-    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
-    *) echo "usage: $0 [--live] [clawhub|skillhub|both] [--from-json file]" >&2; exit 1 ;;
+    -h|--help) sed -n '2,30p' "$0"; exit 0 ;;
+    *) echo "usage: $0 [--live] [--parallel] [clawhub|skillhub|both] [--from-json file] [--skillhub-budget N]" >&2; exit 1 ;;
   esac
   shift
 done
@@ -60,9 +71,8 @@ if [ "$LIVE" -eq 1 ]; then
   fi
 fi
 
-fail=0
-if [ "$PLAT" != skillhub ] && [ -n "$CH" ]; then
-  echo "== ClawHub: publishing $nch behind skill(s) =="
+publish_clawhub_set(){ # reads $CH; returns 0 clean, 1 hard failure
+  local fail=0 s out rc
   while read -r s; do [ -n "$s" ] || continue
     if [ "$LIVE" -eq 0 ]; then echo "  would publish (clawhub) $s"; continue; fi
     donep "ch:$VER:$s" && { echo "  skip $s (done)"; continue; }
@@ -70,24 +80,77 @@ if [ "$PLAT" != skillhub ] && [ -n "$CH" ]; then
     if [ $rc -eq 0 ]; then echo "  OK $s"; markp "ch:$VER:$s"; else echo "  FAIL $s :: $(echo "$out"|tail -1)"; fail=1; fi
     sleep 6
   done <<< "$CH"
-fi
+  return $fail
+}
 
-if [ "$PLAT" != clawhub ] && [ -n "$SH" ]; then
-  echo "== SkillHub: publishing $nsh behind skill(s) (40s throttle) =="
+publish_skillhub_set(){ # reads $SH; returns 0 clean, 1 hard failure, 8 quota-deferred
+  # Retry policy lives HERE (the inner publisher runs with --attempts 1) so the
+  # two layers can no longer multiply into 16 requests per limited skill.
+  local fail=0 deferred=0 consec=0 budget_used=0 s rest out rc limited try
   while read -r s; do [ -n "$s" ] || continue
     if [ "$LIVE" -eq 0 ]; then echo "  would publish (skillhub) $s"; continue; fi
     donep "sh:$VER:$s" && { echo "  skip $s (done)"; continue; }
-    ok=0
-    for try in 1 2 3 4; do
-      out=$(bash scripts/publish-skillhub.sh --live --skill "$s" 2>&1); rc=$?
-      if echo "$out" | grep -qE 'Published|skillId'; then echo "  OK $s"; markp "sh:$VER:$s"; ok=1; break; fi
-      if echo "$out" | grep -q '已存在'; then echo "  CURRENT $s (already at repo version)"; markp "sh:$VER:$s"; ok=1; break; fi
-      if echo "$out" | grep -qiE '频率过高|429|too many|rate'; then echo "  backoff $s (try $try, 5min)"; sleep 300; continue; fi
-      echo "  FAIL $s :: $(echo "$out"|tail -1)"; fail=1; break
+    if [ "$budget_used" -ge "$SH_BUDGET" ]; then
+      echo "  DEFER $s (budget $SH_BUDGET reached this run)"; deferred=$((deferred+1)); continue
+    fi
+    limited=0
+    for try in 1 2; do
+      out=$(bash scripts/publish-skillhub.sh --live --skill "$s" --attempts 1 --throttle 0 --changelog "v$VER" 2>&1); rc=$?
+      if echo "$out" | grep -qE 'Published|skillId'; then
+        echo "  OK $s"; markp "sh:$VER:$s"; budget_used=$((budget_used+1)); consec=0; limited=0; break
+      fi
+      if echo "$out" | grep -q '已存在'; then
+        echo "  CURRENT $s (already at repo version)"; markp "sh:$VER:$s"; consec=0; limited=0; break
+      fi
+      if echo "$out" | grep -qiE '频率过高|429|too many|rate'; then
+        limited=1
+        [ "$try" -eq 1 ] && { echo "  backoff $s (rate-limited, one retry in 5min)"; sleep 300; }
+        continue
+      fi
+      echo "  FAIL $s :: $(echo "$out"|tail -1)"; fail=1; limited=0; break
     done
+    if [ "$limited" -eq 1 ]; then
+      echo "  DEFER $s (still rate-limited after retry — quota window)"
+      deferred=$((deferred+1)); consec=$((consec+1))
+      if [ "$consec" -ge 2 ]; then
+        echo "  == account-level quota window detected (2 consecutive limited skills) — deferring the rest without touching the API =="
+        while read -r rest; do [ -n "$rest" ] || continue
+          donep "sh:$VER:$rest" || { echo "  DEFER $rest (quota window)"; deferred=$((deferred+1)); }
+        done
+        break
+      fi
+    fi
     sleep 40
   done <<< "$SH"
+  [ $fail -ne 0 ] && return 1
+  if [ $deferred -gt 0 ]; then
+    echo "  == SkillHub: $deferred skill(s) deferred to the next ~24h quota window — re-run: bash scripts/publish-registries.sh --live skillhub =="
+    return 8
+  fi
+  return 0
+}
+
+run_ch(){ { [ "$PLAT" != skillhub ] && [ -n "$CH" ]; } || return 0
+  echo "== ClawHub: publishing $nch behind skill(s) =="; publish_clawhub_set; }
+run_sh(){ { [ "$PLAT" != clawhub ] && [ -n "$SH" ]; } || return 0
+  echo "== SkillHub: publishing $nsh behind skill(s) (40s spacing, budget $SH_BUDGET) =="; publish_skillhub_set; }
+
+r1=0; r2=0
+if [ "$PARALLEL" -eq 1 ] && [ "$PLAT" = both ] && [ "$LIVE" -eq 1 ]; then
+  # The two platforms are fully independent (different CLIs, different quotas,
+  # state keys prefixed ch:/sh:), so run them concurrently — the ClawHub pass
+  # folds entirely into the SkillHub window (~40% wall-clock saved at v18 scale).
+  ( set -o pipefail; run_ch 2>&1 | while IFS= read -r l; do printf '[clawhub ] %s\n' "$l"; done ) & p1=$!
+  ( set -o pipefail; run_sh 2>&1 | while IFS= read -r l; do printf '[skillhub] %s\n' "$l"; done ) & p2=$!
+  wait "$p1"; r1=$?
+  wait "$p2"; r2=$?
+else
+  run_ch; r1=$?
+  run_sh; r2=$?
 fi
 
-[ "$LIVE" -eq 0 ] && echo "dry-run — nothing published. Re-run with --live." || echo "done."
-exit $fail
+if [ "$LIVE" -eq 0 ]; then echo "dry-run — nothing published. Re-run with --live."; exit 0; fi
+if [ "$r1" -eq 1 ] || [ "$r2" -eq 1 ]; then echo "done with failures."; exit 1; fi
+if [ "$r1" -eq 8 ] || [ "$r2" -eq 8 ]; then echo "done — quota deferrals pending (exit 8)."; exit 8; fi
+echo "done."
+exit 0

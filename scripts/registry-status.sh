@@ -12,6 +12,8 @@
 #   bash scripts/registry-status.sh                      # alignment table + summary
 #   bash scripts/registry-status.sh --json               # machine-readable (per-skill records)
 #   bash scripts/registry-status.sh --platform clawhub   # one platform only (clawhub|skillhub|both)
+#   bash scripts/registry-status.sh --workers 1          # serial lookups (default 8 parallel;
+#                                                        # 120 skills: ~2 min parallel vs >12 min serial)
 #
 # Requires the `clawhub` and `skillhub` CLIs, logged in (owner machine). See
 # docs/distribution.md. CAVEAT: SkillHub state is read via fuzzy search, so a
@@ -25,12 +27,14 @@ OWNER="aaron-he-zhu"
 PKG_NAME="aaron-marketing"        # OpenClaw bundle-plugin package name (openclaw.plugin.json id)
 JSON=0
 PLAT="both"
+WORKERS=8
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
     --platform) shift; PLAT="${1:-both}" ;;
-    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
-    *) echo "usage: $0 [--json] [--platform clawhub|skillhub|both]" >&2; exit 1 ;;
+    --workers) shift; WORKERS="${1:-8}" ;;
+    -h|--help) sed -n '2,22p' "$0"; exit 0 ;;
+    *) echo "usage: $0 [--json] [--platform clawhub|skillhub|both] [--workers N]" >&2; exit 1 ;;
   esac
   shift
 done
@@ -56,16 +60,28 @@ try:
  print(next((str(x.get('version','?')) for x in r if str(x.get('slug',x.get('id','')))==sys.argv[1]),''))
 except Exception: print('')" "$1"; }
 
+row(){ # $1 skill dir → one TSV row on stdout
+  local d="$1" name slug rv ch sh
+  [ -f "$d/SKILL.md" ] || return 0
+  name="$(basename "$d")"; slug="$(slugof "$d")"; rv="$(repover "$name")"
+  ch="$(chver "$name")"; [ -z "$ch" ] && ch="MISSING"
+  sh="$(shver "$slug")"; [ -z "$sh" ] && sh="MISSING"
+  printf '%s\t%s\t%s\t%s\t%s\n' "$name" "$rv" "$ch" "$sh" "$slug"
+}
+
 DIRS=$(/usr/bin/python3 -c "import json;[print(p[2:] if p.startswith('./') else p) for p in json.load(open('.claude-plugin/plugin.json'))['skills']]")
 
 tmp="$(mktemp)"; trap 'rm -f "$tmp"' EXIT
-for d in $DIRS; do
-  [ -f "$d/SKILL.md" ] || continue
-  name="$(basename "$d")"; slug="$(slugof "$d")"; rv="$(repover "$name")"
-  ch="$(chver "$name")"; [ -z "$ch" ] && ch="MISSING"
-  sh="$(shver "$slug" "$name")"; [ -z "$sh" ] && sh="MISSING"
-  printf '%s\t%s\t%s\t%s\t%s\n' "$name" "$rv" "$ch" "$sh" "$slug" >> "$tmp"
-done
+if [ "$WORKERS" -gt 1 ]; then
+  # Read-only CLI lookups parallelize safely; each row is one short atomic
+  # append. Completion order is nondeterministic, so sort for stable output.
+  export PLAT OWNER
+  export -f row slugof repover chver shver
+  printf '%s\n' $DIRS | xargs -P "$WORKERS" -n 1 bash -c 'row "$1"' _ >> "$tmp"
+  sort -o "$tmp" "$tmp"
+else
+  for d in $DIRS; do row "$d" >> "$tmp"; done
+fi
 
 # bundle-plugin package version
 pkgv="-"
