@@ -77,11 +77,19 @@ if [ "$1" = "--status" ]; then
     # version string across rubric thresholds). Legitimate version mentions never look like
     # "9.9.10/mo" or "9.9.10px". (A bare trailing "+" — e.g. a "requires 9.9.10+" compat
     # note — is intentionally NOT flagged; only unit-glued forms are.)
-    CORRUPT=$(grep -rnE "${lib_plugin//./\\.}[0-9]*[[:space:]]*(/mo|px|visits|domains|estimated)" "$REPO_ROOT" --include='*.md' 2>/dev/null | grep -vE '/\.git/' | head -5)
-    if [ -n "$CORRUPT" ]; then
-        echo -e "${RED}CORRUPTION${NC}: bundle version string glued to a numeric threshold (release-bump likely clobbered a real number):"
-        echo "$CORRUPT"
+    if [ -z "$lib_plugin" ]; then
+        # An empty version prefix collapses the regex to a repo-wide catch-all for
+        # any "…/mo|px|visits|…" threshold string, producing a false CORRUPTION. Refuse
+        # to scan (and hard-fail) rather than emit a bogus failure.
+        echo -e "${RED}ERROR${NC}: could not parse library version from plugin.json — skipping threshold-corruption scan"
         SPLIT=1
+    else
+        CORRUPT=$(grep -rnE "${lib_plugin//./\\.}[0-9]*[[:space:]]*(/mo|px|visits|domains|estimated)" "$REPO_ROOT" --include='*.md' 2>/dev/null | grep -vE '/\.git/' | head -5)
+        if [ -n "$CORRUPT" ]; then
+            echo -e "${RED}CORRUPTION${NC}: bundle version string glued to a numeric threshold (release-bump likely clobbered a real number):"
+            echo "$CORRUPT"
+            SPLIT=1
+        fi
     fi
 
     echo ""
@@ -172,36 +180,39 @@ else
         pass "description is valid ($DESC_LEN chars)"
     fi
 
-    # Check for trigger phrases pattern
-    if echo "$DESCRIPTION" | grep -qiE '"[^"]+"|Use when'; then
+    # Check for trigger phrases pattern.
+    # Require an actual trigger construction — "Use when …" or a quoted phrase that
+    # follows an asks/wants/says-style lead-in — so an incidental quoted noun
+    # (a product or tool name) can't satisfy the signal on its own.
+    if echo "$DESCRIPTION" | grep -qiE 'Use when|(asks?|wants?|says?|need(s|ed)?|request(s|ed)?)( [a-z]+)? *"[^"]+"'; then
         pass "description contains trigger phrases"
     else
         warn "description should include trigger phrases (e.g., 'Use when the user asks to \"...\"')"
     fi
 fi
 
-# --- Required field: license ---
-if echo "$FRONTMATTER" | grep -qE '^license:'; then
+# --- Required field: license (must carry a non-empty value, like name/version/description) ---
+if echo "$FRONTMATTER" | grep -qE '^license:[[:space:]]*[^[:space:]]'; then
     LICENSE=$(echo "$FRONTMATTER" | grep -E '^license:' | sed 's/license: *//')
     pass "license present: $LICENSE"
 else
-    fail "Missing required field: license"
+    fail "Missing or empty required field: license"
 fi
 
-# --- Required field: compatibility ---
-if echo "$FRONTMATTER" | grep -qE '^compatibility:'; then
+# --- Required field: compatibility (must carry a non-empty value) ---
+if echo "$FRONTMATTER" | grep -qE '^compatibility:[[:space:]]*[^[:space:]]'; then
     pass "compatibility field present"
 else
-    fail "Missing required field: compatibility"
+    fail "Missing or empty required field: compatibility"
 fi
 
 # --- Required field: metadata (single-line JSON object) ---
 # OpenClaw's frontmatter parser reads single-line keys only, so metadata must
 # be one strict-JSON object on the `metadata:` line — never a YAML block map.
-META_LINE=$(echo "$FRONTMATTER" | grep -E '^metadata:' | head -1)
+META_LINE=$(echo "$FRONTMATTER" | grep -E '^metadata:' | head -1 | tr -d '\r')
 if [ -n "$META_LINE" ]; then
     pass "metadata field present"
-    if echo "$META_LINE" | grep -qE '^metadata: \{.*\}$'; then
+    if echo "$META_LINE" | grep -qE '^metadata: \{.*\}[[:space:]]*$'; then
         pass "metadata is a single-line JSON object (OpenClaw-parseable)"
     else
         fail "metadata must be a single-line JSON object (OpenClaw parser reads single-line keys only) — e.g. metadata: {\"author\": \"...\", \"version\": \"...\"}"
@@ -268,9 +279,9 @@ BODY_LINES=$(awk 'BEGIN{n=0} /^---/{n++; next} n>=2{print}' "$SKILL_FILE" | wc -
 IS_AUDITOR=$(echo "$FRONTMATTER" | grep -qE '^class: *auditor' && echo "yes" || echo "no")
 # Influencer skills intentionally inline their step matrices rather than
 # extracting to references/ (see CLAUDE.md Contribution Rules); exempt them from the
-# >250-line references/ advisory by phase directory.
-PHASE_DIR=$(basename "$(dirname "$SKILL_DIR")")
-case "$PHASE_DIR" in discover|plan|activate|measure) IS_INFLUENCER="yes";; *) IS_INFLUENCER="no";; esac
+# >250-line references/ advisory by discipline directory.
+DISCIPLINE_DIR=$(basename "$(dirname "$(dirname "$SKILL_DIR")")")
+case "$DISCIPLINE_DIR" in influencer) IS_INFLUENCER="yes";; *) IS_INFLUENCER="no";; esac
 
 if [ "$IS_AUDITOR" = "yes" ]; then
     pass "Auditor skill reads the shared runbook + keeps framework-specific examples inline ($BODY_LINES lines)"
@@ -344,20 +355,25 @@ fi
 # (A skill that WebFetches GitHub HTML instead of Reading the installed file breaks
 #  version pinning and offline use. Human-facing docs may still use absolute URLs.)
 # Documented rule covers SKILL.md AND references/ — scan both.
-if grep -q 'blob/main/' "$SKILL_FILE"; then
-    BLOB_HITS=$(grep -c 'blob/main/' "$SKILL_FILE")
-    fail "SKILL.md contains ${BLOB_HITS} blob/main GitHub URL(s) — use plugin-relative paths so the agent Reads the installed file (offline-safe, version-pinned)"
+# Match GitHub HTML-view URLs (blob|tree)/(main|master) with or without a trailing
+# slash — the old 'blob/main/' literal let 'blob/main', 'tree/main', and master forms
+# evade. The raw.githubusercontent .../main/ fallback has no /blob/ or /tree/ segment,
+# so it stays allowed (it is the documented standalone-install runbook fallback).
+if grep -qE '/(blob|tree)/(main|master)' "$SKILL_FILE"; then
+    BLOB_HITS=$(grep -cE '/(blob|tree)/(main|master)' "$SKILL_FILE")
+    fail "SKILL.md contains ${BLOB_HITS} GitHub blob/tree URL(s) — use plugin-relative paths so the agent Reads the installed file (offline-safe, version-pinned)"
 else
-    pass "no blob/main GitHub URLs in SKILL.md (references load via relative paths)"
+    pass "no blob/tree GitHub URLs in SKILL.md (references load via relative paths)"
 fi
 
 if [ -d "$SKILL_DIR/references" ]; then
-    REF_BLOB_HITS=$(grep -rn 'blob/main/' "$SKILL_DIR/references" --include='*.md' 2>/dev/null || true)
+    # -I skips binaries; no --include filter so non-.md reference files are covered too.
+    REF_BLOB_HITS=$(grep -rInE '/(blob|tree)/(main|master)' "$SKILL_DIR/references" 2>/dev/null || true)
     if [ -n "$REF_BLOB_HITS" ]; then
-        fail "references/ contains blob/main GitHub URL(s) — use plugin-relative paths (file:line):"
+        fail "references/ contains GitHub blob/tree URL(s) — use plugin-relative paths (file:line):"
         echo "$REF_BLOB_HITS"
     else
-        pass "no blob/main GitHub URLs in references/"
+        pass "no blob/tree GitHub URLs in references/"
     fi
 fi
 

@@ -14,7 +14,7 @@
 # Prereqs: npm i -g clawhub && clawhub login   (GitHub account, aged)
 #
 # Usage:
-#   bash scripts/publish-clawhub.sh --dry-run                 # preview all 69
+#   bash scripts/publish-clawhub.sh --dry-run                 # preview all manifest skills
 #   bash scripts/publish-clawhub.sh --skill keyword-research --dry-run
 #   bash scripts/publish-clawhub.sh --i-accept-mit0           # publish all
 #   bash scripts/publish-clawhub.sh --i-accept-mit0 --owner myorg

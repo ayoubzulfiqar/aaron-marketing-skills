@@ -43,6 +43,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from urllib.parse import urlencode, urlsplit
 
@@ -62,7 +63,7 @@ def collect_urls(args_urls, file_path):
     urls = list(args_urls or [])
     if file_path:
         with open(file_path, "r", encoding="utf-8") as f:
-            urls += [ln.strip() for ln in f if ln.strip() and not ln.startswith("#")]
+            urls += [s for s in (ln.strip() for ln in f) if s and not s.startswith("#")]
     # de-dupe, keep order
     return list(dict.fromkeys(urls))
 
@@ -118,10 +119,34 @@ def execute(spec_request):
                        data=data, method="POST", retries=1)
     out = {"status": r.get("status", 0), "error": r.get("error"),
            "data": r.get("json")}
-    # IndexNow answers 200/202 with an empty body on success.
-    if out["status"] in (200, 202) and out["data"] is None:
+    is_indexnow = spec_request["content_type"].startswith("application/json")
+    # IndexNow answers 200/202 with an empty body on success. Baidu success
+    # always carries a JSON body, so an empty/non-JSON 200 there (e.g. an HTML
+    # block page) is not proof of acceptance.
+    if is_indexnow and out["status"] in (200, 202) and out["data"] is None:
         out["error"] = None
         out["accepted"] = True
+    # Baidu 普通收录 answers HTTP 200 even on FAILURE, carrying {"error":N,"message":...}
+    # in the JSON body — a transport-level 200 must not be reported as success when the
+    # payload says otherwise.
+    elif isinstance(out["data"], dict) and out["data"].get("error") is not None:
+        out["error"] = "Baidu API error %s: %s" % (
+            out["data"].get("error"), out["data"].get("message", ""))
+        out["accepted"] = False
+    elif isinstance(out["data"], dict) and "success" in out["data"]:
+        # "success" is the accepted-URL count; pushing 0 URLs is not a success.
+        accepted_count = out["data"].get("success")
+        if isinstance(accepted_count, int) and accepted_count > 0:
+            out["error"] = None
+            out["accepted"] = True
+        else:
+            out["error"] = "Baidu accepted 0 URLs (success=%r)" % (accepted_count,)
+            out["accepted"] = False
+    else:
+        out["accepted"] = False
+        if out["error"] is None:
+            out["error"] = ("unrecognized response for %s (status %s, unexpected body)"
+                            % ("IndexNow" if is_indexnow else "Baidu", out["status"]))
     return out
 
 
@@ -176,6 +201,10 @@ def main(argv=None):
 
     if not args.live:
         preview = dict(spec["request"])
+        # Never echo the Baidu push token in the dry-run preview — it would
+        # land in transcripts/CI logs (":32 never persisted" covers env use).
+        if "token=" in preview.get("url", ""):
+            preview["url"] = re.sub(r"(token=)[^&]+", r"\1***", preview["url"])
         print(json.dumps({
             "dry_run": True,
             "url_count": len(urls),

@@ -15,7 +15,7 @@
 ### For new skills:
 - [ ] `name` field matches directory name exactly
 - [ ] `description` includes trigger phrases AND scope boundaries
-- [ ] Placed in the correct phase directory (SEO/GEO: research/build/optimize/monitor · protocol: protocol · influencer: discover/plan/activate/measure · paid: `ad/<phase>/` — research/orchestrate/activate/scale)
+- [ ] Placed in the correct phase directory (SEO/GEO: survey/implement/tune/evaluate · protocol: protocol · influencer: scout/target/activate/report · paid: `ad/<phase>/` — research/orchestrate/activate/scale)
 - [ ] Uses `~~placeholder` pattern for tool references
 - [ ] Includes validation checkpoints
 - [ ] Includes at least one concrete example
@@ -33,7 +33,7 @@
 - [ ] `CLAUDE.md` category table updated (if counts/structure changed)
 - [ ] `AGENTS.md` name/count line updated (if counts/structure changed)
 - [ ] `docs/README.zh.md` counts + version badge updated (if counts/structure changed)
-- [ ] No CORE-EEAT, CITE, C³, ROAS, veto, cap, BLOCKED, or artifact-gate standard was weakened
+- [ ] No CORE-EEAT, CITE, STAR, ROAS, veto, cap, BLOCKED, or artifact-gate standard was weakened
 - [ ] No new pip / third-party dependency (stdlib-only; enforced by `scripts/check-stdlib-only.sh`)
 - [ ] No secrets / PII introduced (`scripts/check-pii.py` clean)
 - [ ] Eval structure intact (`scripts/check-evals.py`; `--update` the manifest if skills changed)

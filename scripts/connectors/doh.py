@@ -119,8 +119,10 @@ def spf_facts(txt_records):
         first = spf_records[0].lower()
         # A record closed by neither an `all` mechanism nor a `redirect=`
         # modifier leaves unlisted senders undefined (RFC 7208 §4.7 / §6.1).
-        if (not any(m in first for m in ("-all", "~all", "?all", "+all"))
-                and "redirect=" not in first):
+        # Match any `all` mechanism token (qualified -/~/?/+ or bare, = +all).
+        has_all = any(t == "all" or t[1:] == "all"
+                      for t in first.split())
+        if not has_all and "redirect=" not in first:
             spf["flags"].append("no_all_or_redirect")
     return spf
 
@@ -130,10 +132,20 @@ def auth_check(domain, selectors=None, resolver="google"):
     domain = domain.strip().strip(".").lower()
     out = {"domain": domain, "resolver": resolver}
 
+    def transport_guard(res, label):
+        # A transport/resolver failure (error set, no DNS status) is NOT the same
+        # as a name that genuinely has no record — surface it (main() then exits
+        # non-zero) instead of silently reporting a false "no records present".
+        if res.get("error") and res.get("status") is None:
+            msg = "DNS fetch failed for %s: %s" % (label, res["error"])
+            out["error"] = (out["error"] + "; " + msg) if out.get("error") else msg
+
     root_txt = lookup(domain, "TXT", resolver)
+    transport_guard(root_txt, domain + " TXT")
     out["spf"] = spf_facts(root_txt["records"])
 
     dmarc_txt = lookup("_dmarc." + domain, "TXT", resolver)
+    transport_guard(dmarc_txt, "_dmarc." + domain + " TXT")
     dmarc_records = [r for r in dmarc_txt["records"] if r.lower().startswith("v=dmarc1")]
     dmarc = {"present": bool(dmarc_records), "records": dmarc_records}
     if dmarc_records:
@@ -146,16 +158,19 @@ def auth_check(domain, selectors=None, resolver="google"):
     out["dmarc"] = dmarc
 
     bimi_txt = lookup("default._bimi." + domain, "TXT", resolver)
+    transport_guard(bimi_txt, "default._bimi." + domain + " TXT")
     bimi_records = [r for r in bimi_txt["records"] if r.lower().startswith("v=bimi1")]
     out["bimi"] = {"present": bool(bimi_records), "records": bimi_records}
 
     mx = lookup(domain, "MX", resolver)
+    transport_guard(mx, domain + " MX")
     out["mx"] = {"present": bool(mx["records"]), "records": mx["records"]}
 
     checked = list(dict.fromkeys((selectors or []) + DEFAULT_DKIM_SELECTORS))
     found = {}
     for sel in checked:
         rec = lookup("%s._domainkey.%s" % (sel, domain), "TXT", resolver)
+        transport_guard(rec, "%s._domainkey.%s TXT" % (sel, domain))
         hits = [r for r in rec["records"] if "p=" in r]
         if hits:
             found[sel] = hits[0][:120] + ("…" if len(hits[0]) > 120 else "")

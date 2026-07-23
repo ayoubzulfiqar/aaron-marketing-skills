@@ -7,7 +7,7 @@ Three use-case pattern sets for `email-creative-builder`. Pick the mode that mat
 - **Goal**: one action (buy, redeem, book). Single dominant CTA.
 - **Structure**: hook → value/offer → proof (review, stat, guarantee) → CTA → urgency (honest deadline/stock only).
 - **Offer**: pull terms + promo code + expiry from the live-offers table ([offer-claims-registry](../../../../protocol/offer-claims-registry/SKILL.md), `memory/claims/offers.md`) — never invent them.
-- **Claims**: every product/benefit claim traces to an approved row in `memory/claims/claims-ledger.md`; unregistered → `[needs source]` → `memory/claims/candidates.md`.
+- **Claims**: every product/benefit claim traces to an approved row in `memory/claims/claims-ledger.md`; unregistered → `[needs source]` → `memory/events/claims.ndjson` via an authorized `operation: propose` request to `registry-events.py`.
 
 ## Mode B — Cold outbound (B2B)
 
@@ -32,4 +32,4 @@ For each CTA, record the row so the auditor can verify email↔landing consisten
 | Offer | <terms/code> | <identical terms/code> | ✓ / ✗ |
 | CTA label | <verb + object> | <same next step> | ✓ / ✗ |
 
-A mismatch is a message-match failure (SEND-`D` sub-item) — flag it; the post-click fix is [landing-optimizer](../../../../influencer/measure/landing-optimizer/SKILL.md).
+A mismatch is a message-match failure (SEND-`D` sub-item) — flag it; the post-click fix is [landing-optimizer](../../../../influencer/report/landing-optimizer/SKILL.md).

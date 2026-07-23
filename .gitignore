@@ -23,6 +23,15 @@ reference-oss/
 .claude/
 .codex/
 .docs/
+.planning/
+
+# Operational marketing memory. Runtime records may contain consent, creator,
+# campaign, and customer data; keep only the documentation/templates below.
+memory/**
+!memory/
+!memory/README.md
+!memory/templates/
+!memory/templates/**
 
 # Environment variables
 .env
@@ -47,3 +56,6 @@ __pycache__/
 # macOS/iCloud cloud-sync conflict copies (e.g. "SKILL 2.md", ".gitkeep 3")
 * [0-9]
 * [0-9].md
+
+# ClawHub Plugin Inspector output
+reports/

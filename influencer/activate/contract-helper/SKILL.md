@@ -4,13 +4,13 @@ slug: contract-helper
 displayName: "Contract Helper · 合作合同助手"
 summary: "红人合作协议要点:交付物、授权、独家与披露条款清单及谈判要点"
 description: 'Use when the user asks to "draft an influencer contract", "review these agreement terms", or "build a partnership template"; produces a full influencer agreement framework (scope, compensation, usage rights, exclusivity, FTC disclosure), a clause-by-clause review with red flags, and a negotiation cheat sheet. Not for outreach negotiation before a deal exists — use outreach-manager.'
-version: "16.0.0"
+version: "18.0.0"
 license: Apache-2.0
 compatibility: "Claude Code and compatible agent-skill hosts"
 homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
 when_to_use: "Use when drafting a new influencer or creator agreement, reviewing an incoming contract or agency paper, negotiating terms such as usage rights or exclusivity, explaining standard clauses, or building a reusable partnership template. Auto-activate once a partnership is agreed in principle and the deal needs paperwork."
 argument-hint: "<deliverables and compensation> [platform] | review <pasted terms>"
-metadata: {"author": "aaron-he-zhu", "version": "16.0.0", "discipline": "influencer", "phase": "activate", "family": "influencer-marketing", "hermes": {"tags": ["marketing", "influencer", "activate"], "category": "influencer"}, "openclaw": {"emoji": "📣", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
+metadata: {"author": "aaron-he-zhu", "version": "18.0.0", "discipline": "influencer", "phase": "activate", "geo-relevance": "low", "hermes": {"tags": ["marketing", "influencer", "activate"], "category": "influencer"}, "openclaw": {"emoji": "📣", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 
 # Contract Helper
@@ -31,7 +31,7 @@ Review these contract terms from an influencer agency: [paste terms]
 ## Skill Contract
 
 - **Reads**: campaign brief, agreed deliverables, compensation figure, platform list, usage-rights and exclusivity needs, any pasted incoming agreement. If `memory-management` is active, prior outreach terms and budget caps load from the hot cache. For rostered creators, read `memory/creators/<handle-slug>.md` — the [creator-registry](../../../protocol/creator-registry/SKILL.md) roster record — for existing exclusivity windows, contract status, usage-rights history, and standard-range anchors before drafting or reviewing.
-- **Writes**: drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`. Signed terms (usage-rights window, exclusivity scope, final rate) also go as a one-line update to `memory/creators/candidates.md` — only `creator-registry` writes canonical roster records.
+- **Writes**: drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`. Signed terms (usage-rights window, exclusivity scope, final rate) also go as a one-line update to `memory/events/creators.ndjson` via an authorized `operation: propose` request to `registry-events.py` — only `creator-registry` writes canonical roster records.
 - **Promotes**: durable facts (signed terms, usage-rights window, exclusivity scope, payment schedule) to `memory/hot-cache.md`.
 - **Done when**:
   - Every required term is filled or explicitly marked TBD (parties, deliverables, compensation, payment timeline, usage rights, exclusivity, termination).
@@ -64,7 +64,7 @@ When a user requests contract help:
 3. **Explain key clauses** — for each material clause give what it covers, why it matters, and what to watch for. Clause guide in [references/templates.md §3](references/templates.md).
 4. **Review and flag** — for any incoming paper, run the checklist: essential terms present, red flags, and per-clause negotiation ranges. Checklist + tables in [references/templates.md §4-5](references/templates.md).
 
-Save the drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`, and promote durable signed terms to the hot cache. Once terms are signed, also submit them (usage-rights window, exclusivity scope, final rate) as a one-line update to `memory/creators/candidates.md` for [creator-registry](../../../protocol/creator-registry/SKILL.md) to reconcile into the roster record.
+Save the drafted agreement or review memo to `memory/influencer/contract-helper/YYYY-MM-DD-<topic>.md`, and promote durable signed terms to the hot cache. Once terms are signed, also submit them (usage-rights window, exclusivity scope, final rate) as a one-line update to `memory/events/creators.ndjson` via an authorized `operation: propose` request to `registry-events.py` for [creator-registry](../../../protocol/creator-registry/SKILL.md) to reconcile into the roster record.
 
 ## Example
 
@@ -78,14 +78,14 @@ Save the drafted agreement or review memo to `memory/influencer/contract-helper/
 - [skill-contract.md](../../../references/skill-contract.md) — shared contract and Handoff Summary format.
 - [state-model.md](../../../references/state-model.md) — memory tiers and save-path convention.
 - [CONNECTORS.md](../../../CONNECTORS.md) — free/keyless connector recipes per category.
-- Sibling skills: [outreach-manager](../outreach-manager/SKILL.md) (negotiate before contract), [content-reviewer](../content-reviewer/SKILL.md) (execute the approval clause), [budget-optimizer](../../plan/budget-optimizer/SKILL.md) (set compensation), [brief-generator](../../plan/brief-generator/SKILL.md) (attach the brief as an exhibit).
+- Sibling skills: [outreach-manager](../outreach-manager/SKILL.md) (negotiate before contract), [creator-content-auditor](../creator-content-auditor/SKILL.md) (execute the approval clause), [budget-optimizer](../../target/budget-optimizer/SKILL.md) (set compensation), [brief-generator](../../target/brief-generator/SKILL.md) (attach the brief as an exhibit).
 
 ## Next Best Skill
 
 **Primary**: [content-amplifier](../content-amplifier/SKILL.md) — once the agreement is signed and usage rights are locked, amplify the licensed content into paid and owned channels.
 
-**Alternates (same Activate/Convert family)**:
-- [content-reviewer](../content-reviewer/SKILL.md) — run the approval workflow the contract defines.
+**Alternates (same Activate family)**:
+- [creator-content-auditor](../creator-content-auditor/SKILL.md) — run the approval workflow the contract defines.
 - [outreach-manager](../outreach-manager/SKILL.md) — if terms stall, return to negotiation before re-drafting.
 
 **Termination**: keep a visited-set for this session. If a skill above has already been invoked, stop and report chain-complete rather than re-running it. Max chain depth is 3 hops; once reached, summarize and hand back to the user.
@@ -93,6 +93,6 @@ Save the drafted agreement or review memo to `memory/influencer/contract-helper/
 ## Related Skills
 
 - [outreach-manager](../outreach-manager/SKILL.md) - Negotiate before contract
-- [brief-generator](../../plan/brief-generator/SKILL.md) - Attach brief as exhibit
-- [content-reviewer](../content-reviewer/SKILL.md) - Execute approval process
-- [budget-optimizer](../../plan/budget-optimizer/SKILL.md) - Set compensation terms
+- [brief-generator](../../target/brief-generator/SKILL.md) - Attach brief as exhibit
+- [creator-content-auditor](../creator-content-auditor/SKILL.md) - Execute approval process
+- [budget-optimizer](../../target/budget-optimizer/SKILL.md) - Set compensation terms

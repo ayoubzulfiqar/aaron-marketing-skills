@@ -49,15 +49,14 @@ AI_BOTS = [
 def normalize_robots_url(arg):
     """Return a robots.txt URL for either a bare site or an explicit robots URL.
 
-    A scheme is assumed (https) when missing. Anything that is not already a
-    .../robots.txt is reduced to <scheme>://<host>/robots.txt.
+    A scheme is assumed (https) when missing. Anything whose path is not
+    exactly /robots.txt is reduced to <scheme>://<host>/robots.txt.
     """
     raw = arg.strip()
     if "://" not in raw:
         raw = "https://" + raw
     parts = urlsplit(raw)
-    if parts.path.rstrip("/").lower().endswith("/robots.txt") or \
-            parts.path.lower() == "/robots.txt":
+    if parts.path.lower() == "/robots.txt":
         return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
     return urlunsplit((parts.scheme, parts.netloc, "/robots.txt", "", ""))
 
@@ -181,9 +180,10 @@ class RobotsTxt:
                     if star is None:
                         star = g
                     continue
-                # Google matches if the group token is a substring-prefix of the
-                # product token; common practice is prefix match on the UA name.
-                if ua_l.startswith(token) or token in ua_l:
+                # Google spec: the group token must be a case-insensitive PREFIX
+                # of the crawler name (not an anywhere-substring — that would let an
+                # unrelated group capture the UA and over/under-block it).
+                if ua_l.startswith(token):
                     if len(token) > best_len:
                         best_len = len(token)
                         best = g
@@ -245,6 +245,20 @@ def fetch(url):
         fetched_url=r.get("url") or robots_url,
     )
     return parsed
+
+
+def status_unreliable(status):
+    """True when a robots.txt fetch status means the rules COULD NOT be verified —
+    a 5xx (Google spec: SHOULD be treated as disallow-all) or 0 (network/timeout/
+    DNS failure). A 4xx/404 is a *reliable* "no robots.txt = allow all", NOT
+    unreliable. Callers that must not fetch on an unverifiable policy (delegated
+    third-party fetchers, active crawlers) use this to fail CLOSED."""
+    return status == 0 or (isinstance(status, int) and 500 <= status <= 599)
+
+
+def fetch_unreliable(parsed):
+    """Convenience: status_unreliable() on a parsed robots result."""
+    return status_unreliable(getattr(parsed, "status", 0))
 
 
 def _report(parsed, ua, path, check_ai_bots):

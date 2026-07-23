@@ -16,7 +16,8 @@
 #          published standard; never auto-pushed (manual reconciliation)
 #
 # Owner-run at release time (CONTRIBUTING §6). CI (family-drift.yml) runs the dry-run
-# weekly — read-only raw.githubusercontent fetches, no auth, no push.
+# weekly — read-only GitHub Contents API fetches (token-authenticated when GITHUB_TOKEN
+# is present to clear the 60 req/hr unauthenticated cap), no push.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -32,7 +33,28 @@ trap 'rm -rf "$TMP"' EXIT
 DRIFT=0
 
 fetch_raw() { # $1 repo, $2 file → stdout (fails silently; caller checks)
-  curl -fsSL "https://raw.githubusercontent.com/$OWNER/$1/main/$2"
+  # Use the GitHub Contents API raw media response instead of raw.githubusercontent:
+  # right after --live pushes, raw.githubusercontent can serve a stale cached blob
+  # and make the owner-run verification look drifted even when the repo is synced.
+  # The UNAUTHENTICATED Contents API is only 60 req/hr per IP — on shared-IP CI runners
+  # that budget can already be spent by other jobs, and a 403 then reads as "repo
+  # missing/drifted" (a false CI failure). Pass a token when one is present (Actions
+  # always provides GITHUB_TOKEN) to raise the limit to 5,000/hr.
+  # Owner-run local shells usually have no GITHUB_TOKEN — borrow the gh CLI's
+  # token so repeated runs don't exhaust the 60 req/hr anonymous cap (observed
+  # at v18.0.0 as ROTATING false "unreachable" repos across back-to-back runs).
+  local tok="${GITHUB_TOKEN:-}" ghbin
+  if [ -z "$tok" ]; then
+    for ghbin in gh /opt/homebrew/bin/gh; do
+      command -v "$ghbin" >/dev/null 2>&1 && { tok="$("$ghbin" auth token 2>/dev/null || true)"; break; }
+    done
+  fi
+  local url="https://api.github.com/repos/$OWNER/$1/contents/$2?ref=main"
+  if [ -n "$tok" ]; then
+    curl -fsSL -H "Authorization: Bearer $tok" -H 'Accept: application/vnd.github.raw' "$url"
+  else
+    curl -fsSL -H 'Accept: application/vnd.github.raw' "$url"
+  fi
 }
 
 between_markers() { awk '/<!-- SYNC:BEGIN/{f=1;next} /<!-- SYNC:END/{f=0} f'; }
@@ -65,10 +87,15 @@ PY
 }
 
 extract_ids() { # $1 file → sorted unique item IDs (bold anywhere, or leading table cell)
+  # The trailing grep must not fail the pipeline under pipefail when a source
+  # legitimately contains zero IDs (e.g. an index page); emptiness is judged
+  # by the caller, which fails loudly on an empty umbrella ID set.
+  # Leading-cell forms covered: | S1 | · | **S1** | · | `S1` | · | `S2` ⛔ |
+  # (star-benchmark.md backticks its IDs and marks veto rows with a trailing ⛔).
   {
     grep -oE '\*\*[A-Z][0-9]{1,2}\*\*' "$1" || true
-    grep -oE '^\|[[:space:]]*\**[A-Z][0-9]{1,2}\**[[:space:]]*\|' "$1" || true
-  } | grep -oE '[A-Z][0-9]{1,2}' | sort -u
+    grep -oE '^\|[[:space:]]*[*`]*[A-Z][0-9]{1,2}[*`]*[[:space:]]*(⛔[[:space:]]*)?\|' "$1" || true
+  } | { grep -oE '[A-Z][0-9]{1,2}' || true; } | sort -u
 }
 
 # ---- checkers ---------------------------------------------------------------
@@ -89,7 +116,9 @@ check_marker_target() { # $1 repo, $2 source label, $3 generated-body file
   echo "✗ $repo — DRIFT (remote vs regenerated):"
   diff "$TMP/$repo.remote-body" "$gen" | head -40 || true
   DRIFT=1
-  [ $LIVE -eq 1 ] && push_marker_target "$repo" "$src" "$gen"
+  if [ $LIVE -eq 1 ]; then
+    push_marker_target "$repo" "$src" "$gen"
+  fi
 }
 
 push_marker_target() { # $1 repo, $2 source label, $3 generated-body file
@@ -108,24 +137,46 @@ push_marker_target() { # $1 repo, $2 source label, $3 generated-body file
   echo "  ↳ pushed sync: umbrella v$VERSION → $repo"
 }
 
-check_ids_target() { # $1 repo, $2 references file, $3… repo files to scan
+check_ids_target() { # $1 repo, $2 colon-separated references source file(s), $3… repo files to scan
   local repo="$1" src="$2"; shift 2
   local remote_all="$TMP/$repo.all.md"
   : > "$remote_all"
-  local f ok=1
+  local f got=0 failed=0
   for f in "$@"; do
-    fetch_raw "$repo" "$f" >> "$remote_all" 2>/dev/null || ok=0
+    if fetch_raw "$repo" "$f" >> "$remote_all" 2>/dev/null; then got=1; else failed=1; fi
     echo >> "$remote_all"
   done
-  if [ $ok -eq 0 ] && [ ! -s "$remote_all" ]; then
+  # got=0 means NOT ONE file fetched -> truly unreachable. (The per-iteration
+  # `echo` pads a newline every loop, so the old `! -s` emptiness test never fired.)
+  if [ $got -eq 0 ]; then
     echo "✗ $repo — unreachable"
     DRIFT=1
     return
   fi
-  extract_ids "$src" > "$TMP/$repo.want"
+  # A partial fetch (some files 404 while others succeed) leaves $remote_all
+  # missing IDs from the unreachable files. Comparing against it would report
+  # false "missing ID" drift, so treat any fetch failure as unreachable/partial.
+  if [ $failed -eq 1 ]; then
+    echo "✗ $repo — partial fetch (one or more files unreachable); skipping ID comparison"
+    DRIFT=1
+    return
+  fi
+  local want="$TMP/$repo.want" srcfile
+  : > "$want"
+  local -a src_files
+  IFS=':' read -r -a src_files <<< "$src"
+  for srcfile in "${src_files[@]}"; do
+    extract_ids "$srcfile" >> "$want"
+  done
+  sort -u -o "$want" "$want"
+  if [ ! -s "$want" ]; then
+    echo "✗ $repo — umbrella source(s) $src contain no item IDs; the ids policy for this target is misconfigured (fix the sync-family target list)"
+    DRIFT=1
+    return
+  fi
   extract_ids "$remote_all" > "$TMP/$repo.have"
   local missing
-  missing=$(comm -23 "$TMP/$repo.want" "$TMP/$repo.have")
+  missing=$(comm -23 "$want" "$TMP/$repo.have")
   if [ -z "$missing" ]; then
     echo "✓ $repo — all $(wc -l < "$TMP/$repo.want" | tr -d ' ') umbrella-referenced item IDs present"
   else
@@ -178,8 +229,12 @@ check_marker_target brand-narrative-agent-skills 'plugin.json#narrative' "$TMP/g
 
 check_ids_target core-eeat-content-benchmark references/core-eeat-benchmark.md README.md
 check_ids_target cite-domain-rating references/cite-domain-rating.md README.md
-check_ids_target influencer-marketing-c3-benchmark references/c3-benchmark.md \
-  README.md ace-creator-benchmark.md art-content-benchmark.md roi-campaign-benchmark.md scoring-architecture.md
+# v18 replaced the C3 split with the single references/star-benchmark.md (STAR framework).
+# OWNER ACTION: rename the GitHub mirror influencer-marketing-c3-benchmark ->
+# influencer-marketing-star-benchmark before the next sync, or this target will 404.
+check_ids_target influencer-marketing-star-benchmark \
+  references/star-benchmark.md \
+  README.md star-benchmark.md
 
 echo
 if [ $DRIFT -eq 1 ]; then

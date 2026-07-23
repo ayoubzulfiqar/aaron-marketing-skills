@@ -24,7 +24,7 @@ Takeaway: profile, public Articles, and the Company Page are the SEO/GEO assets.
 | Experience media | Thin indexed signal | Attach relevant docs/links/images per role. |
 | Custom profile URL | Shareability | Set to firstname-lastname, not the default ID string. |
 
-GEO note: AI search tools can cite a LinkedIn profile for "who is [person]" or "what does [company] do" queries. Answer-first About blocks (40-60 words) are extractable; long unbroken paragraphs are not. Keep name, company, and role identical across LinkedIn, the user's site, and other public bios for entity consistency (see `../entity-optimizer` analog: `sameAs` alignment).
+GEO note: AI search tools can cite a LinkedIn profile for "who is [person]" or "what does [company] do" queries. Answer-first About blocks (40-60 words) are extractable; long unbroken paragraphs are not. Keep name, company, and role identical across LinkedIn, the user's site, and other public bios for entity consistency (see `../entity-registry` analog: `sameAs` alignment).
 
 ## Post Types (organic)
 

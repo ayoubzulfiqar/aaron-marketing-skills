@@ -102,17 +102,31 @@ def crawl(start_url, max_pages=50, max_depth=5, respect_robots=True,
         return []
     host = parsed.netloc.lower()
 
+    def _load_robots(scheme, netloc):
+        """(rules|None, unreliable): 200 -> parsed rules; 4xx/404 -> (None, False)
+        (no robots.txt = allow all); 5xx/network -> (None, True) (policy could NOT
+        be verified — the caller fails closed unless --own-site disabled respect_robots)."""
+        ru = "%s://%s/robots.txt" % (scheme, netloc)
+        rr = _http.get_text(ru)
+        st = rr.get("status", 0)
+        if st == 200 and rr.get("text"):
+            rules = robots.RobotsTxt.parse(rr["text"], ru, st, rr.get("error"))
+            emit("robots: %d rule(s) parsed for %s (Allow + Disallow, wildcard-aware)"
+                 % (sum(len(g.rules) for g in rules.groups), netloc))
+            return rules, False
+        if robots.status_unreliable(st):
+            emit("robots: %s unreachable (status %s)" % (netloc, st))
+            return None, True
+        emit("robots: none for %s (status %s) — allow all" % (netloc, st))
+        return None, False
+
     robots_rules = None
     if respect_robots:
-        robots_url = "%s://%s/robots.txt" % (parsed.scheme, parsed.netloc)
-        r = _http.get_text(robots_url)
-        if r["status"] == 200 and r["text"]:
-            robots_rules = robots.RobotsTxt.parse(
-                r["text"], robots_url, r["status"], r["error"])
-            n = sum(len(g.rules) for g in robots_rules.groups)
-            emit("robots: %d rule(s) parsed (Allow + Disallow, wildcard-aware)" % n)
-        else:
-            emit("robots: none found (status %s) — proceeding" % r["status"])
+        robots_rules, unreliable = _load_robots(parsed.scheme, parsed.netloc)
+        if unreliable:
+            emit("refusing to crawl %s — robots.txt could not be verified "
+                 "(fail-closed); re-run with --own-site to override" % host)
+            return []
 
     results = []
     seen = {start_url}
@@ -122,7 +136,9 @@ def crawl(start_url, max_pages=50, max_depth=5, respect_robots=True,
         url, depth = queue.popleft()
 
         if respect_robots and robots_rules is not None:
-            allowed, _ = robots_rules.can_fetch(UA_TOKEN, urlparse(url).path or "/")
+            up = urlparse(url)
+            pathq = (up.path or "/") + (("?" + up.query) if up.query else "")
+            allowed, _ = robots_rules.can_fetch(UA_TOKEN, pathq)
             if not allowed:
                 emit("skip (robots): %s" % url)
                 continue
@@ -136,7 +152,19 @@ def crawl(start_url, max_pages=50, max_depth=5, respect_robots=True,
         # same-host filter onto the landing host so we don't discard every link.
         if not results:
             landed = urlparse(final_url).netloc.lower()
-            if landed:
+            if landed and landed != host:
+                host = landed
+                # The start URL redirected cross-host: the robots rules loaded above
+                # were for the ORIGINAL host — re-fetch them for the landed host
+                # instead of crawling it under the wrong (or no) policy.
+                if respect_robots:
+                    robots_rules, unreliable = _load_robots(
+                        urlparse(final_url).scheme, landed)
+                    if unreliable:
+                        emit("stopping: landed host %s robots.txt could not be "
+                             "verified (fail-closed)" % landed)
+                        break
+            elif landed:
                 host = landed
         status = resp["status"]
 
@@ -204,8 +232,10 @@ def build_parser():
                    help="hard cap on pages fetched (default: 50)")
     p.add_argument("--max-depth", type=int, default=5,
                    help="max click-depth from the start URL (default: 5)")
-    p.add_argument("--no-robots", action="store_true",
-                   help="skip the inline robots.txt pre-flight (use with care)")
+    p.add_argument("--no-robots", "--own-site", dest="no_robots",
+                   action="store_true",
+                   help="owner assertion — skip the inline robots.txt "
+                        "pre-flight (use with care)")
     p.add_argument("--delay", type=float, default=CRAWL_DELAY_SECONDS,
                    help="seconds to sleep between fetches (default: 1.0)")
     p.add_argument("--quiet", action="store_true",

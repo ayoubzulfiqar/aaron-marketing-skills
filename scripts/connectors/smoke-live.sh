@@ -4,7 +4,7 @@
 # NOT run in CI (CI stays offline: tests/test_connectors_local.py covers the
 # pure request-builders). Run this by hand before a release or when a vendor
 # announcement suggests an API change — it makes one minimal real call per
-# hosted connector and asserts the response *shape*, so endpoint drift
+# hosted connector listed below and asserts the response *shape*, so sampled endpoint drift
 # (renamed fields, retired routes, auth changes) surfaces here instead of in
 # a user's session.
 #
@@ -20,8 +20,13 @@ PASS=0; FAIL=0; SKIP=0
 
 check() { # <name> <python-assert reading stdin JSON> <cmd...>
   local name="$1" assert="$2"; shift 2
-  local out
-  if out=$("$@" 2>/dev/null) && printf '%s' "$out" | python3 -c "$assert" 2>/dev/null; then
+  local out rc
+  out=$("$@" 2>/dev/null); rc=$?
+  # Exit code 3 is the connectors' documented rate-limit / keyless-cap signal —
+  # it proves the endpoint is alive, so it counts as SKIP, not FAIL (per header).
+  if [ $rc -eq 3 ]; then
+    skip "$name" "rate-limit / keyless cap (exit 3) — endpoint alive, retry later"
+  elif [ $rc -eq 0 ] && printf '%s' "$out" | python3 -c "$assert" 2>/dev/null; then
     echo "PASS  $name"; PASS=$((PASS+1))
   else
     echo "FAIL  $name"; FAIL=$((FAIL+1))
@@ -61,7 +66,7 @@ else
 fi
 
 check "kg.py reconcile" \
-  'import json,sys; d=json.load(sys.stdin); assert d' \
+  'import json,sys; d=json.load(sys.stdin); assert d["query"] and d["matches"] and d["count"] == len(d["matches"])' \
   python3 kg.py reconcile "Anthropic"
 
 check "hn.py search" \

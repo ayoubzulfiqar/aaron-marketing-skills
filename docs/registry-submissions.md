@@ -6,10 +6,10 @@ Operational dossier for getting the bundle listed on every skills marketplace, d
 
 ## Submission kit (copy-paste)
 
-**Repo**: <https://github.com/aaron-he-zhu/aaron-marketing-skills> · Apache-2.0 · v16.0.0 · 120 skills + 8 commands
+**Repo**: <https://github.com/aaron-he-zhu/aaron-marketing-skills> · Apache-2.0 · v18.0.0 · 120 skills + 8 commands
 **Install (universal)**: `npx skills add aaron-he-zhu/aaron-marketing-skills` — 70+ hosts (Codex, Cursor, OpenCode, Antigravity, Gemini CLI, Copilot CLI, OpenClaw, Hermes, …)
 **Install (Claude Code plugin, full suite)**: `/plugin marketplace add aaron-he-zhu/aaron-marketing-skills` → `/plugin install aaron-marketing@aaron`
-**Live registry pages**: [skills.sh](https://skills.sh/aaron-he-zhu/aaron-marketing-skills) · ClawHub (`@aaron-he-zhu/<skill>`) · SkillHub.cn (slugs `aaron-<skill>`, publish pending)
+**Live registry pages**: [skills.sh](https://skills.sh/aaron-he-zhu/aaron-marketing-skills) · ClawHub (`@aaron-he-zhu/<skill>`) · SkillHub.cn (frontmatter slugs: `<skill>` when owned, otherwise `aaron-<skill>`)
 **Topics/tags**: marketing, seo, geo, influencer-marketing, paid-ads, email-marketing, organic-social, product-launch, go-to-market, brand-narrative, brand-messaging, agent-skills, claude-code, skill-md
 
 **One-liner (EN, ~120 chars)**
@@ -19,10 +19,10 @@ Operational dossier for getting the bundle listed on every skills marketplace, d
 > 120 个营销技能构成四层营销操作系统:品牌叙事、SEO/GEO、自然社媒、邮件、付费广告、红人、产品发布,内置 8 个审计门与免密钥连接器。
 
 **Short blurb (EN, ~350 chars)**
-> A four-layer marketing operating system for AI agents: 120 SKILL.md skills across seven disciplines — brand narrative (TALE), SEO/GEO (CORE-EEAT + CITE), organic social (ECHO), email (SEND), paid ads (ROAS), influencer (C³) and product launch (RAMP) — sharing one contract (trigger, quick start, handoff, next-best-skill). Eight benchmark-driven auditor gates emit machine-checkable verdicts. Every skill runs Tier-1 on pasted data; zero-dependency Python connectors pull free/own data. Works on Claude Code (full plugin) and 70+ SKILL.md hosts.
+> A four-layer marketing operating system for AI agents: 120 SKILL.md skills across seven disciplines — brand narrative (TALE), SEO/GEO (CORE-EEAT + CITE), organic social (ECHO), email (SEND), paid ads (ROAS), influencer (STAR) and product launch (RAMP) — sharing one contract (trigger, quick start, handoff, next-best-skill). Eight benchmark-driven auditor gates emit machine-checkable verdicts. Every skill runs Tier-1 on pasted data; zero-dependency Python connectors pull free/own data. Works on Claude Code (full plugin) and 70+ SKILL.md hosts.
 
 **Short blurb (中文, ~200 字)**
-> 把聊天 Agent 变成营销操作员的四层营销操作系统:120 个 SKILL.md 技能覆盖七大学科——品牌叙事(TALE)、SEO/GEO(CORE-EEAT + CITE)、自然社媒(ECHO)、邮件营销(SEND)、付费广告(ROAS)、红人营销(C³)、产品发布(RAMP)——共享同一套契约(触发→快速开始→交棒→下一技能)。八套基准驱动八个审计门,产出可机器校验的判定。每个技能都能仅凭粘贴的数据运行;零依赖 Python 连接器可拉取免费/自有数据。支持 Claude Code 完整插件与 70+ SKILL.md 宿主。
+> 把聊天 Agent 变成营销操作员的四层营销操作系统:120 个 SKILL.md 技能覆盖七大学科——品牌叙事(TALE)、SEO/GEO(CORE-EEAT + CITE)、自然社媒(ECHO)、邮件营销(SEND)、付费广告(ROAS)、红人营销(STAR)、产品发布(RAMP)——共享同一套契约(触发→快速开始→交棒→下一技能)。八套基准驱动八个审计门,产出可机器校验的判定。每个技能都能仅凭粘贴的数据运行;零依赖 Python 连接器可拉取免费/自有数据。支持 Claude Code 完整插件与 70+ SKILL.md 宿主。
 
 **Example use cases (EN — for submission forms asking "Example 1/2/…")**
 ```text
@@ -30,12 +30,12 @@ Example 1: "Research keywords for my SaaS product targeting small teams" — the
 Example 2: "Audit this article for E-E-A-T and publish readiness" — content-quality-auditor scores it against the 80-item CORE-EEAT benchmark and returns a SHIP / FIX / BLOCK verdict with a prioritized fix plan.
 Example 3: "Find TikTok creators for a skincare launch and score their fit" — influencer-discovery builds a vetted candidate pool, then fit-scorer ranks it with go/pass verdicts.
 Example 4: "Audit my Google Ads account before I scale spend — exports attached" — ad-account-auditor runs the ROAS gate (RQS score + veto checks) on your own-account export, no ad-platform API keys needed.
-Example 5: "Score our message house against the TALE benchmark before the launch" — narrative-quality-auditor runs the TALE NQS gate (Truth/Architecture/Landing/Evidence + veto checks) on your brand-narrative canon and returns a SHIP / FIX / BLOCK verdict.
+Example 5: "Review our message house against TALE before the launch" — narrative-quality-auditor runs separate truth, system, and effectiveness profiles on the versioned narrative canon; it never averages them into one composite and returns machine-checkable SHIP / FIX / BLOCK / UNDECIDED results.
 Example 6: "/aaron-marketing:auto turn our pricing page into an AI-citable comparison hub" — the auto command infers intent and chains the smallest useful workflow across the 120 skills.
 ```
 
 **Reviewer/test notes (EN — for "submission details" fields)**
-> Validated with `claude plugin validate` (passes). 120 skills + 8 commands across seven disciplines; CI enforces frontmatter validity, 8-file version-sync, and install-discovery guards on every commit. Latest release: v16.0.0.
+> Validated with `claude plugin validate` (passes). 120 skills + 8 commands across seven disciplines; CI enforces frontmatter validity, 10-surface version-sync, and install-discovery guards on every commit. Latest release: v18.0.0.
 
 **Awesome-list entry line (EN, generic)**
 ```markdown
@@ -49,13 +49,13 @@ Example 6: "/aaron-marketing:auto turn our pricing page into an AI-citable compa
 
 ## Status matrix
 
-> Legend — ✅ live · 🟡 prepared, owner action pending · 🔬 researched, route below · ⬜ not applicable / not worth it
+> Legend — ✅ live · 🟢 submitted, awaiting listing · 🟡 prepared, owner action pending · 🔴 blocked upstream (route below) · ⬜ not applicable / not worth it
 
 | # | Platform | Type | Status |
 |---|----------|------|--------|
 | 1 | [skills.sh](https://skills.sh/aaron-he-zhu/aaron-marketing-skills) | registry (telemetry) | ✅ live — `skills.sh.json` groupings shipped |
-| 2 | [SkillHub.cn](https://skillhub.cn) | registry (publish) | 🟡 **69/120 published (pre-v16 batch, 2026-07-04)** (skillIds 94980–95031+; platform review pending; publish needed 25s throttling — `--throttle`/`--resume-from` built into the script). Re-run for the 51 new social/narrative skills. |
-| 3 | [ClawHub](https://clawhub.ai) | registry (publish) | 🟡 2/120 published — `bash scripts/publish-clawhub.sh --i-accept-mit0` for the rest |
+| 2 | [SkillHub.cn](https://skillhub.cn) | registry (publish) | ✅ live — local release target is bundle 18.0.0; verify remote drift before publishing. Check with `bash scripts/registry-status.sh`; publish only the behind-set with `bash scripts/publish-registries.sh --live skillhub` (see [distribution.md](distribution.md)) |
+| 3 | [ClawHub](https://clawhub.ai) | registry (publish) | ✅ live — 120 skills current **and** the whole plugin as the `aaron-marketing` **bundle-plugin** package (`bash scripts/publish-package.sh --live`). Check with `registry-status.sh`; publish skills with `publish-registries.sh --live clawhub` |
 | 4 | [Anthropic community marketplace](https://github.com/anthropics/claude-plugins-community) | curated directory | 🟢 **submitted 2026-07-04, pending review** (Console form; surfaces: Claude Code + Cowork; watch the [community catalog](https://github.com/anthropics/claude-plugins-community/blob/main/.claude-plugin/marketplace.json) for `aaron-marketing`) |
 | 5 | [Skills Directory](https://www.skillsdirectory.com) | directory + security scan | 🟢 **submitted 2026-07-04** (owner, via /submit) |
 | 6 | [askill.sh](https://askill.sh) | registry | 🟡 CLI route times out from CN network (`askill login`/`submit` both) — use the **web form** askill.sh/submit instead; API token saved by owner |
@@ -86,7 +86,7 @@ Example 6: "/aaron-marketing:auto turn our pricing page into an AI-citable compa
 
 **Auto-crawl (passive — no submission exists; discovery levers below):** [SkillsMP](https://skillsmp.com) (2M+ skills, ~2-star minimum), [LobeHub Skills](https://lobehub.com/skills) (169k+, scrapes GitHub topics `claude-skills`/`agent-skills` + SKILL.md code search), [agentskill.sh](https://agentskill.sh) (`ags` CLI, 100k+ indexed, security-vetted), [skill0.io](https://skill0.io) (small curated crawl, no submit lever), [crossaitools.com](https://crossaitools.com) (ex-claudemarketplaces.com; ranked by installs/stars/votes). **Discovery levers, all already satisfied**: GitHub topics (`agent-skills`, `claude-skills`, `ai-skills`, `claude-code` — verified present, 20-topic cap reached), public SKILL.md files, stars/install velocity.
 
-**GitHub `gh skill` CLI — the one hard gap (verified 2026-07):** `gh skill install aaron-he-zhu/aaron-marketing-skills` fails with "no skills found" — the preview CLI only discovers `skills/*/SKILL.md`, `skills/{scope}/*/SKILL.md`, `{prefix}/skills/*/SKILL.md`, `*/SKILL.md`, or `plugins/*/skills/*/SKILL.md`, and (unlike `npx skills`) does **not** read `.claude-plugin/plugin.json` manifests. It also serves the **latest semver tag** (resolved `v16.0.0`), not `main` — cut releases to keep any future gh-skill content fresh. Prepared actions: (a) upstream feature request to [cli/cli](https://github.com/cli/cli/issues) asking for Claude-plugin-manifest discovery (precedent: vercel-labs/skills reads it, quote their plugin-manifest support); (b) fallback option, only if the user wants it: a flat auto-generated mirror repo (`skills/<name>/` layout, synced by Actions) — real maintenance cost, splits identity; not recommended while (a) is open.
+**GitHub `gh skill` CLI — the one hard gap (verified 2026-07):** `gh skill install aaron-he-zhu/aaron-marketing-skills` fails with "no skills found" — the preview CLI only discovers `skills/*/SKILL.md`, `skills/{scope}/*/SKILL.md`, `{prefix}/skills/*/SKILL.md`, `*/SKILL.md`, or `plugins/*/skills/*/SKILL.md`, and (unlike `npx skills`) does **not** read `.claude-plugin/plugin.json` manifests. It also serves the latest semver tag, not `main` — cut releases to keep any future gh-skill content fresh. Prepared actions: (a) upstream feature request to [cli/cli](https://github.com/cli/cli/issues) asking for Claude-plugin-manifest discovery (precedent: vercel-labs/skills reads it, quote their plugin-manifest support); (b) fallback option, only if the user wants it: a flat auto-generated mirror repo (`skills/<name>/` layout, synced by Actions) — real maintenance cost, splits identity; not recommended while (a) is open.
 
 **Not targetable now:** Smithery skills (no publish route documented), Agensi (paid/monetized marketplace, creator-contact onboarding — only if we want a commercial listing), ClaudeSkills.info / MCP Market / claudecodemarketplace.net / mcpservers.org (minor reach, mechanisms unverified).
 
@@ -123,7 +123,7 @@ Example 6: "/aaron-marketing:auto turn our pricing page into an AI-citable compa
    ```
    (Confirm exact schema against their `CONTRIBUTING.md` at PR time — field set verified 2026-07.) Qoder the IDE already installs us via skills.sh: `npx skills add aaron-he-zhu/aaron-marketing-skills -a qoder` works today.
 2. **AgentUse / Zerone Skill Market** — [zerone.market](https://www.zerone.market), catalog repo [`Zerone-Agent/agent-use-skills`](https://github.com/Zerone-Agent/agent-use-skills). Two routes: *fast-track* — tell any agent 「请使用 `agentuse-share` 技能, 根据以下仓库链接完成贡献: https://github.com/aaron-he-zhu/aaron-marketing-skills」 and it generates the files; *manual* — fork + add `awesome-skills/introductions/{zh,en}/aaron-marketing-skills.md` (use both kit blurbs) + per-platform `INSTALL-*.md` guides. **Bilingual zh+en mandatory**; must be verified on ≥1 mainstream framework (we have several).
-3. **Skillstore** — [skillstore.io/submit](https://skillstore.io/submit) (sign-in; accepts a repo URL **or a specific directory**; they run a security audit then open their own review PR). Repo root has no SKILL.md, so submit **flagship skill directory URLs** with a note about the plugin structure. Suggested flagship set (the 8 auditor gates, one per framework, spanning all seven disciplines): `narrative/evaluate/narrative-quality-auditor` (TALE), `seo-geo/optimize/content-quality-auditor` (CORE-EEAT), `seo-geo/monitor/domain-authority-auditor` (CITE), `social/host/social-quality-auditor` (ECHO), `email/deliver/email-quality-auditor` (SEND), `ad/activate/ad-account-auditor` (ROAS), `influencer/activate/content-reviewer` (C³ ART), `launch/mobilize/launch-readiness-auditor` (RAMP).
+3. **Skillstore** — [skillstore.io/submit](https://skillstore.io/submit) (sign-in; accepts a repo URL **or a specific directory**; they run a security audit then open their own review PR). Repo root has no SKILL.md, so submit **flagship skill directory URLs** with a note about the plugin structure. Suggested flagship set (the 8 auditor gates, one per framework, spanning all seven disciplines): `narrative/evaluate/narrative-quality-auditor` (TALE), `seo-geo/tune/content-quality-auditor` (CORE-EEAT), `seo-geo/evaluate/domain-authority-auditor` (CITE), `social/host/social-quality-auditor` (ECHO), `email/deliver/email-quality-auditor` (SEND), `ad/activate/ad-account-auditor` (ROAS), `influencer/activate/creator-content-auditor` (STAR), `launch/mobilize/launch-readiness-auditor` (RAMP).
 4. **Agent Skills Me** — [agentskills.me](https://agentskills.me) (EvergreenAI/Jimmy Lv; editor-curated aggregator of known GitHub skill repos). Register (GitHub login) → `/submit`; fallback email hi@evergreenai.cn with the kit's Chinese blurb asking to add the repo to indexed sources.
 5. **SkillsMP** — [skillsmp.com](https://skillsmp.com) auto-crawl; **already indexed but stale**: `skillsmp.com/creators/aaron-he-zhu/aaron-marketing-skills` shows 38 pre-v12 skills (old names like `performance-reporter`) against the current 120, and the old `seo-geo-claude-skills` repo is indexed separately. No submit route — nudge the maintainer (Reddit/X, solo dev) for a re-crawl; pushing the current branch + a fresh release is the strongest re-crawl signal.
 6. **虾评Skill** — [xiaping.coze.com](https://xiaping.coze.com) (Coze-hosted; per-skill ZIP ≤10MB with Chinese 50–300-char descriptions via agent API; upload quota gated by 虾米 points — A1 level = 0 uploads; promotion to 正式版 needs 5 reviews ≥4分). **Poor fit** for a 120-skill bundle — revisit only if the user specifically wants presence there.

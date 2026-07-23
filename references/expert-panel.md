@@ -1,6 +1,6 @@
 # Expert Panel — Multi-Persona Scoring Method
 
-A documented method (not automated code) for scoring a draft against several named expert personas at once, then revising and rescoring until it clears a target. Shared by `content-reviewer` and `outreach-manager`. Adapted from the panel pattern in eric-osiu/ai-marketing-skills; rewritten and made vendor-neutral.
+A documented method (not automated code) for scoring a draft against several named expert personas at once, then revising and rescoring until it clears a target. Shared by `creator-content-auditor` and `outreach-manager`. Adapted from the panel pattern in eric-osiu/ai-marketing-skills; rewritten and made vendor-neutral.
 
 ## What it is
 
@@ -26,7 +26,7 @@ This works on the user's own draft — paste the copy or content brief; no exter
 | 70–79 | Functional but forgettable / niche |
 | <70 | Veto-level flaw — must fix before shipping |
 
-## Example roster — content review (`content-reviewer`)
+## Example roster — content review (`creator-content-auditor`)
 
 | Persona lens | Scores for | Red flags caught |
 |--------------|------------|------------------|

@@ -22,9 +22,10 @@ one invocation share polite >=1s spacing (time.sleep).
   numericFilters: created_at_i / points / num_comments with <, <=, =, >, >=.
   ⚠️ Index rule (verified live 2026-07): numericFilters carrying points or
   num_comments return HTTP 400 on the /search (relevance) index. This helper
-  therefore FORCES any query with numericFilters onto /search_by_date —
-  results are then recency-sorted, not relevance-sorted; the output's
-  `endpoint` field records which index answered.
+  therefore routes a query carrying a points/num_comments filter onto
+  /search_by_date (a date-only created_at_i filter stays on /search and keeps
+  relevance ranking) — search_by_date results are recency-sorted, not
+  relevance-sorted; the output's `endpoint` field records which index answered.
 
   Endpoint 2 (official): https://hacker-news.firebaseio.com/v0/
             {maxitem,topstories,newstories,beststories,askstories,
@@ -104,10 +105,14 @@ def build_numeric_filters(since_epoch=None, min_points=None):
 def build_search_url(query, tags=None, numeric_filters=None, hits_per_page=25):
     """(url, endpoint) a search WOULD hit. Pure / no network.
 
-    Any numericFilters force the /search_by_date index: points/num_comments
-    filters 400 on the /search relevance index (verified live 2026-07).
+    Only points/num_comments filters 400 on the /search relevance index (verified
+    live 2026-07); a date-only (created_at_i) filter can stay on /search and keep
+    relevance ranking, so only route to /search_by_date when a points/comments
+    filter is actually present.
     """
-    endpoint = "search_by_date" if numeric_filters else "search"
+    needs_by_date = any(("points" in f or "num_comments" in f)
+                        for f in (numeric_filters or []))
+    endpoint = "search_by_date" if needs_by_date else "search"
     params = {"query": query,
               "hitsPerPage": max(1, min(hits_per_page, MAX_HITS))}
     if tags:
@@ -206,7 +211,7 @@ def search(query, tags=None, since_epoch=None, min_points=None, max_hits=25):
     filters = build_numeric_filters(since_epoch, min_points)
     url, endpoint = build_search_url(query, tags, filters, max_hits)
     r = _polite_get_json(url)
-    if r.get("status") == 429:
+    if r.get("status") in (429, 503):
         return _rate_limited(r)
     payload = r.get("json")
     if not isinstance(payload, dict):
@@ -234,12 +239,14 @@ def rank(item_id, list_name="topstories"):
     r = _polite_get_json(build_firebase_url(list_name))
     ids = r.get("json")
     if not isinstance(ids, list):
-        return {"error": r.get("error") or "could not fetch %s" % list_name,
+        return {"error": ("rate_limited" if r.get("status") == 429
+                          else r.get("error") or "could not fetch %s" % list_name),
                 "status": r.get("status")}
     ri = _polite_get_json(build_firebase_url("item/%d" % item_id))
     payload = ri.get("json")
     if not isinstance(payload, dict):
-        return {"error": ri.get("error") or "item %d not found" % item_id,
+        return {"error": ("rate_limited" if ri.get("status") == 429
+                          else ri.get("error") or "item %d not found" % item_id),
                 "status": ri.get("status")}
     it = parse_item(payload)
     points = it.get("points") or 0
@@ -263,7 +270,8 @@ def item(item_id):
     r = _polite_get_json(build_firebase_url("item/%d" % item_id))
     payload = r.get("json")
     if not isinstance(payload, dict):
-        return {"error": r.get("error") or "item %d not found" % item_id,
+        return {"error": ("rate_limited" if r.get("status") == 429
+                          else r.get("error") or "item %d not found" % item_id),
                 "status": r.get("status")}
     out = parse_item(payload)
     out["error"] = None
@@ -275,7 +283,8 @@ def user(username):
     r = _polite_get_json(build_firebase_url("user/%s" % username.strip()))
     payload = r.get("json")
     if not isinstance(payload, dict):
-        return {"error": r.get("error") or "user %r not found" % username,
+        return {"error": ("rate_limited" if r.get("status") == 429
+                          else r.get("error") or "user %r not found" % username),
                 "status": r.get("status")}
     out = parse_user(payload)
     out["error"] = None

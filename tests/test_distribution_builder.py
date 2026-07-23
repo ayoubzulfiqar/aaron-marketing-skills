@@ -1,0 +1,97 @@
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+import tempfile
+import unittest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+BUILDER = ROOT / "scripts" / "build-distribution.py"
+MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
+
+
+class DistributionBuilderTests(unittest.TestCase):
+    def build(self, *arguments):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        output = Path(temporary.name) / "distribution"
+        subprocess.run(
+            [sys.executable, str(BUILDER), "--output", str(output), *arguments],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return output
+
+    def test_plugin_contains_runtime_and_excludes_maintenance(self):
+        output = self.build("--plugin")
+        plugin = json.loads((output / ".claude-plugin/plugin.json").read_text())
+        self.assertEqual(120, len(plugin["skills"]))
+        self.assertEqual(120, len(list(output.glob("*/*/*/SKILL.md"))) + len(list(output.glob("protocol/*/SKILL.md"))))
+        for path in (
+            "scripts/rubric-score.py",
+            "scripts/validate-audit-artifact.py",
+            "scripts/registry-events.py",
+            "references/system-catalog.json",
+            "commands/auto.md",
+            "hooks/hooks.json",
+        ):
+            self.assertTrue((output / path).is_file(), path)
+        self.assertTrue((output / "scripts/connectors/resend.py").is_file())
+        self.assertTrue((output / "references/skill-contract.md").is_file())
+        for path in ("tests", "evals", ".github", ".githooks", "docs", "AGENTS.md", "CONTRIBUTING.md"):
+            self.assertFalse((output / path).exists(), path)
+        self.assertFalse(any(path.name == "__pycache__" for path in output.rglob("*")))
+        self.assertFalse(any(path.suffix == ".pyc" for path in output.rglob("*")))
+        self.assertFalse(any(path.name == "auditor-runtime.md" for path in output.rglob("*")))
+        source_references = {path.relative_to(ROOT / "references") for path in (ROOT / "references").rglob("*") if path.is_file()}
+        shipped_references = {path.relative_to(output / "references") for path in (output / "references").rglob("*") if path.is_file()}
+        self.assertLess(len(shipped_references), len(source_references))
+
+    def test_standalone_contains_only_one_skill_payload(self):
+        output = self.build("--skill", "narrative/evaluate/narrative-quality-auditor")
+        self.assertTrue((output / "SKILL.md").is_file())
+        self.assertTrue((output / "references/auditor-runtime.md").is_file())
+        self.assertFalse((output / "scripts").exists())
+        self.assertFalse((output / ".claude-plugin").exists())
+
+    def test_plugin_runtime_markdown_links_are_closed(self):
+        output = self.build("--plugin")
+        missing = []
+        runtime_roots = [output / "commands", output / "references"]
+        runtime_roots.extend(output / path.removeprefix("./") for path in json.loads(
+            (output / ".claude-plugin/plugin.json").read_text(encoding="utf-8")
+        )["skills"])
+        for runtime_root in runtime_roots:
+            for source in runtime_root.rglob("*.md"):
+                for raw in MARKDOWN_LINK.findall(source.read_text(encoding="utf-8")):
+                    target = raw.strip().lstrip("<").rstrip(">").split("#", 1)[0]
+                    if target == "url" or not target or re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", target):
+                        continue
+                    resolved = (source.parent / target).resolve()
+                    try:
+                        resolved.relative_to(output.resolve())
+                    except ValueError:
+                        missing.append("%s -> %s" % (source.relative_to(output), target))
+                    else:
+                        if not resolved.exists():
+                            missing.append("%s -> %s" % (source.relative_to(output), target))
+        self.assertEqual([], missing)
+
+    def test_unknown_skill_fails(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            result = subprocess.run(
+                [sys.executable, str(BUILDER), "--output", str(Path(temporary) / "out"), "--skill", "missing/skill"],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("unknown skill path", result.stderr)
+
+
+if __name__ == "__main__":
+    unittest.main()

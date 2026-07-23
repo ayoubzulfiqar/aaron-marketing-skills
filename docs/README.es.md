@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills"><img src="https://img.shields.io/github/stars/aaron-he-zhu/aaron-marketing-skills?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-16.0.0-orange" alt="Version"></a>
+  <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/VERSIONS.md"><img src="https://img.shields.io/badge/version-18.0.0-orange" alt="Version"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License"></a>
   <a href="https://github.com/aaron-he-zhu/aaron-marketing-skills/commits/main"><img src="https://img.shields.io/github/last-commit/aaron-he-zhu/aaron-marketing-skills" alt="Last Commit"></a>
 </p>
@@ -24,16 +24,18 @@ Una biblioteca de skills de Claude y comandos slash que convierte a un agente de
 
 | Capa | Skills | Ciclo de vida (directorios de fase) | Framework → gate | Punto de entrada |
 |-------|--------|-------------------------------|------------------|------------|
-| **Narrative** | 16 | trace → architect → land → evaluate | [TALE](../references/tale-benchmark.md) → `narrative-quality-auditor` (NQS) | `/aaron-marketing:narrative` |
-| **SEO/GEO** | 16 | research → build → optimize → monitor | [CORE-EEAT](../references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](../references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
-| **Influencers** | 16 | discover → plan → activate → measure | [C³](../references/c3-benchmark.md) → `content-reviewer` (ART); `fit-scorer` puntúa ACE | `/aaron-marketing:influencer` |
-| **Paid Ads** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:ad` |
+| **Narrative** | 16 | trace → architect → land → evaluate | [TALE](../references/tale-benchmark.md) → `narrative-quality-auditor` (truth / system / effectiveness profiles) | `/aaron-marketing:narrative` |
+| **SEO/GEO** | 16 | survey → implement → tune → evaluate | [CORE-EEAT](../references/core-eeat-benchmark.md) → `content-quality-auditor` · [CITE](../references/cite-domain-rating.md) → `domain-authority-auditor` | `/aaron-marketing:seo-geo` |
+| **Social** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (asset / program-maturity profiles) | `/aaron-marketing:social` |
 | **Email** | 16 | setup → engage → nurture → deliver | [SEND](../references/send-benchmark.md) → `email-quality-auditor` (EQS) | `/aaron-marketing:email` |
-| **Launch** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (LQS) | `/aaron-marketing:launch` |
-| **Social** | 16 | explore → craft → host → observe | [ECHO](../references/echo-benchmark.md) → `social-quality-auditor` (SQS) | `/aaron-marketing:social` |
+| **Paid Ads** | 16 | research → orchestrate → activate → scale | [ROAS](../references/roas-benchmark.md) → `ad-account-auditor` (RQS) | `/aaron-marketing:ad` |
+| **Influencers** | 16 | scout → target → activate → report | [STAR](../references/star-benchmark.md) → `creator-content-auditor` (SQS); `fit-scorer` puntúa Suitability (S) | `/aaron-marketing:influencer` |
+| **Launch** | 16 | research → assemble → mobilize → prove | [RAMP](../references/ramp-benchmark.md) → `launch-readiness-auditor` (preflight / execution / outcome profiles) | `/aaron-marketing:launch` |
 | **Capa de protocolo** | 8 | — (maquinaria compartida, fuera de los flujos de fase) | 7 registros de verdad (entity · creator · offer/claims · consent · launch · channel · narrative) + memoria HOT/WARM/COLD | — |
 
-`/aaron-marketing:auto` enruta cualquier objetivo en lenguaje natural por todo el sistema. Todo es **Markdown puro** — el único código es un ejecutor de hooks en Bash, un validador en Bash y ayudantes de datos de la biblioteca estándar de Python sin dependencias (sin `pip`, sin paso de build). **Cada skill funciona en Tier 1 solo con los datos que pegas**; los conectores únicamente automatizan la obtención de datos.
+`/aaron-marketing:auto` enruta cualquier objetivo en lenguaje natural a través de todo el sistema. Las skills y los comandos son **Markdown puro**; pequeños runtimes de Bash/Python-stdlib aportan hooks, validación, puntuación, eventos de registro, conectores y checks de CI (sin `pip`, sin paso de build). **Cada skill funciona en Tier 1 con los datos que tú aportas**; los conectores solo automatizan la obtención de datos o una mutación aprobada explícitamente.
+
+La topología tipada autoritativa es [`references/system-catalog.json`](../references/system-catalog.json); consulta la [arquitectura del sistema generada](system-architecture.md) para el mapa legible de cuatro capas, las 120 rutas, los propietarios de registros, los sumideros de auditor y los perfiles de distribución.
 
 > Los repos independientes previos a la fusión son ahora **repos indicadores** que apuntan aquí — [seo-geo-claude-skills](https://github.com/aaron-he-zhu/seo-geo-claude-skills) (la línea final de 20 skills se conserva en el tag `v9.9.12`) e [influencer-marketing-agent-skills](https://github.com/aaron-he-zhu/influencer-marketing-agent-skills) (la línea IMPACT final en el tag `standalone-final`). Política de repos hermanos: [docs/repo-family.md](repo-family.md).
 
@@ -52,8 +54,8 @@ Una biblioteca de skills de Claude y comandos slash que convierte a un agente de
   - [Memoria y hooks de automatización](#memoria-y-hooks-de-automatización)
 - [Catálogo de skills](#catálogo-de-skills)
   - [Narrative — TALE (16)](#narrative--tale-16)
-  - [SEO/GEO (16)](#seogeo-16)
-  - [Influencers (16)](#influencers-16)
+  - [SEO/GEO — SITE (16)](#seogeo--site-16)
+  - [Influencers — STAR (16)](#influencers--star-16)
   - [Paid Ads — ROAS (16)](#paid-ads--roas-16)
   - [Email — SEND (16)](#email--send-16)
   - [Launch — RAMP (16)](#launch--ramp-16)
@@ -76,10 +78,10 @@ Una biblioteca de skills de Claude y comandos slash que convierte a un agente de
 | Principio | Qué significa en la práctica |
 |-----------|---------------------------|
 | **Keyless por defecto** | Cada skill funciona en **Tier 1** con datos que pegas o extraes de fuentes gratuitas/de primera parte. Las herramientas de pago y los servidores MCP son una comodidad opcional, nunca un requisito previo. Las skills de paid ads puntúan a partir de tu **exportación manual de tu propia cuenta** — nunca se requieren APIs de anuncios con clave. |
-| **Markdown, no un framework** | Las skills son contenido. El único código ejecutable es `hooks/claude-hook.sh` (Bash), `scripts/validate-skill.sh` (Bash) y `scripts/connectors/*.py` (Python **solo biblioteca estándar**). Nada que instalar, auditar o mantener al día. |
+| **Content-first, contratos ejecutables** | Las skills siguen siendo Markdown. Pequeños runtimes de Bash/Python-stdlib hacen deterministas la puntuación, el estado, la seguridad y la conformidad sin añadir dependencias de paquetes. |
 | **Un contrato compartido** | Las 120 skills exponen las mismas siete secciones y declaran por sí mismas los metadatos `discipline` + `phase`, de modo que la biblioteca se comporta como un único sistema operativo: cada skill conoce sus entradas, salidas y la siguiente mejor skill a la que hacer el traspaso. |
-| **Calidad con gates** | Ocho benchmarks impulsan ocho gates de clase auditor que emiten veredictos estructurados y verificables por máquina — no impresiones. Un hook PostToolUse valida cada artefacto con gate antes de que aterrice. |
-| **La verdad vive en registros** | Los hechos canónicos (entidades de marca, dossiers de creadores, sustanciación de ofertas/claims, consentimiento por sujeto) viven en registros dedicados de la capa de protocolo con reglas de escritor único — los gates juzgan contra ellos en lugar de rederivarlos. |
+| **Calidad con gates** | Ocho benchmarks emiten veredictos estructurados y verificables. Los hooks acotados detectan escrituras inválidas; pre-commit/CI solo protegen contenido Git comprometido frente a PII y no validan artefactos runtime. |
+| **La verdad vive en eventos** | Siete streams de registro de solo anexado (append-only) son canónicos; proyecciones controladas por su propietario exponen el estado de entidades, creadores, claims, consentimientos, launches, canales y narrativa sin colas destructivas. |
 | **Memoria entre turnos** | Un modelo de memoria HOT/WARM/COLD traslada hallazgos, puntuaciones y cabos sueltos entre skills y sesiones, saneados a la entrada. |
 | **Voz natural** | Las skills incluyen un detector de jerga de IA y una lista de frases prohibidas para que la salida se lea como si la hubiera escrito una persona. |
 
@@ -93,7 +95,7 @@ Una biblioteca de skills de Claude y comandos slash que convierte a un agente de
 |------|---------|
 | **Claude Code** | `/plugin marketplace add aaron-he-zhu/aaron-marketing-skills` y luego `/plugin install aaron-marketing@aaron` |
 | **Codex · Cursor · OpenCode · Antigravity · Gemini CLI · Copilot CLI · OpenClaw · Hermes · [más de 70 hosts](https://github.com/vercel-labs/skills#supported-agents)** | `npx skills add aaron-he-zhu/aaron-marketing-skills` |
-| **[SkillHub.cn](https://skillhub.cn) (comunidad china)** | `skillhub install aaron-<skill-name>` (p. ej. `aaron-keyword-research`) |
+| **[SkillHub.cn](https://skillhub.cn) (comunidad china)** | `skillhub install <frontmatter-slug>` (p. ej. `keyword-research`) |
 | **Cualquier host** | `git clone https://github.com/aaron-he-zhu/aaron-marketing-skills` |
 
 En Claude Code, `marketplace add` solo registra el catálogo — ejecuta `/plugin install aaron-marketing@aaron` (o elígelo en `/plugin`) para activar realmente las skills y los comandos. Para obtener una **única** skill en un host genérico: `npx skills add aaron-he-zhu/aaron-marketing-skills -s keyword-research`. Explora el bundle en el [registro skills.sh](https://skills.sh/aaron-he-zhu/aaron-marketing-skills). Directorios por agente, peculiaridades del frontmatter y qué se degrada fuera del plugin: [docs/agent-compatibility.md](agent-compatibility.md) (verificado 120/120 instalables, 2026-07).
@@ -122,7 +124,7 @@ O usa los comandos slash — `/auto` para el enrutamiento, o un punto de entrada
 /aaron-marketing:auto turn our pricing page into an AI-citable comparison hub
 ```
 ```text
-/aaron-marketing:seo-geo https://example.com/blog/my-article --mode audit
+/aaron-marketing:seo-geo https://example.com/blog/my-article --phase tune
 ```
 
 `/aaron-marketing:auto` infiere la intención y ejecuta el flujo de trabajo mínimo útil, deteniéndose solo en decisiones bloqueantes. Cada skill funciona con datos pegados; las herramientas opcionales están documentadas en [CONNECTORS.md](../CONNECTORS.md).
@@ -143,7 +145,7 @@ Cada skill sigue el **mismo contrato de activación** — siete secciones en un 
 6. **Instructions** — el método numerado (trata todas las exportaciones como entrada no confiable).
 7. **Next Best Skill** — adónde ir después (con reglas de terminación de visited-set + profundidad máxima).
 
-Cada skill también declara por sí misma `metadata.discipline` (narrative / seo-geo / influencer / paid / email / launch / social / protocol) y `metadata.phase`, para que el enrutamiento y la agrupación funcionen de manera uniforme. El contrato está documentado una vez en [skill-contract.md](../references/skill-contract.md); el estado compartido entre skills vive en [state-model.md](../references/state-model.md).
+Cada skill también declara por sí misma `metadata.discipline` (narrative / seo-geo / influencer / ad / email / launch / social / protocol) y `metadata.phase`, para que el enrutamiento y la agrupación funcionen de manera uniforme. El contrato está documentado una vez en [skill-contract.md](../references/skill-contract.md); el estado compartido entre skills vive en [state-model.md](../references/state-model.md).
 
 ### El sistema: un sistema operativo de marketing de cuatro capas
 
@@ -152,13 +154,13 @@ Una voz de marca, expresada a través de cinco canales siempre activos, concentr
 | Capa | Adoptar | Disciplinas | Cadencia |
 |-------|-------|-------------|---------|
 | **L1 · Estrategia** — qué decimos / quiénes somos | crawl | **Narrative** · TALE | siempre activo |
-| **L2 · Canales** — motores siempre activos que expresan la estrategia (owned → bought) | walk | **SEO/GEO** · CORE-EEAT + CITE · **Organic Social** · ECHO · **Email** · SEND · **Paid Ads** · ROAS · **Influencer** · C³ | siempre activo (influencer con sesgo episódico) |
+| **L2 · Canales** — motores siempre activos que expresan la estrategia (owned → bought) | walk | **SEO/GEO** · CORE-EEAT + CITE · **Organic Social** · ECHO · **Email** · SEND · **Paid Ads** · ROAS · **Influencer** · STAR | siempre activo (influencer con sesgo episódico) |
 | **L3 · Orquestación** — el momento acotado en el tiempo a través de canales | run | **Product Launch** · RAMP | episódico |
-| **L4 · Protocolo** — el sistema de registro compartido | — | 8 registros de verdad + memoria · 8 gates de auditor · un contrato de skill | — |
+| **L4 · Protocolo** — el sistema de registro compartido | — | 7 registros de verdad + memoria de trabajo · 8 gates de auditor · un contrato de skill | — |
 
-Narrative es el mensaje; los canales son los medios que lo expresan — quita cualquier canal y el registro queda intacto; quita Narrative y cada canal habla un mensaje sin fuente ni gobierno. Cada canal hereda voz y claims de L1 igual que cada creative builder ya lee hoy el claims ledger. El bucle de 4 fases de cada disciplina vive dentro de su capa (Narrative = Trace → Architect → Land → Evaluate).
+Narrative es el mensaje; los canales son los medios que lo expresan — cada builder central registra el ID/versión exactos del canon y el offset de proyección de claims que usó, o un fallback/bloqueo aprobado explícitamente. El bucle de 4 fases de cada disciplina vive dentro de su capa (Narrative = Trace → Architect → Land → Evaluate).
 
-Las siete usan **directorios** de fase (`narrative/trace/`…, `seo-geo/research/`…, `influencer/discover/`…, `ad/research/`…, `email/setup/`…, `launch/research/`…, `social/explore/`…). Nota: «activate» significa contacto con creadores en influencers pero gating de cuenta en paid ads — misma palabra, alcance específico de cada disciplina.
+Las siete usan **directorios** de fase (`narrative/trace/`…, `seo-geo/survey/`…, `influencer/scout/`…, `ad/research/`…, `email/setup/`…, `launch/research/`…, `social/explore/`…). Nota: «activate» significa contacto con creadores en influencers pero gating de cuenta en paid ads — misma palabra, alcance específico de cada disciplina.
 
 ### Sistema de calidad: ocho frameworks, ocho gates
 
@@ -166,46 +168,46 @@ Ocho benchmarks hacen medible lo «bueno». Cada uno define dimensiones, un mét
 
 | Framework | Puntúa | Ítems / dimensiones | Agregación | Ítems de veto |
 |-----------|--------|--------------------|--------|------------|
-| **[TALE](../references/tale-benchmark.md)** | Brand narrative Truth / Architecture / Landing / Evidence | T / A / L / E | **NQS = floor(media ponderada por objetivo)** (aritmética) | `T1`/`A1`/`L1`/`E1` |
-| **[CORE-EEAT](../references/core-eeat-benchmark.md)** | Calidad de contenido (GEO = media CORE, SEO = media EEAT) | 80 ítems / 8 dimensiones | medias por dimensión | `T04`, `C01`, `R10` |
-| **[CITE](../references/cite-domain-rating.md)** | Autoridad de dominio y confianza de citación | 40 ítems / 4 dimensiones | media aritmética ponderada | `T03`, `T05`, `T09` |
-| **[C³](../references/c3-benchmark.md)** | Influencer Creator / Content / Campaign | ACE / ART / ROI · 9 dimensiones | **CVI = (ACE × ART × ROI)^⅓** (geométrica) | ACE `A2`/`C1`/`E2`, ART `T1`/`T2` |
-| **[ROAS](../references/roas-benchmark.md)** | Paid ads Return / Offer / Audience / Spend-efficiency | R / O / A / S | **RQS = floor(media ponderada por objetivo)** (aritmética) | `R1`/`R2`/`O1`/`O2`/`A1` |
-| **[SEND](../references/send-benchmark.md)** | Email marketing Sender-integrity / Engagement / Nurture / Direct-response | S / E / N / D | **EQS = floor(media ponderada por objetivo)** (aritmética) | `S1`/`S2`/`N1`/`D1` |
-| **[RAMP](../references/ramp-benchmark.md)** | Product launch Readiness / Assets / Momentum / Proof | R / A / M / P · 40 ítems | **LQS = floor(media ponderada por objetivo)** (aritmética) | `R1`/`A1`/`M1`/`P1` (calificados por framework — distintos de ROAS `R1`/`A1`) |
-| **[ECHO](../references/echo-benchmark.md)** | Organic social Embeddedness / Craft / Hosting / Observability | E / C / H / O | **SQS = floor(media ponderada por objetivo)** (aritmética) | `E1`/`C1`/`C2`/`H1`/`H2`/`O1` (calificados por framework — distintos de ROAS `O1`/`O2`) |
+| **[TALE](../references/tale-benchmark.md)** | Verdad / sistema / efectividad de la narrativa de marca | T / A / L / E | Resultados de perfil `truth`, `system` y `effectiveness` separados; sin compuesto global | TALE `T1`/`A1`/`L1`/`E1` |
+| **[CORE-EEAT](../references/core-eeat-benchmark.md)** | Calidad de contenido con vistas diagnósticas CORE/GEO y EEAT/SEO | 80 ítems / 8 dimensiones | Resultado completo ponderado por perfil; las vistas diagnósticas no son totales separados | `T04`/`C01`/`R10` |
+| **[CITE](../references/cite-domain-rating.md)** | Autoridad de dominio y confianza de citación | 40 ítems / 4 dimensiones | Media aritmética ponderada por perfil | `T03`/`T05`/`T09` |
+| **[STAR](../references/star-benchmark.md)** | Influencer Suitability / Trust / Appeal / Return | S / T / A / R; 40 ítems / 4 dimensiones | `SQS = floor(profile-weighted mean)` | `STAR-S2`/`S6`, `STAR-T1`/`T2`/`T3` |
+| **[ROAS](../references/roas-benchmark.md)** | Contribución incremental y calidad operativa de paid ads | R / O / A / S | `RQS = floor(profile-weighted mean)` | `R1`/`R2`/`O1`/`O2`/`A1` |
+| **[SEND](../references/send-benchmark.md)** | Email: integridad del remitente / engagement / nurture / resultado directo | S / E / N / D | `EQS = floor(profile-weighted mean)` | `S1`/`S2`/`N1`/`D1` |
+| **[RAMP](../references/ramp-benchmark.md)** | Product launch: preparación / assets / momentum / prueba | R / A / M / P; 40 IDs estables | Resultados de perfil `preflight`, `execution` y `outcome` separados; nunca promediar horizontes temporales | RAMP `R1`/`A1`/`M1`/`P1` |
+| **[ECHO](../references/echo-benchmark.md)** | Organic social: arraigo / oficio / hosting / observabilidad | E / C / H / O; 40 IDs estables | Un perfil `asset-gate` o `program-maturity-*` por ejecución; nunca combinar unidades distintas | ECHO `E1`/`C1`/`C2`/`H1`/`H2`/`O1` |
 
-Cada framework se impone mediante un **gate de clase auditor** — una skill que escribe un artefacto con gate (`class: auditor-output`) validado por el hook PostToolUse. Los gates son pasos del flujo de trabajo, así que cada uno vive en su disciplina y se cuenta ahí:
+Cada framework se impone mediante un **gate de clase auditor** — una skill cuyo artefacto tipado (`class: auditor-output`) se valida con el validador determinista y hooks acotados del ciclo de vida. La CI del repositorio prueba por regresión el validador y el contrato; no inspecciona artefactos ignorados del runtime del host. Los gates son pasos del flujo de trabajo, así que cada uno vive en su disciplina y se cuenta ahí:
 
 | Gate | Framework | Vive en | Veredicto |
 |------|-----------|----------|---------|
-| [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md) | TALE NQS | `narrative/evaluate/` (narrative) | SHIP / FIX / BLOCK antes de adoptar la narrativa |
-| [content-quality-auditor](../seo-geo/optimize/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/optimize/` (SEO/GEO) | SHIP / FIX / BLOCK antes de publicar |
-| [domain-authority-auditor](../seo-geo/monitor/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/monitor/` (SEO/GEO) | TRUSTED / CAUTIOUS / UNTRUSTED |
-| [content-reviewer](../influencer/activate/content-reviewer/SKILL.md) | C³ ART | `influencer/activate/` (influencers) | APPROVED / REVISIONS / REJECTED antes de publicar el post de un creador |
-| [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md) | ROAS RQS | `ad/activate/` (paid) | SHIP / FIX / BLOCK antes de escalar presupuestos |
-| [email-quality-auditor](../email/deliver/email-quality-auditor/SKILL.md) | SEND EQS | `email/deliver/` (email) | SHIP / FIX / BLOCK antes del envío |
-| [launch-readiness-auditor](../launch/mobilize/launch-readiness-auditor/SKILL.md) | RAMP LQS | `launch/mobilize/` (launch) | SHIP / FIX / BLOCK antes de comprometer el momento del lanzamiento |
-| [social-quality-auditor](../social/host/social-quality-auditor/SKILL.md) | ECHO SQS | `social/host/` (social) | SHIP / FIX / BLOCK antes de publicar |
+| [narrative-quality-auditor](../narrative/evaluate/narrative-quality-auditor/SKILL.md) | Perfiles TALE | `narrative/evaluate/` | Resultados truth/system/effectiveness separados; sin compuesto |
+| [content-quality-auditor](../seo-geo/tune/content-quality-auditor/SKILL.md) | CORE-EEAT | `seo-geo/tune/` | SHIP / FIX / BLOCK / UNDECIDED |
+| [domain-authority-auditor](../seo-geo/evaluate/domain-authority-auditor/SKILL.md) | CITE | `seo-geo/evaluate/` | SHIP / FIX / BLOCK / UNDECIDED; las etiquetas de confianza son solo explicativas |
+| [creator-content-auditor](../influencer/activate/creator-content-auditor/SKILL.md) | STAR SQS | `influencer/activate/` | SHIP / FIX / BLOCK / UNDECIDED más una traducción de cara al creador |
+| [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md) | ROAS | `ad/activate/` | SHIP / FIX / BLOCK / UNDECIDED |
+| [email-quality-auditor](../email/deliver/email-quality-auditor/SKILL.md) | SEND | `email/deliver/` | SHIP / FIX / BLOCK / UNDECIDED |
+| [launch-readiness-auditor](../launch/mobilize/launch-readiness-auditor/SKILL.md) | Perfil de ciclo de vida RAMP | `launch/mobilize/` | SHIP / FIX / BLOCK / UNDECIDED para una lectura de ciclo de vida declarada |
+| [social-quality-auditor](../social/host/social-quality-auditor/SKILL.md) | Perfil ECHO de asset/programa | `social/host/` | SHIP / FIX / BLOCK / UNDECIDED para una unidad/perfil declarados |
 
-**Chasis de tope compartido:** un solo veto limita la dimensión afectada y el total a `min(raw, 60)`; **dos o más vetos → `BLOCKED`** (sin puntuación final). Los veredictos se traducen a lenguaje llano (sin IDs de ítem en los informes de cara al usuario). La mecánica de los gates — esquema de handoff, aritmética del tope, checklist del artifact gate — se especifica una vez en [auditor-runbook.md](../references/auditor-runbook.md), y la aritmética de los ocho frameworks queda fijada por un test golden determinista (véase [Guardas de calidad](#guardas-de-calidad-ci)).
+**Política de veto compartida:** un veto verificado limita la puntuación final a `min(raw, 59)`; dos o más vetos verificados producen `status: DONE` + `verdict: BLOCK` y ninguna puntuación final. La evidencia ausente es `Unknown`, nunca un fallo automático. Las reglas tipadas viven en [auditor-runbook.md](../references/auditor-runbook.md).
 
 ### La capa de protocolo
 
 El directorio `protocol/` alberga la **maquinaria compartida de verdad y memoria** que se sitúa fuera de los flujos de fase de las disciplinas — 8 skills, contadas por separado:
 
-| Skill | Función | Anclada a | Almacén canónico |
+| Skill | Función | Anclada a | Stream de eventos canónico / rol runtime |
 |-------|-----|-------------|-----------------|
-| [entity-optimizer](../protocol/entity-optimizer/SKILL.md) | Perfil canónico de marca/entidad (Knowledge Graph, Wikidata, desambiguación por IA) | SEO/GEO | `memory/entities/` |
-| [creator-registry](../protocol/creator-registry/SKILL.md) | Roster/dossier canónico de creadores — handles deduplicados, estadísticas de audiencia con etiqueta de procedencia, tarifas, historial de compliance | influencers | `memory/creators/` |
-| [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md) | Libro de ofertas y sustanciación de claims — el registro contra el que se juzgan las comprobaciones de claims O1/T2 | paid | `memory/claims/` |
-| [consent-registry](../protocol/consent-registry/SKILL.md) | Registro canónico de consentimiento/supresión por sujeto — los vetos S2/N1 juzgan contra él | email | `memory/consent/` |
-| [launch-registry](../protocol/launch-registry/SKILL.md) | Dossier/calendario canónico de lanzamiento — tier, etapa de ciclo de vida de una sola dirección, fechas/embargo autoritativos, libro de envíos por canal; el SSOT de verdad de lanzamiento contra el que juzga el veto R1 de verdad de etapa | launch | `memory/launch-registry/` |
-| [channel-registry](../protocol/channel-registry/SKILL.md) | Registro canónico por canal — handles, propiedad/autorización, normas de plataforma, defaults de divulgación; el SSOT de verdad de canal contra el que juzga el veto E1 de verdad de canal de ECHO | social | `memory/channels/` |
-| [narrative-registry](../protocol/narrative-registry/SKILL.md) | Canon canónico de brand-narrative — narrativa estratégica aprobada, sistema de mensajes, lenguaje/léxico, proof points; el SSOT de canon de marca contra el que juzga el veto T1 de verdad de TALE | narrative | `memory/narrative-registry/` |
-| [memory-management](../protocol/memory-management/SKILL.md) | Ciclo de vida de memoria HOT/WARM/COLD (capturar · promover · degradar · archivar · consultar) | todas las disciplinas | `memory/` |
+| [entity-registry](../protocol/entity-registry/SKILL.md) | Perfil canónico de marca/entidad (Knowledge Graph, Wikidata, desambiguación por IA) | SEO/GEO | `memory/events/entities.ndjson` |
+| [creator-registry](../protocol/creator-registry/SKILL.md) | Roster/dossier canónico de creadores — handles deduplicados, estadísticas de audiencia con etiqueta de procedencia, tarifas, historial de compliance | influencers | `memory/events/creators.ndjson` |
+| [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md) | Libro de ofertas y sustanciación de claims — el registro contra el que se juzgan las comprobaciones de claims O1/T2 | paid | `memory/events/claims.ndjson` |
+| [consent-registry](../protocol/consent-registry/SKILL.md) | Registro canónico de consentimiento/supresión por sujeto — los vetos S2/N1 juzgan contra él | email | `memory/events/consent.ndjson` |
+| [launch-registry](../protocol/launch-registry/SKILL.md) | Dossier/calendario canónico de lanzamiento — tier, etapa de ciclo de vida de una sola dirección, fechas/embargo autoritativos, libro de envíos por canal; el SSOT de verdad de lanzamiento contra el que juzga el veto R1 de verdad de etapa | launch | `memory/events/launches.ndjson` |
+| [channel-registry](../protocol/channel-registry/SKILL.md) | Registro canónico por canal — handles, propiedad/autorización, normas de plataforma, defaults de divulgación; el SSOT de verdad de canal contra el que juzga el veto E1 de verdad de canal de ECHO | social | `memory/events/channels.ndjson` |
+| [narrative-registry](../protocol/narrative-registry/SKILL.md) | Canon canónico de brand-narrative — narrativa estratégica aprobada, sistema de mensajes, lenguaje/léxico, proof points; el SSOT de canon de marca contra el que juzga el veto T1 de verdad de TALE | narrative | `memory/events/narrative.ndjson` |
+| [memory-management](../protocol/memory-management/SKILL.md) | Ciclo de vida de memoria HOT/WARM/COLD (capturar · promover · degradar · archivar · consultar) | todas las disciplinas | estado runtime no canónico de `memory/` |
 
-Los registros siguen una **regla de escritor único** (otras skills envían vía `candidates.md`), y *curan* — los gates *juzgan*. La capa genuinamente horizontal bajo todo son los protocolos de `references/` ([auditor-runbook](../references/auditor-runbook.md), [state-model](../references/state-model.md), [skill-contract](../references/skill-contract.md), [humanizer-slop](../references/humanizer-slop.md), [measurement-protocol](../references/measurement-protocol.md)) — compartidos por diseño como documentos, no como skills.
+Los registros siguen una **regla de escritor único** (otras skills envían vía `registry-events.py` proposal events), y *curan* — los gates *juzgan*. La capa genuinamente horizontal bajo todo son los protocolos de `references/` ([auditor-runbook](../references/auditor-runbook.md), [state-model](../references/state-model.md), [skill-contract](../references/skill-contract.md), [humanizer-slop](../references/humanizer-slop.md), [measurement-protocol](../references/measurement-protocol.md)) — compartidos por diseño como documentos, no como skills.
 
 ### Memoria y hooks de automatización
 
@@ -214,19 +216,22 @@ Los registros siguen una **regla de escritor único** (otras skills envían vía
 | Nivel | Ubicación | Comportamiento |
 |------|----------|----------|
 | **HOT** | `memory/hot-cache.md` | Cargado automáticamente en cada sesión; limitado a **80 líneas Y 25 KB** (lo que se dispare primero). |
-| **WARM** | `memory/<subdir>/` | Estado de trabajo por skill, artefactos de auditoría con gate (`memory/audits/`) y los almacenes canónicos de los registros (`memory/entities\|creators\|claims/`). |
+| **WARM** | `memory/<subdir>/` | Proyecciones de trabajo reconstruibles y artefactos de auditoría con permisos; la verdad canónica de los registros vive en `memory/events/*.ndjson`. |
 | **COLD** | `memory/archive/` | Registros degradados/más antiguos, conservados para su recuperación. |
 
-**Los hooks** (`hooks/hooks.json`, ejecutor `hooks/claude-hook.sh`) conectan cuatro eventos de Claude Code:
+**Los hooks** (`hooks/hooks.json`, ejecutor `hooks/claude-hook.sh`) conectan siete eventos de Claude Code:
 
 | Evento | Matcher | Qué hace |
 |-------|---------|--------------|
 | `SessionStart` | `startup\|resume\|clear\|compact` | Inyecta el hot-cache **saneado** + un puntero a cabos sueltos (las líneas de inyección de prompt se redactan; los caches con symlink se rechazan). |
 | `UserPromptSubmit` | (todos) | Hook de contexto ligero por prompt. |
-| `PostToolUse` | `Write\|Edit` | Aviso de tamaño del hot-cache **+ el Artifact Gate**: cualquier archivo bajo `memory/audits/` que declare `class: auditor-output` se valida contra el esquema de handoff y los campos de tope, o se bloquea la escritura. Los ocho gates de clase auditor deben declarar ese marcador por contrato; los archivos sin marcar no son artefactos de auditor y pasan. |
-| `Stop` | (todos) | No-op (sale en silencio). |
+| `PreToolUse` | herramientas conocidas con capacidad de escritura | Verifica antes de las escrituras soportadas en `memory/**` que el objetivo exacto del proyecto anfitrión esté ignorado por Git; de lo contrario, la escritura se deniega. |
+| `PostToolUse` | herramientas conocidas con capacidad de escritura | Auditoría de memoria post-estado + validación acotada del Artifact Gate tras escrituras exitosas. |
+| `PostToolUseFailure` | herramientas conocidas con capacidad de escritura | Ejecuta las mismas comprobaciones tras herramientas fallidas que podrían haber escrito archivos igualmente. |
+| `PostToolBatch` | (todos) | Revalida la memoria operativa y el sumidero de auditoría reservado tras cada lote paralelo. |
+| `Stop` | (todos) | Realiza un último barrido acotado; el guard de active-stop permite después la terminación. Pre-commit/CI solo protegen contenido Git comprometido frente a PII, no artefactos runtime ignorados. |
 
-El Artifact Gate es **agnóstico al framework** — el mismo hook valida artefactos TALE, CORE-EEAT, CITE, C³, ROAS, SEND, RAMP y ECHO sin código específico por framework.
+El Artifact Gate es **agnóstico al framework** — el mismo hook valida artefactos TALE, CORE-EEAT, CITE, STAR, ROAS, SEND, RAMP y ECHO sin código específico por framework.
 
 ---
 
@@ -236,7 +241,7 @@ Los enlaces de skill abren cada `SKILL.md`. Despliega los **Detalles** bajo cada
 
 ### Narrative — TALE (16)
 
-Cuatro directorios de fase bajo `narrative/` (4 skills cada uno) siguen el bucle TALE (Trace → Architect → Land → Evaluate); el gate (⛩ narrative-quality-auditor) está en Evaluate. Solo el gate calcula la NQS ponderada por objetivo — cada otra skill trabaja una palanca y hace el traspaso. Narrative es la capa L1 · Estrategia: una voz de marca que los cinco canales siempre activos heredan. Absorbe el posicionamiento — `positioning-mapper` permanece físicamente en `launch/` pero se lee lógicamente como el frente de TALE Trace.
+Cuatro fases bajo `narrative/` siguen Trace → Architect → Land → Evaluate. `narrative-quality-auditor` ejecuta por separado los perfiles truth, system y effectiveness; una revisión completa enlaza tres resultados y nunca los promedia. Narrative es la estrategia L1 que heredan los builders de canal.
 
 | Fase | Skills |
 |-------|--------|
@@ -261,7 +266,7 @@ Cuatro directorios de fase bajo `narrative/` (4 skills cada uno) siguen el bucle
 | pitch-narrative-builder | L | Da forma de pitch a la narrativa — columna del deck, historia de la demo y encuadre para inversores/prensa. |
 | narrative-enablement-kit | L | Kit de enablement que permite a cada equipo contar la historia de forma consistente — talk track, FAQ y mapa de mensajes. |
 | proof-point-packager | L | Empaqueta proof points en assets listos para canal, conscientes del claims-ledger. |
-| ⛩ narrative-quality-auditor | T+A+L+E (NQS) | Gate TALE de clase auditor: puntúa NQS, impone T1/A1/L1/E1, emite SHIP/FIX/BLOCK; incluye un modo **go/no-go de adopción de narrativa**. |
+| ⛩ narrative-quality-auditor | truth / system / effectiveness | Gate TALE tipado; devuelve resultados de perfil separados y nunca los promedia. Escribe `memory/audits/narrative/`. |
 | message-test-designer | E | Diseña tests de mensaje — matriz de variantes, celdas de audiencia y lectura de resonancia para la narrativa estratégica. |
 | narrative-resonance-monitor | E | Rastrea cómo aterriza la narrativa a través de los canales desde fuentes keyless (datos proxy etiquetados). |
 | narrative-drift-monitor | E | Vigila la deriva de narrativa — dónde los canales se han desviado del canon aprobado — y señala correcciones. |
@@ -270,16 +275,16 @@ Cuatro directorios de fase bajo `narrative/` (4 skills cada uno) siguen el bucle
 
 </details>
 
-### SEO/GEO (16)
+### SEO/GEO — SITE (16)
 
 Cuatro directorios de fase (4 skills cada uno) más los dos gates de calidad de la disciplina (marcados con ⛩).
 
 | Fase | Skills |
 |-------|--------|
-| **Research** | [keyword-research](../seo-geo/research/keyword-research/SKILL.md), [competitor-analysis](../seo-geo/research/competitor-analysis/SKILL.md), [serp-analysis](../seo-geo/research/serp-analysis/SKILL.md), [content-gap-analysis](../seo-geo/research/content-gap-analysis/SKILL.md) |
-| **Build** | [content-writer](../seo-geo/build/content-writer/SKILL.md), [geo-content-optimizer](../seo-geo/build/geo-content-optimizer/SKILL.md), [serp-markup-builder](../seo-geo/build/serp-markup-builder/SKILL.md), [page-play-builder](../seo-geo/build/page-play-builder/SKILL.md) |
-| **Optimize** | ⛩ [content-quality-auditor](../seo-geo/optimize/content-quality-auditor/SKILL.md), [technical-seo-checker](../seo-geo/optimize/technical-seo-checker/SKILL.md), [on-page-seo-auditor](../seo-geo/optimize/on-page-seo-auditor/SKILL.md), [site-structure-optimizer](../seo-geo/optimize/site-structure-optimizer/SKILL.md) |
-| **Monitor** | ⛩ [domain-authority-auditor](../seo-geo/monitor/domain-authority-auditor/SKILL.md), [rank-tracker](../seo-geo/monitor/rank-tracker/SKILL.md), [performance-monitor](../seo-geo/monitor/performance-monitor/SKILL.md), [offsite-signal-analyzer](../seo-geo/monitor/offsite-signal-analyzer/SKILL.md) |
+| **Survey** | [keyword-research](../seo-geo/survey/keyword-research/SKILL.md), [competitor-analysis](../seo-geo/survey/competitor-analysis/SKILL.md), [serp-analysis](../seo-geo/survey/serp-analysis/SKILL.md), [content-gap-analysis](../seo-geo/survey/content-gap-analysis/SKILL.md) |
+| **Implement** | [content-writer](../seo-geo/implement/content-writer/SKILL.md), [geo-content-optimizer](../seo-geo/implement/geo-content-optimizer/SKILL.md), [serp-markup-builder](../seo-geo/implement/serp-markup-builder/SKILL.md), [page-play-builder](../seo-geo/implement/page-play-builder/SKILL.md) |
+| **Tune** | ⛩ [content-quality-auditor](../seo-geo/tune/content-quality-auditor/SKILL.md), [technical-seo-checker](../seo-geo/tune/technical-seo-checker/SKILL.md), [on-page-seo-checker](../seo-geo/tune/on-page-seo-checker/SKILL.md), [site-structure-optimizer](../seo-geo/tune/site-structure-optimizer/SKILL.md) |
+| **Evaluate** | ⛩ [domain-authority-auditor](../seo-geo/evaluate/domain-authority-auditor/SKILL.md), [rank-tracker](../seo-geo/evaluate/rank-tracker/SKILL.md), [performance-monitor](../seo-geo/evaluate/performance-monitor/SKILL.md), [offsite-signal-analyzer](../seo-geo/evaluate/offsite-signal-analyzer/SKILL.md) |
 
 <details><summary><b>Propósito por skill (SEO/GEO)</b></summary>
 
@@ -289,88 +294,54 @@ Cuatro directorios de fase (4 skills cada uno) más los dos gates de calidad de 
 | competitor-analysis | Analiza la estrategia SEO de un competidor, compara dominios, descubre sus keywords y brechas. |
 | serp-analysis | Lee una SERP — features, snippets, People Also Ask, patrones de ranking para una consulta. |
 | content-gap-analysis | Encuentra temas ausentes y huecos de cobertura frente a competidores. |
-| content-writer | *(fusión: seo-content-writer + content-refresher)* Escribe y actualiza artículos, landing pages y copy de producto optimizados para SEO. |
+| content-writer | Escribe y actualiza artículos, landing pages y copy de producto optimizados para SEO. |
 | geo-content-optimizer | Optimiza contenido para motores de IA (ChatGPT, Perplexity, AI Overviews, Gemini, Claude, Copilot). |
-| serp-markup-builder | *(fusión: meta-tags-optimizer + schema-markup-generator)* Etiquetas Title/Meta/OG/Twitter más datos estructurados JSON-LD / Schema.org. |
-| page-play-builder | *(fusión: programmatic + parasite + comparison + local SEO, 4 modos)* Jugadas de página basadas en plantilla — páginas programáticas, plataformas parásito, páginas de comparación, local/GBP. |
+| serp-markup-builder | Etiquetas Title/Meta/OG/Twitter más datos estructurados JSON-LD / Schema.org. |
+| page-play-builder | Jugadas de página basadas en plantilla — páginas programáticas, plataformas parásito, páginas de comparación, local/GBP. |
 | ⛩ content-quality-auditor | Gate de preparación para publicar CORE-EEAT de 80 ítems (SHIP/FIX/BLOCK). |
 | technical-seo-checker | Velocidad del sitio, Core Web Vitals, indexación, rastreabilidad, robots. |
-| on-page-seo-auditor | Audita la salud on-page a nivel de página — encabezados, colocación de keywords, imágenes, señales de calidad. |
-| site-structure-optimizer | *(fusión: internal-linking-optimizer + site-architecture)* Enlaces internos, anchor text, páginas huérfanas, jerarquía de páginas, taxonomía de URL, clústeres hub/spoke. |
+| on-page-seo-checker | Audita la salud on-page a nivel de página — encabezados, colocación de keywords, imágenes, señales de calidad. |
+| site-structure-optimizer | Enlaces internos, anchor text, páginas huérfanas, jerarquía de páginas, taxonomía de URL, clústeres hub/spoke. |
 | ⛩ domain-authority-auditor | Gate de confianza de dominio CITE de 40 ítems (TRUSTED/CAUTIOUS/UNTRUSTED). |
 | rank-tracker | Rastrea rankings de keywords, cambios de posición y caídas. |
-| performance-monitor | *(fusión: performance-reporter + alert-manager)* Informes multi-métrica de SEO/GEO, dashboards y alertas de umbral. |
-| offsite-signal-analyzer | *(fusión: backlink-analyzer + ai-traffic)* Perfil de backlinks + calidad de enlaces, más tráfico de referencia de asistentes de IA en tus propios GA4/GSC/logs. |
+| performance-monitor | Informes multi-métrica de SEO/GEO, dashboards y alertas de umbral. |
+| offsite-signal-analyzer | Perfil de backlinks + calidad de enlaces, más tráfico de referencia de asistentes de IA en tus propios GA4/GSC/logs. |
 
 </details>
 
-### Influencers (16)
+### Social — ECHO (16)
 
-Cuatro directorios de fase (4 skills cada uno); el gate de la disciplina (⛩ content-reviewer) está en Activate.
-
-| Fase | Skills |
-|-------|--------|
-| **Discover** | [audience-mapper](../influencer/discover/audience-mapper/SKILL.md), [trend-spotter](../influencer/discover/trend-spotter/SKILL.md), [influencer-discovery](../influencer/discover/influencer-discovery/SKILL.md), [fit-scorer](../influencer/discover/fit-scorer/SKILL.md) |
-| **Plan** | [competitor-tracker](../influencer/plan/competitor-tracker/SKILL.md), [campaign-planner](../influencer/plan/campaign-planner/SKILL.md), [brief-generator](../influencer/plan/brief-generator/SKILL.md), [budget-optimizer](../influencer/plan/budget-optimizer/SKILL.md) |
-| **Activate** | [outreach-manager](../influencer/activate/outreach-manager/SKILL.md), ⛩ [content-reviewer](../influencer/activate/content-reviewer/SKILL.md), [contract-helper](../influencer/activate/contract-helper/SKILL.md), [content-amplifier](../influencer/activate/content-amplifier/SKILL.md) |
-| **Measure** | [landing-optimizer](../influencer/measure/landing-optimizer/SKILL.md), [performance-analyzer](../influencer/measure/performance-analyzer/SKILL.md), [roi-calculator](../influencer/measure/roi-calculator/SKILL.md), [report-generator](../influencer/measure/report-generator/SKILL.md) |
-
-<details><summary><b>Propósito por skill (Influencers)</b></summary>
-
-| Skill | Qué hace |
-|-------|--------------|
-| audience-mapper | *(fusión: audience-analyzer + niche-researcher)* Perfila la audiencia objetivo y mapea su subcultura / micro-comunidad antes de colaborar con creadores. |
-| trend-spotter | Timing y temas de campaña — hashtags, sonidos, formatos y momentos culturales en tendencia. |
-| influencer-discovery | Construye un roster de creadores desde cero, expande a una nueva plataforma, obtén nano/micro a escala. |
-| fit-scorer | Puntuación de fit objetiva y ponderada para una shortlist (puntúa en C³ ACE). |
-| competitor-tracker | Los creadores, campañas, formatos, alcance/gasto estimados y brechas de un competidor. |
-| campaign-planner | Planifica una campaña, un lanzamiento de producto, un tentpole o un programa de creadores always-on. |
-| brief-generator | Briefs de influencer estandarizados y plantillas de equipo reutilizables. |
-| budget-optimizer | Distribuye el gasto entre tiers/plataformas, proyecta ROI, modela escenarios (también sirve al gasto de paid ads + bid-pacing). |
-| outreach-manager | Pitch, cadencia de seguimiento, reactivación, negociación de tarifas, seguimiento de estado. |
-| ⛩ content-reviewer | Decisión de gate previa a la publicación sobre un envío de un creador (C³ ART: divulgación FTC T1, integridad de claims T2). |
-| contract-helper | Redacta/revisa acuerdos con creadores — derechos de uso, exclusividad, cláusulas estándar. |
-| content-amplifier | *(fusión: content-amplifier + ugc-repurposer)* Amplía el contenido orgánico de creadores con gasto pagado y reutiliza UGC en paid, web, email y orgánico. |
-| landing-optimizer | Landing pages para tráfico de creadores/paid — message match, móvil, A/B (también sirve al post-click de paid). |
-| performance-analyzer | Evalúa resultados de creadores, compara creadores, sentimiento, conversiones (también el scorecard cross-channel de paid). |
-| roi-calculator | Mide/proyecta ROI, defiende presupuestos, valora creadores/tiers (motor de cálculo de retorno compartido, incl. paid). |
-| report-generator | Informes escritos para stakeholders tras un periodo (también informes de paid ads). |
-
-</details>
-
-### Paid Ads — ROAS (16)
-
-Cuatro directorios de fase bajo `ad/` (4 skills cada uno) siguen el bucle ROAS; el gate (⛩ ad-account-auditor) está en Activate. Solo el gate calcula la RQS ponderada por objetivo — cada otra skill trabaja una palanca y hace el traspaso.
+Cuatro fases bajo `social/` siguen Explore → Craft → Host → Observe. `social-quality-auditor` selecciona el `asset-gate` o un perfil de program-maturity; esos constructos nunca se combinan. La disciplina no contiene automatización alguna de publicación, engagement o DMs.
 
 | Fase | Skills |
 |-------|--------|
-| **Research** | [campaign-architect](../ad/research/campaign-architect/SKILL.md), [audience-segment-builder](../ad/research/audience-segment-builder/SKILL.md), [search-term-miner](../ad/research/search-term-miner/SKILL.md), [product-feed-optimizer](../ad/research/product-feed-optimizer/SKILL.md) |
-| **Orchestrate** | [ad-creative-builder](../ad/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](../ad/orchestrate/ad-test-designer/SKILL.md), [bid-strategy-planner](../ad/orchestrate/bid-strategy-planner/SKILL.md), [landing-experience-checker](../ad/orchestrate/landing-experience-checker/SKILL.md) |
-| **Activate** | ⛩ [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](../ad/activate/conversion-signal-qa/SKILL.md), [placement-exclusion-manager](../ad/activate/placement-exclusion-manager/SKILL.md), [conversion-value-mapper](../ad/activate/conversion-value-mapper/SKILL.md) |
-| **Scale** | [paid-measurement-loop](../ad/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](../ad/scale/attribution-reconciler/SKILL.md), [budget-pacing-monitor](../ad/scale/budget-pacing-monitor/SKILL.md), [fatigue-frequency-manager](../ad/scale/fatigue-frequency-manager/SKILL.md) |
+| **Explore** | [channel-portfolio-planner](../social/explore/channel-portfolio-planner/SKILL.md), [voice-dossier-builder](../social/explore/voice-dossier-builder/SKILL.md), [platform-norm-profiler](../social/explore/platform-norm-profiler/SKILL.md), [participation-warmup-planner](../social/explore/participation-warmup-planner/SKILL.md) |
+| **Craft** | [social-calendar-builder](../social/craft/social-calendar-builder/SKILL.md), [social-creative-builder](../social/craft/social-creative-builder/SKILL.md), [short-video-scripter](../social/craft/short-video-scripter/SKILL.md), [advocacy-program-designer](../social/craft/advocacy-program-designer/SKILL.md) |
+| **Host** | ⛩ [social-quality-auditor](../social/host/social-quality-auditor/SKILL.md), [engagement-inbox-manager](../social/host/engagement-inbox-manager/SKILL.md), [social-selling-planner](../social/host/social-selling-planner/SKILL.md), [crisis-response-planner](../social/host/crisis-response-planner/SKILL.md) |
+| **Observe** | [social-pulse-monitor](../social/observe/social-pulse-monitor/SKILL.md), [share-of-voice-tracker](../social/observe/share-of-voice-tracker/SKILL.md), [dark-social-attributor](../social/observe/dark-social-attributor/SKILL.md), [social-measurement-loop](../social/observe/social-measurement-loop/SKILL.md) |
 
-<details><summary><b>Propósito por skill (Paid Ads)</b></summary>
+<details><summary><b>Propósito por skill (Social)</b></summary>
 
-| Skill | Palanca ROAS | Qué hace |
+| Skill | Palanca ECHO | Qué hace |
 |-------|-----------|--------------|
-| campaign-architect | A + estructura | Estructura de cuenta/campaña, ajuste de tipo de campaña, tipos de concordancia, negativos/exclusiones, canibalización paid↔orgánico; incluye un modo recurrente de **search-term-mining**. |
-| audience-segment-builder | A | Convierte tu propia exportación de clientes/CRM/GA4 en audiencias semilla, semillas de lookalike, segmentos de exclusión y un mapa de targeting por etapa de funnel. |
-| search-term-miner | A | *(NUEVO)* Mina el informe de términos de búsqueda buscando negativos, nuevos candidatos a keyword y refinamientos de tipo de concordancia. |
-| product-feed-optimizer | O | *(NUEVO)* Higiene de feed de Shopping/PMax — títulos, atributos, GTINs, mapeo de categorías y correcciones de rechazos. |
-| ad-creative-builder | O | Titulares/descripciones RSA, hooks y una matriz de ángulos, con message match a la página de destino. |
-| ad-test-designer | O (+S) | Diseña tests A/B/n e incrementalidad (hipótesis, matriz de variantes, tamaño de muestra/potencia) y lee la significancia → promote/kill. |
-| bid-strategy-planner | S | *(NUEVO)* Elige y configura la estrategia de puja según objetivo (tCPA/tROAS/max-conversions), fija objetivos y planifica las transiciones de fase de aprendizaje. |
-| landing-experience-checker | O | *(NUEVO)* QA de página post-click para relevancia del anuncio, velocidad de carga, móvil y política — la comprobación de message match anuncio↔página. |
-| ⛩ ad-account-auditor | R+O+A+S (RQS) | Gate ROAS de clase auditor: puntúa RQS, impone R1/R2/O1/O2/A1, emite SHIP/FIX/BLOCK; incluye un modo **go/no-go de lanzamiento**. |
-| conversion-signal-qa | R | QA de tracking pre-lanzamiento (disparo de eventos, higiene de UTM, gate de dedup, alineación de ventana, flags iOS-ATT) — el prerrequisito R1/R2 (construye la señal; el gate la puntúa). |
-| placement-exclusion-manager | A | *(NUEVO)* Listas de exclusión de placement/audiencia — bloqueos de brand safety, poda de placements basura, supresión de gasto desperdiciado. |
-| conversion-value-mapper | R | *(NUEVO)* Mapea acciones de conversión a valores/pesos y reglas de valor para que tROAS puje sobre el margen real, no sobre conteos brutos. |
-| paid-measurement-loop | R (+S) | Lee un cambio ya lanzado contra un control a lo largo de una ventana → Promote / Keep-testing / Rollback / Unproven. |
-| attribution-reconciler | R | Dedup permanente de order-ID contra el conjunto de verdad de GA4/ecommerce, normalización de ventana/moneda, comparación de modelos, incrementalidad. |
-| budget-pacing-monitor | S | *(NUEVO)* Rastrea el ritmo de gasto frente al presupuesto durante el flight, señala sub/sobre-entrega y recomienda correcciones de pacing. |
-| fatigue-frequency-manager | O | *(NUEVO)* Vigila señales de frecuencia y decaimiento del creative, señala anuncios fatigados y programa refresh/rotación. |
+| channel-portfolio-planner | E | Elige la mezcla de plataformas y el rol/cadencia por canal desde donde la audiencia realmente está (registra canales al registro). |
+| voice-dossier-builder | E | Voz de marca, tono, persona y léxico do/don't para una presencia consistente y de sonido humano. |
+| platform-norm-profiler | E | Normas, formatos, señales de ranking y reglas de línea roja por plataforma antes de que publiques ahí. |
+| participation-warmup-planner | E | Plan de warm-up comunitario no promocional — dónde aparecer y aportar valor antes de vender. |
+| social-calendar-builder | C | Calendario editorial — temas, series, cadencia equilibrada a la capacidad real (sin sobre-publicar). |
+| social-creative-builder | C | Posts nativos de plataforma (hook/cuerpo/CTA), con message match y conscientes del claims-ledger. |
+| short-video-scripter | C | Guiones de vídeo de formato corto — hook, beats, texto en pantalla, estructura de retención. |
+| advocacy-program-designer | C | Programa de advocacy de empleados/comunidad — opt-in, defaults de divulgación, kit de assets compartibles. |
+| ⛩ social-quality-auditor | asset gate / program maturity | Gate ECHO tipado para una unidad/perfil; nunca combina constructos de asset y de operación. Escribe `memory/audits/social/`. |
+| engagement-inbox-manager | H | Playbook de triage de reply/comment/DM — tiers de respuesta, escalado, disciplina de engagement genuino (sin engagement fabricado/con cebo). |
+| social-selling-planner | H | Motion de social-selling de founder/equipo — outreach que prioriza la relación, sin DMs automatizados. |
+| crisis-response-planner | H | Tiers de crisis pre-redactados, holding statements, escalera de escalado y disparadores de pausar-la-cola. |
+| social-pulse-monitor | O | Pulso de menciones/sentimiento/temas desde fuentes keyless, lecturas spike-vs-sustain (datos proxy etiquetados). |
+| share-of-voice-tracker | O | Share-of-voice frente a competidores nombrados sobre un denominador estable por periodo. |
+| dark-social-attributor | O | Atribuye tráfico dark-social/sin enlace — disciplina de UTM, captura de atribución autorreportada, parsing de referencias. |
+| social-measurement-loop | O | Lee un cambio ya lanzado contra una baseline a lo largo de una ventana → Promote / Keep-testing / Rollback. |
 
-**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): [budget-optimizer](../influencer/plan/budget-optimizer/SKILL.md) (gasto + modo bid-pacing/fase de aprendizaje), [landing-optimizer](../influencer/measure/landing-optimizer/SKILL.md) (post-click), [roi-calculator](../influencer/measure/roi-calculator/SKILL.md) (cálculo de retorno), [report-generator](../influencer/measure/report-generator/SKILL.md), [performance-analyzer](../influencer/measure/performance-analyzer/SKILL.md).
+**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): `trend-spotter`, `audience-mapper`, `content-amplifier`, `outreach-manager`, `competitor-tracker`, `landing-optimizer`, `performance-analyzer`, `roi-calculator`, `report-generator`, `offer-claims-registry`, `community-launch-runner`, `creator-registry`, `page-play-builder`, `memory-management` — véase [echo-benchmark.md](../references/echo-benchmark.md).
 
 </details>
 
@@ -406,13 +377,83 @@ Cuatro directorios de fase bajo `email/` (4 skills cada uno) siguen el bucle SEN
 | inbox-placement-monitor | S | *(NUEVO)* Seguimiento continuo de placement inbox-vs-spam vía seed lists y señales de proveedor, con alertas de deriva de reputación. |
 | cold-outbound-sequencer | D | *(NUEVO)* Cadencias de cold outbound B2B conformes — ramp seguro para deliverability, tokens de personalización y pasos de manejo de respuestas. |
 
-**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): [audience-mapper](../influencer/discover/audience-mapper/SKILL.md), [landing-optimizer](../influencer/measure/landing-optimizer/SKILL.md), [roi-calculator](../influencer/measure/roi-calculator/SKILL.md), [report-generator](../influencer/measure/report-generator/SKILL.md), [performance-analyzer](../influencer/measure/performance-analyzer/SKILL.md), [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md).
+**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): [audience-mapper](../influencer/scout/audience-mapper/SKILL.md), [landing-optimizer](../influencer/report/landing-optimizer/SKILL.md), [roi-calculator](../influencer/report/roi-calculator/SKILL.md), [report-generator](../influencer/report/report-generator/SKILL.md), [performance-analyzer](../influencer/report/performance-analyzer/SKILL.md), [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md).
+
+</details>
+
+### Paid Ads — ROAS (16)
+
+Cuatro directorios de fase bajo `ad/` (4 skills cada uno) siguen el bucle ROAS; el gate (⛩ ad-account-auditor) está en Activate. Solo el gate calcula la RQS ponderada por objetivo — cada otra skill trabaja una palanca y hace el traspaso.
+
+| Fase | Skills |
+|-------|--------|
+| **Research** | [campaign-architect](../ad/research/campaign-architect/SKILL.md), [audience-segment-builder](../ad/research/audience-segment-builder/SKILL.md), [search-term-miner](../ad/research/search-term-miner/SKILL.md), [product-feed-optimizer](../ad/research/product-feed-optimizer/SKILL.md) |
+| **Orchestrate** | [ad-creative-builder](../ad/orchestrate/ad-creative-builder/SKILL.md), [ad-test-designer](../ad/orchestrate/ad-test-designer/SKILL.md), [bid-strategy-planner](../ad/orchestrate/bid-strategy-planner/SKILL.md), [landing-experience-checker](../ad/orchestrate/landing-experience-checker/SKILL.md) |
+| **Activate** | ⛩ [ad-account-auditor](../ad/activate/ad-account-auditor/SKILL.md), [conversion-signal-qa](../ad/activate/conversion-signal-qa/SKILL.md), [placement-exclusion-manager](../ad/activate/placement-exclusion-manager/SKILL.md), [conversion-value-mapper](../ad/activate/conversion-value-mapper/SKILL.md) |
+| **Scale** | [paid-measurement-loop](../ad/scale/paid-measurement-loop/SKILL.md), [attribution-reconciler](../ad/scale/attribution-reconciler/SKILL.md), [budget-pacing-monitor](../ad/scale/budget-pacing-monitor/SKILL.md), [fatigue-frequency-manager](../ad/scale/fatigue-frequency-manager/SKILL.md) |
+
+<details><summary><b>Propósito por skill (Paid Ads)</b></summary>
+
+| Skill | Palanca ROAS | Qué hace |
+|-------|-----------|--------------|
+| campaign-architect | A + estructura | Estructura de cuenta/campaña, ajuste de tipo de campaña, tipos de concordancia, negativos/exclusiones, canibalización paid↔orgánico; incluye un modo recurrente de **search-term-mining**. |
+| audience-segment-builder | A | Convierte tu propia exportación de clientes/CRM/GA4 en audiencias semilla, semillas de lookalike, segmentos de exclusión y un mapa de targeting por etapa de funnel. |
+| search-term-miner | A | *(NUEVO)* Mina el informe de términos de búsqueda buscando negativos, nuevos candidatos a keyword y refinamientos de tipo de concordancia. |
+| product-feed-optimizer | O | *(NUEVO)* Higiene de feed de Shopping/PMax — títulos, atributos, GTINs, mapeo de categorías y correcciones de rechazos. |
+| ad-creative-builder | O | Titulares/descripciones RSA, hooks y una matriz de ángulos, con message match a la página de destino. |
+| ad-test-designer | O (+S) | Diseña tests A/B/n e incrementalidad (hipótesis, matriz de variantes, tamaño de muestra/potencia) y lee la significancia → promote/kill. |
+| bid-strategy-planner | S | *(NUEVO)* Elige y configura la estrategia de puja según objetivo (tCPA/tROAS/max-conversions), fija objetivos y planifica las transiciones de fase de aprendizaje. |
+| landing-experience-checker | O | *(NUEVO)* QA de página post-click para relevancia del anuncio, velocidad de carga, móvil y política — la comprobación de message match anuncio↔página. |
+| ⛩ ad-account-auditor | R+O+A+S (RQS) | Gate ROAS de clase auditor: puntúa RQS, impone R1/R2/O1/O2/A1, emite SHIP/FIX/BLOCK; incluye un modo **go/no-go de lanzamiento**. |
+| conversion-signal-qa | R | QA de tracking pre-lanzamiento (disparo de eventos, higiene de UTM, gate de dedup, alineación de ventana, flags iOS-ATT) — el prerrequisito R1/R2 (construye la señal; el gate la puntúa). |
+| placement-exclusion-manager | A | *(NUEVO)* Listas de exclusión de placement/audiencia — bloqueos de brand safety, poda de placements basura, supresión de gasto desperdiciado. |
+| conversion-value-mapper | R | *(NUEVO)* Mapea acciones de conversión a valores/pesos y reglas de valor para que tROAS puje sobre el margen real, no sobre conteos brutos. |
+| paid-measurement-loop | R (+S) | Lee un cambio ya lanzado contra un control a lo largo de una ventana → Promote / Keep-testing / Rollback / Unproven. |
+| attribution-reconciler | R | Dedup permanente de order-ID contra el conjunto de verdad de GA4/ecommerce, normalización de ventana/moneda, comparación de modelos, incrementalidad. |
+| budget-pacing-monitor | S | *(NUEVO)* Rastrea el ritmo de gasto frente al presupuesto durante el flight, señala sub/sobre-entrega y recomienda correcciones de pacing. |
+| fatigue-frequency-manager | O | *(NUEVO)* Vigila señales de frecuencia y decaimiento del creative, señala anuncios fatigados y programa refresh/rotación. |
+
+**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): [budget-optimizer](../influencer/target/budget-optimizer/SKILL.md) (gasto + modo bid-pacing/fase de aprendizaje), [landing-optimizer](../influencer/report/landing-optimizer/SKILL.md) (post-click), [roi-calculator](../influencer/report/roi-calculator/SKILL.md) (cálculo de retorno), [report-generator](../influencer/report/report-generator/SKILL.md), [performance-analyzer](../influencer/report/performance-analyzer/SKILL.md).
+
+</details>
+
+### Influencers — STAR (16)
+
+Cuatro directorios de fase (4 skills cada uno); el gate de la disciplina (⛩ creator-content-auditor) está en Activate.
+
+| Fase | Skills |
+|-------|--------|
+| **Scout** | [audience-mapper](../influencer/scout/audience-mapper/SKILL.md), [trend-spotter](../influencer/scout/trend-spotter/SKILL.md), [influencer-discovery](../influencer/scout/influencer-discovery/SKILL.md), [fit-scorer](../influencer/scout/fit-scorer/SKILL.md) |
+| **Target** | [competitor-tracker](../influencer/target/competitor-tracker/SKILL.md), [campaign-planner](../influencer/target/campaign-planner/SKILL.md), [brief-generator](../influencer/target/brief-generator/SKILL.md), [budget-optimizer](../influencer/target/budget-optimizer/SKILL.md) |
+| **Activate** | [outreach-manager](../influencer/activate/outreach-manager/SKILL.md), ⛩ [creator-content-auditor](../influencer/activate/creator-content-auditor/SKILL.md), [contract-helper](../influencer/activate/contract-helper/SKILL.md), [content-amplifier](../influencer/activate/content-amplifier/SKILL.md) |
+| **Report** | [landing-optimizer](../influencer/report/landing-optimizer/SKILL.md), [performance-analyzer](../influencer/report/performance-analyzer/SKILL.md), [roi-calculator](../influencer/report/roi-calculator/SKILL.md), [report-generator](../influencer/report/report-generator/SKILL.md) |
+
+<details><summary><b>Propósito por skill (Influencers)</b></summary>
+
+| Skill | Qué hace |
+|-------|--------------|
+| audience-mapper | Perfila la audiencia objetivo y mapea su subcultura / micro-comunidad antes de colaborar con creadores. |
+| trend-spotter | Timing y temas de campaña — hashtags, sonidos, formatos y momentos culturales en tendencia. |
+| influencer-discovery | Construye un roster de creadores desde cero, expande a una nueva plataforma, obtén nano/micro a escala. |
+| fit-scorer | Puntuación de fit objetiva y ponderada para una shortlist (puntúa en STAR Suitability (S)). |
+| competitor-tracker | Los creadores, campañas, formatos, alcance/gasto estimados y brechas de un competidor. |
+| campaign-planner | Planifica una campaña, un lanzamiento de producto, un tentpole o un programa de creadores always-on. |
+| brief-generator | Briefs de influencer estandarizados y plantillas de equipo reutilizables. |
+| budget-optimizer | Distribuye el gasto entre tiers/plataformas, proyecta ROI, modela escenarios (también sirve al gasto de paid ads + bid-pacing). |
+| outreach-manager | Pitch, cadencia de seguimiento, reactivación, negociación de tarifas, seguimiento de estado. |
+| ⛩ creator-content-auditor | Decisión de gate previa a la publicación sobre un envío de un creador (STAR Trust: divulgación FTC STAR-T1, integridad de claims STAR-T2). |
+| contract-helper | Redacta/revisa acuerdos con creadores — derechos de uso, exclusividad, cláusulas estándar. |
+| content-amplifier | Amplía el contenido orgánico de creadores con gasto pagado y reutiliza UGC en paid, web, email y orgánico. |
+| landing-optimizer | Landing pages para tráfico de creadores/paid — message match, móvil, A/B (también sirve al post-click de paid). |
+| performance-analyzer | Evalúa resultados de creadores, compara creadores, sentimiento, conversiones (también el scorecard cross-channel de paid). |
+| roi-calculator | Mide/proyecta ROI, defiende presupuestos, valora creadores/tiers (motor de cálculo de retorno compartido, incl. paid). |
+| report-generator | Informes escritos para stakeholders tras un periodo (también informes de paid ads). |
 
 </details>
 
 ### Launch — RAMP (16)
 
-Cuatro directorios de fase bajo `launch/` (4 skills cada uno) siguen el bucle RAMP; el gate (⛩ launch-readiness-auditor) está en Mobilize. Solo el gate calcula la LQS ponderada por objetivo — cada otra skill trabaja una palanca y hace el traspaso. Agnóstico al caso de uso (B2B SaaS sales-led / lanzamiento de dev-tool en comunidad / lanzamiento en app-store móvil); la columna de peso por objetivo elige el énfasis.
+Cuatro fases bajo `launch/` siguen Research → Assemble → Mobilize → Prove. `launch-readiness-auditor` selecciona un perfil `preflight`, `execution` u `outcome` por ejecución; los resultados de ciclo de vida se enlazan pero nunca se promedian.
 
 | Fase | Skills |
 |-------|--------|
@@ -433,7 +474,7 @@ Cuatro directorios de fase bajo `launch/` (4 skills cada uno) siguen el bucle RA
 | launch-asset-packager | A | Manifiesto de assets de lanzamiento con alcance por tier — spec de press kit, specs de demo/screenshot, FAQ de lanzamiento, metadatos de store-listing, checklist técnica de go-live. |
 | pricing-packaging-planner | A | Pricing y packaging de lanzamiento — estructura de tiers, mapa valor-a-precio, escalera de ofertas de lanzamiento, pricing beta con ruta de graduación, términos de garantía. |
 | sales-enablement-kit | A | Enablement interno — battle cards, talk track de ventas, tabla de manejo de objeciones, FAQ interna + macros de CS, anuncio interno con disciplina de embargo. |
-| ⛩ launch-readiness-auditor | R+A+M+P (LQS) | Gate RAMP de clase auditor: puntúa LQS, impone R1/A1/M1/P1, emite SHIP/FIX/BLOCK; incluye un modo **go/no-go T-1**. |
+| ⛩ launch-readiness-auditor | preflight / execution / outcome | Gate RAMP tipado para una lectura de ciclo de vida; nunca promedia horizontes temporales. Escribe `memory/audits/launch/`. |
 | launch-day-conductor | M | Runbook de día de lanzamiento por bloques horarios — chequeo de gate de precondiciones, veredictos de ventana de observación tras pushes irreversibles, escalera de incidentes P0–P3 + playbooks de rollback. |
 | community-launch-runner | M | Paquetes de envío por plataforma (Product Hunt, Show HN, subreddits, olas de directorios, canales regionales/chinos) bajo un chequeo de línea roja de plataforma. |
 | press-media-relations | M | Lista de medios/analistas de tres tiers, timing de pitch con embargo, borrador de nota de prensa en estructura estándar, guion de briefing a analistas. |
@@ -442,43 +483,7 @@ Cuatro directorios de fase bajo `launch/` (4 skills cada uno) siguen el bucle RA
 | launch-retro-analyzer | P | Retro D1/W1/M1 — actual-vs-target por canal, 5-Whys sobre el mayor fallo, decisiones keep/kill/change, snapshot de resultado al registro. |
 | momentum-planner | P | Plan de momentum T+1→T+30 — calendario de momentos de lanzamiento, enrutamiento de tier de anuncio, decisión de legitimidad de relaunch, próximo momento Tier-1. |
 
-**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): `audience-mapper`, `trend-spotter`, `budget-optimizer`, `landing-optimizer`, `campaign-planner`, `outreach-manager`, `content-amplifier`, `email-creative-builder` / `email-sequence-designer` / `cold-outbound-sequencer`, `campaign-architect` / `ad-creative-builder`, `page-play-builder` / `content-writer`, `technical-seo-checker` / `serp-markup-builder`, `performance-monitor`, `keyword-research`, `entity-optimizer`, `offer-claims-registry`, `consent-registry`, `list-growth-designer`, `roi-calculator` / `performance-analyzer` / `report-generator` — véase [ramp-benchmark.md](../references/ramp-benchmark.md).
-
-</details>
-
-### Social — ECHO (16)
-
-Cuatro directorios de fase bajo `social/` (4 skills cada uno) siguen el bucle ECHO; el gate (⛩ social-quality-auditor) está en Host. Solo el gate calcula la SQS ponderada por objetivo — cada otra skill trabaja una palanca y hace el traspaso. Agnóstico al caso de uso (community/dev-tool / marca B2C / B2B founder-led); la columna de peso por objetivo elige el énfasis. La disciplina **no** incluye automatización de publicación, engagement ni DM de ningún tipo.
-
-| Fase | Skills |
-|-------|--------|
-| **Explore** | [channel-portfolio-planner](../social/explore/channel-portfolio-planner/SKILL.md), [voice-dossier-builder](../social/explore/voice-dossier-builder/SKILL.md), [platform-norm-profiler](../social/explore/platform-norm-profiler/SKILL.md), [participation-warmup-planner](../social/explore/participation-warmup-planner/SKILL.md) |
-| **Craft** | [social-calendar-builder](../social/craft/social-calendar-builder/SKILL.md), [social-creative-builder](../social/craft/social-creative-builder/SKILL.md), [short-video-scripter](../social/craft/short-video-scripter/SKILL.md), [advocacy-program-designer](../social/craft/advocacy-program-designer/SKILL.md) |
-| **Host** | ⛩ [social-quality-auditor](../social/host/social-quality-auditor/SKILL.md), [engagement-inbox-manager](../social/host/engagement-inbox-manager/SKILL.md), [social-selling-planner](../social/host/social-selling-planner/SKILL.md), [crisis-response-planner](../social/host/crisis-response-planner/SKILL.md) |
-| **Observe** | [social-pulse-monitor](../social/observe/social-pulse-monitor/SKILL.md), [share-of-voice-tracker](../social/observe/share-of-voice-tracker/SKILL.md), [dark-social-attributor](../social/observe/dark-social-attributor/SKILL.md), [social-measurement-loop](../social/observe/social-measurement-loop/SKILL.md) |
-
-<details><summary><b>Propósito por skill (Social)</b></summary>
-
-| Skill | Palanca ECHO | Qué hace |
-|-------|-----------|--------------|
-| channel-portfolio-planner | E | Elige la mezcla de plataformas y el rol/cadencia por canal desde donde la audiencia realmente está (registra canales al registro). |
-| voice-dossier-builder | E | Voz de marca, tono, persona y léxico do/don't para una presencia consistente y de sonido humano. |
-| platform-norm-profiler | E | Normas, formatos, señales de ranking y reglas de línea roja por plataforma antes de que publiques ahí. |
-| participation-warmup-planner | E | Plan de warm-up comunitario no promocional — dónde aparecer y aportar valor antes de vender. |
-| social-calendar-builder | C | Calendario editorial — temas, series, cadencia equilibrada a la capacidad real (sin sobre-publicar). |
-| social-creative-builder | C | Posts nativos de plataforma (hook/cuerpo/CTA), con message match y conscientes del claims-ledger. |
-| short-video-scripter | C | Guiones de vídeo de formato corto — hook, beats, texto en pantalla, estructura de retención. |
-| advocacy-program-designer | C | Programa de advocacy de empleados/comunidad — opt-in, defaults de divulgación, kit de assets compartibles. |
-| ⛩ social-quality-auditor | E+C+H+O (SQS) | Gate ECHO de clase auditor: puntúa SQS, impone E1/C1/C2/H1/H2/O1, emite SHIP/FIX/BLOCK; incluye un modo **go/no-go de pre-publicación**. |
-| engagement-inbox-manager | H | Playbook de triage de reply/comment/DM — tiers de respuesta, escalado, disciplina de engagement genuino (sin engagement fabricado/con cebo). |
-| social-selling-planner | H | Motion de social-selling de founder/equipo — outreach que prioriza la relación, sin DMs automatizados. |
-| crisis-response-planner | H | Tiers de crisis pre-redactados, holding statements, escalera de escalado y disparadores de pausar-la-cola. |
-| social-pulse-monitor | O | Pulso de menciones/sentimiento/temas desde fuentes keyless, lecturas spike-vs-sustain (datos proxy etiquetados). |
-| share-of-voice-tracker | O | Share-of-voice frente a competidores nombrados sobre un denominador estable por periodo. |
-| dark-social-attributor | O | Atribuye tráfico dark-social/sin enlace — disciplina de UTM, captura de atribución autorreportada, parsing de referencias. |
-| social-measurement-loop | O | Lee un cambio ya lanzado contra una baseline a lo largo de una ventana → Promote / Keep-testing / Rollback. |
-
-**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): `trend-spotter`, `audience-mapper`, `content-amplifier`, `outreach-manager`, `competitor-tracker`, `landing-optimizer`, `performance-analyzer`, `roi-calculator`, `report-generator`, `offer-claims-registry`, `community-launch-runner`, `creator-registry`, `page-play-builder`, `memory-management` — véase [echo-benchmark.md](../references/echo-benchmark.md).
+**Reutilizado entre disciplinas** (contado en sus fases de origen, no duplicado): `audience-mapper`, `trend-spotter`, `budget-optimizer`, `landing-optimizer`, `campaign-planner`, `outreach-manager`, `content-amplifier`, `email-creative-builder` / `email-sequence-designer` / `cold-outbound-sequencer`, `campaign-architect` / `ad-creative-builder`, `page-play-builder` / `content-writer`, `technical-seo-checker` / `serp-markup-builder`, `performance-monitor`, `keyword-research`, `entity-registry`, `offer-claims-registry`, `consent-registry`, `list-growth-designer`, `roi-calculator` / `performance-analyzer` / `report-generator` — véase [ramp-benchmark.md](../references/ramp-benchmark.md).
 
 </details>
 
@@ -488,13 +493,13 @@ La maquinaria compartida de verdad y memoria — véase [Arquitectura § La capa
 
 | Grupo | Skills |
 |-------|--------|
-| **Protocolo** | [entity-optimizer](../protocol/entity-optimizer/SKILL.md), [creator-registry](../protocol/creator-registry/SKILL.md), [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md), [consent-registry](../protocol/consent-registry/SKILL.md), [launch-registry](../protocol/launch-registry/SKILL.md), [channel-registry](../protocol/channel-registry/SKILL.md), [narrative-registry](../protocol/narrative-registry/SKILL.md), [memory-management](../protocol/memory-management/SKILL.md) |
+| **Protocolo** | [entity-registry](../protocol/entity-registry/SKILL.md), [creator-registry](../protocol/creator-registry/SKILL.md), [offer-claims-registry](../protocol/offer-claims-registry/SKILL.md), [consent-registry](../protocol/consent-registry/SKILL.md), [launch-registry](../protocol/launch-registry/SKILL.md), [channel-registry](../protocol/channel-registry/SKILL.md), [narrative-registry](../protocol/narrative-registry/SKILL.md), [memory-management](../protocol/memory-management/SKILL.md) |
 
 <details><summary><b>Propósito por skill (Protocolo)</b></summary>
 
 | Skill | Qué hace |
 |-------|--------------|
-| entity-optimizer | Perfil de entidad canónico para Knowledge Graph, Wikidata, desambiguación por IA. |
+| entity-registry | Perfil de entidad canónico para Knowledge Graph, Wikidata, desambiguación por IA. |
 | creator-registry | Roster/dossier canónico de creadores — handles deduplicados, estadísticas de audiencia con etiqueta de procedencia, tarifas e historial de compliance. |
 | offer-claims-registry | Libro canónico de ofertas y sustanciación de claims — el registro contra el que se juzgan las comprobaciones de claims O1/T2. |
 | consent-registry | Registro canónico de consentimiento/supresión por sujeto — timestamp de opt-in + base legal, prueba de doble opt-in, historial append-only de unsub/bounce/queja; el registro contra el que juzgan los vetos S2/N1. |
@@ -515,16 +520,14 @@ Ocho comandos: `/aaron-marketing:auto` enruta cualquier objetivo por las siete d
 |---------|-----------|-----------|
 | `/aaron-marketing:auto` | Describe cualquier objetivo — infiere la intención y ejecuta el flujo de trabajo mínimo útil | `--deep` (exhaustivo / stress-test) |
 | `/aaron-marketing:narrative` | Brand narrative (bucle TALE): rastrear la historia actual y la categoría, arquitectar la narrativa estratégica y el sistema de mensajes, aterrizarla a través de los canales, el gate de calidad, resonancia y deriva | `--phase trace\|architect\|land\|evaluate` |
-| `/aaron-marketing:seo-geo` | SEO/GEO de principio a fin: investigar demanda/competidores, crear contenido, auditar calidad/técnica/visibilidad/autoridad, rastrear rankings/informes/memoria | `--mode research\|create\|audit\|track` + flags por modo (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` `--authority` · `--alert` `--report` `--remember` `--period`) |
-| `/aaron-marketing:influencer` | Influencers: insight de audiencia, discovery y fit, planificación, outreach, amplificación, ROI | `--phase discover\|plan\|activate\|measure` |
+| `/aaron-marketing:seo-geo` | SEO/GEO de principio a fin (bucle SITE): sondear demanda/competidores, implementar contenido, afinar calidad/técnica/on-page, evaluar autoridad/rankings/informes/memoria | `--phase survey\|implement\|tune\|evaluate` + flags por fase (`--competitors` `--map` · `--brief` `--series` `--refresh` `--publish` `--meta` `--schema` `--type` · `--full` `--tech` `--visibility` · `--authority` `--alert` `--report` `--remember` `--period`) |
+| `/aaron-marketing:influencer` | Influencers (bucle STAR): insight de audiencia, scouting y fit, targeting, outreach, amplificación, reporting de ROI | `--phase scout\|target\|activate\|report` |
 | `/aaron-marketing:ad` | Paid ads (bucle ROAS): segmentos, estructura, creative, diseño de experimentos, el gate de auditoría, medición | `--phase research\|orchestrate\|activate\|scale` |
 | `/aaron-marketing:email` | Email (bucle SEND): deliverability/consent, segmentación, creative, flujos de ciclo de vida, monetización, send-testing, el gate de auditoría | `--phase setup\|engage\|nurture\|deliver` |
 | `/aaron-marketing:launch` | Product launch (bucle RAMP): posicionamiento, tier y ventana, message house y assets, el gate de readiness, ejecución del día de lanzamiento, monitoreo y retro | `--phase research\|assemble\|mobilize\|prove` |
 | `/aaron-marketing:social` | Organic social (bucle ECHO): portafolio de canales y voz, calendario y creative, el gate de calidad, hosting de engagement/crisis, pulso y medición | `--phase explore\|craft\|host\|observe` |
 
-El trabajo diario normalmente empieza con `/aaron-marketing:auto`; los otros siete son puntos de entrada explícitos de disciplina, con `--mode` / `--phase` para acotar la etapa.
-
-**Nota de renombrado:** los comandos usan el prefijo `/aaron-marketing:`. Los antiguos comandos `research` / `create` / `audit` / `track` son ahora modos de `/aaron-marketing:seo-geo` (flags sin cambios). Los nombres más antiguos `/seo:*` y `/aaron-seo-geo:*` se recuperan vía `auto` — p. ej. `/aaron-marketing:auto /aaron-seo-geo:audit https://example.com/blog/post` devuelve `/aaron-marketing:seo-geo https://example.com/blog/post --mode audit`.
+El trabajo diario normalmente empieza con `/aaron-marketing:auto`; los otros siete son puntos de entrada explícitos de disciplina, con `--phase` para acotar la etapa.
 
 ---
 
@@ -565,29 +568,55 @@ Las skills de paid ads puntúan a partir de tu **exportación manual de tu propi
 
 ## Flujos de trabajo recomendados
 
-**SEO/GEO**
-1. **Research** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
-2. **Build** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
-3. **Optimize** — `content-quality-auditor` (⛩ gate de publicación) → `on-page-seo-auditor` → `technical-seo-checker` → `site-structure-optimizer`
-4. **Monitor** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; `domain-authority-auditor` (⛩) para la revisión de confianza
+La mayoría de los objetivos reales cruzan disciplinas. `/aaron-marketing:auto` enruta un objetivo en lenguaje natural a la cadena mínima útil entre las siete — un lanzamiento de producto, por ejemplo, activa Launch, Email, Social y Paid a la vez:
 
-**Influencers**
-1. **Discover** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (C³ ACE)
-2. **Plan** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
-3. **Activate** — `outreach-manager` → `content-reviewer` (⛩ gate ART) → `contract-helper` → `content-amplifier`
-4. **Measure** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+```text
+/aaron-marketing:auto lanzar nuestra v2 en Product Hunt en 3 semanas — 1.200 en la lista de espera; necesitamos la página, los correos y el plan del día de lanzamiento
+```
 
-**Paid Ads (bucle ROAS)**
-1. **Research** — `audience-segment-builder` → `campaign-architect`
-2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer` (+ `landing-optimizer` para la página)
-3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` (⛩ gate RQS) antes de que ningún presupuesto se ponga en marcha
-4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+O recorre el bucle de una disciplina de punta a punta (la guía `README.md` de cada directorio de disciplina añade jugadas a nivel de escenario):
+
+**Narrative (bucle TALE)**
+1. **Trace** — `narrative-baseline-mapper` → `category-narrative-mapper` → `audience-belief-mapper` → `positioning-truth-tracer`
+2. **Architect** — `strategic-narrative-designer` → `message-system-architect` → `brand-language-codifier` → `story-bank-builder`
+3. **Land** — `narrative-cascade-planner` → `pitch-narrative-builder` → `narrative-enablement-kit` → `proof-point-packager`
+4. **Evaluate** — `narrative-quality-auditor` (⛩ puerta TALE) → `message-test-designer` → `narrative-resonance-monitor` → `narrative-drift-monitor`
+
+**SEO/GEO (bucle SITE)**
+1. **Survey** — `keyword-research` → `competitor-analysis` → `content-gap-analysis`
+2. **Implement** — `content-writer` → `geo-content-optimizer` → `serp-markup-builder` / `page-play-builder`
+3. **Tune** — `content-quality-auditor` (⛩ puerta de publicación) → `on-page-seo-checker` → `technical-seo-checker` → `site-structure-optimizer`
+4. **Evaluate** — `rank-tracker` → `performance-monitor` → `offsite-signal-analyzer`; revisión de confianza con `domain-authority-auditor` (⛩)
+
+**Social (bucle ECHO)**
+1. **Explore** — `channel-portfolio-planner` → `voice-dossier-builder` → `platform-norm-profiler` → `participation-warmup-planner`
+2. **Craft** — `social-calendar-builder` → `social-creative-builder` → `short-video-scripter` → `advocacy-program-designer`
+3. **Host** — `social-quality-auditor` (⛩ puerta ECHO) → `engagement-inbox-manager` → `social-selling-planner` → `crisis-response-planner`
+4. **Observe** — `social-pulse-monitor` → `share-of-voice-tracker` → `dark-social-attributor` → `social-measurement-loop`
 
 **Email (bucle SEND)**
 1. **Setup** — `deliverability-qa` → `list-segment-builder`
 2. **Engage** — `email-creative-builder`
 3. **Nurture** — `email-sequence-designer` → `newsletter-monetization-planner`
-4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ gate EQS) antes del envío
+4. **Deliver** — `send-experiment-designer` → `email-quality-auditor` (⛩ puerta EQS) antes de cualquier envío
+
+**Paid Ads (bucle ROAS)**
+1. **Research** — `audience-segment-builder` → `campaign-architect`
+2. **Orchestrate** — `ad-creative-builder` → `ad-test-designer` (+ `landing-optimizer` para la página)
+3. **Activate** — `conversion-signal-qa` → `ad-account-auditor` (⛩ puerta RQS) antes de activar presupuesto
+4. **Scale** — `paid-measurement-loop` → `attribution-reconciler` → `roi-calculator` → `report-generator`
+
+**Influencers (bucle STAR)**
+1. **Scout** — `audience-mapper` → `trend-spotter` → `influencer-discovery` → `fit-scorer` (STAR Suitability)
+2. **Target** — `competitor-tracker` → `campaign-planner` → `brief-generator` → `budget-optimizer`
+3. **Activate** — `outreach-manager` → `creator-content-auditor` (⛩ puerta STAR) → `contract-helper` → `content-amplifier`
+4. **Report** — `landing-optimizer` → `performance-analyzer` → `roi-calculator` → `report-generator`
+
+**Launch (bucle RAMP)**
+1. **Research** — `positioning-mapper` → `launch-tier-planner` → `launch-window-planner` → `early-access-designer`
+2. **Assemble** — `message-house-builder` → `launch-asset-packager` → `pricing-packaging-planner` → `sales-enablement-kit`
+3. **Mobilize** — `launch-readiness-auditor` (⛩ puerta RAMP) → `launch-day-conductor` → `community-launch-runner` → `press-media-relations`
+4. **Prove** — `launch-monitor` → `launch-feedback-synthesizer` → `launch-retro-analyzer` → `momentum-planner`
 
 Para una revisión de confianza completa, combina `content-quality-auditor` con `domain-authority-auditor` para una evaluación combinada de 120 ítems. Con `memory-management` activo, los traspasos y cabos sueltos persisten automáticamente en la memoria HOT/WARM/COLD.
 
@@ -597,8 +626,8 @@ Para una revisión de confianza completa, combina `content-quality-auditor` con 
 
 ```
 narrative/{trace,architect,land,evaluate}/                  # Narrative — TALE (16, incl. su gate)
-seo-geo/{research,build,optimize,monitor}/                  # SEO/GEO (16, incl. sus 2 gates)
-influencer/{discover,plan,activate,measure}/                   # Influencers (16, incl. su gate)
+seo-geo/{survey,implement,tune,evaluate}/                   # SEO/GEO (16, incl. sus 2 gates)
+influencer/{scout,target,activate,report}/                     # Influencers (16, incl. su gate)
 ad/research|orchestrate|activate|scale/            # Paid Ads — ROAS (16, incl. su gate)
 email/setup|engage|nurture|deliver/                  # Email — SEND (16, incl. su gate)
 launch/research|assemble|mobilize|prove/             # Launch — RAMP (16, incl. su gate)
@@ -637,18 +666,18 @@ Cada cambio se ejecuta contra un conjunto de guards fail-closed (todos en `scrip
 | `check-evals.py` | Lint estructural de eval + `structure-manifest.json` (120/120 skills llevan casos de eval). |
 | `check-pii.py` | Bloquea secrets / PII commiteados (allowlist a nivel de token, fail-closed). |
 | `check-stdlib-only.sh` | Guard de dependency-creep + la línea roja de API con clave de Paid Ads. |
-| `check-versions.sh` | Guard de sync de versión: versión de bundle idéntica en plugin.json / ambos espejos de marketplace / ambos badges de README / CLAUDE.md / línea de release de VERSIONS.md + entrada de changelog, y cada versión de SKILL.md coincide con su fila de VERSIONS.md. |
-| `tests/test_connectors_local.py` | Tests unitarios offline de los constructores de request puros de cada conector (sin red en CI). |
+| `check-versions.sh` | Guard de sincronización de versiones: el catálogo del sistema, los manifiestos de plugin/marketplace/OpenClaw, los badges del README raíz y localizados, AGENTS/CLAUDE/VERSIONS, el About de GitHub y las 120 versiones de skills se mantienen alineados. |
+| `tests/test_connectors_local.py` | Tests offline de constructores de request y parsers que abarcan los 29 módulos de conectores incluidos (sin red en CI). |
 | `tests/test_hook_artifact_gate.sh` | Tests de comportamiento del Artifact Gate del hook + saneamiento de SessionStart. |
 
-La deriva de endpoints en vivo se cubre por separado con el **manual** [`scripts/connectors/smoke-live.sh`](../scripts/connectors/smoke-live.sh) — una llamada real mínima por conector alojado con aserciones de forma (las respuestas de rate-limit cuentan como SKIP); ejecútalo antes de un release, nunca en CI.
+La deriva de endpoints en vivo se muestrea por separado con el **manual** [`scripts/connectors/smoke-live.sh`](../scripts/connectors/smoke-live.sh) — una llamada real mínima por conector alojado listado en ese script, con aserciones de forma (las respuestas de rate-limit cuentan como SKIP); ejecútalo antes de un release, nunca en CI.
 
 ---
 
 ## Contribuir y documentación del proyecto
 
-- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — reglas de autoría, la checklist de contribución y la lista autoritativa de tracking de 8 archivos.
-- **[VERSIONS.md](../VERSIONS.md)** — versiones por skill + changelog (bundle actual: `16.0.0`).
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — reglas de autoría, la checklist de contribución y la lista autoritativa de las 10 superficies de tracking.
+- **[VERSIONS.md](../VERSIONS.md)** — versiones por skill + changelog (bundle actual: `18.0.0`).
 - **[SECURITY.md](../SECURITY.md)** · **[PRIVACY.md](../PRIVACY.md)** · **[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)** — política de seguridad, privacidad y comunidad.
 - **[CLAUDE.md](../CLAUDE.md)** / **[AGENTS.md](../AGENTS.md)** — contexto de cara al agente para este repo.
 
@@ -662,7 +691,7 @@ Estas skills asisten flujos de trabajo de brand-narrative, SEO/GEO, influencer-m
 
 Apache License 2.0 — véase [LICENSE](../LICENSE).
 
-*Última sincronización con el README en inglés: v16.0.0*
+*Última sincronización con el README en inglés: v18.0.0*
 
 ## Star History
 

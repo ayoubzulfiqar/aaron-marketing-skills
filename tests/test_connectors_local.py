@@ -1,7 +1,11 @@
 import os
 import pathlib
 import sys
+import threading
+import time
 import unittest
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from unittest import mock
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -29,8 +33,732 @@ import appstore  # noqa: E402
 import bluesky  # noqa: E402
 import fediverse  # noqa: E402
 import discourse  # noqa: E402
+import experiment  # noqa: E402
+import sitemap  # noqa: E402
+import kg  # noqa: E402
+import crawl  # noqa: E402
+import rss_monitor  # noqa: E402
+import suggest  # noqa: E402
+import wayback  # noqa: E402
+import _http  # noqa: E402
 import datetime as _dt  # noqa: E402
 
+
+class SharedHttpSafetyTests(unittest.TestCase):
+    def test_non_public_destinations_are_blocked_by_default(self):
+        for url in (
+            "http://127.0.0.1/admin",
+            "http://[::1]/",
+            "http://169.254.169.254/latest/meta-data/",
+            "http://10.0.0.1/",
+        ):
+            with self.subTest(url=url):
+                self.assertIn("non-public", _http.url_safety_error(url))
+
+    def test_multicast_reserved_nat64_and_embedded_private_are_blocked(self):
+        addresses = (
+            "224.0.0.1",              # multicast can report is_global=True
+            "ff0e::1",                # globally scoped IPv6 multicast
+            "240.0.0.1",              # reserved IPv4
+            "64:ff9b::5db8:d822",      # NAT64, even with a public embedded IPv4
+            "::ffff:127.0.0.1",        # IPv4-mapped loopback
+            "2002:7f00:1::",           # 6to4 with embedded loopback
+        )
+        for address in addresses:
+            family = _http.socket.AF_INET6 if ":" in address else _http.socket.AF_INET
+            answer = [(family, _http.socket.SOCK_STREAM, 6, "", (address, 443))]
+            with self.subTest(address=address), \
+                 mock.patch.object(_http.socket, "getaddrinfo", return_value=answer):
+                self.assertIn("non-public", _http.url_safety_error("https://blocked.test/"))
+                self.assertIn(
+                    "non-public",
+                    _http.url_safety_error("https://blocked.test/", allow_private=True),
+                )
+
+    def test_private_access_requires_explicit_opt_in(self):
+        self.assertIsNone(_http.url_safety_error("http://127.0.0.1/", allow_private=True))
+
+    def test_non_http_and_embedded_credentials_are_blocked(self):
+        self.assertIn("scheme", _http.url_safety_error("ftp://example.com/file"))
+        self.assertIn("credentials", _http.url_safety_error("https://user:placeholder@example.com/"))
+        self.assertIn("port", _http.url_safety_error("https://example.com:not-a-port/"))
+
+    def test_all_resolved_addresses_must_be_public(self):
+        answers = [
+            (2, 1, 6, "", ("93.184.216.34", 443)),
+            (2, 1, 6, "", ("127.0.0.1", 443)),
+        ]
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=answers):
+            self.assertIn("127.0.0.1", _http.url_safety_error("https://mixed.test/"))
+
+    def test_redirect_handler_revalidates_target(self):
+        handler = _http._ValidatedRedirectHandler()
+        req = _http.urllib.request.Request("https://example.com/")
+        with self.assertRaises(_http.BlockedURL):
+            handler.redirect_request(req, None, 302, "Found", {}, "http://127.0.0.1/")
+
+    def test_redirect_blocks_tls_downgrade(self):
+        public = [(2, 1, 6, "", ("93.184.216.34", 80))]
+        handler = _http._ValidatedRedirectHandler()
+        req = _http.urllib.request.Request("https://example.com/secure")
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public), \
+             self.assertRaises(_http.BlockedURL) as raised:
+            handler.redirect_request(
+                req, None, 302, "Found", {}, "http://example.com/insecure"
+            )
+        self.assertIn("downgrade", str(raised.exception))
+
+    def test_cross_origin_redirect_keeps_only_safe_headers(self):
+        public = [(2, 1, 6, "", ("93.184.216.34", 443))]
+        handler = _http._ValidatedRedirectHandler()
+        req = _http.urllib.request.Request(
+            "https://api.example.com/data",
+            headers={
+                "Authorization": "Bearer placeholder",
+                "API-OPR": "private-value",
+                "Cookie": "session=private-value",
+                "Accept": "application/json",
+                "User-Agent": "connector-test",
+            },
+        )
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public):
+            redirected = handler.redirect_request(
+                req, None, 302, "Found", {}, "https://other.example.com/data"
+            )
+        lowered = {key.lower(): value for key, value in redirected.header_items()}
+        self.assertEqual(lowered["accept"], "application/json")
+        self.assertEqual(lowered["user-agent"], "connector-test")
+        self.assertNotIn("authorization", lowered)
+        self.assertNotIn("api-opr", lowered)
+        self.assertNotIn("cookie", lowered)
+
+    def test_same_origin_redirect_retains_headers(self):
+        public = [(2, 1, 6, "", ("93.184.216.34", 443))]
+        handler = _http._ValidatedRedirectHandler()
+        req = _http.urllib.request.Request(
+            "https://example.com/one", headers={"Authorization": "Bearer placeholder"}
+        )
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public):
+            redirected = handler.redirect_request(
+                req, None, 302, "Found", {}, "https://example.com/two"
+            )
+        self.assertEqual(redirected.get_header("Authorization"), "Bearer placeholder")
+
+    def test_connection_phase_blocks_dns_rebinding_before_socket_open(self):
+        public = [(2, 1, 6, "", ("93.184.216.34", 80))]
+        rebound = [(2, 1, 6, "", ("127.0.0.1", 80))]
+        with mock.patch.object(_http.socket, "getaddrinfo", side_effect=[public, rebound]), \
+             mock.patch.object(_http.socket, "socket") as socket_factory, \
+             mock.patch.object(_http.time, "sleep") as sleep:
+            result = _http.get("http://rebind.test/", retries=3)
+        self.assertIn("non-public", result["error"])
+        socket_factory.assert_not_called()
+        sleep.assert_not_called()
+
+    def test_pinned_connection_uses_validated_ip_without_second_dns_lookup(self):
+        public = [(2, 1, 6, "", ("93.184.216.34", 443))]
+        sock = mock.Mock()
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public) as resolve, \
+             mock.patch.object(_http.socket, "socket", return_value=sock):
+            connected = _http._create_pinned_connection(("example.com", 443), timeout=2)
+        self.assertIs(connected, sock)
+        resolve.assert_called_once_with("example.com", 443, type=_http.socket.SOCK_STREAM)
+        sock.connect.assert_called_once_with(("93.184.216.34", 443))
+
+    def test_connector_opener_disables_ambient_proxy_resolution(self):
+        public = [(2, 1, 6, "", ("93.184.216.34", 443))]
+        opener = mock.Mock()
+        opener.open.side_effect = _http.urllib.error.URLError("offline")
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public), \
+             mock.patch.object(_http.urllib.request, "build_opener", return_value=opener) as build:
+            _http.get("https://example.com/", retries=1)
+        proxy_handler = build.call_args.args[0]
+        self.assertIsInstance(proxy_handler, _http.urllib.request.ProxyHandler)
+        self.assertEqual(proxy_handler.proxies, {})
+
+    def test_gzip_decode_is_output_bounded(self):
+        import gzip
+
+        compressed = gzip.compress(b"x" * 1_000_000)
+        body, truncated, error = _http.decompress_gzip(compressed, 1024)
+        self.assertEqual(len(body), 1024)
+        self.assertTrue(truncated)
+        self.assertIsNone(error)
+
+    def test_gzip_decode_supports_concatenated_members(self):
+        import gzip
+
+        compressed = gzip.compress(b"first-") + gzip.compress(b"second")
+        body, truncated, error = _http.decompress_gzip(compressed, 1024)
+        self.assertEqual(body, b"first-second")
+        self.assertFalse(truncated)
+        self.assertIsNone(error)
+
+    def test_gzip_decode_rejects_truncated_footer(self):
+        import gzip
+
+        compressed = gzip.compress(b"complete payload")[:-4]
+        body, truncated, error = _http.decompress_gzip(compressed, 1024)
+        self.assertTrue(error)
+        self.assertFalse(truncated)
+        self.assertNotEqual(body, b"complete payload")
+
+    def test_gzip_decode_rejects_empty_truncated_stream(self):
+        body, truncated, error = _http.decompress_gzip(b"", 1024)
+        self.assertEqual(body, b"")
+        self.assertFalse(truncated)
+        self.assertIn("truncated", error)
+
+    def test_gzip_validates_corrupt_footer_after_output_cap(self):
+        import gzip
+
+        compressed = bytearray(gzip.compress(b"x" * 1_000_000))
+        compressed[-1] ^= 0xFF
+        body, truncated, error = _http.decompress_gzip(bytes(compressed), 1024)
+        self.assertEqual(body, b"")
+        self.assertFalse(truncated)
+        self.assertIn("invalid gzip", error)
+
+    def test_gzip_rejects_unvalidated_work_beyond_hard_ceiling(self):
+        import gzip
+
+        compressed = gzip.compress(b"x" * 10_000)
+        body, truncated, error = _http.decompress_gzip(
+            compressed, 1024, max_validation_bytes=2048
+        )
+        self.assertEqual(body, b"")
+        self.assertFalse(truncated)
+        self.assertIn("work limit", error)
+
+    def test_gzip_reports_expanded_work_even_when_validation_cap_rejects(self):
+        import gzip
+
+        compressed = gzip.compress(b"x" * 10_000)
+        body, truncated, error, work = _http.decompress_gzip(
+            compressed,
+            1024,
+            max_validation_bytes=2048,
+            return_work=True,
+        )
+        self.assertEqual(body, b"")
+        self.assertFalse(truncated)
+        self.assertIn("work limit", error)
+        self.assertEqual(work, 2048)
+
+    def test_process_deadline_terminates_a_blocked_response_read(self):
+        class SlowHandler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                time.sleep(1.0)
+                try:
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(b"<urlset />")
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+
+            def log_message(self, format, *args):
+                pass
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), SlowHandler)
+        server.daemon_threads = True
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        before_children = {child.pid for child in _http.multiprocessing.active_children()}
+        started = time.monotonic()
+        try:
+            response = _http.get_hard_deadline(
+                "http://127.0.0.1:%d/sitemap.xml" % server.server_port,
+                deadline=started + 0.35,
+                allow_private=True,
+                retries=1,
+                timeout=10,
+            )
+            elapsed = time.monotonic() - started
+        finally:
+            server.shutdown()
+            server.server_close()
+        self.assertTrue(response["deadline_exceeded"])
+        self.assertTrue(response["truncated"])
+        self.assertIn("deadline", response["error"])
+        self.assertLess(elapsed, 0.75)
+        after_children = {child.pid for child in _http.multiprocessing.active_children()}
+        self.assertEqual(after_children - before_children, set())
+
+    def test_retry_after_wait_is_capped(self):
+        errors = [
+            _http.urllib.error.HTTPError(
+                "https://example.com/", 429, "rate limited",
+                {"Retry-After": "999"}, None
+            )
+            for _ in range(2)
+        ]
+        opener = mock.Mock()
+        opener.open.side_effect = errors
+        public = [(2, 1, 6, "", ("93.184.216.34", 443))]
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public), \
+             mock.patch.object(_http.urllib.request, "build_opener", return_value=opener), \
+             mock.patch.object(_http.time, "sleep") as sleep:
+            result = _http.get("https://example.com/", retries=2, max_retry_after=3)
+        sleep.assert_called_once_with(3)
+        self.assertEqual(result["status"], 429)
+        self.assertTrue(all(error.closed for error in errors))
+
+    def test_retry_after_header_lookup_is_case_insensitive(self):
+        error = _http.urllib.error.HTTPError(
+            "https://example.com/", 503, "unavailable", {"retry-after": "9"}, None
+        )
+        opener = mock.Mock()
+        opener.open.side_effect = [error, _http.urllib.error.URLError("offline")]
+        public = [(2, 1, 6, "", ("93.184.216.34", 443))]
+        with mock.patch.object(_http.socket, "getaddrinfo", return_value=public), \
+             mock.patch.object(_http.urllib.request, "build_opener", return_value=opener), \
+             mock.patch.object(_http.time, "sleep") as sleep:
+            _http.get("https://example.com/", retries=2, max_retry_after=30)
+        sleep.assert_called_once_with(9)
+
+
+class SitemapBudgetTests(unittest.TestCase):
+    ROOT_URL = "https://example.com/root.xml"
+
+    @staticmethod
+    def _index(*children):
+        locs = "".join("<sitemap><loc>%s</loc></sitemap>" % child for child in children)
+        return ("<sitemapindex>%s</sitemapindex>" % locs).encode()
+
+    @staticmethod
+    def _urlset(loc):
+        return ("<urlset><url><loc>%s</loc></url></urlset>" % loc).encode()
+
+    def _fetcher(self, bodies, calls):
+        def fetch(url, **kwargs):
+            calls.append((url, kwargs))
+            full = bodies[url]
+            cap = kwargs.get("max_bytes", len(full))
+            return {
+                "status": 200,
+                "url": url,
+                "headers": {},
+                "body": full[:cap],
+                "error": None,
+                "truncated": len(full) > cap,
+            }
+        return fetch
+
+    def test_transport_final_url_is_authoritative(self):
+        response = {
+            "status": 200,
+            "url": "https://cdn.example.com/final.xml.gz",
+            "headers": {},
+            "body": b"payload",
+            "error": None,
+            "truncated": False,
+        }
+        with mock.patch.object(sitemap._http, "get", return_value=response), \
+             mock.patch.object(sitemap._http, "redirect_safety_error", return_value=None):
+            result = sitemap._get_following("https://example.com/start")
+        self.assertEqual(result["final_url"], response["url"])
+
+    def test_transport_final_url_cannot_bypass_downgrade_policy(self):
+        response = {
+            "status": 200,
+            "url": "http://example.com/final.xml",
+            "headers": {},
+            "body": b"<urlset />",
+            "error": None,
+            "truncated": False,
+        }
+        with mock.patch.object(sitemap._http, "get", return_value=response):
+            result = sitemap._get_following("https://example.com/start")
+        self.assertEqual(result["status"], 0)
+        self.assertIn("downgrade", result["error"])
+
+    def test_collect_classifies_using_transport_final_url(self):
+        response = {
+            "status": 200,
+            "url": "https://cdn.example.com/llms.txt",
+            "headers": {},
+            "body": b"https://example.com/from-llms\n",
+            "error": None,
+            "truncated": False,
+        }
+        with mock.patch.object(sitemap._http, "get", return_value=response), \
+             mock.patch.object(sitemap._http, "redirect_safety_error", return_value=None):
+            result = sitemap.collect("https://example.com/start.xml")
+        self.assertEqual(result["type"], "llms.txt")
+        self.assertEqual(result["urls"][0]["loc"], "https://example.com/from-llms")
+
+    def test_collect_classifies_llms_path_with_query_string(self):
+        response = {
+            "status": 200,
+            "url": "https://cdn.example.com/llms.txt?v=1",
+            "headers": {},
+            "body": b"https://example.com/from-versioned-llms\n",
+            "error": None,
+            "truncated": False,
+        }
+        with mock.patch.object(sitemap._http, "get", return_value=response), \
+             mock.patch.object(sitemap._http, "redirect_safety_error", return_value=None):
+            result = sitemap.collect("https://example.com/start.xml")
+        self.assertEqual(result["type"], "llms.txt")
+        self.assertEqual(
+            result["urls"][0]["loc"],
+            "https://example.com/from-versioned-llms",
+        )
+
+    def test_manual_redirect_rejects_https_downgrade_before_second_hop(self):
+        calls = []
+
+        def redirect(url, **kwargs):
+            calls.append(url)
+            return {
+                "status": 302,
+                "url": url,
+                "headers": {"location": "http://example.com/insecure.xml"},
+                "body": b"",
+                "error": "HTTP 302",
+                "truncated": False,
+            }
+
+        with mock.patch.object(sitemap._http, "get", side_effect=redirect):
+            result = sitemap._get_following("https://example.com/start.xml")
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(result["status"], 0)
+        self.assertIn("downgrade", result["error"])
+
+    def test_manual_redirect_parent_never_performs_unbounded_dns(self):
+        calls = []
+
+        def request(url, **kwargs):
+            calls.append(url)
+            if len(calls) == 1:
+                return {
+                    "status": 302,
+                    "url": url,
+                    "headers": {"Location": "https://private.invalid/next.xml"},
+                    "body": b"",
+                    "error": "HTTP 302",
+                    "truncated": False,
+                }
+            # Production request_hop performs this full target validation in
+            # its terminable child before any socket is opened.
+            return {
+                "status": 0,
+                "url": url,
+                "headers": {},
+                "body": b"",
+                "error": "blocked non-public destination",
+                "truncated": False,
+            }
+
+        with mock.patch.object(
+            sitemap._http.socket,
+            "getaddrinfo",
+            side_effect=AssertionError("parent DNS must not run"),
+        ):
+            result = sitemap._get_following(
+                "https://example.com/start.xml",
+                request=request,
+                deadline=time.monotonic() + 1.0,
+            )
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(result["status"], 0)
+        self.assertIn("non-public", result["error"])
+
+    def test_global_queue_budget_caps_nested_work(self):
+        children = ["https://example.com/%d.xml" % i for i in range(3)]
+        bodies = {self.ROOT_URL: self._index(*children)}
+        bodies.update({child: self._urlset(child + "/page") for child in children})
+        calls = []
+        with mock.patch.object(sitemap._http, "get",
+                               side_effect=self._fetcher(bodies, calls)):
+            result = sitemap.collect(self.ROOT_URL, max_queue=2, max_fetches=10)
+        self.assertEqual([error["error"] for error in result["errors"]].count(
+            "global queue budget exhausted"), 1)
+        self.assertTrue(result["truncated"])
+        self.assertLessEqual(len(calls), 2)
+
+    def test_global_fetch_budget_caps_nested_work(self):
+        children = ["https://example.com/%d.xml" % i for i in range(3)]
+        bodies = {self.ROOT_URL: self._index(*children)}
+        bodies.update({child: self._urlset(child + "/page") for child in children})
+        calls = []
+        with mock.patch.object(sitemap._http, "get",
+                               side_effect=self._fetcher(bodies, calls)):
+            result = sitemap.collect(self.ROOT_URL, max_queue=10, max_fetches=2)
+        self.assertEqual(len(calls), 2)
+        self.assertIn("global fetch budget exhausted",
+                      [error["error"] for error in result["errors"]])
+
+    def test_global_byte_budget_is_shared_across_documents(self):
+        child = "https://example.com/child.xml"
+        root_body = self._index(child)
+        bodies = {
+            self.ROOT_URL: root_body,
+            child: self._urlset("https://example.com/a-page"),
+        }
+        calls = []
+        with mock.patch.object(sitemap._http, "get",
+                               side_effect=self._fetcher(bodies, calls)):
+            result = sitemap.collect(
+                self.ROOT_URL,
+                max_queue=10,
+                max_fetches=10,
+                max_total_bytes=len(root_body) + 12,
+            )
+        self.assertIn("global byte budget exhausted",
+                      [error["error"] for error in result["errors"]])
+        self.assertLessEqual(result["budget"]["bytes_used"], len(root_body) + 12)
+
+    def test_literal_gzip_truncation_propagates_to_global_byte_budget(self):
+        import gzip
+
+        target = "https://example.com/root.xml.gz"
+        expanded = self._urlset("https://example.com/page") + b" " * 10_000
+        bodies = {target: gzip.compress(expanded)}
+        calls = []
+        with mock.patch.object(sitemap._http, "get",
+                               side_effect=self._fetcher(bodies, calls)):
+            result = sitemap.collect(target, max_total_bytes=1024)
+        self.assertTrue(result["truncated"])
+        self.assertEqual(result["budget"]["bytes_used"], 1024)
+        self.assertIn("global byte budget exhausted",
+                      [error["error"] for error in result["errors"]])
+
+    def test_gzip_validation_work_budget_is_shared_across_bombs(self):
+        import gzip
+
+        children = ["https://example.com/one.xml.gz",
+                    "https://example.com/two.xml.gz"]
+        root = self._index(*children)
+        first_expanded = self._urlset("https://example.com/one") + b" " * 1800
+        second_expanded = self._urlset("https://example.com/two") + b" " * 1800
+        work_budget = len(first_expanded) + 127
+        bodies = {
+            self.ROOT_URL: root,
+            children[0]: gzip.compress(first_expanded),
+            children[1]: gzip.compress(second_expanded),
+        }
+        calls = []
+        with mock.patch.object(sitemap._http, "get",
+                               side_effect=self._fetcher(bodies, calls)):
+            result = sitemap.collect(
+                self.ROOT_URL,
+                max_fetches=10,
+                max_total_bytes=100_000,
+                max_gzip_work=work_budget,
+            )
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(result["budget"]["gzip_work_used"], work_budget)
+        self.assertTrue(result["truncated"])
+        self.assertIn(
+            "global gzip work budget exhausted",
+            [error["error"] for error in result["errors"]],
+        )
+        self.assertNotIn(
+            "global byte budget exhausted",
+            [error["error"] for error in result["errors"]],
+        )
+        self.assertTrue(any(
+            "validation work limit exceeded" in error["error"]
+            for error in result["errors"]
+        ))
+
+    def test_transport_plus_literal_gzip_work_does_not_misreport_byte_exhaustion(self):
+        import gzip
+
+        target = "https://example.com/double.xml.gz"
+        expanded = self._urlset("https://example.com/page") + b" " * 5000
+        inner = gzip.compress(expanded)
+        outer = gzip.compress(inner)
+        response = {
+            "status": 200,
+            "url": target,
+            "headers": {},
+            # This is the literal gzip layer left after transport decoding.
+            "body": inner,
+            "error": None,
+            "truncated": False,
+            "transport_bytes": len(outer),
+            "gzip_expanded_bytes": len(inner),
+        }
+        work_budget = len(inner) + 127
+        with mock.patch.object(sitemap._http, "get", return_value=response):
+            result = sitemap.collect(
+                target,
+                max_total_bytes=100_000,
+                max_gzip_work=work_budget,
+            )
+        errors = [entry["error"] for entry in result["errors"]]
+        self.assertEqual(result["budget"]["gzip_work_used"], work_budget)
+        self.assertLess(result["budget"]["bytes_used"], 100_000)
+        self.assertIn("global gzip work budget exhausted", errors)
+        self.assertNotIn("global byte budget exhausted", errors)
+
+    def test_gzip_suffix_does_not_double_decode_transport_decoded_xml(self):
+        target = "https://example.com/root.xml.gz"
+        xml = self._urlset("https://example.com/page")
+        bodies = {target: xml}
+        calls = []
+        with mock.patch.object(sitemap._http, "get",
+                               side_effect=self._fetcher(bodies, calls)):
+            result = sitemap.collect(target)
+        self.assertEqual(result["url_count"], 1)
+        self.assertEqual(result["urls"][0]["loc"], "https://example.com/page")
+
+    def test_global_time_budget_stops_after_slow_fetch(self):
+        bodies = {self.ROOT_URL: self._urlset("https://example.com/page")}
+        calls = []
+        clock = [0.0]
+        fetcher = self._fetcher(bodies, calls)
+
+        def slow_fetch(url, **kwargs):
+            response = fetcher(url, **kwargs)
+            clock[0] = 2.0
+            return response
+
+        with mock.patch.object(sitemap._http, "get", side_effect=slow_fetch), \
+             mock.patch.object(sitemap.time, "monotonic", side_effect=lambda: clock[0]):
+            result = sitemap.collect(self.ROOT_URL, max_seconds=1.0)
+        self.assertIn("global time budget exhausted",
+                      [error["error"] for error in result["errors"]])
+        self.assertTrue(result["truncated"])
+
+    def test_deadline_prevents_a_second_redirect_fetch(self):
+        calls = []
+        clock = [0.0]
+
+        def slow_redirect(url, **kwargs):
+            calls.append((url, kwargs["timeout"], kwargs["follow_redirects"]))
+            clock[0] = 2.0
+            return {
+                "status": 302,
+                "url": url,
+                "headers": {"Location": "https://example.com/next.xml"},
+                "body": b"",
+                "error": "HTTP 302",
+                "truncated": False,
+            }
+
+        with mock.patch.object(sitemap._http, "get", side_effect=slow_redirect), \
+             mock.patch.object(sitemap._http, "redirect_safety_error", return_value=None), \
+             mock.patch.object(sitemap.time, "monotonic", side_effect=lambda: clock[0]):
+            result = sitemap.collect(self.ROOT_URL, max_seconds=1.0)
+        self.assertEqual(len(calls), 1)
+        self.assertFalse(calls[0][2])
+        self.assertLessEqual(calls[0][1], 1.0)
+        self.assertIn("global time budget exhausted",
+                      [error["error"] for error in result["errors"]])
+
+
+class MissingConnectorCoverageTests(unittest.TestCase):
+    """Keep every bundled connector module under an offline parser/builder test."""
+
+    def test_every_bundled_connector_module_is_loaded_by_this_suite(self):
+        connector_dir = ROOT / "scripts" / "connectors"
+        expected = {path.stem for path in connector_dir.glob("*.py")}
+        loaded = {
+            pathlib.Path(module.__file__).stem
+            for module in globals().values()
+            if getattr(module, "__file__", None)
+            and pathlib.Path(module.__file__).resolve().parent == connector_dir.resolve()
+        }
+        self.assertEqual(loaded, expected)
+
+    def test_kg_search_builds_a_bounded_encoded_request_and_parses_results(self):
+        response = {
+            "status": 200,
+            "error": None,
+            "json": {"search": [{
+                "id": "Q1", "label": "A & B", "description": "fixture",
+                "match": {"text": "A & B"},
+            }]},
+        }
+        with mock.patch.object(kg._http, "get_json", return_value=response) as get_json:
+            result = kg.search("A & B", lang="en", limit=999)
+        request_url = get_json.call_args.args[0]
+        self.assertIn("search=A+%26+B", request_url)
+        self.assertIn("limit=50", request_url)
+        self.assertEqual(result["candidates"][0]["qid"], "Q1")
+        self.assertEqual(
+            kg._snak_value({
+                "snaktype": "value",
+                "datavalue": {"value": {"id": "Q42"}},
+            }),
+            "Q42",
+        )
+
+    def test_crawl_normalizes_and_parses_one_same_host_page_offline(self):
+        response = {
+            "status": 200,
+            "url": "https://example.com/start",
+            "headers": {"Content-Type": "text/html"},
+            "text": (
+                "<html><head><title> Fixture Page </title></head><body>"
+                '<a href="/inside#part">inside</a>'
+                '<a href="https://other.example/out">outside</a>'
+                "</body></html>"
+            ),
+            "error": None,
+        }
+        with mock.patch.object(crawl._http, "get_text", return_value=response):
+            rows = crawl.crawl(
+                "https://example.com/start#fragment",
+                max_pages=1,
+                max_depth=1,
+                respect_robots=False,
+                delay=0,
+            )
+        self.assertEqual(rows[0]["url"], "https://example.com/start")
+        self.assertEqual(rows[0]["title"], "Fixture Page")
+        self.assertEqual(rows[0]["links_out"], ["https://example.com/inside"])
+        self.assertTrue(crawl.same_host("https://EXAMPLE.com/a", "example.com"))
+
+    def test_rss_monitor_parses_rss_and_atom_without_network(self):
+        rss = (
+            "<rss><channel><title>Fixture RSS</title><item>"
+            "<title>One</title><link>https://example.com/one</link>"
+            "<pubDate>today</pubDate><description>Summary</description>"
+            "</item></channel></rss>"
+        )
+        items, title = rss_monitor.parse_feed(rss)
+        self.assertEqual(title, "Fixture RSS")
+        self.assertEqual(items[0]["link"], "https://example.com/one")
+        atom = (
+            '<feed xmlns="http://www.w3.org/2005/Atom"><title>Fixture Atom</title>'
+            '<entry><title>Two</title><link rel="alternate" '
+            'href="https://example.com/two"/><updated>now</updated></entry></feed>'
+        )
+        atom_items, atom_title = rss_monitor.parse_feed(atom)
+        self.assertEqual(atom_title, "Fixture Atom")
+        self.assertEqual(atom_items[0]["link"], "https://example.com/two")
+
+    def test_suggest_request_builder_and_shape_parser(self):
+        request_url = suggest.build_query("seo audit", hl="en", gl="US")
+        self.assertIn("client=firefox", request_url)
+        self.assertIn("q=seo+audit", request_url)
+        self.assertEqual(
+            suggest.parse_suggestions(["seo", ["SEO audit", 42, "seo tools"]]),
+            ["SEO audit", "seo tools"],
+        )
+        self.assertEqual(suggest.parse_suggestions({"unexpected": "shape"}), [])
+
+    def test_wayback_request_builder_and_cdx_parser(self):
+        request_url, params = wayback.build_query(
+            "example.com/docs", match="prefix", limit=2,
+            from_date="20260101", to_date="20261231",
+        )
+        self.assertIn("output=json", request_url)
+        self.assertEqual(params["url"], "example.com/docs/*")
+        rows = [
+            ["timestamp", "original", "statuscode", "mimetype", "digest"],
+            ["20260101000000", "https://example.com/a", "200", "text/html", "one"],
+            ["20260201000000", "https://example.com/b", "404"],
+        ]
+        records = wayback.parse_cdx_rows(rows)
+        self.assertIsNone(records[1]["mimetype"])
+        summary = wayback.summarize(records)
+        self.assertEqual(summary["total_captures"], 2)
+        self.assertEqual(summary["status_codes"], {"200": 1, "404": 1})
 
 class OnPageParserTests(unittest.TestCase):
     def test_word_count_excludes_non_visible_head_and_script_text(self):
@@ -430,6 +1158,41 @@ class IndexpushSpecTests(unittest.TestCase):
         self.assertEqual(indexpush.collect_urls(["a", "b", "a", "c"], None),
                          ["a", "b", "c"])
 
+    def execute_with_response(self, spec_request, response):
+        original = indexpush._http.get_json
+        indexpush._http.get_json = lambda *args, **kwargs: response
+        try:
+            return indexpush.execute(spec_request)
+        finally:
+            indexpush._http.get_json = original
+
+    def test_baidu_html_block_page_behind_200_is_not_accepted(self):
+        spec = indexpush.build_spec("baidu", ["https://a.com/1"],
+                                    key="tok", site="www.a.com")
+        out = self.execute_with_response(
+            spec["request"], {"status": 200, "error": None, "json": None})
+        self.assertFalse(out["accepted"])
+        self.assertIn("unrecognized response", out["error"])
+
+    def test_baidu_zero_success_count_is_not_accepted(self):
+        spec = indexpush.build_spec("baidu", ["https://a.com/1"],
+                                    key="tok", site="www.a.com")
+        out = self.execute_with_response(
+            spec["request"],
+            {"status": 200, "error": None, "json": {"success": 0, "remain": 99}})
+        self.assertFalse(out["accepted"])
+        self.assertIn("success=0", out["error"])
+        accepted = self.execute_with_response(
+            spec["request"],
+            {"status": 200, "error": None, "json": {"success": 1, "remain": 98}})
+        self.assertTrue(accepted["accepted"])
+
+    def test_indexnow_empty_200_stays_accepted(self):
+        spec = indexpush.build_spec("indexnow", ["https://a.com/1"], key="abc123")
+        out = self.execute_with_response(
+            spec["request"], {"status": 200, "error": None, "json": None})
+        self.assertTrue(out["accepted"])
+
 
 class HnTests(unittest.TestCase):
     def test_numeric_filters_force_search_by_date_index(self):
@@ -505,9 +1268,11 @@ class ProducthuntTests(unittest.TestCase):
              "json": None})
         self.assertEqual((code, err["error"], err["reset_seconds"]),
                          (3, "rate_limited", "600"))
+        # A rejected token (401/403) is a HARD error -> exit 2, not the transient
+        # exit-3 rate-limit/skippable class (so smoke suites FAIL on a bad token).
         code, err = producthunt.classify_failure(
             {"status": 401, "headers": {}, "json": None})
-        self.assertEqual((code, err["error"]), (3, "auth_failed"))
+        self.assertEqual((code, err["error"]), (2, "auth_failed"))
         self.assertIsNone(producthunt.classify_failure(
             {"status": 200, "headers": {},
              "json": {"data": {"posts": {"edges": []}}}}))
@@ -674,6 +1439,197 @@ class DiscourseTests(unittest.TestCase):
         self.assertEqual(out["rows_counted"], 3)
         self.assertEqual(out["trust_level_distribution"]["2_member"], 2)
         self.assertEqual(out["trust_level_distribution"]["0_new"], 1)
+
+
+class ExperimentTests(unittest.TestCase):
+    """Statistical correctness against known values (pure math, no network)."""
+
+    def test_normal_helpers(self):
+        self.assertAlmostEqual(experiment.norm_ppf(0.975), 1.959963985, places=6)
+        self.assertAlmostEqual(experiment.norm_ppf(0.8), 0.841621234, places=6)
+        self.assertAlmostEqual(experiment.norm_cdf(1.959963985), 0.975, places=6)
+        for bad in (0.0, 1.0, -0.1, 1.1):
+            with self.assertRaises(ValueError):
+                experiment.norm_ppf(bad)
+
+    def test_two_proportion_textbook(self):
+        r = experiment.two_proportion(100, 1000, 130, 1000)
+        self.assertAlmostEqual(r["z"], 2.1027, places=3)
+        self.assertAlmostEqual(r["p_value"], 0.0355, places=3)
+        self.assertTrue(r["statistically_significant"])
+        self.assertTrue(r["practical_lift_clears_bar"])  # +30% clears 15% default
+        self.assertNotIn("promote", r)
+        self.assertAlmostEqual(r["relative_lift"], 0.30, places=6)
+        self.assertTrue(r["effect_interval_excludes_zero"])
+        self.assertEqual(r["provenance"]["outputs"], "calculated")
+
+    def test_proportion_returns_separate_decision_inputs(self):
+        # Statistical and practical flags remain distinct; no business verdict leaks out.
+        r = experiment.two_proportion(100, 1000, 130, 1000, min_lift=0.40)
+        self.assertTrue(r["statistically_significant"])
+        self.assertFalse(r["practical_lift_clears_bar"])
+        self.assertNotIn("promote", r)
+        # equal rates -> not significant, p == 1.0
+        r0 = experiment.two_proportion(100, 1000, 100, 1000)
+        self.assertFalse(r0["statistically_significant"])
+        self.assertAlmostEqual(r0["p_value"], 1.0, places=6)
+        # bad input
+        with self.assertRaises(ValueError):
+            experiment.two_proportion(100, 50, 10, 100)   # conv > n
+
+    def test_wilson_interval(self):
+        lo, hi = experiment.wilson_interval(50, 100)
+        self.assertAlmostEqual(lo, 0.404, places=2)
+        self.assertAlmostEqual(hi, 0.596, places=2)
+        self.assertEqual(experiment.wilson_interval(0, 0), (0.0, 0.0))
+
+    def test_mann_whitney(self):
+        sep = experiment.mann_whitney(list(range(1, 9)), list(range(9, 17)))
+        self.assertEqual(sep["u"], 0.0)
+        self.assertTrue(sep["p_value"] < 0.05)
+        same = experiment.mann_whitney([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+        self.assertEqual(same["u"], 12.5)
+        self.assertGreater(same["p_value"], 0.5)
+        with self.assertRaises(ValueError):
+            experiment.mann_whitney([], [1])
+
+    def test_sample_size_roundtrip(self):
+        ss = experiment.sample_size(0.10, 0.02)
+        self.assertTrue(3000 < ss["n_per_variant"] < 4500)
+        mde = experiment.min_detectable_effect(0.10, ss["n_per_variant"])
+        self.assertAlmostEqual(mde["mde_absolute"], 0.02, places=3)
+
+    def test_bootstrap_deterministic(self):
+        a, b = [1, 2, 3, 4, 5], [3, 4, 5, 6, 7]
+        r1 = experiment.bootstrap_diff(a, b, seed=0)
+        r2 = experiment.bootstrap_diff(a, b, seed=0)
+        self.assertEqual(r1["confidence_interval"], r2["confidence_interval"])
+        self.assertAlmostEqual(r1["point_estimate"], 2.0, places=6)
+
+    def test_edge_case_validation(self):
+        # out-of-range alpha raises (was: crash / inverted CI / trivially significant)
+        for bad in (0.0, 1.0, 1.5, -0.1):
+            with self.assertRaises(ValueError):
+                experiment.two_proportion(100, 1000, 130, 1000, alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.mann_whitney([1, 2, 3], [4, 5, 6], alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.bootstrap_diff([1, 2, 3], [4, 5, 6], alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.sample_size(0.10, 0.02, alpha=bad)
+            with self.assertRaises(ValueError):
+                experiment.min_detectable_effect(0.10, 4000, alpha=bad)
+        with self.assertRaises(ValueError):        # B<1 was an IndexError on empty diffs
+            experiment.bootstrap_diff([1, 2, 3], [4, 5, 6], B=0)
+        with self.assertRaises(ValueError):
+            experiment.two_proportion(100, 1000, 130, 1000, min_lift=-0.01)
+        with self.assertRaises(ValueError):
+            experiment.two_proportion(100, 1000, 130, 1000, alpha=float("nan"))
+        with self.assertRaises(ValueError):
+            experiment.mann_whitney([1, float("inf")], [2, 3])
+        with self.assertRaises(ValueError):
+            experiment.bootstrap_diff([1, 2], [3, float("nan")])
+        for bad_power in (0.0, 1.0, 1.2, -0.1):
+            with self.assertRaises(ValueError):
+                experiment.sample_size(0.10, 0.02, power=bad_power)
+            with self.assertRaises(ValueError):
+                experiment.min_detectable_effect(0.10, 4000, power=bad_power)
+
+    def test_zero_control_conversions(self):
+        # Relative lift from a zero baseline is undefined; callers need an absolute bar.
+        r = experiment.two_proportion(0, 1000, 50, 1000)
+        self.assertTrue(r["statistically_significant"])
+        self.assertIsNone(r["relative_lift"])
+        self.assertIsNone(r["practical_lift_clears_bar"])
+        self.assertEqual(r["direction"], "variant_higher")
+        z = experiment.two_proportion(0, 1000, 0, 1000)
+        self.assertFalse(z["statistically_significant"])
+        self.assertFalse(z["practical_lift_clears_bar"])
+
+    def test_degenerate_bootstrap_not_significant(self):
+        # n=1 per arm: CI collapses to a point -> must NOT be read as significant
+        boot = experiment.bootstrap_diff([5], [9])
+        self.assertFalse(boot["reliable"])
+        self.assertFalse(boot["interval_excludes_zero"])
+
+    def test_norm_ppf_tail_branches(self):
+        # Force Acklam's low/high-tail branches (p < 0.02425 / p > 0.97575), which use
+        # a different coefficient set than the central branch the other tests hit.
+        self.assertAlmostEqual(experiment.norm_ppf(0.001), -3.090232306, places=5)
+        self.assertAlmostEqual(experiment.norm_ppf(0.999), 3.090232306, places=5)
+        # symmetry across both tails
+        self.assertAlmostEqual(experiment.norm_ppf(0.001), -experiment.norm_ppf(0.999), places=6)
+
+    def test_mann_whitney_tie_correction(self):
+        # A tie-heavy, asymmetric input where the tie correction actually moves the
+        # answer — pins tie_term AND the continuity-correction sign together. A version
+        # that drops the tie term (or flips the sign) fails this.
+        r = experiment.mann_whitney([1, 1, 2, 3], [2, 3, 4, 4])
+        self.assertAlmostEqual(r["z"], -1.6269, places=4)
+        self.assertAlmostEqual(r["p_value"], 0.1038, places=4)
+        # same shape with no ties gives a materially different (more significant) result
+        r_notie = experiment.mann_whitney([1, 2, 3, 4], [5, 6, 7, 8])
+        self.assertLess(r_notie["p_value"], r["p_value"])
+
+    def test_bootstrap_median_path(self):
+        # Exercises the stat='median' branch (agg=_median) through the resampling loop.
+        b = experiment.bootstrap_diff([1, 2, 3, 4, 5], [10, 20, 30, 40, 50],
+                                      stat="median", seed=0)
+        self.assertEqual(b["statistic"], "median")
+        self.assertAlmostEqual(b["point_estimate"], 27.0, places=6)  # median(b)-median(a)=30-3
+        b2 = experiment.bootstrap_diff([1, 2, 3, 4, 5], [10, 20, 30, 40, 50],
+                                       stat="median", seed=0)
+        self.assertEqual(b["confidence_interval"], b2["confidence_interval"])
+
+    def test_cli_main(self):
+        # The user-facing CLI (main/build_parser/_floats/dispatch) — untested by the
+        # direct-function cases above. Capture stdout so the run stays quiet.
+        import io
+        import contextlib
+
+        def run(argv):
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = experiment.main(argv)
+            return rc, buf.getvalue()
+
+        rc, out = run(["proportion", "--control", "100", "1000", "--variant", "130", "1000"])
+        self.assertEqual(rc, 0)
+        self.assertIn("statistically_significant", out)
+        self.assertNotIn('"promote"', out)
+        rc, out = run(["continuous", "--a", "1,2,3", "--b", "10,20,30",
+                       "--stat", "median", "--seed", "0"])
+        self.assertEqual(rc, 0)
+        self.assertIn("mann_whitney", out)                # continuous combines MW + bootstrap
+        rc, _ = run(["samplesize", "--baseline", "0.10", "--mde", "0.02"])
+        self.assertEqual(rc, 0)
+        # neither --mde nor --n -> documented exit-1 branch (message goes to stderr)
+        with contextlib.redirect_stderr(io.StringIO()):
+            rc, _ = run(["samplesize", "--baseline", "0.10"])
+        self.assertEqual(rc, 1)
+        # bad input -> ValueError caught -> exit 1
+        with contextlib.redirect_stderr(io.StringIO()):
+            rc, _ = run(["proportion", "--control", "100", "50", "--variant", "10", "100"])
+        self.assertEqual(rc, 1)
+
+    def test_effect_direction_is_factual(self):
+        r = experiment.two_proportion(130, 1000, 100, 1000)
+        self.assertTrue(r["statistically_significant"])
+        self.assertLess(r["relative_lift"], 0)
+        self.assertEqual(r["direction"], "variant_lower")
+        self.assertFalse(r["practical_lift_clears_bar"])
+        pos = experiment.two_proportion(100, 1000, 130, 1000, min_lift=0.5)
+        self.assertTrue(pos["statistically_significant"])
+        self.assertEqual(pos["direction"], "variant_higher")
+        self.assertFalse(pos["practical_lift_clears_bar"])
+
+    def test_output_notes_carry_caveats(self):
+        # The overlapping-CI and no-peeking caveats must be in the emitted notes.
+        prop = experiment.two_proportion(100, 1000, 130, 1000)
+        self.assertIn("do NOT imply non-significance", prop["note"])
+        self.assertIn("precommitted", prop["note"])
+        cont = experiment.mann_whitney([1, 2, 3, 4], [5, 6, 7, 8])
+        self.assertIn("peeking", cont["note"])
 
 
 if __name__ == "__main__":

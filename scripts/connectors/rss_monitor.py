@@ -139,7 +139,10 @@ def monitor(feed_url, limit=None):
         return result
     try:
         items, source = parse_feed(text, feed_url=feed_url, limit=limit)
-    except ET.ParseError as e:
+    except (ET.ParseError, ValueError) as e:
+        # ET.fromstring raises ValueError (not ParseError) on a str carrying an XML
+        # encoding declaration ("Unicode strings with encoding declaration are not
+        # supported") — catch it too so the CLI returns a clean error dict.
         result["error"] = "XML parse error: %s" % e
         return result
     result["feed_title"] = source

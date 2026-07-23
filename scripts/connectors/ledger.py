@@ -4,8 +4,8 @@
 The measurement spine for the skills: instead of *narrating* a number, a skill
 records each connector run as a timestamped snapshot, then computes the
 **delta** between runs. This is what turns "rankings improved" into a verifiable
-before/after, and what every monitor-phase skill (rank-tracker,
-performance-reporter, technical-seo-checker) should read for baselines.
+before/after, and what every monitoring skill (rank-tracker,
+performance-monitor, technical-seo-checker) should read for baselines.
 
 No network, no third-party packages. Snapshots are append-only JSONL files under
 a per-target directory, so the store is plain text the user owns and can diff in
@@ -76,12 +76,27 @@ def _store_path(store: str, target: str, source: str) -> str:
 
 
 def flatten(obj, prefix=""):
-    """Flatten nested dict/list into dotted keys. Lists use [i] indices."""
+    """Flatten nested dict/list into dotted keys.
+
+    Lists use [i] positional indices — so inserting/removing a list element
+    shifts every following index and cmd_diff reports it as a cascade of
+    per-index 'changes' rather than one add/remove. Ordered-list deltas are
+    positional and should be read as such.
+
+    Empty dicts/lists emit a sentinel key ("<prefix>{}" / "<prefix>[]" with an
+    empty-container value) so a field that is present-but-empty is representable
+    in the flattened form — otherwise a field going to/from {} or [] would
+    vanish and be invisible to the diff.
+    """
     out = {}
     if isinstance(obj, dict):
+        if not obj:
+            out["%s{}" % prefix] = {}
         for k, v in obj.items():
             out.update(flatten(v, "%s.%s" % (prefix, k) if prefix else str(k)))
     elif isinstance(obj, list):
+        if not obj:
+            out["%s[]" % prefix] = []
         for i, v in enumerate(obj):
             out.update(flatten(v, "%s[%d]" % (prefix, i)))
     else:
@@ -94,7 +109,9 @@ def _is_num(x):
 
 
 def _read_snapshots(path):
-    if not os.path.exists(path):
+    if not os.path.isfile(path):
+        # isfile (not exists): a directory named "<x>.jsonl" in the store would
+        # otherwise reach open() below and raise IsADirectoryError.
         return []
     rows = []
     with open(path, encoding="utf-8") as fh:
@@ -127,6 +144,8 @@ def cmd_record(args):
     # same file. Refuse to append if this file already holds a DIFFERENT raw target/
     # source, so measurement is never silently attributed to the wrong thing.
     existing = _read_snapshots(path)
+    # Scan every stored row: a leading row with a null/legacy target or source
+    # must not clear the guard for the rows that follow it.
     for prior in existing:
         pt, ps = prior.get("target"), prior.get("source")
         if pt is not None and pt != args.target:
@@ -134,7 +153,6 @@ def cmd_record(args):
                     "use a more specific/distinct target string" % (path, pt)}, 2
         if ps is not None and ps != args.source:
             return {"ok": False, "error": "source collision: %s already stores source %r" % (path, ps)}, 2
-        break
     ts = args.ts or datetime.now(timezone.utc).isoformat()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "a", encoding="utf-8") as fh:
@@ -155,7 +173,9 @@ def cmd_diff(args):
     changes = []
     for key in sorted(set(fp) | set(fc)):
         a, b = fp.get(key), fc.get(key)
-        if a == b:
+        # type-aware: True==1 / False==0 in Python, so compare type too — else a
+        # bool<->number flip (e.g. true -> 1) is masked as "unchanged".
+        if type(a) is type(b) and a == b:
             continue
         entry = {"field": key, "from": a, "to": b}
         if _is_num(a) and _is_num(b):

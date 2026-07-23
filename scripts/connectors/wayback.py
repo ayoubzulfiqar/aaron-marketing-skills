@@ -91,6 +91,8 @@ def parse_cdx_rows(rows):
     header = [str(h) for h in rows[0]]
     out = []
     for row in rows[1:]:
+        if not isinstance(row, list):
+            continue  # a malformed non-list data row would crash row[i]/len(row)
         rec = {}
         for i, key in enumerate(header):
             rec[key] = row[i] if i < len(row) else None
@@ -204,10 +206,12 @@ def main(argv=None):
         print("error: %s" % e, file=sys.stderr)
         return 1
     print(json.dumps(result, indent=2, ensure_ascii=False))
-    # Non-zero only when the request never completed (network/DNS/timeout).
     # A completed request that found zero captures is a valid, reportable
-    # outcome -> exit 0. HTTP 4xx/5xx (status set) is also reportable -> 0.
-    if result["status"] == 0 and result["error"]:
+    # outcome -> exit 0. Any set error is a failure: this covers not only a
+    # request that never completed (network/DNS/timeout, status 0) but also a
+    # 200 response whose body was not valid JSON (an HTML error/maintenance
+    # page), which _http flags as 'invalid JSON response' with status 200.
+    if result["error"]:
         print("error: %s" % result["error"], file=sys.stderr)
         return 2
     return 0

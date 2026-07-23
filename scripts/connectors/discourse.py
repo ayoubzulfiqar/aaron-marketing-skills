@@ -45,7 +45,7 @@ Python 3 stdlib only. Importable; also a JSON-printing argparse CLI.
 CLI:
   python3 discourse.py latest <forum-base-url> [--max 20]
   python3 discourse.py topic  <forum-base-url> <topic-id>
-  python3 discourse.py health <forum-base-url> [--max 100]
+  python3 discourse.py health <forum-base-url> [--max 50]
 
   python3 discourse.py latest https://meta.discourse.org
   python3 discourse.py topic  https://meta.discourse.org 1
@@ -67,13 +67,13 @@ from urllib.parse import urlencode, urlsplit, urlunsplit
 import _http
 import robots
 
-USER_AGENT = ("aaron-marketing-skills/15.0 "
+USER_AGENT = ("aaron-marketing-skills/17.0 "
               "(+https://github.com/aaron-he-zhu/aaron-marketing-skills)")
 ROBOTS_UA = "aaron-marketing-skills"
 MIN_INTERVAL = 1.0     # seconds between consecutive requests (politeness)
 MAX_TOPICS = 100       # latest.json hard cap we surface per call
-MAX_DIRECTORY = 100    # directory_items rows we surface per call
 DIRECTORY_MAX_API = 50   # Discourse serves 50 directory rows per page
+MAX_DIRECTORY = DIRECTORY_MAX_API  # one directory page; we don't paginate
 EXCERPT_LEN = 280
 # Discourse trust levels 0..4: newcomer / basic / member / regular / leader.
 TRUST_LEVEL_NAMES = {
@@ -181,9 +181,11 @@ def time_to_first_response(posts):
     reply or timestamps are unusable. Pure — the community-warmth signal."""
     op = None
     for p in posts or []:
-        if p.get("post_number") == 1 or op is None:
+        if p.get("post_number") == 1:
             op = p
             break
+    if op is None and posts:
+        op = posts[0]  # fallback: first post in the stream when none is numbered 1
     if not op:
         return None
     op_time = _parse_iso(op.get("created_at"))
@@ -193,7 +195,9 @@ def time_to_first_response(posts):
     for p in posts or []:
         if p is op:
             continue
-        if p.get("username") == op_user:
+        # Only skip same-author replies when the OP HAS a username — otherwise
+        # None == None would treat every null-username user as the OP and skip them.
+        if op_user is not None and p.get("username") == op_user:
             continue
         reply_time = _parse_iso(p.get("created_at"))
         if reply_time is None:
@@ -287,20 +291,41 @@ def _now_iso():
 
 # ------------------------------------------------------------- network ops
 
-def preflight(base):
+def preflight(base, paths=("/latest.json",)):
     """Evaluate the forum's robots.txt locally before the first API call.
     Returns {allowed, robots_url, status, rule} — allowed is True when
-    robots.txt is absent/unreachable (4xx/no-answer = no restrictions),
-    False only on an applicable Disallow (of /latest, the shared prefix)."""
+    robots.txt is absent (4xx = no restrictions), False on an applicable
+    Disallow of ANY path the subcommand will fetch. FAIL-CLOSED like the
+    other pre-flighting fetchers: an unverifiable robots.txt (5xx/network)
+    refuses, and --own-site is the explicit owner-assertion override.
+    `paths` are the concrete endpoints (each subcommand passes its own)."""
     parsed = robots.fetch(base)
-    allowed, detail = parsed.can_fetch(ROBOTS_UA, "/latest.json")
+    if robots.status_unreliable(parsed.status):
+        return {
+            "allowed": False,
+            "ua": ROBOTS_UA,
+            "robots_url": parsed.url,
+            "status": parsed.status,
+            "rule": None,
+            "reason": "robots.txt could not be verified (status %s) — "
+                      "fail-closed; re-run with --own-site to override"
+                      % parsed.status,
+        }
+    allowed = True
+    rule = None
+    for path in paths:
+        ok, detail = parsed.can_fetch(ROBOTS_UA, path)
+        if not ok:
+            allowed = False
+            rule = (detail or {}).get("matched_rule") \
+                if isinstance(detail, dict) else None
+            break
     return {
         "allowed": bool(allowed),
         "ua": ROBOTS_UA,
         "robots_url": parsed.url,
         "status": parsed.status,
-        "rule": (detail or {}).get("matched_rule")
-                if isinstance(detail, dict) else None,
+        "rule": rule,
     }
 
 
@@ -418,6 +443,8 @@ def build_parser():
                                       "posters.")
     s.add_argument("base", metavar="forum-base-url",
                    help="Forum origin, e.g. https://meta.discourse.org.")
+    s.add_argument("--own-site", action="store_true",
+                   help="Owner assertion — skip the robots.txt pre-flight.")
     s.add_argument("--max", type=int, default=20, dest="max_items",
                    help="Max topics (<=%d, default 20)." % MAX_TOPICS)
 
@@ -425,6 +452,8 @@ def build_parser():
                                      "signal.")
     s.add_argument("base", metavar="forum-base-url",
                    help="Forum origin, e.g. https://meta.discourse.org.")
+    s.add_argument("--own-site", action="store_true",
+                   help="Owner assertion — skip the robots.txt pre-flight.")
     s.add_argument("topic_id", help="Numeric topic id (from a topic URL).")
 
     s = sub.add_parser("health", help="Forum-health snapshot: stats + "
@@ -432,9 +461,12 @@ def build_parser():
                                       "distribution.")
     s.add_argument("base", metavar="forum-base-url",
                    help="Forum origin, e.g. https://meta.discourse.org.")
-    s.add_argument("--max", type=int, default=100, dest="max_items",
-                   help="Max directory rows to tally (<=%d, default 100)."
-                        % MAX_DIRECTORY)
+    s.add_argument("--own-site", action="store_true",
+                   help="Owner assertion — skip the robots.txt pre-flight.")
+    s.add_argument("--max", type=int, default=MAX_DIRECTORY, dest="max_items",
+                   help="Max directory rows to tally (<=%d — the forum serves "
+                        "one fixed %d-row directory page; not paginated)."
+                        % (MAX_DIRECTORY, DIRECTORY_MAX_API))
     return p
 
 
@@ -453,8 +485,20 @@ def main(argv=None):
                            "forum-base-url must be a URL like "
                            "https://meta.discourse.org")
 
-    # robots.txt pre-flight (local): refuse before any API call on a Disallow.
-    guard = preflight(base)
+    # robots.txt pre-flight (local): refuse before any API call on a Disallow
+    # of ANY endpoint the chosen subcommand will actually fetch.
+    preflight_paths = {
+        "latest": ("/latest.json",),
+        "topic": ("/t/",),
+        # /about.json is required; /directory_items.json is best-effort (health()
+        # already degrades to a scoped directory_error), so it must NOT fail-close
+        # the whole snapshot when only the member-directory is robots-disallowed.
+        "health": ("/about.json",),
+    }[args.command]
+    if args.own_site:
+        guard = {"allowed": True, "skipped": "own-site assertion"}
+    else:
+        guard = preflight(base, preflight_paths)
     if not guard["allowed"]:
         result = {"error": "robots_disallowed", "robots": guard, "forum": base,
                   "note": "The forum's robots.txt disallows this path; "
@@ -473,7 +517,7 @@ def main(argv=None):
                                "topic-id must be numeric, e.g. 1")
         result = topic(base, tid)
     else:  # health
-        result = health(base, clamp(args.max_items, MAX_DIRECTORY, 100))
+        result = health(base, clamp(args.max_items, MAX_DIRECTORY, MAX_DIRECTORY))
 
     result.setdefault("robots", guard)
     print(json.dumps(result, indent=2, ensure_ascii=False))

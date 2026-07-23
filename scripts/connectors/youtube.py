@@ -92,8 +92,18 @@ def parse_channel_ref(ref):
         m = re.search(r"/(@[\w.\-]+)", path)
         if m:
             return ("handle", m.group(1))
+        # Legacy /c/<name> or /user/<name> (or any other youtube URL): resolve by the
+        # path's last name segment as a handle candidate — never fall through and echo
+        # the whole URL back as a bogus "@https://..." selector.
+        m = re.search(r"/(?:c|user)/([\w.\-]+)", path)
+        if m:
+            return ("handle", "@" + m.group(1))
+        seg = path.strip("/").split("/")[-1]
+        return ("handle", "@" + seg) if seg else ("handle", "@")
     if re.fullmatch(r"UC[\w-]{10,}", ref):
         return ("id", ref)
+    if not ref:
+        return ("handle", "@")
     return ("handle", ref if ref.startswith("@") else "@" + ref)
 
 
@@ -207,7 +217,7 @@ def videos(key, ref, limit=10):
     playlist = ch.get("uploads_playlist") or uploads_playlist(ch["channel_id"])
     r = _call(key, "playlistItems", {"part": "contentDetails",
                                      "playlistId": playlist,
-                                     "maxResults": min(limit, MAX_VIDEOS)})
+                                     "maxResults": max(1, min(limit, MAX_VIDEOS))})
     ids = [i["contentDetails"]["videoId"]
            for i in ((r.get("json") or {}).get("items")) or []
            if i.get("contentDetails", {}).get("videoId")]
@@ -219,6 +229,9 @@ def videos(key, ref, limit=10):
         return out
     rv = _call(key, "videos", {"part": "snippet,statistics",
                                "id": ",".join(ids)})
+    if rv.get("error"):
+        out["error"] = rv["error"]
+        return out
     for v in ((rv.get("json") or {}).get("items")) or []:
         s = v.get("statistics", {})
         out["videos"].append({

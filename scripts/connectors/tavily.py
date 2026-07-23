@@ -103,9 +103,20 @@ def build_spec(args):
 
 
 def preflight(url, ua=ROBOTS_UA):
-    """Local robots.txt verdict for one URL (see firecrawl.py — same rule)."""
-    path = urlsplit(url).path or "/"
+    """Local robots.txt verdict for one URL (see firecrawl.py — same rule,
+    including the FAIL-CLOSED behavior on an unverifiable 5xx/network fetch)."""
+    sp = urlsplit(url)
+    path = sp.path or "/"
+    if sp.query:
+        path += "?" + sp.query
     parsed = robots.fetch(url)
+    if robots.status_unreliable(parsed.status):
+        return {
+            "url": url, "allowed": False, "ua": ua,
+            "robots_url": parsed.url, "status": parsed.status, "rule": None,
+            "reason": "robots.txt could not be verified (status %s) — fail-closed; "
+                      "re-run with --own-site to override" % parsed.status,
+        }
     allowed, detail = parsed.can_fetch(ua, path)
     return {
         "url": url,

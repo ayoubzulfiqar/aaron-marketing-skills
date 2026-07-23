@@ -79,8 +79,10 @@ def parse_response(payload, requested):
     by_domain = {}
     if isinstance(payload, dict):
         for item in payload.get("response", []) or []:
-            if isinstance(item, dict) and item.get("domain"):
-                by_domain[item["domain"].lower()] = item
+            if isinstance(item, dict):
+                dom = item.get("domain")
+                if isinstance(dom, str) and dom:
+                    by_domain[dom.lower()] = item
     for d in requested:
         item = by_domain.get(d.lower(), {})
         rows.append({
@@ -183,8 +185,11 @@ def main(argv=None):
         return 1
 
     print(json.dumps(result, indent=2, ensure_ascii=False))
-    if result.get("status") == 0 and result.get("error"):
-        print("error: %s" % result["error"], file=sys.stderr)
+    status = result.get("status")
+    # Exit non-zero on ANY error or non-2xx status — a completed request that
+    # returns 403 (bad/expired key), 429 (quota), or 500 must not exit 0.
+    if result.get("error") or (isinstance(status, int) and not (200 <= status < 300)):
+        print("error: %s (status %s)" % (result.get("error"), status), file=sys.stderr)
         return 2
     return 0
 

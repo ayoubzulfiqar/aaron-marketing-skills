@@ -60,5 +60,5 @@ When generating a TikTok post, hand back:
 
 ## Related references
 
-- `../c3-benchmark.md` — influencer Creator/Content/Campaign scoring (CVI)
-- Influencer skills (e.g. `content-reviewer`, `content-amplifier`) for vetting and repurposing creator posts
+- `../star-benchmark.md` — influencer Suitability/Trust/Appeal/Return scoring (SQS)
+- Influencer skills (e.g. `creator-content-auditor`, `content-amplifier`) for vetting and repurposing creator posts

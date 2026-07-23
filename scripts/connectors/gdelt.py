@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from urllib.parse import urlencode
 
 import _http
@@ -48,10 +49,10 @@ def build_url(query, mode="artlist", days=7, maxrecords=25):
         "query": query,
         "mode": mode,
         "format": "json",
-        "timespan": "%dd" % days,
+        "timespan": "%dd" % max(1, days),
     }
     if mode == "artlist":
-        params["maxrecords"] = min(maxrecords, MAX_RECORDS)
+        params["maxrecords"] = min(max(1, maxrecords), MAX_RECORDS)
     return API_ENDPOINT + "?" + urlencode(params)
 
 
@@ -71,22 +72,50 @@ def parse_response(payload, mode):
         return {"articles": articles, "count": len(articles)}
     timeline = []
     for s in (payload or {}).get("timeline") or []:
+        if not isinstance(s, dict):
+            continue
         for pt in s.get("data") or []:
             timeline.append({"date": pt.get("date"), "value": pt.get("value")})
     return {"timeline": timeline, "count": len(timeline)}
 
 
+MIN_INTERVAL = 5.0  # documented GDELT ask: keep >=5s between calls
+_last_request = None
+
+
+def _throttle():
+    """Enforce the documented spacing in-process (import-path safety: the CLI
+    makes one call per invocation, but search() in a loop must also honor it)."""
+    global _last_request
+    if _last_request is not None:
+        wait = MIN_INTERVAL - (time.monotonic() - _last_request)
+        if wait > 0:
+            time.sleep(wait)
+    _last_request = time.monotonic()
+
+
 def search(query, mode="artlist", days=7, maxrecords=25):
     """One GDELT query. Detects the plain-text throttle notice."""
+    _throttle()
     url = build_url(query, mode, days, maxrecords)
     r = _http.get_text(url, retries=1)  # no auto-retry: respect the 5s ask
     text = (r.get("text") or "").strip()
     # GDELT throttles two ways: a plain-text notice on HTTP 200, or a real 429.
-    if r.get("status") == 429 or (
-            r.get("status") == 200 and text and not text.startswith("{")):
-        return {"error": "rate_limited", "status": r.get("status"),
+    # But GDELT ALSO returns plain-text on 200 for query errors (too-short/invalid
+    # query) — those must not be misreported as throttling.
+    text_notice = r.get("status") == 200 and text and not text.startswith("{")
+    if r.get("status") == 429 or text_notice:
+        low = text.lower()
+        throttle = (r.get("status") == 429 or "too many request" in low
+                    or "wait a few" in low or "exceeded" in low)
+        if throttle:
+            return {"error": "rate_limited", "status": r.get("status"),
+                    "detail": text[:200],
+                    "hint": "GDELT asks for >=5s between requests; wait and retry."}
+        return {"error": "query_error", "status": r.get("status"),
                 "detail": text[:200],
-                "hint": "GDELT asks for >=5s between requests; wait and retry."}
+                "hint": "GDELT returned a plain-text notice — likely an invalid or "
+                        "too-short query, not throttling."}
     try:
         payload = json.loads(text) if text else None
     except ValueError:

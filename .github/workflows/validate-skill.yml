@@ -1,58 +1,12 @@
 name: Validate Agent Skill
 
 on:
+  # Intentionally no paths filter: .githooks and any otherwise-unlisted text
+  # file can carry a secret/PII and must still trigger the repository scan.
   push:
     branches: [main]
-    paths:
-      - "**/SKILL.md"
-      - "**/references/**"
-      - "references/**"
-      - "commands/**"
-      - "evals/**"
-      - "scripts/**"
-      - "tests/**"
-      - ".github/workflows/**"
-      - ".github/ISSUE_TEMPLATE/**"
-      - ".github/PULL_REQUEST_TEMPLATE.md"
-      - ".claude-plugin/**"
-      - "docs/**"
-      - "hooks/**"
-      - "memory/**"
-      - ".gitignore"
-      - "README.md"
-      - "CLAUDE.md"
-      - "AGENTS.md"
-      - "CONTRIBUTING.md"
-      - "CONNECTORS.md"
-      - "VERSIONS.md"
-      - "marketplace.json"
-      - "docs/mcp-catalog.json"
   pull_request:
     branches: [main]
-    paths:
-      - "**/SKILL.md"
-      - "**/references/**"
-      - "references/**"
-      - "commands/**"
-      - "evals/**"
-      - "scripts/**"
-      - "tests/**"
-      - ".github/workflows/**"
-      - ".github/ISSUE_TEMPLATE/**"
-      - ".github/PULL_REQUEST_TEMPLATE.md"
-      - ".claude-plugin/**"
-      - "docs/**"
-      - "hooks/**"
-      - "memory/**"
-      - ".gitignore"
-      - "README.md"
-      - "CLAUDE.md"
-      - "AGENTS.md"
-      - "CONTRIBUTING.md"
-      - "CONNECTORS.md"
-      - "VERSIONS.md"
-      - "marketplace.json"
-      - "docs/mcp-catalog.json"
 
 jobs:
   validate:
@@ -63,18 +17,20 @@ jobs:
       - name: Validate all skills
         run: |
           set -euo pipefail
-          find seo-geo/research seo-geo/build seo-geo/optimize seo-geo/monitor protocol \
-            influencer/discover influencer/plan influencer/activate influencer/measure \
-            ad/research ad/orchestrate ad/activate ad/scale \
-            email/setup email/engage email/nurture email/deliver \
-            launch/research launch/assemble launch/mobilize launch/prove \
-            social/explore social/craft social/host social/observe \
-            narrative/trace narrative/architect narrative/land narrative/evaluate \
-            -mindepth 2 -maxdepth 2 -name SKILL.md \
-            -print | sort | while read -r file; do
-            bash scripts/validate-skill.sh "$(dirname "$file")"
+          python3 -c 'import json; print("\n".join(p.removeprefix("./") for p in json.load(open(".claude-plugin/plugin.json"))["skills"]))' |
+          while read -r skill; do
+            bash scripts/validate-skill.sh "$skill"
           done
           bash scripts/validate-skill.sh --status
+
+      - name: Architecture and distribution contracts
+        run: |
+          set -euo pipefail
+          python3 scripts/check-architecture.py
+          python3 scripts/generate-system-docs.py --check
+          python3 scripts/generate-auditor-runtime.py --check
+          python3 -m unittest tests.test_architecture tests.test_distribution_builder
+          bash tests/test_runtime_distribution.sh
 
       - name: Root references/ blob-main guard
         run: |
@@ -87,25 +43,24 @@ jobs:
       - name: Lint connector code (py_compile)
         run: |
           set -euo pipefail
-          python3 -m py_compile scripts/connectors/*.py scripts/golden-auditor-math.py scripts/check-evals.py scripts/check-pii.py
-          echo "connectors compile clean"
+          python3 -m py_compile scripts/*.py scripts/connectors/*.py
+          echo "all Python helpers compile clean"
 
-      - name: Connector unit tests
-        run: python3 tests/test_connectors_local.py
+      - name: Deterministic behavior conformance
+        run: python3 scripts/run-behavior-evals.py
 
-      - name: Golden auditor-math check
-        run: python3 scripts/golden-auditor-math.py
-
-      - name: Eval structural lint (no runner — structure only)
+      - name: Eval-fixture and routing structural lint
         run: python3 scripts/check-evals.py
 
       - name: PII / secret scan
-        run: python3 scripts/check-pii.py
+        # Read every tracked blob from the index so hidden directories, symlinks,
+        # and filesystem-walk exclusions cannot bypass the release gate.
+        run: python3 scripts/check-pii.py --tracked
 
       - name: Dependency-creep guard (stdlib-only)
         run: bash scripts/check-stdlib-only.sh
 
-      - name: Version-sync guard (8 tracking files)
+      - name: Version-sync guard (10 tracking surfaces)
         run: bash scripts/check-versions.sh
 
       - name: Cross-agent discovery guard (npx skills)
@@ -121,34 +76,14 @@ jobs:
           echo "declared=$declared found=${found:-none}"
           [ "${found:-0}" = "$declared" ]
 
-      - name: Validate JSON / shell manifests
+      - name: Local Markdown link targets
+        run: python3 scripts/check-local-links.py
+
+      - name: Validate JSON and shell syntax
         run: |
           set -euo pipefail
-          for f in .claude-plugin/plugin.json marketplace.json .claude-plugin/marketplace.json docs/mcp-catalog.json skills.sh.json; do
-            python3 -c "import json,sys; json.load(open('$f')); print('ok: $f')"
-          done
-          # skills.sh.json (registry page groupings) must cover exactly the
-          # declared skill set — a skill missing from every grouping renders
-          # ungrouped at the bottom of https://skills.sh/aaron-he-zhu/aaron-marketing-skills
-          python3 - <<'PYEOF'
-          import json
-          cfg = json.load(open('skills.sh.json'))
-          declared = {p.split('/')[-1] for p in json.load(open('.claude-plugin/plugin.json'))['skills']}
-          grouped_list = [s for g in cfg['groupings'] for s in g['skills']]
-          grouped = set(grouped_list)
-          assert len(cfg['groupings']) <= 50
-          for g in cfg['groupings']:
-              assert 1 <= len(g['title']) <= 120 and len(g.get('description', '')) <= 500
-              assert 1 <= len(g['skills']) <= 500
-          assert len(grouped_list) == len(grouped), f"duplicate slugs: {sorted(s for s in grouped if grouped_list.count(s) > 1)}"
-          assert grouped == declared, f"missing: {sorted(declared - grouped)} unknown: {sorted(grouped - declared)}"
-          print(f"ok: skills.sh.json groupings cover {len(grouped)}/{len(declared)} declared skills")
-          PYEOF
-          # the two marketplace.json files must stay byte-identical mirrors
-          diff -q marketplace.json .claude-plugin/marketplace.json
-          # hook script must parse
-          bash -n hooks/claude-hook.sh && echo "hooks/claude-hook.sh parses"
+          find . -path ./.git -prune -o -path ./.planning -prune -o -name '*.json' -type f -print0 |
+            xargs -0 -n1 python3 -m json.tool >/dev/null
+          # runtime and Git hook scripts must parse
+          bash -n hooks/claude-hook.sh .githooks/pre-commit && echo "hook scripts parse"
           python3 -c "import json; json.load(open('hooks/hooks.json')); print('ok: hooks/hooks.json')"
-
-      - name: Hook behavior tests (Artifact Gate + SessionStart safety)
-        run: bash tests/test_hook_artifact_gate.sh

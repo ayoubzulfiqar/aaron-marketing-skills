@@ -16,18 +16,25 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+# Fail CLOSED on a dead glob: if any scanned location stops matching files the
+# guard must abort, not silently pass with an empty scan set (the historical
+# "scans a directory that no longer exists" bug class).
+for pat in "scripts/*.py" "scripts/connectors/*.py" "tests/*.py"; do
+  compgen -G "$pat" > /dev/null || { echo "MOAT GUARD MISCONFIGURED — no files match '$pat'"; exit 1; }
+done
+
 # (a) Python stdlib module names, straight from the interpreter (no hardcoded list).
 STDLIB="$(python3 -c "import sys;print('\n'.join(sorted(sys.stdlib_module_names)))")"
 
 # (b) The repo's own local modules: one name per .py file in the checked dirs.
 LOCAL=""
-for f in scripts/*.py scripts/connectors/*.py; do
+for f in scripts/*.py scripts/connectors/*.py tests/*.py; do
   [ -e "$f" ] || continue
   LOCAL="${LOCAL}$(basename "$f" .py)"$'\n'
 done
 
 violations=""
-for f in scripts/*.py scripts/connectors/*.py; do
+for f in scripts/*.py scripts/connectors/*.py tests/*.py; do
   [ -e "$f" ] || continue
   # Emit "lineno:module" for every import statement via the stdlib ast parser —
   # handles `import a, b`, `import a.b as c`, `from a.b import x`, and indented
@@ -46,7 +53,9 @@ path = sys.argv[1]
 try:
     with open(path, encoding="utf-8") as fh:
         tree = ast.parse(fh.read(), filename=path)
-except SyntaxError:
+except Exception:
+    # Any read/parse failure (SyntaxError, ValueError, RecursionError,
+    # UnicodeDecodeError, ...) emits the sentinel so the guard fails closed.
     print("0:UNPARSEABLE_FILE")  # not stdlib, not local -> guard fails closed
     sys.exit(0)
 for node in ast.walk(tree):
@@ -67,9 +76,10 @@ if [ -n "$violations" ]; then
 fi
 
 # --- Paid Ads red line: a paid SKILL.md must never require a keyed ad-platform API at Tier 1 ---
+[ -d ad ] || { echo "MOAT GUARD MISCONFIGURED — ad/ discipline dir missing (red-line scan has no target)"; exit 1; }
 # Best-effort prose tripwire (heuristic; a sentence mixing "required" with an exonerating word on the
 # same line can evade it). The real guarantee is the keyless/own-export framing authored into each skill.
-ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' paid/ 2>/dev/null \
+ad_hits="$(grep -rnEi "(google ads|meta( marketing)?|ads platform|marketing) api" --include='SKILL.md' ad/ 2>/dev/null \
   | grep -Ei "require|must have|tier.?1|precondition|necessary" \
   | grep -Eiv "optional|opt-in|tier.?2|tier.?3|mcp|never|not required|own[ -]data|manual export" || true)"
 if [ -n "$ad_hits" ]; then
@@ -80,5 +90,5 @@ if [ -n "$ad_hits" ]; then
   exit 1
 fi
 
-echo "moat guard clean — no third-party imports under scripts/, no required keyed ad APIs in paid/."
+echo "moat guard clean — no third-party imports under scripts/, no required keyed ad APIs in ad/."
 exit 0

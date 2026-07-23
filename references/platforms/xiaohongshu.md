@@ -74,4 +74,4 @@ Manual-package / user-export lane only — see `../social-platform-access.md` fo
 ## Related
 
 - `../social-platform-access.md` — data-access lanes per platform
-- `../c3-benchmark.md` — creator/content scoring when vetting XHS creators
+- `../star-benchmark.md` — creator/content scoring when vetting XHS creators

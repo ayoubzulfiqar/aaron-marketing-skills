@@ -14,8 +14,9 @@ an optional `FIRECRAWL_API_KEY` raises limits and covers the full surface
 
 This gives the SEO/GEO research skills their first keyless live-SERP source
 (`search`) and gives every page-reading skill a JS-rendering fallback
-(`scrape`). All subcommands are READ-ONLY — nothing here mutates external
-state, so there is no --live gate (unlike resend.py).
+(`scrape`). Subcommands are read-only against third-party marketing state;
+`crawl`/`crawl-cancel` create and cancel only *your own* hosted Firecrawl
+jobs, which is why there is no --live gate (unlike resend.py).
 
 ROBOTS PRE-FLIGHT — per ../../SECURITY.md §Scraping Boundaries, `scrape`,
 `crawl`, and `map` first evaluate the target's robots.txt locally (sibling
@@ -142,12 +143,23 @@ def build_spec(args):
 
 
 def preflight(url, ua=ROBOTS_UA):
-    """Evaluate the target's robots.txt locally before handing it to
-    Firecrawl. Returns {allowed, robots_url, status, rule} — allowed is True
-    when robots.txt is absent/unreachable (4xx/no-answer = no restrictions),
-    False only on an applicable Disallow."""
-    path = urlsplit(url).path or "/"
+    """Evaluate the target's robots.txt locally before handing it to Firecrawl.
+    Returns {allowed, robots_url, status, rule}. A 4xx/404 means no restrictions
+    (allowed). FAIL-CLOSED: a 5xx or network failure means the policy could NOT be
+    verified, so allowed is False (refuse; --own-site overrides). allowed is also
+    False on an applicable Disallow."""
+    sp = urlsplit(url)
+    path = sp.path or "/"
+    if sp.query:
+        path += "?" + sp.query
     parsed = robots.fetch(url)
+    if robots.status_unreliable(parsed.status):
+        return {
+            "allowed": False, "ua": ua, "path": path,
+            "robots_url": parsed.url, "status": parsed.status, "rule": None,
+            "reason": "robots.txt could not be verified (status %s) — fail-closed; "
+                      "re-run with --own-site to override" % parsed.status,
+        }
     allowed, detail = parsed.can_fetch(ua, path)
     return {
         "allowed": bool(allowed),
